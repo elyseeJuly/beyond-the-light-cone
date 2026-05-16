@@ -24,6 +24,12 @@
   /* Fonts */
   --font-base: "Inter", "system-ui", sans-serif;
   --font-data: "Roboto Mono", "JetBrains Mono", monospace;
+
+  /* Art Tones */
+  --color-ink-dark: #1A1A1A;
+  --color-ink-paper: #F2EFE9;
+  --color-cyber-gold: #FFD700;
+  --color-cyber-teal: #00E5FF;
 }
 
 @layer base {
@@ -70,6 +76,21 @@
 @utility data-text {
   font-family: var(--font-data);
   @apply tabular-nums;
+}
+
+@utility gongbi-portrait {
+  @apply relative overflow-hidden rounded-lg border border-black/10 dark:border-white/10;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+@utility paper-texture {
+  @apply absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.03];
+  background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+}
+
+@utility ink-vignette {
+  @apply absolute inset-0 pointer-events-none;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.2) 100%);
 }
 
 @layer components {
@@ -121,6 +142,28 @@
   animation: scan-line 4s linear infinite;
 }
 
+@keyframes holographic-flicker {
+  0% { opacity: 0.95; transform: skewX(0deg); }
+  5% { opacity: 0.8; transform: skewX(1deg); }
+  10% { opacity: 0.95; transform: skewX(0deg); }
+  15% { opacity: 0.9; transform: skewX(-1deg); }
+  20% { opacity: 0.95; transform: skewX(0deg); }
+  100% { opacity: 0.95; transform: skewX(0deg); }
+}
+
+.animate-holographic {
+  animation: holographic-flicker 3s linear infinite;
+}
+
+@keyframes ink-spread {
+  from { clip-path: circle(0% at 50% 50%); }
+  to { clip-path: circle(150% at 50% 50%); }
+}
+
+.animate-ink-spread {
+  animation: ink-spread 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
@@ -168,9 +211,27 @@
   max-height: 85vh;
   overflow-y: auto;
   padding: 32px;
-  @apply glass-panel shadow-2xl;
+  @apply glass-panel shadow-2xl relative;
   border: 1px solid rgba(255, 255, 255, 0.1);
   animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-box::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(45deg, transparent, var(--color-cyber-teal), transparent, var(--color-cyber-gold), transparent);
+  background-size: 400% 400%;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.3;
+  animation: border-flow 6s linear infinite;
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes slide-up {

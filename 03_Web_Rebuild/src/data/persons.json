@@ -12,7 +12,7 @@
   },
   {
     "name": "罗辑",
-    "faceFile": "character_luoji.png",
+    "faceFile": "unified_luoji_1778921262534.png",
     "army": 70,
     "economy": 40,
     "leadership": 85,
@@ -34,7 +34,7 @@
   },
   {
     "name": "叶文洁",
-    "faceFile": "character_yewenjie.png",
+    "faceFile": "unified_yewenjie_1778921299091.png",
     "army": 20,
     "economy": 40,
     "leadership": 60,
@@ -45,7 +45,7 @@
   },
   {
     "name": "大史",
-    "faceFile": "character_dashi.png",
+    "faceFile": "unified_dashi_1778921331273.png",
     "army": 85,
     "economy": 30,
     "leadership": 70,
@@ -111,7 +111,7 @@
   },
   {
     "name": "章北海",
-    "faceFile": "character_beihai.png",
+    "faceFile": "unified_beihai_1778921366897.png",
     "army": 98,
     "economy": 40,
     "leadership": 92,
@@ -276,7 +276,7 @@
   },
   {
     "name": "程心",
-    "faceFile": "character_chengxin.png",
+    "faceFile": "unified_chengxin_1778921400346.png",
     "army": 15,
     "economy": 50,
     "leadership": 40,
@@ -287,7 +287,7 @@
   },
   {
     "name": "维德",
-    "faceFile": "character_wade.png",
+    "faceFile": "unified_wade_1778921437022.png",
     "army": 90,
     "economy": 60,
     "leadership": 95,
@@ -298,7 +298,7 @@
   },
   {
     "name": "云天明",
-    "faceFile": "character_tianming.png",
+    "faceFile": "unified_tianming_1778921470963.png",
     "army": 20,
     "economy": 30,
     "leadership": 30,
@@ -320,7 +320,7 @@
   },
   {
     "name": "智子",
-    "faceFile": "character_sophon.png",
+    "faceFile": "unified_sophon_1778921509458.png",
     "army": 85,
     "economy": 40,
     "leadership": 70,

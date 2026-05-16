@@ -79,7 +79,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
       </div>
 
-      <div className="relative w-full max-w-5xl glass-panel overflow-hidden flex flex-col md:flex-row min-h-[500px] border-primary/20 shadow-[0_0_50px_rgba(0,0,0,1)]">
+      <div className="relative w-full max-w-5xl glass-panel overflow-hidden flex flex-col md:flex-row min-h-[500px] border-primary/20 shadow-[0_0_50px_rgba(0,0,0,1)] animate-ink-spread">
         
         {/* Left: Avatar Section with Holographic Effects */}
         <div className="w-full md:w-2/5 bg-[#050A1F] flex items-end justify-center relative overflow-hidden border-r border-primary/10 group">
@@ -94,15 +94,20 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
           
           {currentNode.avatarUrl && (
-            <img 
-              src={currentNode.avatarUrl} 
-              alt={currentNode.speakerName} 
-              className="relative z-10 w-full h-[110%] object-cover object-center transition-all duration-1000 group-hover:scale-105 filter contrast-110 saturate-125"
-            />
+            <div className="relative w-full h-[110%] gongbi-portrait">
+              <img 
+                src={currentNode.avatarUrl} 
+                alt={currentNode.speakerName} 
+                className="w-full h-full object-cover object-center transition-all duration-1000 group-hover:scale-105 filter contrast-110 saturate-125"
+              />
+              {/* Paper Texture and Ink Vignette */}
+              <div className="paper-texture" />
+              <div className="ink-vignette" />
+            </div>
           )}
 
           {/* Character Label Overlay */}
-          <div className="absolute bottom-10 left-0 z-30 px-6 py-2 bg-primary/20 border-r-2 border-primary backdrop-blur-md">
+          <div className="absolute bottom-10 left-0 z-30 px-6 py-2 bg-primary/20 border-r-2 border-primary backdrop-blur-md animate-holographic">
             <p className="text-xs tracking-[0.3em] text-primary-foreground font-bold uppercase mb-1">Speaker Identification</p>
             <h3 className="text-2xl font-black text-white tracking-tighter italic">
               {currentNode.speakerName}

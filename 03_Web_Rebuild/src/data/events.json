@@ -5,7 +5,7 @@
     "eventeffect": 0,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "character_wangmiao_1778724166873.png",
+    "talk0_pic": "event_crisis_start_1778921554350.png",
     "talk0_talker": "联合政府",
     "talk0_content": "执政官，由于三体舰队的发现，全球已进入危机纪元。行星防御理事会（PDC）正式授权您接管最高统帅权。基础物理已被锁死，但人类文明的火种绝不能熄灭！"
   },
@@ -15,7 +15,7 @@
     "eventeffect": 0,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "shiqiang.bmp",
+    "talk0_pic": "event_guzheng_1778921589210.png",
     "talk0_talker": "史强",
     "talk0_content": "古筝行动非常成功！我们拿到了伊文斯在审判日号上的三体通讯记录。"
   },
@@ -25,7 +25,7 @@
     "eventeffect": 0,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "sophon.bmp",
+    "talk0_pic": "unified_sophon_1778921509458.png",
     "talk0_talker": "智子",
     "talk0_content": "你们是虫子！基础科学的枷锁已经锁死！"
   },
@@ -35,7 +35,7 @@
     "eventeffect": 6,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "luoji.bmp",
+    "talk0_pic": "event_moon_crisis_1778921627726.png",
     "talk0_talker": "最高统帅部",
     "talk0_content": "月球危机爆发！由于过度开采和潮汐引力异常，月球即将解体坠落！我们需要立即调集所有资源推开月球碎片！"
   },
@@ -45,7 +45,7 @@
     "eventeffect": 7,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "wangmiao.bmp",
+    "talk0_pic": "event_wandering_earth_1778921665842.png",
     "talk0_talker": "联合政府",
     "talk0_content": "太阳系即将毁灭。如果我们掌握了重核聚变行星发动机，我们将开启流浪地球计划！"
   }

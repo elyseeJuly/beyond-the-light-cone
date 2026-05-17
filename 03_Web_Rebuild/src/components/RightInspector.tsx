@@ -41,31 +41,40 @@ export const RightInspector: React.FC = () => {
   const earth = game.earthCivi;
 
   const handleBuildStope = () => {
-    if (!star.hasStope && earth.economy >= 30) {
+    if (!star.hasStope && !star.buildingProgress?.stope && earth.economy >= 30) {
       earth.economy -= 30;
-      star.hasStope = true;
-      game.addHistory(`在 ${star.name} 建造采矿场，消耗 30 经济。`);
+      star.buildingProgress = star.buildingProgress || {};
+      star.buildingProgress.stope = { currentBuild: 0, totalBuild: 100, buildPerRound: 20 };
+      game.addHistory(`在 ${star.name} 开始建造采矿场（预计5回合完成），消耗 30 经济。`);
       forceUpdate(n => n + 1);
+    } else if (star.buildingProgress?.stope) {
+      alert("该星球正在建造采矿场！");
     } else if (!star.hasStope) {
       alert("经济不足 30 点！");
     }
   };
   const handleBuildFactory = () => {
-    if (!star.hasFactory && earth.economy >= 50) {
+    if (!star.hasFactory && !star.buildingProgress?.factory && earth.economy >= 50) {
       earth.economy -= 50;
-      star.hasFactory = true;
-      game.addHistory(`在 ${star.name} 建造加工厂，消耗 50 经济。`);
+      star.buildingProgress = star.buildingProgress || {};
+      star.buildingProgress.factory = { currentBuild: 0, totalBuild: 150, buildPerRound: 25 };
+      game.addHistory(`在 ${star.name} 开始建造加工厂（预计6回合完成），消耗 50 经济。`);
       forceUpdate(n => n + 1);
+    } else if (star.buildingProgress?.factory) {
+      alert("该星球正在建造加工厂！");
     } else if (!star.hasFactory) {
       alert("经济不足 50 点！");
     }
   };
   const handleBuildCity = () => {
-    if (!star.hasCity && earth.economy >= 80) {
+    if (!star.hasCity && !star.buildingProgress?.city && earth.economy >= 80) {
       earth.economy -= 80;
-      star.hasCity = true;
-      game.addHistory(`在 ${star.name} 建造太空城市，消耗 80 经济。`);
+      star.buildingProgress = star.buildingProgress || {};
+      star.buildingProgress.city = { currentBuild: 0, totalBuild: 200, buildPerRound: 30 };
+      game.addHistory(`在 ${star.name} 开始建造太空城市（预计7回合完成），消耗 80 经济。`);
       forceUpdate(n => n + 1);
+    } else if (star.buildingProgress?.city) {
+      alert("该星球正在建造太空城市！");
     } else if (!star.hasCity) {
       alert("经济不足 80 点！");
     }
@@ -73,7 +82,13 @@ export const RightInspector: React.FC = () => {
   const handleBuildFleet = () => {
     if (earth.economy >= 100) {
       earth.economy -= 100;
-      game.addHistory(`在 ${star.name} 开始建造恒星级战舰 10 艘！`);
+      const fleet = createFleet("地球舰队", "地球", star.index, 0, 0);
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 0 });
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 0 });
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 0 });
+      fleet.leaderName = "章北海";
+      earth.fleets.push(fleet);
+      game.addHistory(`在 ${star.name} 开始建造恒星级战舰编队（3艘，消耗 100 经济），舰队已就绪等待出击。`);
       forceUpdate(n => n + 1);
       window.dispatchEvent(new CustomEvent('game-turn-complete'));
     } else {
@@ -181,35 +196,65 @@ export const RightInspector: React.FC = () => {
             <section className="space-y-3">
               <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-primary)]">基建设施</h3>
               <div className="space-y-2">
-                <button onClick={handleBuildStope} className="w-full flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all group">
-                  <div className="flex items-center gap-3">
-                    <Pickaxe className={star.hasStope ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={18} />
-                    <div className="text-left">
-                      <div className="text-sm font-bold">{star.hasStope ? '✅' : '➕'} 采矿场</div>
-                      {!star.hasStope && <div className="text-[10px] text-[var(--text-secondary)]">消耗 30 经济</div>}
+                <button onClick={handleBuildStope} className="w-full flex flex-col p-3 rounded-lg border border-white/10 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all group">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <Pickaxe className={star.hasStope ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={18} />
+                      <div className="text-left">
+                        <div className="text-sm font-bold">{star.hasStope ? '✅' : star.buildingProgress?.stope ? '🔨' : '➕'} 采矿场</div>
+                        {!star.hasStope && !star.buildingProgress?.stope && <div className="text-[10px] text-[var(--text-secondary)]">消耗 30 经济 (5回合)</div>}
+                      </div>
                     </div>
+                    {!star.hasStope && !star.buildingProgress?.stope && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity" size={16} />}
                   </div>
-                  {!star.hasStope && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity" size={16} />}
+                  {star.buildingProgress?.stope && !star.hasStope && (
+                    <div className="w-full mt-2">
+                      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-yellow-500 rounded-full transition-all" style={{ width: `${(star.buildingProgress.stope.currentBuild / star.buildingProgress.stope.totalBuild) * 100}%` }} />
+                      </div>
+                      <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">建造中 {Math.floor((star.buildingProgress.stope.currentBuild / star.buildingProgress.stope.totalBuild) * 100)}%</div>
+                    </div>
+                  )}
                 </button>
-                <button onClick={handleBuildFactory} className="w-full flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all group">
-                  <div className="flex items-center gap-3">
-                    <Factory className={star.hasFactory ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={18} />
-                    <div className="text-left">
-                      <div className="text-sm font-bold">{star.hasFactory ? '✅' : '➕'} 加工厂</div>
-                      {!star.hasFactory && <div className="text-[10px] text-[var(--text-secondary)]">消耗 50 经济</div>}
+                <button onClick={handleBuildFactory} className="w-full flex flex-col p-3 rounded-lg border border-white/10 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all group">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <Factory className={star.hasFactory ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={18} />
+                      <div className="text-left">
+                        <div className="text-sm font-bold">{star.hasFactory ? '✅' : star.buildingProgress?.factory ? '🔨' : '➕'} 加工厂</div>
+                        {!star.hasFactory && !star.buildingProgress?.factory && <div className="text-[10px] text-[var(--text-secondary)]">消耗 50 经济 (6回合)</div>}
+                      </div>
                     </div>
+                    {!star.hasFactory && !star.buildingProgress?.factory && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity" size={16} />}
                   </div>
-                  {!star.hasFactory && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity" size={16} />}
+                  {star.buildingProgress?.factory && !star.hasFactory && (
+                    <div className="w-full mt-2">
+                      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-yellow-500 rounded-full transition-all" style={{ width: `${(star.buildingProgress.factory.currentBuild / star.buildingProgress.factory.totalBuild) * 100}%` }} />
+                      </div>
+                      <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">建造中 {Math.floor((star.buildingProgress.factory.currentBuild / star.buildingProgress.factory.totalBuild) * 100)}%</div>
+                    </div>
+                  )}
                 </button>
-                <button onClick={handleBuildCity} className="w-full flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all group">
-                  <div className="flex items-center gap-3">
-                    <Building className={star.hasCity ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={18} />
-                    <div className="text-left">
-                      <div className="text-sm font-bold">{star.hasCity ? '✅' : '➕'} 太空城市</div>
-                      {!star.hasCity && <div className="text-[10px] text-[var(--text-secondary)]">消耗 80 经济</div>}
+                <button onClick={handleBuildCity} className="w-full flex flex-col p-3 rounded-lg border border-white/10 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all group">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <Building className={star.hasCity ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={18} />
+                      <div className="text-left">
+                        <div className="text-sm font-bold">{star.hasCity ? '✅' : star.buildingProgress?.city ? '🔨' : '➕'} 太空城市</div>
+                        {!star.hasCity && !star.buildingProgress?.city && <div className="text-[10px] text-[var(--text-secondary)]">消耗 80 经济 (7回合)</div>}
+                      </div>
                     </div>
+                    {!star.hasCity && !star.buildingProgress?.city && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity" size={16} />}
                   </div>
-                  {!star.hasCity && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity" size={16} />}
+                  {star.buildingProgress?.city && !star.hasCity && (
+                    <div className="w-full mt-2">
+                      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-yellow-500 rounded-full transition-all" style={{ width: `${(star.buildingProgress.city.currentBuild / star.buildingProgress.city.totalBuild) * 100}%` }} />
+                      </div>
+                      <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">建造中 {Math.floor((star.buildingProgress.city.currentBuild / star.buildingProgress.city.totalBuild) * 100)}%</div>
+                    </div>
+                  )}
                 </button>
               </div>
             </section>

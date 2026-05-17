@@ -309,9 +309,9 @@ export class Game {
 
   public applyEventEffect(effect: EventEffect): void {
     switch (effect) {
-      case EventEffect.ADDECONEMY: this.earthCivi.economy += 50; break;
-      case EventEffect.ADDCULTURE: this.earthCivi.culture += 30; break;
-      case EventEffect.ADDPOP: this.earthCivi.population += 20; break;
+      case EventEffect.ADDECONEMY: this.earthCivi.economy = Math.max(0, this.earthCivi.economy + 50); break;
+      case EventEffect.ADDCULTURE: this.earthCivi.culture = Math.max(0, this.earthCivi.culture + 30); break;
+      case EventEffect.ADDPOP: this.earthCivi.population = Math.max(0, this.earthCivi.population + 20); break;
       case EventEffect.ADDTREACHERY: this.earthCivi.treachery = Math.max(0, this.earthCivi.treachery - 15); break;
       case EventEffect.WAR:
         const sanTi = this.alienCiviManager.aliens.get("三体");
@@ -350,17 +350,18 @@ export class Game {
         const val = Number(eff.value);
         switch (eff.target) {
           case 'military':
-            for (let i = 0; i < val; i++) {
+            const fleetsToAdd = Math.max(0, val);
+            for (let i = 0; i < fleetsToAdd; i++) {
               this.earthCivi.fleets.push(createFleet(`第${this.earthCivi.fleets.length + 1}舰队`, "地球", 4, 4, 0));
             }
             break;
-          case 'economy': this.earthCivi.economy += val; break;
-          case 'population': this.earthCivi.population += val; break;
-          case 'culture': this.earthCivi.culture += val; break;
-          case 'prestige': this.earthCivi.deterrenceValue += val; break;
+          case 'economy': this.earthCivi.economy = Math.max(0, this.earthCivi.economy + val); break;
+          case 'population': this.earthCivi.population = Math.max(0, this.earthCivi.population + val); break;
+          case 'culture': this.earthCivi.culture = Math.max(0, this.earthCivi.culture + val); break;
+          case 'prestige': this.earthCivi.deterrenceValue = Math.max(0, this.earthCivi.deterrenceValue + val); break;
           case 'treachery': this.earthCivi.treachery = Math.min(100, Math.max(0, this.earthCivi.treachery + val)); break;
-          case 'resource': this.earthCivi.resource += val; break;
-          case 'army': this.earthCivi.army += val; break;
+          case 'resource': this.earthCivi.resource = Math.max(0, this.earthCivi.resource + val); break;
+          case 'army': this.earthCivi.army = Math.max(0, this.earthCivi.army + val); break;
         }
       } else if (eff.type === 'flag') {
         this.addFlag(eff.target);

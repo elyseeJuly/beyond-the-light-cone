@@ -56,6 +56,7 @@ export class EarthCivilization extends Civilization {
   public runARound(): void {
     const game = GameInstance.get();
 
+    this.autoAssignMinisters(game);
     this.allocateWorkers();
 
     this.processMining(game);
@@ -87,6 +88,90 @@ export class EarthCivilization extends Civilization {
 
     this.syncStarPopulation(game);
     this.processFleets(game);
+    this.processBuildings(game);
+    this.sanitizeResources(game);
+  }
+
+  private processBuildings(game: any): void {
+    for (const idx of this.starIndices) {
+      const star = game.starManager.getStar(idx);
+      if (!star || !star.buildingProgress) continue;
+      const bp = star.buildingProgress;
+      for (const key of Object.keys(bp)) {
+        const b = bp[key];
+        if (b.currentBuild < b.totalBuild) {
+          b.currentBuild += b.buildPerRound;
+          if (b.currentBuild >= b.totalBuild) {
+            b.currentBuild = b.totalBuild;
+            if (key === 'stope') star.hasStope = true;
+            else if (key === 'factory') star.hasFactory = true;
+            else if (key === 'city') star.hasCity = true;
+            game.addHistory(`${star.name} 的${key === 'stope' ? '采矿场' : key === 'factory' ? '加工厂' : '太空城市'}建造完成！`);
+            delete bp[key];
+          }
+        }
+      }
+      if (Object.keys(bp).length === 0) star.buildingProgress = null;
+    }
+  }
+
+  private sanitizeResources(game: any): void {
+    this.population = Math.max(0, this.population);
+    this.economy = Math.max(0, this.economy);
+    this.resource = Math.max(0, this.resource);
+    this.culture = Math.max(0, this.culture);
+    this.army = Math.max(0, this.army);
+    this.deterrenceValue = Math.max(0, this.deterrenceValue);
+    this.idleWorkers = Math.max(0, this.idleWorkers);
+    this.idlePopulation = Math.max(0, this.idlePopulation);
+
+    if (this.population <= 0 && !game.isGameOver) {
+      game.addHistory("【灭绝】地球文明人口耗尽，文明灭亡。");
+      game.isGameOver = true;
+      game.gameOverReason = "文明灭绝：地球已成为一颗死寂的星球。";
+      window.dispatchEvent(new CustomEvent('game-over'));
+    }
+  }
+
+  public autoAssignMinisters(game: any): void {
+    const deptStatMap: [DepartmentType, string][] = [
+      [DepartmentType.ECONOMY, 'economy'],
+      [DepartmentType.ARMY, 'army'],
+      [DepartmentType.CULTURE, 'social'],
+      [DepartmentType.HUMANRES, 'leadership'],
+      [DepartmentType.ASTROSOCIOLOGY, 'science'],
+      [DepartmentType.NUCLEAR, 'science'],
+      [DepartmentType.SPACEFIGHT, 'army'],
+      [DepartmentType.PROTON, 'science'],
+      [DepartmentType.ASTROPHYSICS, 'science'],
+      [DepartmentType.CULTURETEC, 'art'],
+      [DepartmentType.ECONOMYTEC, 'economy'],
+    ];
+
+    for (const [deptType, statKey] of deptStatMap) {
+      const dept = this.departments.get(deptType);
+      if (!dept || dept.leaderName) continue;
+
+      let bestPerson: string | null = null;
+      let bestStat = -1;
+
+      for (const name of game.personManager.availablePersons) {
+        const p = game.personManager.getPerson(name);
+        if (!p) continue;
+        const stat = (p as any)[statKey] || 0;
+        if (stat > bestStat) {
+          bestStat = stat;
+          bestPerson = name;
+        }
+      }
+
+      if (bestPerson) {
+        dept.leaderName = bestPerson;
+        game.personManager.availablePersons.delete(bestPerson);
+        const person = game.personManager.getPerson(bestPerson);
+        if (person) person.departmentId = dept.name;
+      }
+    }
   }
 
   private allocateWorkers(): void {
@@ -230,9 +315,34 @@ export class EarthCivilization extends Civilization {
       const tree = this.tecTreeManager.trees.get(treeType);
       if (!tree) continue;
 
+      let hasActiveResearch = false;
+      for (const node of tree.nodes.values()) {
+        if (node.inResearch && !node.finished) {
+          hasActiveResearch = true;
+          break;
+        }
+      }
+
+      if (!hasActiveResearch) {
+        let bestNode: any = null;
+        for (const node of tree.nodes.values()) {
+          if (node.finished) continue;
+          const parentFinished = !node.parentName || tree.isFinished(node.parentName);
+          if (!parentFinished) continue;
+          if (!bestNode || node.cost < bestNode.cost) {
+            bestNode = node;
+          }
+        }
+        if (bestNode) {
+          bestNode.inResearch = true;
+          game.addHistory(`自动开始研究: ${bestNode.name}`);
+        }
+      }
+
       for (const node of tree.nodes.values()) {
         if (node.inResearch && !node.finished) {
           let progress = 10 + scienceBonus;
+          if (progress < 5) progress = 5;
           const treacheryFactor = Math.max(1, 100 - this.treachery);
           progress = Math.floor(progress * treacheryFactor / 100);
           if (game.isSophonBlocked()) {
@@ -292,7 +402,8 @@ export class EarthCivilization extends Civilization {
   }
 
   private processTreachery(game: any): void {
-    const randomGain = Math.floor(Math.random() * 3);
+    const earlyGameFactor = game.year < 100 ? 0.5 : 1.0;
+    const randomGain = Math.floor(Math.random() * 3 * earlyGameFactor);
     this.treachery = Math.min(100, this.treachery + randomGain);
     if (this.treachery > 80) {
       game.addHistory(`【警告】逃亡主义上升至 ${this.treachery}，文明面临内部分裂风险！`);

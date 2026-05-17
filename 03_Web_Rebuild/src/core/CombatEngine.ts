@@ -23,9 +23,9 @@ export class CombatEngine {
       round++;
 
       const atkDice = 0.8 + Math.random() * 0.4;
-      const defDice = 0.75 + Math.random() * 0.5;
+      const defDice = 0.85 + Math.random() * 0.5;
 
-      const atkDamage = Math.floor(atkPower * atkDice * (1 + round * 0.1));
+      const atkDamage = Math.floor(atkPower * atkDice);
       const defDamage = Math.floor(defPower * defDice);
 
       defHp -= atkDamage;

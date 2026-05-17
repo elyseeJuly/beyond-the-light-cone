@@ -104,9 +104,9 @@ export class AlienCivilization extends Civilization {
   }
 
   private expansionistBehavior(game: any, deterrenceRate: number): void {
-    if (Math.random() < 0.14) {
+    if (Math.random() < 0.10) {
       const allStars = game.starManager.getAllStars();
-      const unowned = allStars.filter((s: any) => s.isPlanet && !s.belongToCivi);
+      const unowned = allStars.filter((s: any) => s.isPlanet && !s.belongToCivi && s.index > 8);
       if (unowned.length > 0 && deterrenceRate < 80) {
         const target = unowned[Math.floor(Math.random() * unowned.length)];
         target.belongToCivi = this.name;

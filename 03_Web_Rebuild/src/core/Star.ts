@@ -11,14 +11,14 @@ export interface Star {
   currentPopulation: number;
   found: boolean;
 
-  // 扁平化数据：不再直接持有对象指针，而是记录其建筑状态
-  // 为了后续序列化，只要这些字段存在，就说明有该建筑
   hasStope: boolean;
   hasFactory: boolean;
   hasCity: boolean;
-  barbackId: string | null;  // 军营 ID，若为 null 则说明没有军营
+  barbackId: string | null;
 
-  departmentName: string | null; // 代替原 CStar 的 m_pDepartment
+  buildingProgress: Record<string, { currentBuild: number; totalBuild: number; buildPerRound: number }> | null;
+
+  departmentName: string | null;
 }
 
 export function createEmptyStar(index: number): Star {
@@ -38,6 +38,7 @@ export function createEmptyStar(index: number): Star {
     hasFactory: false,
     hasCity: false,
     barbackId: null,
+    buildingProgress: null,
     departmentName: null,
   };
 }

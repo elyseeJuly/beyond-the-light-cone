@@ -22,6 +22,10 @@ export class StarMapRenderer {
   private hoveredStar: RenderStar | null = null;
   private selectedStar: RenderStar | null = null;
 
+  public zoomLevel: number = 1.0;
+  public panX: number = 0;
+  public panY: number = 0;
+
   public onStarClick: ((star: Star) => void) | null = null;
 
   constructor(canvasId: string) {
@@ -35,6 +39,10 @@ export class StarMapRenderer {
     
     this.initMouseEvents();
   }
+
+  public zoomIn(): void { this.zoomLevel = Math.min(3.0, this.zoomLevel + 0.2); }
+  public zoomOut(): void { this.zoomLevel = Math.max(0.3, this.zoomLevel - 0.2); }
+  public resetView(): void { this.zoomLevel = 1.0; this.panX = 0; this.panY = 0; }
 
   private resize() {
     const container = this.canvas.parentElement;
@@ -105,11 +113,16 @@ export class StarMapRenderer {
         if (this.onStarClick) {
           this.onStarClick(this.selectedStar.star);
         }
-        // Dispatch event for React components
         window.dispatchEvent(new CustomEvent('star-selected', { detail: this.selectedStar.star }));
       } else {
         this.selectedStar = null;
       }
+    });
+
+    this.canvas.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      if (e.deltaY < 0) this.zoomIn();
+      else this.zoomOut();
     });
   }
 
@@ -143,9 +156,7 @@ export class StarMapRenderer {
   }
 
   private draw() {
-    // Get background from theme
     const bg = getComputedStyle(document.body).getPropertyValue('--bg-space-dark').trim() || "#02040a";
-    // Convert to rgba for trail effect
     let trailColor = "rgba(5, 5, 10, 0.3)";
     if (bg.startsWith('#')) {
       const r = parseInt(bg.slice(1, 3), 16);
@@ -158,6 +169,11 @@ export class StarMapRenderer {
 
     this.ctx.fillStyle = trailColor;
     this.ctx.fillRect(0, 0, this.width, this.height);
+
+    this.ctx.save();
+    this.ctx.translate(this.width / 2 + this.panX, this.height / 2 + this.panY);
+    this.ctx.scale(this.zoomLevel, this.zoomLevel);
+    this.ctx.translate(-this.width / 2, -this.height / 2);
 
     for (const rs of this.renderStars) {
       const { star, x, y, radius } = rs;
@@ -253,5 +269,7 @@ export class StarMapRenderer {
         }
       }
     });
+
+    this.ctx.restore();
   }
 }

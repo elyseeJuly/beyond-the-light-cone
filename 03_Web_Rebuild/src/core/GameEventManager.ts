@@ -434,6 +434,32 @@ export class GameEventManager {
     return result;
   }
 
+  private isEpochMatch(targetEpoch: string | number, currentEpoch: string): boolean {
+    if (targetEpoch === undefined || targetEpoch === null || targetEpoch === "ANY") return true;
+
+    let targetStr: string;
+    if (typeof targetEpoch === "number") {
+      const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
+      targetStr = epochNames[targetEpoch] || "";
+    } else {
+      targetStr = targetEpoch;
+    }
+
+    if (targetStr === currentEpoch) return true;
+
+    // WANDERING corresponds to late-game eras: BROADCAST, BUNKER, or GALAXY
+    if (targetStr === "WANDERING") {
+      return currentEpoch === "BROADCAST" || currentEpoch === "BUNKER" || currentEpoch === "GALAXY";
+    }
+
+    // SHELTER corresponds to the Bunker Era (BUNKER)
+    if (targetStr === "SHELTER") {
+      return currentEpoch === "BUNKER";
+    }
+
+    return false;
+  }
+
   private checkFilterConditions(cond: any): boolean {
     const game = GameInstance.get();
     const e = game.earthCivi;
@@ -442,9 +468,7 @@ export class GameEventManager {
 
     if (cond.minYear !== undefined && game.year < cond.minYear) return false;
     if (cond.maxYear !== undefined && game.year > cond.maxYear) return false;
-    if (cond.epoch && cond.epoch !== "ANY" && cond.epoch !== "WANDERING" && cond.epoch !== "SHELTER") {
-      if (cond.epoch !== currentEpoch) return false;
-    }
+    if (cond.epoch && !this.isEpochMatch(cond.epoch, currentEpoch)) return false;
     if (cond.reqTech && !this.isTecFinishedInAnyTree(cond.reqTech)) return false;
     if (cond.reqFlag && !game.hasFlag(cond.reqFlag)) return false;
     if (cond.reqNotFlag && game.hasFlag(cond.reqNotFlag)) return false;
@@ -545,13 +569,8 @@ export class GameEventManager {
       const prob = e.triggerCondition?.probability ?? 0.4;
       if (Math.random() > prob) continue;
 
-      if (e.triggerCondition?.epoch && e.triggerCondition.epoch !== "ANY") {
-        const targetEpoch = e.triggerCondition.epoch;
-        if (targetEpoch === "WANDERING" && (epochName === "CRISIS" || epochName === "DETERRENCE")) {
-        } else if (targetEpoch === "SHELTER" && epochName === "BUNKER") {
-        } else if (targetEpoch !== epochName) {
-          continue;
-        }
+      if (e.triggerCondition?.epoch && !this.isEpochMatch(e.triggerCondition.epoch, epochName)) {
+        continue;
       }
 
       if (e.triggerCondition?.reqTech) {

@@ -27,4 +27,34 @@ describe('Game Core', () => {
     game.removeFlag('test_flag');
     expect(game.hasFlag('test_flag')).toBe(false);
   });
+
+  it('Epoch匹配辅助函数(isEpochMatch)逻辑正确', () => {
+    const em = game.eventManager as any;
+    
+    // ANY target epoch
+    expect(em.isEpochMatch('ANY', 'CRISIS')).toBe(true);
+    expect(em.isEpochMatch('ANY', 'BROADCAST')).toBe(true);
+
+    // Exact matches
+    expect(em.isEpochMatch('CRISIS', 'CRISIS')).toBe(true);
+    expect(em.isEpochMatch('CRISIS', 'DETERRENCE')).toBe(false);
+    expect(em.isEpochMatch('DETERRENCE', 'DETERRENCE')).toBe(true);
+
+    // Number/Enum matches
+    expect(em.isEpochMatch(0, 'CRISIS')).toBe(true);
+    expect(em.isEpochMatch(0, 'DETERRENCE')).toBe(false);
+    expect(em.isEpochMatch(1, 'DETERRENCE')).toBe(true);
+
+    // WANDERING matches late game only
+    expect(em.isEpochMatch('WANDERING', 'CRISIS')).toBe(false);
+    expect(em.isEpochMatch('WANDERING', 'DETERRENCE')).toBe(false);
+    expect(em.isEpochMatch('WANDERING', 'BROADCAST')).toBe(true);
+    expect(em.isEpochMatch('WANDERING', 'BUNKER')).toBe(true);
+    expect(em.isEpochMatch('WANDERING', 'GALAXY')).toBe(true);
+
+    // SHELTER matches BUNKER only
+    expect(em.isEpochMatch('SHELTER', 'CRISIS')).toBe(false);
+    expect(em.isEpochMatch('SHELTER', 'BUNKER')).toBe(true);
+    expect(em.isEpochMatch('SHELTER', 'GALAXY')).toBe(false);
+  });
 });

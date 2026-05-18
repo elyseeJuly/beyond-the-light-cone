@@ -6,9 +6,10 @@ interface RenderStar {
   x: number;
   y: number;
   radius: number;
-  orbitRadius: number; // 围绕中心（太阳）的轨道半径
+  orbitRadius: number; // 围绕中心（或母星）的轨道半径
   angle: number;       // 当前轨道角度
   speed: number;       // 轨道运动速度
+  parentIndex?: number; // 母星Index（如果是卫星）
 }
 
 export class StarMapRenderer {
@@ -75,33 +76,63 @@ export class StarMapRenderer {
     const cy = this.height / 2;
 
     const orbitScales: Record<number, number> = {
-      0: 0,     // 太阳
-      1: 0.39,  // 水星
-      2: 0.72,  // 金星
-      3: 1.0,   // 地球
-      4: 1.05,  // 月球
-      5: 1.52,  // 火星
-      6: 3.5,   // 木星
-      7: 5.0,   // 土星
-      8: 7.0,   // 天王星
-      9: 9.0,   // 海王星
+      0: 0,      // 太阳
+      1: 0.39,   // 水星
+      2: 0.72,   // 金星
+      3: 1.0,    // 地球
+      4: 0.08,   // 月球（相对于地球的轨道半径，视觉缩放）
+      5: 1.52,   // 火星
+      6: 5.2,    // 木星
+      7: 9.5,    // 土星
+      8: 19.2,   // 天王星
+      9: 30.1,   // 海王星
+      10: 39.5,  // 冥王星
     };
-    const baseRadius = 35;
+
+    // 基于真实体积的非线性对数缩放
+    const sizeMap: Record<number, number> = {
+      0: 30, // 太阳
+      1: 3,  // 水星
+      2: 5,  // 金星
+      3: 6,  // 地球
+      4: 2,  // 月球
+      5: 4,  // 火星
+      6: 14, // 木星
+      7: 12, // 土星
+      8: 9,  // 天王星
+      9: 9,  // 海王星
+      10: 2, // 冥王星
+    };
+
+    const baseOrbitRadius = 80;
 
     stars.forEach(s => {
       let orbitRadius = 0;
       let radius = 6;
       let angle = Math.random() * Math.PI * 2;
       let speed = 0;
+      let parentIndex: number | undefined = undefined;
 
-      if (s.index <= 9) { // Solar System
+      if (s.index <= 10) { // Solar System
+        radius = sizeMap[s.index] || 4;
+        
         if (s.index === 0) { // 太阳
           orbitRadius = 0;
-          radius = 20;
+          speed = 0;
+        } else if (s.index === 4) { // 月球，绕地球
+          orbitRadius = 20; // 固定视觉距离
+          speed = 0.05; // 月球转得快
+          parentIndex = 3;
         } else {
-          orbitRadius = (orbitScales[s.index] || 0) * baseRadius + 30;
-          radius = s.index === 6 /* 木星 */ ? 12 : 6;
-          speed = 0.005 / (s.index * 0.5); // 越远越慢
+          // 行星轨道，采用指数级间隔防止挤在一起
+          const scale = orbitScales[s.index] || 1;
+          // 使用非线性对数轨道半径，使得内圈可见，外圈不过于遥远
+          orbitRadius = Math.log(scale + 1) * baseOrbitRadius + 50;
+          
+          // 开普勒第三定律近似: v ∝ r^(-1.5)
+          speed = 0.02 * Math.pow(scale, -1.5);
+          // 限制最小速度
+          if (speed < 0.0005) speed = 0.0005;
         }
       } else if (s.index <= 100) { // 50 light-years
         orbitRadius = 500 + Math.random() * 500;
@@ -124,7 +155,8 @@ export class StarMapRenderer {
         radius,
         orbitRadius,
         angle,
-        speed
+        speed,
+        parentIndex
       });
     });
   }
@@ -132,14 +164,20 @@ export class StarMapRenderer {
   private initMouseEvents() {
     this.canvas.addEventListener("mousemove", (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const rawX = e.clientX - rect.left;
+      const rawY = e.clientY - rect.top;
       
       this.hoveredStar = null;
       for (const rs of this.renderStars) {
-        const dx = rs.x - x;
-        const dy = rs.y - y;
-        if (dx * dx + dy * dy <= rs.radius * rs.radius * 4) { // 扩大一点判定范围
+        // 逆向坐标变换，将世界坐标转换为屏幕坐标
+        const screenX = (rs.x - this.width / 2) * this.zoomLevel + this.width / 2 + this.panX;
+        const screenY = (rs.y - this.height / 2) * this.zoomLevel + this.height / 2 + this.panY;
+
+        const dx = screenX - rawX;
+        const dy = screenY - rawY;
+        const visualRadius = rs.radius * this.zoomLevel;
+
+        if (dx * dx + dy * dy <= visualRadius * visualRadius * 4 + 100) { // 增加容错判定
           this.hoveredStar = rs;
           break;
         }
@@ -186,8 +224,19 @@ export class StarMapRenderer {
     for (const rs of this.renderStars) {
       if (rs.orbitRadius > 0) {
         rs.angle += rs.speed;
-        rs.x = cx + Math.cos(rs.angle) * rs.orbitRadius;
-        rs.y = cy + Math.sin(rs.angle) * rs.orbitRadius * 0.8; // 微微的椭圆视角
+        let baseX = cx;
+        let baseY = cy;
+
+        if (rs.parentIndex !== undefined) {
+          const parent = this.renderStars.find(s => s.star.index === rs.parentIndex);
+          if (parent) {
+            baseX = parent.x;
+            baseY = parent.y;
+          }
+        }
+
+        rs.x = baseX + Math.cos(rs.angle) * rs.orbitRadius;
+        rs.y = baseY + Math.sin(rs.angle) * rs.orbitRadius * 0.8; // 微微的椭圆视角
       } else {
         rs.x = cx;
         rs.y = cy;

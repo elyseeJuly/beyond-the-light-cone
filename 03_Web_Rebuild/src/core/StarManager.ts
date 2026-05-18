@@ -50,13 +50,13 @@ export class StarManager {
   }
 
   public getStarsByArea(area: StarArea): Star[] {
-    // 太阳系 0-8
-    // 50光年 9-100
+    // 太阳系 0-10
+    // 50光年 11-100
     // 1万光年 101-200
     // 银河系 201-1000
     return this.getAllStars().filter(s => {
-      if (area === StarArea.SOLARSYSTEM) return s.index <= 9;
-      if (area === StarArea.LIGHTYEAR_50) return s.index > 8 && s.index <= 100;
+      if (area === StarArea.SOLARSYSTEM) return s.index <= 10;
+      if (area === StarArea.LIGHTYEAR_50) return s.index > 10 && s.index <= 100;
       if (area === StarArea.LIGHTYEAR_1W) return s.index > 100 && s.index <= 200;
       if (area === StarArea.GALAXY) return s.index > 200 && s.index <= 1000;
       return false;

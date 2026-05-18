@@ -9,11 +9,12 @@
   {"Index":7,"Name":"土星","IsPlanet":1,"Resource":600,"PopLimit":200},
   {"Index":8,"Name":"天王星","IsPlanet":1,"Resource":400,"PopLimit":150},
   {"Index":9,"Name":"海王星","IsPlanet":1,"Resource":350,"PopLimit":100},
-  {"Index":10,"Name":"比邻星","IsPlanet":1,"Resource":200,"PopLimit":300,"Distance":4.24},
-  {"Index":11,"Name":"半人马座α","IsPlanet":1,"Resource":400,"PopLimit":500,"Distance":4.37},
-  {"Index":12,"Name":"巴纳德星","IsPlanet":1,"Resource":150,"PopLimit":200,"Distance":5.96},
-  {"Index":13,"Name":"沃尔夫359","IsPlanet":1,"Resource":100,"PopLimit":150,"Distance":7.86},
-  {"Index":14,"Name":"天狼星","IsPlanet":1,"Resource":500,"PopLimit":400,"Distance":8.6},
-  {"Index":15,"Name":"南河三","IsPlanet":1,"Resource":350,"PopLimit":300,"Distance":11.4},
-  {"Index":16,"Name":"天仓五","IsPlanet":1,"Resource":450,"PopLimit":600,"Distance":11.9}
+  {"Index":10,"Name":"冥王星","IsPlanet":1,"Resource":120,"PopLimit":50},
+  {"Index":11,"Name":"比邻星","IsPlanet":1,"Resource":200,"PopLimit":300,"Distance":4.24},
+  {"Index":12,"Name":"半人马座α","IsPlanet":1,"Resource":400,"PopLimit":500,"Distance":4.37},
+  {"Index":13,"Name":"巴纳德星","IsPlanet":1,"Resource":150,"PopLimit":200,"Distance":5.96},
+  {"Index":14,"Name":"沃尔夫359","IsPlanet":1,"Resource":100,"PopLimit":150,"Distance":7.86},
+  {"Index":15,"Name":"天狼星","IsPlanet":1,"Resource":500,"PopLimit":400,"Distance":8.6},
+  {"Index":16,"Name":"南河三","IsPlanet":1,"Resource":350,"PopLimit":300,"Distance":11.4},
+  {"Index":17,"Name":"天仓五","IsPlanet":1,"Resource":450,"PopLimit":600,"Distance":11.9}
 ]

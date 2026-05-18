@@ -121,7 +121,7 @@ export class StarMapRenderer {
           speed = 0;
         } else if (s.index === 4) { // 月球，绕地球
           orbitRadius = 20; // 固定视觉距离
-          speed = 0.05; // 月球转得快
+          speed = 0.015; // 月球转速相对地球稍快
           parentIndex = 3;
         } else {
           // 行星轨道，采用指数级间隔防止挤在一起
@@ -130,7 +130,7 @@ export class StarMapRenderer {
           orbitRadius = Math.log(scale + 1) * baseOrbitRadius + 50;
           
           // 开普勒第三定律近似: v ∝ r^(-1.5)
-          speed = 0.02 * Math.pow(scale, -1.5);
+          speed = 0.005 * Math.pow(scale, -1.5);
           // 限制最小速度
           if (speed < 0.0005) speed = 0.0005;
         }

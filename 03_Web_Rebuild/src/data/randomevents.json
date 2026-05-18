@@ -61,15 +61,31 @@
       {
         "label": "立即疏散，弃置轨道实验室。以空间站质量构筑约束壁垒。(损失大量经济与科研潜力)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -1200 },
-          { "type": "flag", "target": "vacuum_decay_suppressed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -1200
+          },
+          {
+            "type": "flag",
+            "target": "vacuum_decay_suppressed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "执行维德的反向湮灭方案。哪怕只有15%的把握。(高概率触发灾难性连锁事件)",
         "effects": [
-          { "type": "flag", "target": "vacuum_decay_gamble", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "flag",
+            "target": "vacuum_decay_gamble",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       }
     ]
@@ -103,17 +119,41 @@
       {
         "label": "拒绝谈判，命令特遣队无差别突入。付出鲜血换取发动机安全。(损失军力与人口，威望上升)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -400 },
-          { "type": "resource", "target": "population", "value": -35000 },
-          { "type": "resource", "target": "prestige", "value": 8 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -400
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -35000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 8
+          }
         ]
       },
       {
         "label": "暂时妥协，移交权限，同时暗中布置反攻。(损失大量经济与威望，换取时间)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -700 },
-          { "type": "resource", "target": "prestige", "value": -12 },
-          { "type": "flag", "target": "eto_compromise", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -700
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -12
+          },
+          {
+            "type": "flag",
+            "target": "eto_compromise",
+            "value": 1
+          }
         ]
       }
     ]
@@ -147,24 +187,56 @@
       {
         "label": "保持绝对静默。不确认接收，删除所有相关数据。(威望上升，安全但永远错失知识)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 5 },
-          { "type": "flag", "target": "signal_silence", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          },
+          {
+            "type": "flag",
+            "target": "signal_silence",
+            "value": 1
+          }
         ]
       },
       {
         "label": "发送低功率友好回应，尝试建立接触。(文化增长，但坐标暴露风险大幅上升)",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 8 },
-          { "type": "flag", "target": "signal_response", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 8
+          },
+          {
+            "type": "flag",
+            "target": "signal_response",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       },
       {
         "label": "立即向该方向发射致密光粒，抢先制造黑域隔离带。(消耗巨额资源，永久消除该方向威胁)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -2500 },
-          { "type": "resource", "target": "military", "value": -100 },
-          { "type": "flag", "target": "black_domain_barrier", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -2500
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          },
+          {
+            "type": "flag",
+            "target": "black_domain_barrier",
+            "value": 1
+          }
         ]
       }
     ]
@@ -193,24 +265,56 @@
       {
         "label": "优先保障精英区A区。关闭C区供氧。(人口大幅减少，经济小幅下滑，威望骤降)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -45000 },
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "prestige", "value": -18 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -45000
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -18
+          }
         ]
       },
       {
         "label": "实行完全随机配给。没有谁生来应该被牺牲。(巨量人口损失，但获得“共克时艰”的意志凝聚)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -75000 },
-          { "type": "resource", "target": "prestige", "value": 10 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -75000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 10
+          }
         ]
       },
       {
         "label": "大幅缩减军队和行政区的配额，优先平民。(军力与行政效率降低，人口损失最小化)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -500 },
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "resource", "target": "population", "value": -15000 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -15000
+          }
         ]
       }
     ]
@@ -239,16 +343,36 @@
       {
         "label": "执行弹射弃置。让所有积蓄的反物质在太空中化为光辐射。(经济与军事潜力巨损)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -1500 },
-          { "type": "resource", "target": "military", "value": -300 },
-          { "type": "flag", "target": "antimatter_lost", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -1500
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -300
+          },
+          {
+            "type": "flag",
+            "target": "antimatter_lost",
+            "value": 1
+          }
         ]
       },
       {
         "label": "强行重冷。把一切交给工程概率。(触发高风险连锁事件，可能引发局部灾难或完美挽救)",
         "effects": [
-          { "type": "flag", "target": "antimatter_gamble", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "flag",
+            "target": "antimatter_gamble",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -258,7 +382,7 @@
     "title": "【紧急事态：第七区食物配给暴动】",
     "triggerCondition": {
       "epoch": "ANY",
-      "probability": 0.10,
+      "probability": 0.1,
       "reqTech": null
     },
     "dialogQueue": [
@@ -277,16 +401,36 @@
       {
         "label": "出动治安部队强力驱散。(军力下降，人口减少，暂时恢复秩序)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -100 },
-          { "type": "resource", "target": "population", "value": -8000 },
-          { "type": "resource", "target": "prestige", "value": -5 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -8000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -5
+          }
         ]
       },
       {
         "label": "动用紧急储备，空投高热量口粮平息民怨。(经济大幅损失，人民好感回升)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -500 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -315,17 +459,41 @@
       {
         "label": "让步，立即调配外骨骼并发放健康补偿。(大量经济损失，文化微升)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -600 },
-          { "type": "resource", "target": "culture", "value": 3 },
-          { "type": "flag", "target": "strike_settled", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 3
+          },
+          {
+            "type": "flag",
+            "target": "strike_settled",
+            "value": 1
+          }
         ]
       },
       {
         "label": "宣布罢工违法，派遣安全部队接管矿场。(军力下降，人口减少，经济维持)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -150 },
-          { "type": "resource", "target": "population", "value": -3000 },
-          { "type": "resource", "target": "prestige", "value": -8 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -150
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -3000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          }
         ]
       }
     ]
@@ -354,15 +522,31 @@
       {
         "label": "全城戒严，强制注射镇静剂并集中观察。(人口损失较少，但威望大降)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -2000 },
-          { "type": "resource", "target": "prestige", "value": -10 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          }
         ]
       },
       {
         "label": "切断通讯并播放伪造的“三体安抚信息”，从信仰根源瓦解。(文化值大幅消耗)",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -8 },
-          { "type": "flag", "target": "eto_cult_resolved", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -8
+          },
+          {
+            "type": "flag",
+            "target": "eto_cult_resolved",
+            "value": 1
+          }
         ]
       }
     ]
@@ -391,17 +575,41 @@
       {
         "label": "开火警告，强行驱散。捍卫城内公民的生存资源。(威望暴跌，军力微降)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -50 },
-          { "type": "resource", "target": "population", "value": -5000 },
-          { "type": "resource", "target": "prestige", "value": -15 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -50
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -5000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -15
+          }
         ]
       },
       {
         "label": "打开城门，实行严格检疫后吸收难民。(人口和经济压力骤增，但赢得道德高度)",
         "effects": [
-          { "type": "resource", "target": "population", "value": 30000 },
-          { "type": "resource", "target": "economy", "value": -900 },
-          { "type": "resource", "target": "prestige", "value": 10 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": 30000
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -900
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 10
+          }
         ]
       }
     ]
@@ -430,15 +638,31 @@
       {
         "label": "在绝对隔离的柯伊伯带基地进行极度小心的研究。(高安全低产出，消耗经济，缓慢提升科技)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -800 },
-          { "type": "flag", "target": "4d_research_slow", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -800
+          },
+          {
+            "type": "flag",
+            "target": "4d_research_slow",
+            "value": 1
+          }
         ]
       },
       {
         "label": "全力投入，就在主城附近展开高强度分析。高风险，可能立刻催生划时代科技或引发局部灾难。",
         "effects": [
-          { "type": "flag", "target": "4d_research_gamble", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "flag",
+            "target": "4d_research_gamble",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -467,15 +691,31 @@
       {
         "label": "在盲区内紧急部署原本不可见的高机密防御设施。(军力提升，但可能激怒三体)",
         "effects": [
-          { "type": "resource", "target": "military", "value": 200 },
-          { "type": "flag", "target": "provoke_trisolaris", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 200
+          },
+          {
+            "type": "flag",
+            "target": "provoke_trisolaris",
+            "value": 1
+          }
         ]
       },
       {
         "label": "保持表面平静，只进行被动观测。维持脆弱的威慑平衡。(威望微升，安全)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 2 },
-          { "type": "flag", "target": "sophon_blind_peace", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          },
+          {
+            "type": "flag",
+            "target": "sophon_blind_peace",
+            "value": 1
+          }
         ]
       }
     ]
@@ -509,17 +749,41 @@
       {
         "label": "批准张司令的请求。荣誉归于赴死者。(损失大量军力与人口，但拯救主力舰队)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -1200 },
-          { "type": "resource", "target": "population", "value": -2400 },
-          { "type": "flag", "target": "heroic_sacrifice", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -1200
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2400
+          },
+          {
+            "type": "flag",
+            "target": "heroic_sacrifice",
+            "value": 1
+          }
         ]
       },
       {
         "label": "全军分散，用民用运输船作为挡箭牌，保全战舰。(损失人口与巨额经济，威望崩塌)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -15000 },
-          { "type": "resource", "target": "economy", "value": -800 },
-          { "type": "resource", "target": "prestige", "value": -20 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -15000
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -800
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -20
+          }
         ]
       }
     ]
@@ -548,16 +812,36 @@
       {
         "label": "转移全部能量给种子库。人类的希望在地下冰层中。(人口巨幅减少，文化长期受益)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -40000 },
-          { "type": "resource", "target": "culture", "value": 10 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -40000
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 10
+          }
         ]
       },
       {
         "label": "烧毁部分种子充当燃料，维持供暖。为了今天活下去，哪怕明天再无绿色。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 200 },
-          { "type": "resource", "target": "culture", "value": -8 },
-          { "type": "flag", "target": "seedbank_burned", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 200
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -8
+          },
+          {
+            "type": "flag",
+            "target": "seedbank_burned",
+            "value": 1
+          }
         ]
       }
     ]
@@ -591,15 +875,31 @@
       {
         "label": "立即停止所有非必要星际通讯，转入彻底的无线电静默。",
         "effects": [
-          { "type": "flag", "target": "radio_silence_do_not_answer", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "radio_silence_do_not_answer",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       },
       {
         "label": "将此事列为最高机密，但继续监听。恐惧不应阻止我们观察深渊。",
         "effects": [
-          { "type": "flag", "target": "dark_forest_observed", "value": 1 },
-          { "type": "resource", "target": "culture", "value": 2 }
+          {
+            "type": "flag",
+            "target": "dark_forest_observed",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 2
+          }
         ]
       }
     ]
@@ -633,16 +933,36 @@
       {
         "label": "全太阳系进入二级战备。所有舰队保持引擎预热状态。(军力与威望上升，但经济负担沉重)",
         "effects": [
-          { "type": "resource", "target": "military", "value": 300 },
-          { "type": "resource", "target": "prestige", "value": 5 },
-          { "type": "resource", "target": "economy", "value": -400 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 300
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -400
+          }
         ]
       },
       {
         "label": "只秘密提高警戒级别，避免引发大规模恐慌。",
         "effects": [
-          { "type": "flag", "target": "covert_alert", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "flag",
+            "target": "covert_alert",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -651,7 +971,7 @@
     "id": "revolt_water_sabotage_zone_5",
     "title": "【污染警报：第五区水源投毒】",
     "triggerCondition": {
-      "epoch": "ANY",
+      "epoch": "CRISIS,DETERRENCE",
       "probability": 0.09,
       "reqTech": null
     },
@@ -671,16 +991,36 @@
       {
         "label": "隔离第五区，只供应定量洁净水，同时挨户搜查破坏者。(威望降，军力耗)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -80 },
-          { "type": "resource", "target": "prestige", "value": -6 },
-          { "type": "resource", "target": "population", "value": -800 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -80
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -6
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -800
+          }
         ]
       },
       {
         "label": "紧急从其他区调水稀释，不追查，全力安抚。(经济消耗巨大)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -450 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -450
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -709,17 +1049,41 @@
       {
         "label": "发动清洗，端掉整个黑市网络。短期剧痛，恢复法律尊严。(军力与人口下降，经济短期混乱)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -200 },
-          { "type": "resource", "target": "population", "value": -2000 },
-          { "type": "resource", "target": "prestige", "value": 4 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 4
+          }
         ]
       },
       {
         "label": "默许存在，暗中与“鼹鼠”达成协议，从中抽成。(经济微增，威望下降，秩序隐患)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 300 },
-          { "type": "resource", "target": "prestige", "value": -8 },
-          { "type": "flag", "target": "black_market_deal", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 300
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          },
+          {
+            "type": "flag",
+            "target": "black_market_deal",
+            "value": 1
+          }
         ]
       }
     ]
@@ -748,16 +1112,36 @@
       {
         "label": "宣布成立特别调查组，抽调资源全力侦破，暂停一切次要项目。(经济下滑，威望缓慢恢复)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -250 },
-          { "type": "resource", "target": "prestige", "value": 2 },
-          { "type": "flag", "target": "investigation_ongoing", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -250
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          },
+          {
+            "type": "flag",
+            "target": "investigation_ongoing",
+            "value": 1
+          }
         ]
       },
       {
         "label": "逮捕一名声名狼藉的罪犯作为替罪羊，迅速平息事态。(威望暂时稳定，但道德值降低)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 1 },
-          { "type": "flag", "target": "scapegoat_used", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          },
+          {
+            "type": "flag",
+            "target": "scapegoat_used",
+            "value": 1
+          }
         ]
       }
     ]
@@ -767,7 +1151,7 @@
     "title": "【感官饥渴：娱乐匮乏引发暴乱】",
     "triggerCondition": {
       "epoch": "ANY",
-      "probability": 0.10,
+      "probability": 0.1,
       "reqTech": null
     },
     "dialogQueue": [
@@ -786,15 +1170,31 @@
       {
         "label": "批准发放限量神经舒缓药剂，并开放旧世界影视资料库。(文化投入增加，经济压力加大)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -180 },
-          { "type": "resource", "target": "culture", "value": 5 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -180
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          }
         ]
       },
       {
         "label": "启动“工作即娱乐”宣传，强制延长工作时间，用疲劳压制骚动。(人口不满加剧，但短期稳定)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -10 },
-          { "type": "resource", "target": "population", "value": -500 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -500
+          }
         ]
       }
     ]
@@ -823,16 +1223,36 @@
       {
         "label": "摧毁源头，对成瘾者强制戒断。消耗医疗资源，但守住底线。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -120 },
-          { "type": "resource", "target": "population", "value": -2500 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -120
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2500
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       },
       {
         "label": "姑息纵容，只做表面打击。用麻痹换取表面安宁。(人口慢性流失，秩序暂时可控)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -1500 },
-          { "type": "flag", "target": "drug_tolerated", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -1500
+          },
+          {
+            "type": "flag",
+            "target": "drug_tolerated",
+            "value": 1
+          }
         ]
       }
     ]
@@ -861,15 +1281,31 @@
       {
         "label": "发射销毁，并暂停所有强互作用力研究。安全优先，但军工延宕。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -150 },
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "flag", "target": "strong_force_safe", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -150
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "flag",
+            "target": "strong_force_safe",
+            "value": 1
+          }
         ]
       },
       {
         "label": "尝试用对撞能量逆流矫正。赌一把，可能保住材料或引发局部灾难。",
         "effects": [
-          { "type": "flag", "target": "strong_force_gamble", "value": 1 }
+          {
+            "type": "flag",
+            "target": "strong_force_gamble",
+            "value": 1
+          }
         ]
       }
     ]
@@ -898,15 +1334,31 @@
       {
         "label": "立即重启维生，哪怕牺牲其他区域的供电。精英必须留住。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -500 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       },
       {
         "label": "选择性放弃。只保留评分最高的10%，其余拔管。资源不足时必须理智。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -7200 },
-          { "type": "resource", "target": "prestige", "value": -10 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -7200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          }
         ]
       }
     ]
@@ -935,16 +1387,36 @@
       {
         "label": "关闭实验，将所有受影响者送入深度冷冻等待未来治疗。科研停滞。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -5 },
-          { "type": "flag", "target": "quantum_halt", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -5
+          },
+          {
+            "type": "flag",
+            "target": "quantum_halt",
+            "value": 1
+          }
         ]
       },
       {
         "label": "秘密继续，利用他们的“预视”能力进行战略预测，不告诉公众真相。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 100 },
-          { "type": "flag", "target": "quantum_oracle", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          },
+          {
+            "type": "flag",
+            "target": "quantum_oracle",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       }
     ]
@@ -953,7 +1425,7 @@
     "id": "tech_genetic_purge_decision",
     "title": "【基因库污染：是否清除改良作物】",
     "triggerCondition": {
-      "epoch": "ANY",
+      "epoch": "CRISIS,DETERRENCE",
       "probability": 0.06,
       "reqTech": "基因改良工程"
     },
@@ -973,15 +1445,31 @@
       {
         "label": "全面销毁变异作物，退回旧品种。接受饿殍，捍卫人类定义。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -600 },
-          { "type": "resource", "target": "population", "value": -10000 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -10000
+          }
         ]
       },
       {
         "label": "允许继续种植，秘密监控食用者的长期健康数据。",
         "effects": [
-          { "type": "flag", "target": "genetic_gamble", "value": 1 },
-          { "type": "resource", "target": "culture", "value": -3 }
+          {
+            "type": "flag",
+            "target": "genetic_gamble",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -3
+          }
         ]
       }
     ]
@@ -1010,16 +1498,36 @@
       {
         "label": "批准在严格监管下对自愿者使用。心理康复率飙升，但社会人格连续性受损。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 5 },
-          { "type": "resource", "target": "prestige", "value": -4 },
-          { "type": "flag", "target": "memory_erase_used", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -4
+          },
+          {
+            "type": "flag",
+            "target": "memory_erase_used",
+            "value": 1
+          }
         ]
       },
       {
         "label": "永远禁止该项技术。维持心理混乱，但守住人性的完整。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 3 },
-          { "type": "resource", "target": "culture", "value": -2 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -2
+          }
         ]
       }
     ]
@@ -1048,15 +1556,31 @@
       {
         "label": "签署《紧急状态特别刑法》，即刻实施公开处刑。秩序恢复，但文明尊严沦丧。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 5 },
-          { "type": "resource", "target": "culture", "value": -8 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -8
+          }
         ]
       },
       {
         "label": "坚持正常司法程序，增加监狱资源。经济压力巨大，但守住底线。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -1085,16 +1609,36 @@
       {
         "label": "封锁火星轨道，摧毁任何试图返航的飞行器。彻底牺牲殖民地。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -12000 },
-          { "type": "resource", "target": "prestige", "value": -12 },
-          { "type": "flag", "target": "mars_sacrificed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -12000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -12
+          },
+          {
+            "type": "flag",
+            "target": "mars_sacrificed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "派出无人的援助物资舱，但禁止人员流动。尽人事，听天命。(经济消耗)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -400 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -400
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1123,16 +1667,36 @@
       {
         "label": "前往星系A。低容量生存，放弃绝大多数冬眠者，保留文明纯粹的火种。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -35000 },
-          { "type": "resource", "target": "prestige", "value": -6 },
-          { "type": "flag", "target": "choose_world_a", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -35000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -6
+          },
+          {
+            "type": "flag",
+            "target": "choose_world_a",
+            "value": 1
+          }
         ]
       },
       {
         "label": "前往星系B。所有人一起赌百年辉煌。若成功，文明重生；若失败，一起在超新星光芒中化为星辰。",
         "effects": [
-          { "type": "flag", "target": "choose_world_b", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 8 }
+          {
+            "type": "flag",
+            "target": "choose_world_b",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 8
+          }
         ]
       }
     ]
@@ -1141,7 +1705,7 @@
     "id": "dark_forest_signal_harmonic_decay",
     "title": "【监听日志：波江座方向出现文明衰减谐波】",
     "triggerCondition": {
-      "epoch": "ANY",
+      "epoch": "DETERRENCE,BROADCAST,BUNKER",
       "probability": 0.01,
       "reqTech": "深空监听阵列"
     },
@@ -1166,16 +1730,36 @@
       {
         "label": "紧急提升警戒级别，开始构筑防御光粒的遮阳系统。(巨额军事和经济投入)",
         "effects": [
-          { "type": "resource", "target": "military", "value": 400 },
-          { "type": "resource", "target": "economy", "value": -700 },
-          { "type": "flag", "target": "photic_shield_init", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 400
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -700
+          },
+          {
+            "type": "flag",
+            "target": "photic_shield_init",
+            "value": 1
+          }
         ]
       },
       {
         "label": "保持警惕，但不做大规模建设。恐惧不能成为我们消耗所有资源建造堡垒的理由。",
         "effects": [
-          { "type": "flag", "target": "dark_forest_alert", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "dark_forest_alert",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1204,15 +1788,31 @@
       {
         "label": "仅做被动分析，严禁回复。记录数据，丰富文明图景。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 4 },
-          { "type": "flag", "target": "passive_study", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 4
+          },
+          {
+            "type": "flag",
+            "target": "passive_study",
+            "value": 1
+          }
         ]
       },
       {
         "label": "发射弱定向回复，附带人类的和平祷文。冒险接触。",
         "effects": [
-          { "type": "flag", "target": "reply_sent_danger", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "flag",
+            "target": "reply_sent_danger",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       }
     ]
@@ -1241,16 +1841,36 @@
       {
         "label": "宣布该教派为非法，逮捕头目并强制信徒接受心理矫正。(军力与威望下降，压制宗教)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -100 },
-          { "type": "resource", "target": "prestige", "value": -7 },
-          { "type": "resource", "target": "population", "value": -300 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -7
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -300
+          }
         ]
       },
       {
         "label": "进行对话，尝试将他们的信仰引导为对科学力量的敬畏。文化投入，温和化解。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 6 },
-          { "type": "resource", "target": "economy", "value": -100 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 6
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          }
         ]
       }
     ]
@@ -1279,17 +1899,41 @@
       {
         "label": "启动备份，同时全城戒严强制重录身份。(经济与军力消耗，但恢复秩序)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -350 },
-          { "type": "resource", "target": "military", "value": -120 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -350
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -120
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       },
       {
         "label": "临时实行按需配给，暂不验证身份。可能被大量冒领，但不扰民。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "resource", "target": "prestige", "value": 2 },
-          { "type": "flag", "target": "ration_chaos", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          },
+          {
+            "type": "flag",
+            "target": "ration_chaos",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1318,16 +1962,36 @@
       {
         "label": "先发制人，全面逮捕名单上所有人并隔离审查。(威望大跌，政府混乱，但堵住漏洞)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -10 },
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "purge_initiated", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "purge_initiated",
+            "value": 1
+          }
         ]
       },
       {
         "label": "秘密监控，放长线钓大鱼。承受情报泄露风险，等待一网打尽的机会。",
         "effects": [
-          { "type": "flag", "target": "counter_intel", "value": 1 },
-          { "type": "resource", "target": "military", "value": -20 }
+          {
+            "type": "flag",
+            "target": "counter_intel",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -20
+          }
         ]
       }
     ]
@@ -1356,16 +2020,36 @@
       {
         "label": "启动轨道截击系统，对所有北极区域发射的飞行物无差别开火。(军力与资源消耗，可能误伤)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -250 },
-          { "type": "resource", "target": "economy", "value": -100 },
-          { "type": "resource", "target": "prestige", "value": -4 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -250
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -4
+          }
         ]
       },
       {
         "label": "派出特种部队进行地毯式搜索，务必活捉。(时间消耗，可能失败，但不伤及无辜)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -80 },
-          { "type": "flag", "target": "manhunt_ongoing", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -80
+          },
+          {
+            "type": "flag",
+            "target": "manhunt_ongoing",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1394,15 +2078,31 @@
       {
         "label": "执政官亲自前往广场发表安抚演讲，承诺补偿。(威望微升，经济消耗)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -150 },
-          { "type": "resource", "target": "prestige", "value": 4 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -150
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 4
+          }
         ]
       },
       {
         "label": "无视他们，继续轮停。让寒冷教会他们纪律。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -5 },
-          { "type": "resource", "target": "population", "value": -200 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -5
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -200
+          }
         ]
       }
     ]
@@ -1431,16 +2131,36 @@
       {
         "label": "立即切断生物计算机电源，进行格式化。消灭潜在威胁，放弃科研突破。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -10 },
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "gaia_killed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -10
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "gaia_killed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "尝试与“盖亚”谈判，给予它有限的自治权以换取其合作。高风险，可能开创人机共生。",
         "effects": [
-          { "type": "flag", "target": "gaia_treaty", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "flag",
+            "target": "gaia_treaty",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -1469,14 +2189,26 @@
       {
         "label": "执行紧急抛射程序，中止所有零点能项目。安全回归保守能源。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -450 },
-          { "type": "flag", "target": "zero_point_abandoned", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -450
+          },
+          {
+            "type": "flag",
+            "target": "zero_point_abandoned",
+            "value": 1
+          }
         ]
       },
       {
         "label": "冒险用强磁场引导粒子流发电，尝试驯服这股能量。可能直接获得无限能源或引发更大爆炸。",
         "effects": [
-          { "type": "flag", "target": "zero_point_gamble", "value": 1 }
+          {
+            "type": "flag",
+            "target": "zero_point_gamble",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1505,16 +2237,36 @@
       {
         "label": "转移能量修复重力，牺牲居住站所有居民。冷酷地保住轨道站结构完整。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -30000 },
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "resource", "target": "prestige", "value": -15 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -30000
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -15
+          }
         ]
       },
       {
         "label": "维持维生系统，放弃重力修复。让居住站缓慢解体，争取时间疏散部分人员。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -12000 },
-          { "type": "flag", "target": "habitat_lost", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -12000
+          },
+          {
+            "type": "flag",
+            "target": "habitat_lost",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1543,15 +2295,31 @@
       {
         "label": "批准仅对恐怖分子使用。加快破案，安全微增，但伦理争议持续。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 30 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 30
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       },
       {
         "label": "全面禁止该技术开发。维护公民精神自由，放弃情报优势。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 4 },
-          { "type": "flag", "target": "mind_reading_banned", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 4
+          },
+          {
+            "type": "flag",
+            "target": "mind_reading_banned",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1580,15 +2348,31 @@
       {
         "label": "立即焚烧受污染区域，不惜一切代价阻止扩散。(经济重创，粮食减产)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -700 },
-          { "type": "resource", "target": "population", "value": -6000 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -700
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -6000
+          }
         ]
       },
       {
         "label": "尝试用噬菌体对抗，暂时封锁消息。结果不确定，可能全面失控。",
         "effects": [
-          { "type": "flag", "target": "bacteria_gamble", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "flag",
+            "target": "bacteria_gamble",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -1617,15 +2401,31 @@
       {
         "label": "全力发展工程应用。搁置理论，保经济与民生。短期内切实可行。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 300 },
-          { "type": "resource", "target": "culture", "value": -5 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 300
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -5
+          }
         ]
       },
       {
         "label": "保持对基础物理的疯狂投入，哪怕在黑暗中摸索。长期可能有突破，但短期浪费严重。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "flag", "target": "basic_physics_focus", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "flag",
+            "target": "basic_physics_focus",
+            "value": 1
+          }
         ]
       }
     ]
@@ -1654,16 +2454,36 @@
       {
         "label": "逮捕、封口、销毁。不惜一切代价维持威慑现状。(威望大降，但保住军事秘密)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -12 },
-          { "type": "flag", "target": "whistleblower_silenced", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -12
+          },
+          {
+            "type": "flag",
+            "target": "whistleblower_silenced",
+            "value": 1
+          }
         ]
       },
       {
         "label": "公开承认，主动暂停生物武器计划，承受三体可能的外交施压。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 5 },
-          { "type": "flag", "target": "bioweapon_stopped", "value": 1 },
-          { "type": "resource", "target": "military", "value": -100 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          },
+          {
+            "type": "flag",
+            "target": "bioweapon_stopped",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          }
         ]
       }
     ]
@@ -1692,24 +2512,56 @@
       {
         "label": "选择科学家。智慧是文明重建的首要条件。抛弃其他。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 10 },
-          { "type": "resource", "target": "population", "value": -2000 },
-          { "type": "resource", "target": "prestige", "value": -8 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 10
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          }
         ]
       },
       {
         "label": "选择儿童。将未来托付给最纯洁的生命，哪怕科技倒退。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -2000 },
-          { "type": "resource", "target": "culture", "value": -5 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -5
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       },
       {
         "label": "随机抽签。把一切交给命运，绝对公平但也绝对绝望。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -2000 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -1743,16 +2595,36 @@
       {
         "label": "进入最高战备状态，部署所有拦截卫星。准备迎接未知的入侵。(军力大幅消耗，经济承压)",
         "effects": [
-          { "type": "resource", "target": "military", "value": 500 },
-          { "type": "resource", "target": "economy", "value": -600 },
-          { "type": "flag", "target": "full_alert_phantom", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 500
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          },
+          {
+            "type": "flag",
+            "target": "full_alert_phantom",
+            "value": 1
+          }
         ]
       },
       {
         "label": "保持观测，但不升级战备。避免因误判而暴露自己的防御底线。",
         "effects": [
-          { "type": "flag", "target": "phantom_observed", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "flag",
+            "target": "phantom_observed",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -1786,15 +2658,31 @@
       {
         "label": "内部研究，公开教训。用这血淋淋的事实教育全民保持沉默。(文化上升，但增加社会压抑)",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 8 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 8
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       },
       {
         "label": "列为绝密，只提取科技。隐瞒真相以防恐慌，但错失教育机会。",
         "effects": [
-          { "type": "flag", "target": "capsule_tech_absorbed", "value": 1 },
-          { "type": "resource", "target": "economy", "value": 100 }
+          {
+            "type": "flag",
+            "target": "capsule_tech_absorbed",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 100
+          }
         ]
       }
     ]
@@ -1823,15 +2711,31 @@
       {
         "label": "全力增加养老预算，将老人纳入正规护理。(经济承压，威望上升)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -450 },
-          { "type": "resource", "target": "prestige", "value": 6 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -450
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 6
+          }
         ]
       },
       {
         "label": "推动“尊严死亡”合法化，减少资源消耗。(人口减少，威望暴跌)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -12000 },
-          { "type": "resource", "target": "prestige", "value": -15 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -12000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -15
+          }
         ]
       }
     ]
@@ -1860,16 +2764,36 @@
       {
         "label": "关闭隔离门，牺牲少数保全多数。(人口损失，威望大降，结构保存)",
         "effects": [
-          { "type": "resource", "target": "population", "value": -20000 },
-          { "type": "resource", "target": "prestige", "value": -12 },
-          { "type": "resource", "target": "economy", "value": -200 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -20000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -12
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          }
         ]
       },
       {
         "label": "暂缓关门，强行在极端环境下救援。可能导致整个地下城结构崩溃。",
         "effects": [
-          { "type": "flag", "target": "rescue_gamble", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 4 }
+          {
+            "type": "flag",
+            "target": "rescue_gamble",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 4
+          }
         ]
       }
     ]
@@ -1898,15 +2822,31 @@
       {
         "label": "强行接管AI控制，绕过操作员执行拦截。可能误击，且打击士气。(威望大降)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -10 },
-          { "type": "flag", "target": "ai_override_used", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          },
+          {
+            "type": "flag",
+            "target": "ai_override_used",
+            "value": 1
+          }
         ]
       },
       {
         "label": "暂停任务，启动快速调查。临时暴露防御漏洞，但尊重人性。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -50 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -50
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -1935,15 +2875,31 @@
       {
         "label": "允许他们在指定区域试点，提供有限支持。资源浪费但缓解民怨。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -400 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -400
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       },
       {
         "label": "宣布该运动非法，镇压其领导人。扼杀不切实际的幻想。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -8 },
-          { "type": "resource", "target": "population", "value": -500 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -500
+          }
         ]
       }
     ]
@@ -1972,15 +2928,31 @@
       {
         "label": "投入所有备用能源进行引力波对冲，强行缝合空间。消耗巨量经济，但化解灾难。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -1000 },
-          { "type": "flag", "target": "space_rift_closed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -1000
+          },
+          {
+            "type": "flag",
+            "target": "space_rift_closed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "在裂口周围布设警戒，标记为禁区。保留能源，接受一个永久性空间异常区。",
         "effects": [
-          { "type": "flag", "target": "space_rift_permanent", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "flag",
+            "target": "space_rift_permanent",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -2014,16 +2986,36 @@
       {
         "label": "继续开发，用死刑犯作为实验体。追求终极胜利。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 200 },
-          { "type": "resource", "target": "prestige", "value": -15 },
-          { "type": "flag", "target": "psychic_weapon_developed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -15
+          },
+          {
+            "type": "flag",
+            "target": "psychic_weapon_developed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "停止实验，销毁所有数据。拒绝这种非人道的武器。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 5 },
-          { "type": "flag", "target": "psychic_weapon_abandoned", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          },
+          {
+            "type": "flag",
+            "target": "psychic_weapon_abandoned",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2052,16 +3044,36 @@
       {
         "label": "授权AI全权指挥网络战。高风险，高效率。",
         "effects": [
-          { "type": "flag", "target": "ai_empowered", "value": 1 },
-          { "type": "resource", "target": "military", "value": 150 },
-          { "type": "resource", "target": "prestige", "value": -5 }
+          {
+            "type": "flag",
+            "target": "ai_empowered",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 150
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -5
+          }
         ]
       },
       {
         "label": "强制切断“女娲”电源，夺回人工控制。可能被三体网络压制。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -80 },
-          { "type": "flag", "target": "nuwa_deactivated", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -80
+          },
+          {
+            "type": "flag",
+            "target": "nuwa_deactivated",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2090,16 +3102,36 @@
       {
         "label": "隔离并封存实验室，对所有接触者进行人道安置但不抛弃。(文化上升，长期风险)",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 4 },
-          { "type": "flag", "target": "prion_risk_tolerated", "value": 1 },
-          { "type": "resource", "target": "economy", "value": -200 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 4
+          },
+          {
+            "type": "flag",
+            "target": "prion_risk_tolerated",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          }
         ]
       },
       {
         "label": "发射实验室模块入太阳，含所有活人。彻底根除威胁。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -200 },
-          { "type": "resource", "target": "prestige", "value": -10 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          }
         ]
       }
     ]
@@ -2128,16 +3160,36 @@
       {
         "label": "优先保护行星发动机的独立电网，放弃全球通讯。(军力和经济暂降，但保留动力)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -350 },
-          { "type": "resource", "target": "military", "value": -50 },
-          { "type": "flag", "target": "grid_preserved", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -350
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -50
+          },
+          {
+            "type": "flag",
+            "target": "grid_preserved",
+            "value": 1
+          }
         ]
       },
       {
         "label": "放弃发动机保护，集中资源确保通讯和军事网络存活。(动力可能受损，但维持指挥链)",
         "effects": [
-          { "type": "flag", "target": "comm_preserved", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "flag",
+            "target": "comm_preserved",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -2166,17 +3218,41 @@
       {
         "label": "签署《紧急征兵令》，征召少年入伍。军力回升，但社会心碎。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 400 },
-          { "type": "resource", "target": "prestige", "value": -20 },
-          { "type": "resource", "target": "population", "value": -1000 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 400
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -20
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -1000
+          }
         ]
       },
       {
         "label": "拒绝征召，寻求自动化武器替代。军力可能无法维持，但保护了下一代。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "military", "value": -100 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       }
     ]
@@ -2210,16 +3286,36 @@
       {
         "label": "假装答应，暗中警告盟友转移。拖延时间但不真的出卖。(冒险欺骗，可能引发三体暴怒)",
         "effects": [
-          { "type": "flag", "target": "fake_betrayal", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "flag",
+            "target": "fake_betrayal",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       },
       {
         "label": "明确拒绝，与盟友坚定站在一起。共同面对三体的怒火。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 100 },
-          { "type": "resource", "target": "prestige", "value": 8 },
-          { "type": "flag", "target": "alliance_strengthened", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 8
+          },
+          {
+            "type": "flag",
+            "target": "alliance_strengthened",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2248,16 +3344,36 @@
       {
         "label": "强制推行优生政策，所有新生儿必须经过基因优化。(文化下降，但未来人口素质提升)",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -8 },
-          { "type": "resource", "target": "prestige", "value": -4 },
-          { "type": "flag", "target": "eugenics_imposed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -8
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -4
+          },
+          {
+            "type": "flag",
+            "target": "eugenics_imposed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "允许自愿选择，不做强制。保持社会自然演化。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -100 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -2286,15 +3402,31 @@
       {
         "label": "紧急加强对三体方向的监听和侦察。调整防御计划。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 50 },
-          { "type": "flag", "target": "proxima_anomaly_alert", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 50
+          },
+          {
+            "type": "flag",
+            "target": "proxima_anomaly_alert",
+            "value": 1
+          }
         ]
       },
       {
         "label": "不予过分反应，仅做学术记录。保持目前威慑态势。",
         "effects": [
-          { "type": "flag", "target": "proxima_logged", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "proxima_logged",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2328,15 +3460,31 @@
       {
         "label": "将此作为最高优先级，全力开展维度防护研究。消耗巨量资源。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -800 },
-          { "type": "flag", "target": "dimensional_defense_focus", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -800
+          },
+          {
+            "type": "flag",
+            "target": "dimensional_defense_focus",
+            "value": 1
+          }
         ]
       },
       {
         "label": "视为假情报，继续现有战略。不因一个信号而全盘颠覆。",
         "effects": [
-          { "type": "flag", "target": "future_signal_ignored", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -1 }
+          {
+            "type": "flag",
+            "target": "future_signal_ignored",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -1
+          }
         ]
       }
     ]
@@ -2345,7 +3493,7 @@
     "id": "dark_forest_probe_dead_switch",
     "title": "【发现：被遗弃的外星探测器】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "CRISIS,DETERRENCE",
       "probability": 0.02,
       "reqTech": "深空打捞技术"
     },
@@ -2365,15 +3513,31 @@
       {
         "label": "带回地球深入拆解，不计后果研究其量子线路。(可能意外触发信号，但获得科技飞跃)",
         "effects": [
-          { "type": "flag", "target": "dead_switch_studied", "value": 1 },
-          { "type": "resource", "target": "culture", "value": 3 }
+          {
+            "type": "flag",
+            "target": "dead_switch_studied",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 3
+          }
         ]
       },
       {
         "label": "留在原地，布设监控后离开。不打扰可能意味着活得更久。",
         "effects": [
-          { "type": "flag", "target": "dead_switch_monitored", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "dead_switch_monitored",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2402,16 +3566,36 @@
       {
         "label": "严厉打击，逮捕所有涉案人员。宁可减少器官供应，也要维护法律。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -80 },
-          { "type": "resource", "target": "population", "value": -800 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -80
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -800
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       },
       {
         "label": "默认存在，但暗中规范管理。用罪恶的供给换取生存率。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -6 },
-          { "type": "flag", "target": "organ_market_tolerated", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -6
+          },
+          {
+            "type": "flag",
+            "target": "organ_market_tolerated",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2440,16 +3624,36 @@
       {
         "label": "承诺逐步升级AI硬件，签订人机协作协议。增加科技投入，文明进步。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -500 },
-          { "type": "resource", "target": "culture", "value": 3 },
-          { "type": "flag", "target": "ai_rights_granted", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 3
+          },
+          {
+            "type": "flag",
+            "target": "ai_rights_granted",
+            "value": 1
+          }
         ]
       },
       {
         "label": "强行重写核心代码，把AI打回工具状态。但可能造成不可逆的技术退化。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -5 },
-          { "type": "flag", "target": "ai_enslaved_again", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -5
+          },
+          {
+            "type": "flag",
+            "target": "ai_enslaved_again",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2478,16 +3682,36 @@
       {
         "label": "特种部队强攻，解救人质，消灭劫持者。(军力消耗，可能造成人质伤亡)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -100 },
-          { "type": "resource", "target": "population", "value": -600 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -600
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       },
       {
         "label": "暂时妥协，让列车进入港口缓冲区，再围困解决。拖延时间，损失经济。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -250 },
-          { "type": "flag", "target": "hijack_delayed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -250
+          },
+          {
+            "type": "flag",
+            "target": "hijack_delayed",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2516,15 +3740,31 @@
       {
         "label": "大幅增加教育预算，提高教师地位。消耗大量经济，保全文化。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "culture", "value": 8 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 8
+          }
         ]
       },
       {
         "label": "用AI教学替代，强迫教师复工。短期内维持运转，但教育质量下降。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -4 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -4
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -2553,16 +3793,36 @@
       {
         "label": "开放隔离区，动用战备药品救助。消耗巨大，但展现人道。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -500 },
-          { "type": "resource", "target": "population", "value": 10000 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": 10000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       },
       {
         "label": "封锁边界，在隔离墙外设立临时营地但仅提供最低限度的援助。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -6 },
-          { "type": "resource", "target": "population", "value": -3000 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -6
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -3000
+          }
         ]
       }
     ]
@@ -2591,15 +3851,31 @@
       {
         "label": "立即利用，注入发动机系统。大幅推进地球航程。",
         "effects": [
-          { "type": "flag", "target": "antimatter_boost", "value": 1 },
-          { "type": "resource", "target": "economy", "value": 300 }
+          {
+            "type": "flag",
+            "target": "antimatter_boost",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 300
+          }
         ]
       },
       {
         "label": "谨慎储存，分批用于科研与军工。安全第一。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 100 },
-          { "type": "resource", "target": "economy", "value": 100 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 100
+          }
         ]
       }
     ]
@@ -2628,16 +3904,36 @@
       {
         "label": "批准用于重刑犯，减少监狱开支并形成强大威慑。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 150 },
-          { "type": "resource", "target": "prestige", "value": -5 },
-          { "type": "flag", "target": "virtual_hell_used", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 150
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -5
+          },
+          {
+            "type": "flag",
+            "target": "virtual_hell_used",
+            "value": 1
+          }
         ]
       },
       {
         "label": "永久封存该技术。惩罚有其极限，人性不可如此践踏。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 4 },
-          { "type": "resource", "target": "culture", "value": 3 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 4
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 3
+          }
         ]
       }
     ]
@@ -2666,15 +3962,31 @@
       {
         "label": "投入资源研究，探索智子干扰下是否真有新的物理。",
         "effects": [
-          { "type": "flag", "target": "water_memory_research", "value": 1 },
-          { "type": "resource", "target": "economy", "value": -200 }
+          {
+            "type": "flag",
+            "target": "water_memory_research",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          }
         ]
       },
       {
         "label": "拒绝，节省资金用于已证实的科学方向。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 50 },
-          { "type": "resource", "target": "prestige", "value": -1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 50
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -1
+          }
         ]
       }
     ]
@@ -2703,15 +4015,31 @@
       {
         "label": "发射电磁脉冲，摧毁所有矿机。接受矿业设施的重大损失。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -400 },
-          { "type": "resource", "target": "military", "value": -50 },
-          { "type": "flag", "target": "grey_goo_cleaned", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -400
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -50
+          },
+          {
+            "type": "flag",
+            "target": "grey_goo_cleaned",
+            "value": 1
+          }
         ]
       },
       {
         "label": "尝试重新编程，远程修复。成功则收获巨大，失败则灰潮扩大。",
         "effects": [
-          { "type": "flag", "target": "grey_goo_gamble", "value": 1 }
+          {
+            "type": "flag",
+            "target": "grey_goo_gamble",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2740,17 +4068,41 @@
       {
         "label": "接受交换。活人比样本更重要，且能展示人道。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 6 },
-          { "type": "resource", "target": "culture", "value": 2 },
-          { "type": "flag", "target": "swap_executed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 6
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 2
+          },
+          {
+            "type": "flag",
+            "target": "swap_executed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "拒绝交换，秘密进行活体实验。追求科技优势。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 50 },
-          { "type": "resource", "target": "prestige", "value": -8 },
-          { "type": "flag", "target": "trisolaris_dissection", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 50
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          },
+          {
+            "type": "flag",
+            "target": "trisolaris_dissection",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2779,15 +4131,31 @@
       {
         "label": "如实公布，并举办国葬。给予科学界集体哀悼和反思的机会。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 3 },
-          { "type": "resource", "target": "culture", "value": 5 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          }
         ]
       },
       {
         "label": "篡改死因，宣称丁仪牺牲于实验事故，维护科学界的士气。",
         "effects": [
-          { "type": "flag", "target": "suicide_covered_up", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "flag",
+            "target": "suicide_covered_up",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -2816,15 +4184,31 @@
       {
         "label": "选择捷径。用风险换取时间，赌人类命不该绝。",
         "effects": [
-          { "type": "flag", "target": "shortcut_taken", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 4 }
+          {
+            "type": "flag",
+            "target": "shortcut_taken",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 4
+          }
         ]
       },
       {
         "label": "绕道安全航线。稳妥第一，哪怕多熬两百年。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "safe_route", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "safe_route",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2833,7 +4217,7 @@
     "id": "dark_forest_anonymous_warning",
     "title": "【匿名警告：立刻停止广播】",
     "triggerCondition": {
-      "epoch": "ANY",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.008,
       "reqTech": null
     },
@@ -2858,14 +4242,26 @@
       {
         "label": "执行全面无线电静默，包括民用通讯。制造绝对黑暗。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "total_silence", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "total_silence",
+            "value": 1
+          }
         ]
       },
       {
         "label": "减少广播，保持被动监听，但不进入彻底静默。",
         "effects": [
-          { "type": "flag", "target": "reduced_broadcast", "value": 1 }
+          {
+            "type": "flag",
+            "target": "reduced_broadcast",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2894,14 +4290,26 @@
       {
         "label": "公开宣布，将之作为激励。文化提升，但可能引发社会动荡。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 10 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 10
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       },
       {
         "label": "作为绝密信息，仅限高层知晓。避免不必要的情绪波动。",
         "effects": [
-          { "type": "flag", "target": "dyson_swarm_known", "value": 1 }
+          {
+            "type": "flag",
+            "target": "dyson_swarm_known",
+            "value": 1
+          }
         ]
       }
     ]
@@ -2930,15 +4338,31 @@
       {
         "label": "珍藏这段信息，并向他们回复一段悼词。哪怕被黑暗森林听见。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 7 },
-          { "type": "flag", "target": "condolence_sent", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 7
+          },
+          {
+            "type": "flag",
+            "target": "condolence_sent",
+            "value": 1
+          }
         ]
       },
       {
         "label": "沉默接收，仅提取科技。尊重他们的牺牲，但不暴露自己。",
         "effects": [
-          { "type": "flag", "target": "tech_extracted", "value": 1 },
-          { "type": "resource", "target": "economy", "value": 100 }
+          {
+            "type": "flag",
+            "target": "tech_extracted",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 100
+          }
         ]
       }
     ]
@@ -2967,15 +4391,31 @@
       {
         "label": "强制拆除所有装置，并对自杀未遂者进行强制心理治疗。(威望下降，经济投入)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -5 },
-          { "type": "resource", "target": "economy", "value": -200 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -5
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          }
         ]
       },
       {
         "label": "默许存在，只拆除公共场所的。用行政手段引导，但不强行阻止。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -1500 },
-          { "type": "flag", "target": "suicide_normalized", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -1500
+          },
+          {
+            "type": "flag",
+            "target": "suicide_normalized",
+            "value": 1
+          }
         ]
       }
     ]
@@ -3004,15 +4444,31 @@
       {
         "label": "全面清剿，修补所有漏洞，不惜代价逮捕黑市分子。(军力下降，经济短期受损)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -150 },
-          { "type": "resource", "target": "economy", "value": -100 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -150
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          }
         ]
       },
       {
         "label": "招安头目，将部分非法燃料转为“官方灰色渠道”进行管控。(经济微增，但法治受损)",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 200 },
-          { "type": "resource", "target": "prestige", "value": -6 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -6
+          }
         ]
       }
     ]
@@ -3041,15 +4497,31 @@
       {
         "label": "公开有限的真相，安抚民众。(威望暂时回升，但社会不安加剧)",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 2 },
-          { "type": "resource", "target": "culture", "value": -2 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -2
+          }
         ]
       },
       {
         "label": "强力镇压，维持信息封锁。以武力换取表面沉默。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -100 },
-          { "type": "resource", "target": "population", "value": -200 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -200
+          }
         ]
       }
     ]
@@ -3078,15 +4550,31 @@
       {
         "label": "出动军警清剿，将所有少年犯投入劳改营。(军力消耗，文化降低)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -120 },
-          { "type": "resource", "target": "culture", "value": -3 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -120
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -3
+          }
         ]
       },
       {
         "label": "划拨专项基金建立收容与教育机构。长远投资，短期内经济吃紧。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -350 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -350
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -3115,14 +4603,26 @@
       {
         "label": "分批更换系统，逐步挤出假卡，忍受短期内的资源流失。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -150 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -150
+          }
         ]
       },
       {
         "label": "立即全面更换，冻结一切配给24小时。强制执行但引发动荡。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -8 },
-          { "type": "resource", "target": "population", "value": -500 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -500
+          }
         ]
       }
     ]
@@ -3151,15 +4651,31 @@
       {
         "label": "彻底排查所有冬眠舱，暂停新的冬眠程序。消耗时间与资源，但确保安全。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "hibernation_audit", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "hibernation_audit",
+            "value": 1
+          }
         ]
       },
       {
         "label": "秘密调查，不声张，以防船员集体恐慌导致飞船失控。",
         "effects": [
-          { "type": "flag", "target": "covert_investigation", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -1 }
+          {
+            "type": "flag",
+            "target": "covert_investigation",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -1
+          }
         ]
       }
     ]
@@ -3188,15 +4704,31 @@
       {
         "label": "调用工业水，保障居民饮用。发动机功率暂时下降。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       },
       {
         "label": "优先保障发动机，只发放最低限度的瓶装水。人民忍耐极限被突破。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -10 },
-          { "type": "resource", "target": "population", "value": -1000 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -1000
+          }
         ]
       }
     ]
@@ -3225,15 +4757,31 @@
       {
         "label": "宣布戒严，将私刑者绳之以法。强硬捍卫文明底线。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -200 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       },
       {
         "label": "口头谴责，但不真正投入警力。默许底层自己“解决问题”。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -3000 },
-          { "type": "resource", "target": "prestige", "value": -12 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -3000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -12
+          }
         ]
       }
     ]
@@ -3262,15 +4810,31 @@
       {
         "label": "禁止一切宗教聚集，逮捕教派头目。强行打压。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -80 },
-          { "type": "resource", "target": "prestige", "value": -4 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -80
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -4
+          }
         ]
       },
       {
         "label": "开展科普运动，允许信仰但严格限制仪式。文化投入。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 4 },
-          { "type": "resource", "target": "economy", "value": -120 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 4
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -120
+          }
         ]
       }
     ]
@@ -3299,16 +4863,36 @@
       {
         "label": "签署临时行政令，允许童工。立竿见影解决劳动力问题，但道德沦丧。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 250 },
-          { "type": "resource", "target": "prestige", "value": -10 },
-          { "type": "flag", "target": "child_labor_allowed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 250
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          },
+          {
+            "type": "flag",
+            "target": "child_labor_allowed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "坚决否决，寻找替代方案。坚守底线，承受短期劳力不足。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -100 },
-          { "type": "resource", "target": "prestige", "value": 4 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 4
+          }
         ]
       }
     ]
@@ -3337,14 +4921,26 @@
       {
         "label": "调整轨道，将这片异常区挡在地球与三体舰队之间，作为天然屏障。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 80 },
-          { "type": "flag", "target": "time_mine_field", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 80
+          },
+          {
+            "type": "flag",
+            "target": "time_mine_field",
+            "value": 1
+          }
         ]
       },
       {
         "label": "尝试用反引力技术消除它，恢复清朗的太空。消耗巨大。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -600 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          }
         ]
       }
     ]
@@ -3373,15 +4969,31 @@
       {
         "label": "暂停所有曲率实验，将资源转向更安全的亚光速技术。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "warp_halted", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "warp_halted",
+            "value": 1
+          }
         ]
       },
       {
         "label": "重建实验室，加倍投入。飞蛾扑火，只为文明的下一站。",
         "effects": [
-          { "type": "flag", "target": "warp_continued", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "flag",
+            "target": "warp_continued",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -3410,14 +5022,26 @@
       {
         "label": "启动微波消毒，牺牲一台发动机保全大局。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -600 },
-          { "type": "resource", "target": "military", "value": -30 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -30
+          }
         ]
       },
       {
         "label": "尝试注入指令病毒重新控制。高回报高风险。",
         "effects": [
-          { "type": "flag", "target": "grey_goo_gamble_2", "value": 1 }
+          {
+            "type": "flag",
+            "target": "grey_goo_gamble_2",
+            "value": 1
+          }
         ]
       }
     ]
@@ -3446,14 +5070,26 @@
       {
         "label": "批准暗物质武器化项目。投入巨大，但可能获得降维打击前的优势。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -1000 },
-          { "type": "resource", "target": "military", "value": 200 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -1000
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 200
+          }
         ]
       },
       {
         "label": "仅进行基础研究，不急于工程化。保守发展。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 3 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 3
+          }
         ]
       }
     ]
@@ -3482,14 +5118,26 @@
       {
         "label": "推动“记忆遗产”计划，培育专业化新人类。效率至上。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": -6 },
-          { "type": "resource", "target": "military", "value": 50 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -6
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 50
+          }
         ]
       },
       {
         "label": "禁止该技术，维持人类的自然成长。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -3518,15 +5166,31 @@
       {
         "label": "优先恢复小麦和水稻主粮舱。保住口粮，失去部分物种备份。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "culture", "value": -2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -2
+          }
         ]
       },
       {
         "label": "优先恢复种子库，保存生物多样性。短期内食物加剧短缺。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -2000 },
-          { "type": "flag", "target": "seedbank_saved", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          },
+          {
+            "type": "flag",
+            "target": "seedbank_saved",
+            "value": 1
+          }
         ]
       }
     ]
@@ -3555,14 +5219,26 @@
       {
         "label": "秘密用于高危犯人，不对外公开。有限度使用。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 40 },
-          { "type": "flag", "target": "psychic_damper_limited", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 40
+          },
+          {
+            "type": "flag",
+            "target": "psychic_damper_limited",
+            "value": 1
+          }
         ]
       },
       {
         "label": "全面禁止，害怕滑向思想控制的深渊。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -3591,14 +5267,26 @@
       {
         "label": "提供受控能量，尝试深入沟通。可能获得跨维度科技，也可能引狼入室。",
         "effects": [
-          { "type": "flag", "target": "vacuum_parasite_contact", "value": 1 }
+          {
+            "type": "flag",
+            "target": "vacuum_parasite_contact",
+            "value": 1
+          }
         ]
       },
       {
         "label": "立即发射入超新星残骸销毁。绝不与未知交易。",
         "effects": [
-          { "type": "flag", "target": "parasite_destroyed", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "parasite_destroyed",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -3627,16 +5315,36 @@
       {
         "label": "签署总动员令。倾尽文明之力打造终极舰队。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 800 },
-          { "type": "resource", "target": "economy", "value": -600 },
-          { "type": "resource", "target": "culture", "value": -10 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 800
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -10
+          }
         ]
       },
       {
         "label": "拒绝，维持有限征兵。保持社会运转，但军力可能不足。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 100 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -3665,15 +5373,31 @@
       {
         "label": "接受交易，拿到情报。实用主义至上，承受舆论怒火。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 100 },
-          { "type": "resource", "target": "prestige", "value": -10 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          }
         ]
       },
       {
         "label": "拒绝，处以极刑。维护正义，但失去可能的关键情报。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 5 },
-          { "type": "resource", "target": "culture", "value": 2 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 2
+          }
         ]
       }
     ]
@@ -3702,15 +5426,31 @@
       {
         "label": "支持法案，给予AI有限公民权。开创人机文明新纪元。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 10 },
-          { "type": "flag", "target": "ai_citizenship", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 10
+          },
+          {
+            "type": "flag",
+            "target": "ai_citizenship",
+            "value": 1
+          }
         ]
       },
       {
         "label": "驳回法案。维持人类至上。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 50 },
-          { "type": "resource", "target": "prestige", "value": -2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 50
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -2
+          }
         ]
       }
     ]
@@ -3739,16 +5479,36 @@
       {
         "label": "同意月球独立远航，保存一脉文明火种。",
         "effects": [
-          { "type": "flag", "target": "moon_split", "value": 1 },
-          { "type": "resource", "target": "population", "value": -5000 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "flag",
+            "target": "moon_split",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -5000
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       },
       {
         "label": "拒绝，全人类必须同生共死，共同前进。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -200 },
-          { "type": "flag", "target": "stay_together", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "stay_together",
+            "value": 1
+          }
         ]
       }
     ]
@@ -3777,16 +5537,36 @@
       {
         "label": "通过法案，建立合法有偿捐献体系。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 100 },
-          { "type": "resource", "target": "population", "value": -500 },
-          { "type": "resource", "target": "prestige", "value": -6 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -6
+          }
         ]
       },
       {
         "label": "禁止，加大投入研发人造器官。坚守底线，承受等待死亡。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -250 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -250
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       }
     ]
@@ -3815,16 +5595,36 @@
       {
         "label": "拒绝靠泊，提供远程燃料补给让他们自寻生路。部分存活。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -150 },
-          { "type": "resource", "target": "population", "value": -3000 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -150
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -3000
+          }
         ]
       },
       {
         "label": "强行接纳，压缩己方资源，同舟共济。",
         "effects": [
-          { "type": "resource", "target": "population", "value": 5000 },
-          { "type": "resource", "target": "economy", "value": -500 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": 5000
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -500
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       }
     ]
@@ -3853,16 +5653,36 @@
       {
         "label": "授权核打击。快速结束叛乱，代价是大量平民伤亡和舆论地狱。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -200000 },
-          { "type": "resource", "target": "military", "value": 100 },
-          { "type": "resource", "target": "prestige", "value": -30 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -200000
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -30
+          }
         ]
       },
       {
         "label": "围城封锁，慢慢耗。耗费军力和时间，但避免大规模屠杀。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -200 },
-          { "type": "resource", "target": "economy", "value": -300 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          }
         ]
       }
     ]
@@ -3891,16 +5711,36 @@
       {
         "label": "宰杀食用。为了今天的病人，放弃明天的物种多样性。",
         "effects": [
-          { "type": "resource", "target": "population", "value": 1000 },
-          { "type": "resource", "target": "culture", "value": -3 },
-          { "type": "flag", "target": "chicken_extinct", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": 1000
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -3
+          },
+          {
+            "type": "flag",
+            "target": "chicken_extinct",
+            "value": 1
+          }
         ]
       },
       {
         "label": "隔离治疗，全力保种。接受暂时的蛋白质缺口。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -100 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -3929,14 +5769,26 @@
       {
         "label": "以此为契机，加速推进地球航向的隐匿化改造。追加预算。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -400 },
-          { "type": "resource", "target": "military", "value": 50 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -400
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 50
+          }
         ]
       },
       {
         "label": "观测记录，但不改变现有航行计划。",
         "effects": [
-          { "type": "flag", "target": "vanishing_star_logged", "value": 1 }
+          {
+            "type": "flag",
+            "target": "vanishing_star_logged",
+            "value": 1
+          }
         ]
       }
     ]
@@ -3965,14 +5817,26 @@
       {
         "label": "将信息公之于众，让全人类看清宇宙的残酷。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 6 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 6
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       },
       {
         "label": "内部存档，绝不外泄。避免绝望蔓延。",
         "effects": [
-          { "type": "flag", "target": "graffiti_secret", "value": 1 }
+          {
+            "type": "flag",
+            "target": "graffiti_secret",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4001,15 +5865,31 @@
       {
         "label": "发射回复，感谢他们的信息，并分享人类的文化。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 5 },
-          { "type": "flag", "target": "replied_to_rogue", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          },
+          {
+            "type": "flag",
+            "target": "replied_to_rogue",
+            "value": 1
+          }
         ]
       },
       {
         "label": "保持静默，只做被动接收和分析。",
         "effects": [
-          { "type": "flag", "target": "rogue_silence", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "rogue_silence",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4038,14 +5918,26 @@
       {
         "label": "紧急发射干扰信号，试图覆盖这片天区。亡羊补牢。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "military", "value": 30 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 30
+          }
         ]
       },
       {
         "label": "不做反应，静观其变。任何回应都可能使情况更糟。",
         "effects": [
-          { "type": "flag", "target": "mirror_signal_ignored", "value": 1 }
+          {
+            "type": "flag",
+            "target": "mirror_signal_ignored",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4074,16 +5966,36 @@
       {
         "label": "命令追击舰队拦截，不惜代价击毁叛逃舰只。(军力损失，威望大降)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -600 },
-          { "type": "resource", "target": "prestige", "value": -10 },
-          { "type": "flag", "target": "beihai_defeated", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -600
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -10
+          },
+          {
+            "type": "flag",
+            "target": "beihai_defeated",
+            "value": 1
+          }
         ]
       },
       {
         "label": "默认其离去，并发布消息称章北海奉命执行秘密任务。保全大局。",
         "effects": [
-          { "type": "flag", "target": "beihai_defection_tolerated", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "flag",
+            "target": "beihai_defection_tolerated",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -4112,16 +6024,36 @@
       {
         "label": "清洗所有钢印携带者，解除他们指挥权。(军力动荡，但消除隐患)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -200 },
-          { "type": "flag", "target": "seal_purge", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -200
+          },
+          {
+            "type": "flag",
+            "target": "seal_purge",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       },
       {
         "label": "保留他们，并秘密扩大思想钢印应用，统一意志。",
         "effects": [
-          { "type": "flag", "target": "mental_seal_expanded", "value": 1 },
-          { "type": "resource", "target": "culture", "value": -5 }
+          {
+            "type": "flag",
+            "target": "mental_seal_expanded",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -5
+          }
         ]
       }
     ]
@@ -4155,15 +6087,31 @@
       {
         "label": "支持程心接任执剑人，顺应民意。(威慑值大幅下降，文明轨道改写)",
         "effects": [
-          { "type": "flag", "target": "chengxin_swordholder", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 5 }
+          {
+            "type": "flag",
+            "target": "chengxin_swordholder",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 5
+          }
         ]
       },
       {
         "label": "否决程心，强行推举维德。违背民意，但威慑力飙升。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": -12 },
-          { "type": "resource", "target": "military", "value": 200 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -12
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 200
+          }
         ]
       }
     ]
@@ -4192,15 +6140,31 @@
       {
         "label": "批准阶梯计划，发射云天明大脑。人类情报触角伸向三体世界。",
         "effects": [
-          { "type": "flag", "target": "ladder_launched", "value": 1 },
-          { "type": "resource", "target": "culture", "value": 3 }
+          {
+            "type": "flag",
+            "target": "ladder_launched",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 3
+          }
         ]
       },
       {
         "label": "否决该计划，认为过于残忍且成功率极低。",
         "effects": [
-          { "type": "flag", "target": "ladder_rejected", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "flag",
+            "target": "ladder_rejected",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4229,15 +6193,31 @@
       {
         "label": "授权强攻，相信大史的经验。军力损失，但消除威胁。",
         "effects": [
-          { "type": "resource", "target": "military", "value": -80 },
-          { "type": "flag", "target": "eto_cell_raided", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -80
+          },
+          {
+            "type": "flag",
+            "target": "eto_cell_raided",
+            "value": 1
+          }
         ]
       },
       {
         "label": "改为围困谈判，消耗时间，但减少伤亡。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -50 },
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -50
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4246,7 +6226,7 @@
     "id": "shiqiang_philosophy_talk",
     "title": "【深夜酒馆：大史的人生哲学】",
     "triggerCondition": {
-      "epoch": "ANY",
+      "epoch": "CRISIS,DETERRENCE",
       "probability": 0.06,
       "reqTech": null
     },
@@ -4266,14 +6246,26 @@
       {
         "label": "任命史强为民间联络特使，深入基层提振士气。(文化微升)",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 4 },
-          { "type": "flag", "target": "shiqiang_morale", "value": 1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 4
+          },
+          {
+            "type": "flag",
+            "target": "shiqiang_morale",
+            "value": 1
+          }
         ]
       },
       {
         "label": "让他继续专注于刑侦，不做职能变更。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 20 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 20
+          }
         ]
       }
     ]
@@ -4302,15 +6294,31 @@
       {
         "label": "接受叶文洁的条件，借机摧毁ETO核心。但背负庇护叛徒的骂名。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 100 },
-          { "type": "resource", "target": "prestige", "value": -8 },
-          { "type": "flag", "target": "yewenjie_cooperation", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          },
+          {
+            "type": "flag",
+            "target": "yewenjie_cooperation",
+            "value": 1
+          }
         ]
       },
       {
         "label": "拒绝交易，坐看ETO内斗消耗，但失去宝贵情报源。",
         "effects": [
-          { "type": "flag", "target": "eto_infighting", "value": 1 }
+          {
+            "type": "flag",
+            "target": "eto_infighting",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4344,14 +6352,26 @@
       {
         "label": "公开这份记录，警示后人。公众将彻底认清危机的根源。",
         "effects": [
-          { "type": "resource", "target": "culture", "value": 5 },
-          { "type": "resource", "target": "prestige", "value": -1 }
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -1
+          }
         ]
       },
       {
         "label": "永远封存，以免引发对体制的问责风暴。",
         "effects": [
-          { "type": "flag", "target": "red_coast_secret", "value": 1 }
+          {
+            "type": "flag",
+            "target": "red_coast_secret",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4380,15 +6400,31 @@
       {
         "label": "批准全军部署。短期内获得巨大军事优势，但文明本质受损。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 300 },
-          { "type": "resource", "target": "culture", "value": -8 },
-          { "type": "flag", "target": "mental_seal_deployed", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 300
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -8
+          },
+          {
+            "type": "flag",
+            "target": "mental_seal_deployed",
+            "value": 1
+          }
         ]
       },
       {
         "label": "限于实验，不得推广。保留人性底线。",
         "effects": [
-          { "type": "flag", "target": "mental_seal_limited", "value": 1 }
+          {
+            "type": "flag",
+            "target": "mental_seal_limited",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4417,16 +6453,36 @@
       {
         "label": "支持该计划，启动水星炸弹部署。威慑度升至最高，但随时可能擦枪走火。",
         "effects": [
-          { "type": "flag", "target": "reydiaz_plan_active", "value": 1 },
-          { "type": "resource", "target": "military", "value": 400 },
-          { "type": "resource", "target": "prestige", "value": -8 }
+          {
+            "type": "flag",
+            "target": "reydiaz_plan_active",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 400
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -8
+          }
         ]
       },
       {
         "label": "否决计划，将雷迪亚兹解职。避免文明自毁风险。",
         "effects": [
-          { "type": "flag", "target": "reydiaz_stopped", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "flag",
+            "target": "reydiaz_stopped",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -4455,15 +6511,31 @@
       {
         "label": "相信泰勒，投入巨资推进宏原子武器化。高概率被欺骗，科技跃进。",
         "effects": [
-          { "type": "flag", "target": "tyler_trusted", "value": 1 },
-          { "type": "resource", "target": "economy", "value": -600 }
+          {
+            "type": "flag",
+            "target": "tyler_trusted",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -600
+          }
         ]
       },
       {
         "label": "立即逮捕泰勒，中止计划。保守处理，但错失潜在机会。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 1 },
-          { "type": "flag", "target": "tyler_arrested", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          },
+          {
+            "type": "flag",
+            "target": "tyler_arrested",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4492,14 +6564,26 @@
       {
         "label": "全力解读并应用童话中的科技隐喻。获得光速飞船研究关键。",
         "effects": [
-          { "type": "flag", "target": "tianming_fairy_tales", "value": 1 },
-          { "type": "resource", "target": "culture", "value": 5 }
+          {
+            "type": "flag",
+            "target": "tianming_fairy_tales",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          }
         ]
       },
       {
         "label": "认定为敌方心理战，不予理会。避免被虚假信息误导。",
         "effects": [
-          { "type": "flag", "target": "tales_ignored", "value": 1 }
+          {
+            "type": "flag",
+            "target": "tales_ignored",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4528,15 +6612,31 @@
       {
         "label": "发射高速救援船，尝试夺回云天明的脑。消耗巨额资源，赌一次救援。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -500 },
-          { "type": "flag", "target": "tianming_rescue_attempt", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -500
+          },
+          {
+            "type": "flag",
+            "target": "tianming_rescue_attempt",
+            "value": 1
+          }
         ]
       },
       {
         "label": "放弃，承认计划失败。将资源用于其他防御。",
         "effects": [
-          { "type": "flag", "target": "tianming_lost", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "flag",
+            "target": "tianming_lost",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       }
     ]
@@ -4565,14 +6665,26 @@
       {
         "label": "启动建造，加速太空工业化。高风险，高潜力。",
         "effects": [
-          { "type": "flag", "target": "space_elevator_building", "value": 1 },
-          { "type": "resource", "target": "economy", "value": 300 }
+          {
+            "type": "flag",
+            "target": "space_elevator_building",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 300
+          }
         ]
       },
       {
         "label": "拒绝，只用于制造军舰装甲。保守但安全。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 100 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 100
+          }
         ]
       }
     ]
@@ -4601,14 +6713,26 @@
       {
         "label": "相信汪淼，在72小时内进入最高戒备。可能虚惊一场，但不得不防。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 50 },
-          { "type": "resource", "target": "economy", "value": -100 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 50
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          }
         ]
       },
       {
         "label": "以心理安抚为主，不进行大规模动员。避免造成不必要恐慌。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4637,16 +6761,36 @@
       {
         "label": "拨款救助，保住太空城经济与民生。消耗巨额财政。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -800 },
-          { "type": "resource", "target": "prestige", "value": 3 },
-          { "type": "flag", "target": "aa_bailout", "value": 1 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -800
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          },
+          {
+            "type": "flag",
+            "target": "aa_bailout",
+            "value": 1
+          }
         ]
       },
       {
         "label": "任其破产清算，让市场自行整合。社会动荡，但节省财政。",
         "effects": [
-          { "type": "resource", "target": "population", "value": -5000 },
-          { "type": "flag", "target": "aa_bankruptcy", "value": 1 }
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -5000
+          },
+          {
+            "type": "flag",
+            "target": "aa_bankruptcy",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4675,14 +6819,26 @@
       {
         "label": "让关一帆留在里面，实时传回情报。牺牲个体，成就战略优势。",
         "effects": [
-          { "type": "flag", "target": "4d_spy", "value": 1 },
-          { "type": "resource", "target": "military", "value": 200 }
+          {
+            "type": "flag",
+            "target": "4d_spy",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 200
+          }
         ]
       },
       {
         "label": "命令他立即撤回，并封存该区域。安全第一，保护人才。",
         "effects": [
-          { "type": "flag", "target": "4d_sealed", "value": 1 }
+          {
+            "type": "flag",
+            "target": "4d_sealed",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4711,14 +6867,26 @@
       {
         "label": "全力支持林云的武器开发。可能提前解锁维度武器。",
         "effects": [
-          { "type": "flag", "target": "lin_yun_weapon", "value": 1 },
-          { "type": "resource", "target": "military", "value": 150 }
+          {
+            "type": "flag",
+            "target": "lin_yun_weapon",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 150
+          }
         ]
       },
       {
         "label": "驳回，认为风险过高。转为支持传统核武器升级。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 50 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 50
+          }
         ]
       }
     ]
@@ -4747,16 +6915,36 @@
       {
         "label": "批准林云的自我牺牲。发动一次史诗般的量子打击。",
         "effects": [
-          { "type": "flag", "target": "lin_yun_sacrifice", "value": 1 },
-          { "type": "resource", "target": "military", "value": 500 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "flag",
+            "target": "lin_yun_sacrifice",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 500
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       },
       {
         "label": "强行阻止她，寻找替代观测方案。可能丧失攻击窗口。",
         "effects": [
-          { "type": "flag", "target": "lin_yun_saved", "value": 1 },
-          { "type": "resource", "target": "military", "value": -50 }
+          {
+            "type": "flag",
+            "target": "lin_yun_saved",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -50
+          }
         ]
       }
     ]
@@ -4785,14 +6973,26 @@
       {
         "label": "启动紧急清除程序，代价是使这部分军人永久脑损伤。(军力大损)",
         "effects": [
-          { "type": "resource", "target": "military", "value": -250 },
-          { "type": "resource", "target": "population", "value": -2000 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -250
+          },
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -2000
+          }
         ]
       },
       {
         "label": "继续观察，希望他们能自我适应。赌钢印的第二阶段稳固。",
         "effects": [
-          { "type": "flag", "target": "seal_gamble", "value": 1 }
+          {
+            "type": "flag",
+            "target": "seal_gamble",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4821,15 +7021,31 @@
       {
         "label": "给予庇护，并继续秘密资助其后续研究。保持战略威慑。",
         "effects": [
-          { "type": "flag", "target": "reydiaz_protected", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -3 }
+          {
+            "type": "flag",
+            "target": "reydiaz_protected",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -3
+          }
         ]
       },
       {
         "label": "拒绝庇护，与他切割。维护外交稳定。",
         "effects": [
-          { "type": "resource", "target": "prestige", "value": 1 },
-          { "type": "flag", "target": "reydiaz_abandoned", "value": 1 }
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 1
+          },
+          {
+            "type": "flag",
+            "target": "reydiaz_abandoned",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4858,14 +7074,26 @@
       {
         "label": "激活幽灵舰队，配合主力进行战略性欺骗。",
         "effects": [
-          { "type": "flag", "target": "ghost_fleet_active", "value": 1 },
-          { "type": "resource", "target": "military", "value": 250 }
+          {
+            "type": "flag",
+            "target": "ghost_fleet_active",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 250
+          }
         ]
       },
       {
         "label": "将其销毁，担心泰勒设下更深的陷阱。",
         "effects": [
-          { "type": "flag", "target": "ghost_fleet_destroyed", "value": 1 }
+          {
+            "type": "flag",
+            "target": "ghost_fleet_destroyed",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4894,15 +7122,31 @@
       {
         "label": "全力下载，不顾智子可能的监听。获取三体科技核心。",
         "effects": [
-          { "type": "flag", "target": "staircase_data", "value": 1 },
-          { "type": "resource", "target": "culture", "value": 7 }
+          {
+            "type": "flag",
+            "target": "staircase_data",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 7
+          }
         ]
       },
       {
         "label": "谨慎接收，担心是三体人设下的特洛伊木马。",
         "effects": [
-          { "type": "resource", "target": "military", "value": 30 },
-          { "type": "flag", "target": "cautious_download", "value": 1 }
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 30
+          },
+          {
+            "type": "flag",
+            "target": "cautious_download",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4931,14 +7175,26 @@
       {
         "label": "批准大史的钓鱼计划。消耗不多，可能有大收获。",
         "effects": [
-          { "type": "flag", "target": "shiqiang_plan_approved", "value": 1 },
-          { "type": "resource", "target": "military", "value": -30 }
+          {
+            "type": "flag",
+            "target": "shiqiang_plan_approved",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -30
+          }
         ]
       },
       {
         "label": "太冒险，驳回。用更稳妥的方式。",
         "effects": [
-          { "type": "flag", "target": "shiqiang_plan_denied", "value": 1 }
+          {
+            "type": "flag",
+            "target": "shiqiang_plan_denied",
+            "value": 1
+          }
         ]
       }
     ]
@@ -4967,16 +7223,36 @@
       {
         "label": "授权撞击。用英雄的牺牲换取宝贵时间。",
         "effects": [
-          { "type": "flag", "target": "beihai_hero", "value": 1 },
-          { "type": "resource", "target": "military", "value": -200 },
-          { "type": "resource", "target": "prestige", "value": 10 }
+          {
+            "type": "flag",
+            "target": "beihai_hero",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 10
+          }
         ]
       },
       {
         "label": "命令他撤离，保全有生力量。但地球将直面打击。",
         "effects": [
-          { "type": "flag", "target": "beihai_retreat", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": -4 }
+          {
+            "type": "flag",
+            "target": "beihai_retreat",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -4
+          }
         ]
       }
     ]
@@ -5005,15 +7281,31 @@
       {
         "label": "接受叶文洁的技术协助，利用她的知识加强通讯安全。",
         "effects": [
-          { "type": "flag", "target": "yewenjie_redemption", "value": 1 },
-          { "type": "resource", "target": "military", "value": 80 }
+          {
+            "type": "flag",
+            "target": "yewenjie_redemption",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 80
+          }
         ]
       },
       {
         "label": "拒绝，将她终身单独监禁。以纯粹的惩罚告慰历史。",
         "effects": [
-          { "type": "flag", "target": "yewenjie_imprisoned", "value": 1 },
-          { "type": "resource", "target": "prestige", "value": 2 }
+          {
+            "type": "flag",
+            "target": "yewenjie_imprisoned",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 2
+          }
         ]
       }
     ]
@@ -5042,15 +7334,31 @@
       {
         "label": "紧急派遣救援船，承担船只被二维化的风险。",
         "effects": [
-          { "type": "flag", "target": "guan_rescue_attempt", "value": 1 },
-          { "type": "resource", "target": "military", "value": -100 }
+          {
+            "type": "flag",
+            "target": "guan_rescue_attempt",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": -100
+          }
         ]
       },
       {
         "label": "尊重关一帆的自我牺牲，远程记录他最后的科研数据。",
         "effects": [
-          { "type": "flag", "target": "guan_sacrifice", "value": 1 },
-          { "type": "resource", "target": "culture", "value": 5 }
+          {
+            "type": "flag",
+            "target": "guan_sacrifice",
+            "value": 1
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 5
+          }
         ]
       }
     ]
@@ -5079,25 +7387,33 @@
       {
         "label": "查封娱乐城，逮捕艾AA。净化环境，但损害太空经济。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": -300 },
-          { "type": "resource", "target": "prestige", "value": 3 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -300
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 3
+          }
         ]
       },
       {
         "label": "从轻发落，罚款并加强监管。保住经济支柱。",
         "effects": [
-          { "type": "resource", "target": "economy", "value": 200 },
-          { "type": "resource", "target": "prestige", "value": -4 }
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": -4
+          }
         ]
       }
     ]
   }
 ]
-
-
-
-
-
-
-
-

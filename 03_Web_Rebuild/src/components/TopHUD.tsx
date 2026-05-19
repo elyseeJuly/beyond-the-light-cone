@@ -3,6 +3,7 @@ import { Users, TrendingUp, Landmark, Shield, AlertTriangle, Settings, Save, Ski
 import { GameInstance } from '../core/Game';
 import { systemMenuPanel } from '../ui/SystemMenuPanel';
 import { useFloatingText, FloatingLayer } from './FloatingText';
+import { BgmPlayer } from './BgmPlayer';
 
 interface ResourceItemProps {
   icon: React.ReactNode;
@@ -55,7 +56,8 @@ export const TopHUD: React.FC = () => {
       army: earth.army,
       res: earth.resource,
       treachery: earth.treachery,
-      deterrence: Math.floor(earth.deterrenceValue)
+      deterrence: Math.floor(earth.deterrenceValue),
+      isGameOver: game.victoryType !== null || game.defeatType !== null
     };
   }, [updateCount]);
 
@@ -92,9 +94,11 @@ export const TopHUD: React.FC = () => {
   useEffect(() => {
     const refresh = () => setUpdateCount(n => n + 1);
     window.addEventListener('game-loaded', refresh);
+    window.addEventListener('game-over', refresh);
     window.addEventListener('game-turn-complete', refresh);
     return () => {
       window.removeEventListener('game-loaded', refresh);
+      window.removeEventListener('game-over', refresh);
       window.removeEventListener('game-turn-complete', refresh);
     };
   }, []);
@@ -189,9 +193,10 @@ export const TopHUD: React.FC = () => {
         />
       </div>
 
-
       {/* Right: System Operations */}
       <div className="flex items-center gap-3">
+        <BgmPlayer isGameOver={stats.isGameOver} />
+        
         <button onClick={() => window.dispatchEvent(new CustomEvent('open-tutorial'))} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-[var(--text-secondary)]" title="帮助教程">
           <HelpCircle size={20} />
         </button>

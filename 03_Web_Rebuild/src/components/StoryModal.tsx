@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GameEventPayload, EventEffectDef } from '../types/narrative';
 import { ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { getImageUrl } from '../utils/assetUrl';
 
 interface StoryModalProps {
   event: GameEventPayload;
@@ -99,6 +100,12 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                 src={currentNode.avatarUrl} 
                 alt={currentNode.speakerName} 
                 className="w-full h-full object-cover object-center transition-all duration-1000 group-hover:scale-105 filter contrast-110 saturate-125"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.src.includes('character_default.png')) {
+                    target.src = getImageUrl('character_default.png');
+                  }
+                }}
               />
               {/* Paper Texture and Ink Vignette */}
               <div className="paper-texture" />

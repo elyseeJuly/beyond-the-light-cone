@@ -4,6 +4,7 @@
 import { GameInstance, Game } from "../src/core/Game";
 import { EarthCivilization } from "../src/core/EarthCivilization";
 import { FriendshipType } from "../src/types/enums";
+import { STAR_INDEX } from "../src/config/starIndices";
 
 interface TurnSnapshot {
   turn: number;
@@ -100,7 +101,7 @@ console.log(`星球总数: ${game.starManager.stars.size}`);
 console.log("");
 
 const earth = game.earthCivi;
-const earthStar = game.starManager.getStar(4);
+const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
 if (!earthStar) {
   errors.push("FATAL: 地球 (index=4) 不存在！");
 }
@@ -129,7 +130,7 @@ results.push(snapshot(game, 0));
 
 for (let t = 1; t <= 50; t++) {
   // Strategy: build infrastructure ASAP
-  const es = game.starManager.getStar(4);
+  const es = game.starManager.getStar(STAR_INDEX.EARTH);
   if (es && !es.hasStope && earth.economy >= 30) {
     earth.economy -= 30;
     es.hasStope = true;

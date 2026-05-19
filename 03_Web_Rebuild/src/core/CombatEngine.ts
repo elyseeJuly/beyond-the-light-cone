@@ -14,6 +14,11 @@ export class CombatEngine {
     game.addHistory(`>> 攻击方战力评级: ${atkPower}`);
     game.addHistory(`>> 防守方战力评级: ${defPower}`);
 
+    if (atkPower === 0 && defPower === 0) {
+      game.addHistory(`【战报】双方均无战力，防守方固守成功！`);
+      return false;
+    }
+
     let atkHp = atkPower;
     let defHp = defPower;
     let round = 0;
@@ -22,8 +27,8 @@ export class CombatEngine {
     while (atkHp > 0 && defHp > 0 && round < maxRounds) {
       round++;
 
-      const atkDice = 0.8 + Math.random() * 0.4;
-      const defDice = 0.85 + Math.random() * 0.5;
+      const atkDice = 0.8 + game.rng() * 0.4;
+      const defDice = 0.85 + game.rng() * 0.5;
 
       const atkDamage = Math.floor(atkPower * atkDice);
       const defDamage = Math.floor(defPower * defDice);
@@ -57,6 +62,7 @@ export class CombatEngine {
   }
 
   public static resolveFleetVsFleet(atkFleet: Fleet, defFleet: Fleet): boolean {
+    const game = GameInstance.get();
     const atkPower = this.calculateFleetPower(atkFleet);
     const defPower = this.calculateFleetPower(defFleet);
 
@@ -66,8 +72,8 @@ export class CombatEngine {
 
     while (atkHp > 0 && defHp > 0 && round < 3) {
       round++;
-      const atkDice = 0.9 + Math.random() * 0.2;
-      const defDice = 0.9 + Math.random() * 0.2;
+      const atkDice = 0.9 + game.rng() * 0.2;
+      const defDice = 0.9 + game.rng() * 0.2;
       defHp -= Math.floor(atkPower * atkDice);
       atkHp -= Math.floor(defPower * defDice);
     }

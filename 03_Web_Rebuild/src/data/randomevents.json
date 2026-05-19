@@ -1,36 +1,75 @@
 [
   {
+    "id": "random_tech_inspiration",
+    "title": "科技灵光一现",
     "name": "科技灵光一现",
     "eventtype": 2,
     "eventeffect": 2,
     "eventvalue": 50,
-    "talkcount": 1,
-    "talk0_pic": "character_dingyi_1778724123469.png",
-    "talk0_talker": "丁仪",
-    "talk0_content": "我们在高能物理实验中发现了一个有趣的现象，虽然智子封锁了宏观规律，但微观层面的扰动给了我们新的启发！"
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "probability": 0.03,
+      "lane": "ambient",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 2
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "丁仪",
+        "avatarUrl": "character_dingyi_1778724123469.png",
+        "content": "我们在高能物理实验中发现了一个有趣的现象，虽然智子封锁了宏观规律，但微观层面的扰动给了我们新的启发！"
+      }
+    ]
   },
   {
+    "id": "random_resource_scandal",
+    "title": "资源走私丑闻",
     "name": "资源走私丑闻",
     "eventtype": 2,
     "eventeffect": 1,
     "eventvalue": -100,
-    "talkcount": 1,
-    "talk0_pic": "character_evans_1778724472738.png",
-    "talk0_talker": "伊文斯",
-    "talk0_content": "主不在乎你们的法律。这些资源本就属于主，我们只是将其归还。"
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "probability": 0.02,
+      "lane": "ambient",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 2
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "伊文斯",
+        "avatarUrl": "character_evans_1778724472738.png",
+        "content": "主不在乎你们的法律。这些资源本就属于主，我们只是将其归还。"
+      }
+    ]
   },
   {
+    "id": "random_wallfacer_proposal",
+    "title": "面壁者提案",
     "name": "面壁者提案",
     "eventtype": 2,
     "eventeffect": 2,
     "eventvalue": 100,
-    "talkcount": 2,
-    "talk0_pic": "character_aiaa_1778724300313.png",
-    "talk0_talker": "艾伦·艾德文",
-    "talk0_content": "这是我计划的一部分。通过对全球资源的非线性调度，我们可以避开智子的视线。",
-    "talk1_pic": "character_dashi.png",
-    "talk1_talker": "史强",
-    "talk1_content": "虽然听不懂，但听起来很带劲。干吧！"
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "probability": 0.04,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1,
+      "cooldownYears": 20
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "艾伦·艾德文",
+        "avatarUrl": "character_aiaa_1778724300313.png",
+        "content": "这是我计划的一部分。通过对全球资源的非线性调度，我们可以避开智子的视线。"
+      },
+      {
+        "speakerName": "史强",
+        "avatarUrl": "character_dashi.png",
+        "content": "虽然听不懂，但听起来很带劲。干吧！"
+      }
+    ]
   },
   {
     "id": "tech_vacuum_decay_incident",

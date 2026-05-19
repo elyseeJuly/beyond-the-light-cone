@@ -4,6 +4,11 @@ import { DepartmentType, TecTreeType } from "../types/enums";
 import { GameInstance } from "./Game";
 import { CombatEngine } from "./CombatEngine";
 import { createBarback } from "./Barback";
+import type { RngProvider } from "./Game";
+import { STAR_INDEX } from "../config/starIndices";
+
+const MAX_ECONOMY = 999999;
+const MAX_POPULATION_MULTIPLIER = 3;
 
 export class EarthCivilization extends Civilization {
   public idlePopulation: number = 0;
@@ -22,6 +27,16 @@ export class EarthCivilization extends Civilization {
   public factoryRatio: number = 30;
   public cultureRatio: number = 30;
 
+  private _rngProvider: RngProvider | null = null;
+
+  public setRngProvider(provider: RngProvider): void {
+    this._rngProvider = provider;
+  }
+
+  private rng(): number {
+    return this._rngProvider ? this._rngProvider.random() : Math.random();
+  }
+
   constructor() {
     super("地球");
     const deptNames = [
@@ -32,7 +47,7 @@ export class EarthCivilization extends Civilization {
       const d = createDepartment(i as DepartmentType, deptNames[i]);
       this.departments.set(i as DepartmentType, d);
     }
-    this.starIndices.add(3); // Earth index
+    this.starIndices.add(STAR_INDEX.EARTH);
     this.population = 65;
     this.economy = 100;
     this.resource = 200;
@@ -265,6 +280,7 @@ export class EarthCivilization extends Civilization {
       totalEco += add;
     }
     this.economy += totalEco;
+    if (this.economy > MAX_ECONOMY) this.economy = MAX_ECONOMY;
   }
 
   private processCulture(game: any): number {
@@ -381,8 +397,15 @@ export class EarthCivilization extends Civilization {
     this.population += popGain;
     this.idlePopulation += popGain;
     this.idleWorkers += popGain;
-    if (this.population > totalPopLimit) {
-      this.population = totalPopLimit;
+    const maxPop = totalPopLimit * MAX_POPULATION_MULTIPLIER;
+    if (this.population > maxPop) {
+      this.population = maxPop;
+    }
+    if (this.idlePopulation > maxPop) {
+      this.idlePopulation = maxPop;
+    }
+    if (this.idleWorkers > maxPop) {
+      this.idleWorkers = maxPop;
     }
 
     const humanResDept = this.departments.get(DepartmentType.HUMANRES);
@@ -399,7 +422,7 @@ export class EarthCivilization extends Civilization {
 
   private processTreachery(game: any): void {
     const earlyGameFactor = game.year < 100 ? 0.5 : 1.0;
-    const randomGain = Math.floor(Math.random() * 3 * earlyGameFactor);
+    const randomGain = Math.floor(this.rng() * 3 * earlyGameFactor);
     this.treachery = Math.min(100, this.treachery + randomGain);
     if (this.treachery > 80) {
       game.addHistory(`【警告】逃亡主义上升至 ${this.treachery}，文明面临内部分裂风险！`);

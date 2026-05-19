@@ -4,6 +4,8 @@ import randomEventsData from "../data/randomevents.json";
 import { DialogNode, FilteredEventPayload } from "../types/narrative";
 import { GameInstance } from "./Game";
 import { getImageUrl } from "../utils/assetUrl";
+import { normalizeEventMeta, pickWeightedEvent, isEventEligible } from "./EventCadence";
+import { EventLane } from "../types/enums";
 
 export class GameEventManager {
   public events: GameEvent[] = [];
@@ -11,12 +13,23 @@ export class GameEventManager {
   public filteredEvents: FilteredEventPayload[] = [];
   public triggeredFilteredIds: Set<string> = new Set();
 
+  public lastAnyEventYear: number = 0;
+  public lastLaneTriggeredYear: Map<EventLane, number> = new Map();
+  public randomEventTriggerCounts: Map<string, number> = new Map();
+  public lastTagTriggeredYear: Map<string, number> = new Map();
+
   constructor() {
     this.init();
   }
 
-  private mapAvatar(bmpName: string): string {
-    if (!bmpName || bmpName === "default") return getImageUrl("character_default.png");
+  private mapAvatar(bmpName: string, speakerName?: string): string {
+    if (!bmpName || bmpName === "default") {
+      // Attempt NPC classification by speakerName before falling back to default
+      if (speakerName) {
+        return this.classifyAvatar(speakerName);
+      }
+      return getImageUrl("character_default.png");
+    }
 
     let name = bmpName.toLowerCase();
     name = name.replace("/images/", "").replace("character_", "").replace("unified_", "");
@@ -79,6 +92,76 @@ export class GameEventManager {
       return getImageUrl(fileName);
     }
 
+    // Final fallback: classify by speakerName if available
+    if (speakerName) {
+      return this.classifyAvatar(speakerName);
+    }
+    return getImageUrl("character_default.png");
+  }
+
+  /**
+   * NPC 分类头像匹配 — 根据说话者名字关键词分类到职业头像
+   *
+   * 预留图片文件名（public/images/npc_*.png），待 AI 生成后放入：
+   * - npc_military_commander.png  — 军事指挥官
+   * - npc_scientist.png           — 科学家/研究员
+   * - npc_official.png            — 政务官员
+   * - npc_engineer.png            — 工程师/矿工
+   * - npc_civilian.png            — 平民代表
+   * - npc_medic.png               — 医疗人员
+   * - npc_rebel.png               — 反叛者/ETO
+   * - npc_ai_terminal.png         — AI/系统终端
+   * - npc_comms_officer.png       — 通讯/监听员
+   * - npc_merchant.png            — 商人/走私者
+   *
+   * 当 NPC 头像文件不存在时，会自然 fallback 到浏览器的 broken-image 或
+   * StoryModal 中可以处理 onError 降级到 character_default.png。
+   */
+  private classifyAvatar(speakerName: string): string {
+    const name = speakerName;
+
+    // 军事类
+    if (/指挥|将军|司令|边防|舰队|安全局|军|参谋|战术|特遣|防卫/.test(name)) {
+      return getImageUrl("npc_military_commander.png");
+    }
+    // 科学家
+    if (/博士|教授|物理|化学|科学|研究|实验|天文|数学|首席.*学|分析/.test(name)) {
+      return getImageUrl("npc_scientist.png");
+    }
+    // 政务官员
+    if (/秘书长|局长|民政|发言人|联合国|PDC|PIA|政府|部长|行政|总管|理事/.test(name)) {
+      return getImageUrl("npc_official.png");
+    }
+    // 工程师/矿工
+    if (/工程|矿|工厂|建造|维修|技术|总监/.test(name)) {
+      return getImageUrl("npc_engineer.png");
+    }
+    // 医疗人员
+    if (/医|护|卫生|心理|伦理|生物保护/.test(name)) {
+      return getImageUrl("npc_medic.png");
+    }
+    // 反叛/ETO
+    if (/ETO|降临|破壁|叛|恐怖|激进|鼹鼠|青色/.test(name)) {
+      return getImageUrl("npc_rebel.png");
+    }
+    // AI/系统
+    if (/AI|系统|终端|警告|通告|检测|自动|卫星/.test(name)) {
+      return getImageUrl("npc_ai_terminal.png");
+    }
+    // 通讯/监听
+    if (/监听|通讯|信号|观测|频率|深空/.test(name)) {
+      return getImageUrl("npc_comms_officer.png");
+    }
+    // 商人/走私
+    if (/商|走私|黑市|贸易|代言/.test(name)) {
+      return getImageUrl("npc_merchant.png");
+    }
+    // 平民代表
+    if (/代表|工人|居民|难民|民众|工会|群众/.test(name)) {
+      return getImageUrl("npc_civilian.png");
+    }
+
+    // 默认
     return getImageUrl("character_default.png");
   }
 
@@ -86,6 +169,9 @@ export class GameEventManager {
     this.events = this.parseEventData(eventsData);
     this.randomEvents = this.parseEventData(randomEventsData);
     this.seedFilteredEvents();
+
+    this.events = this.events.map(e => normalizeEventMeta(e));
+    this.randomEvents = this.randomEvents.map(e => normalizeEventMeta(e));
 
     if (this.events.length === 0) {
       console.warn("Event data empty, adding fallback welcome event.");
@@ -152,7 +238,7 @@ export class GameEventManager {
           { speakerName: "联合政府发言人", content: "经过充分论证，流浪地球计划是人类唯一的生路。", avatarUrl: this.mapAvatar("default") },
           { speakerName: "反对派", content: "这是拿全人类的生命在赌博！我们需要数字方舟方案！", avatarUrl: this.mapAvatar("default") }
         ],
-        condition: { minYear: 100, epoch: "CRISIS", reqTech: "行星发动机基础" },
+        condition: { minYear: 100, epoch: "CRISIS", reqTech: "行星发动机基础", loreDomain: "liu_cixin_crossover" },
         choices: [
           { label: "启动流浪地球计划", effects: [{ type: "flag", target: "wandering_chosen", value: 1 }, { type: "resource", target: "economy", value: -100 }, { type: "resource", target: "prestige", value: 30 }] },
           { label: "转向数字方舟方案", effects: [{ type: "flag", target: "digital_ark_chosen", value: 1 }, { type: "resource", target: "culture", value: 50 }] }
@@ -466,6 +552,8 @@ export class GameEventManager {
     const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
     const currentEpoch = epochNames[game.epoch];
 
+    if (cond.loreDomain && game.loreMode === 'strict_three_body' && cond.loreDomain !== 'three_body_canon') return false;
+
     if (cond.minYear !== undefined && game.year < cond.minYear) return false;
     if (cond.maxYear !== undefined && game.year > cond.maxYear) return false;
     if (cond.epoch && !this.isEpochMatch(cond.epoch, currentEpoch)) return false;
@@ -478,7 +566,7 @@ export class GameEventManager {
     if (cond.minDeterrence !== undefined && e.deterrenceValue < cond.minDeterrence) return false;
     if (cond.maxTreachery !== undefined && e.treachery > cond.maxTreachery) return false;
 
-    if (cond.probability && Math.random() > cond.probability) return false;
+    if (cond.probability && game.rng() > cond.probability) return false;
 
     return true;
   }
@@ -505,7 +593,7 @@ export class GameEventManager {
         dialogNodes = data.dialogQueue.map((node: any) => ({
           speakerName: node.speakerName,
           content: node.content,
-          avatarUrl: this.mapAvatar(node.avatarUrl)
+          avatarUrl: this.mapAvatar(node.avatarUrl, node.speakerName)
         }));
       } else {
         const talkCount = data.talkcount || 1;
@@ -518,7 +606,7 @@ export class GameEventManager {
             dialogNodes.push({
               speakerName: speaker,
               content: content,
-              avatarUrl: this.mapAvatar(pic)
+              avatarUrl: this.mapAvatar(pic, speaker)
             });
           }
         }
@@ -561,13 +649,14 @@ export class GameEventManager {
     const game = GameInstance.get();
     const currentEpoch = game.epoch;
     const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
-    let epochName = epochNames[currentEpoch];
+    const epochName = epochNames[currentEpoch];
 
-    const pool = [...this.randomEvents].sort(() => Math.random() - 0.5);
+    const eligible: GameEvent[] = [];
 
-    for (const e of pool) {
-      const prob = e.triggerCondition?.probability ?? 0.4;
-      if (Math.random() > prob) continue;
+    for (const e of this.randomEvents) {
+      if (!isEventEligible(e, game, this.lastLaneTriggeredYear, this.randomEventTriggerCounts, this.lastAnyEventYear)) continue;
+
+      const prob = (e.cadenceMeta?.probability) ?? 0.02;
 
       if (e.triggerCondition?.epoch && !this.isEpochMatch(e.triggerCondition.epoch, epochName)) {
         continue;
@@ -579,10 +668,21 @@ export class GameEventManager {
         }
       }
 
-      return e;
+      e.cadenceMeta!.probability = prob;
+      eligible.push(e);
     }
 
-    return null;
+    const picked = pickWeightedEvent(eligible, () => game.rng());
+    if (picked) {
+      const count = this.randomEventTriggerCounts.get(picked.id || picked.name) || 0;
+      this.randomEventTriggerCounts.set(picked.id || picked.name, count + 1);
+
+      const lane = picked.cadenceMeta?.lane || 'ambient';
+      this.lastLaneTriggeredYear.set(lane, game.year);
+      this.lastAnyEventYear = game.year;
+    }
+
+    return picked;
   }
 }
 

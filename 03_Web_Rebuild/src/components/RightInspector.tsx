@@ -4,6 +4,7 @@ import { GameInstance } from '../core/Game';
 import { Star } from '../core/Star';
 import { createFleet } from '../core/Fleet';
 import weaponsData from '../data/weapons.json';
+import { STAR_INDEX } from '../config/starIndices';
 
 export const RightInspector: React.FC = () => {
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
@@ -26,7 +27,7 @@ export const RightInspector: React.FC = () => {
 
   const game = GameInstance.get();
   const star = selectedStar || (() => {
-    const earth = game.starManager.getStar(4);
+    const earth = game.starManager.getStar(STAR_INDEX.EARTH);
     return earth || null;
   })();
 
@@ -84,9 +85,9 @@ export const RightInspector: React.FC = () => {
     if (earth.economy >= 100) {
       earth.economy -= 100;
       const fleet = createFleet("地球舰队", "地球", star.index, 0, 0);
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 0 });
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 0 });
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 0 });
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
       fleet.leaderName = "章北海";
       earth.fleets.push(fleet);
       game.addHistory(`在 ${star.name} 开始建造恒星级战舰编队（3艘，消耗 100 经济），舰队已就绪等待出击。`);
@@ -97,11 +98,11 @@ export const RightInspector: React.FC = () => {
     }
   };
   const handleDispatchFleet = () => {
-    const fleet = createFleet("地球第一舰队", "地球", star.index, 5, 3);
+    const fleet = createFleet("地球第一舰队", "地球", star.index, STAR_INDEX.MARS, 3);
     fleet.leaderName = "章北海";
     fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
     earth.fleets.push(fleet);
-    game.addHistory(`【出征】组建 ${fleet.name} 离开 ${star.name}，目标木星，预计 3 回合后抵达。`);
+    game.addHistory(`【出征】组建 ${fleet.name} 离开 ${star.name}，目标火星，预计 3 回合后抵达。`);
     forceUpdate(n => n + 1);
     window.dispatchEvent(new CustomEvent('game-turn-complete'));
   };
@@ -267,7 +268,7 @@ export const RightInspector: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <Zap className="text-[var(--color-primary)]" size={18} />
                     <div className="text-left">
-                      <div className="text-sm font-bold">建造战舰 (10 艘)</div>
+                      <div className="text-sm font-bold">建造战舰 (3 艘)</div>
                       <div className="text-[10px] text-[var(--text-secondary)]">消耗 100 经济</div>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ import { Star, createEmptyStar } from "./Star";
 import starsData from "../data/stars.json";
 import { generateStars } from "./StarGenerator";
 import { StarArea } from "../types/enums";
+import { STAR_INDEX } from "../config/starIndices";
 
 export class StarManager {
   public stars: Map<number, Star> = new Map();
@@ -31,8 +32,8 @@ export class StarManager {
     const galaxyStars = generateStars(2002, 201, 800, [50, 2000], [50, 1000], "GLX");
     galaxyStars.forEach(star => this.stars.set(star.index, star));
 
-    // BUG-01 Fix: Initialize Earth (Index 3)
-    const earth = this.stars.get(3);
+    // Initialize Earth
+    const earth = this.stars.get(STAR_INDEX.EARTH);
     if (earth) {
       earth.belongToCivi = "地球";
       earth.found = true;

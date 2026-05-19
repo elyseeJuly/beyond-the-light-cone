@@ -1,4 +1,4 @@
-import { EpochType, EventEffect, FriendshipType, TecTreeType, VictoryType, EventType } from "../types/enums";
+import { EpochType, EventEffect, FriendshipType, TecTreeType, VictoryType, EventType, DefeatType, LoreMode } from "../types/enums";
 import { StarManager } from "./StarManager";
 import { PersonManager } from "./PersonManager";
 import { WeaponManager } from "./WeaponManager";
@@ -10,6 +10,11 @@ import { TecTree } from "./TecTree";
 import { GameEventPayload, VictoryCondition, FilteredEventPayload } from "../types/narrative";
 import { createFleet } from "./Fleet";
 import { createGameEvent } from "./GameEvent";
+import { EVENT_BUDGET } from "./EventCadence";
+
+export interface RngProvider {
+  random(): number;
+}
 
 export class Game {
   public year: number = 0;
@@ -30,10 +35,14 @@ export class Game {
   public isGameOver: boolean = false;
   public gameOverReason: string = "";
   public victoryType: VictoryType | null = null;
+  public defeatType: DefeatType | null = null;
   public isProcessing: boolean = false;
 
   public flags: Set<string> = new Set();
   public filteredEvents: FilteredEventPayload[] = [];
+  public loreMode: LoreMode = 'strict_three_body';
+
+  private _rngProvider: RngProvider | null = null;
 
   constructor() {
     this.starManager = new StarManager();
@@ -43,6 +52,24 @@ export class Game {
 
     this.earthCivi = new EarthCivilization();
     this.alienCiviManager = new AlienCiviManager();
+  }
+
+  public setRngProvider(provider: RngProvider): void {
+    this._rngProvider = provider;
+    this.earthCivi.setRngProvider(provider);
+    this.alienCiviManager.setRngProvider(provider);
+  }
+
+  public rng(): number {
+    return this._rngProvider ? this._rngProvider.random() : Math.random();
+  }
+
+  public rngChance(probability: number): boolean {
+    return this.rng() < probability;
+  }
+
+  public rngInt(min: number, max: number): number {
+    return min + Math.floor(this.rng() * (max - min + 1));
   }
 
   public getYear(): number {
@@ -126,16 +153,24 @@ export class Game {
       this.addHistory("...正在检索纪元剧情事件");
       const triggeredEvents = this.eventManager.checkEvents(this.year);
 
+      const hasMilestone = triggeredEvents.some(e => e.cadenceMeta?.lane === 'milestone');
+
       this.addHistory("...正在评估随机叙事事件");
-      const randomEvent = this.eventManager.checkRandomEvents();
-      if (randomEvent) {
-        triggeredEvents.push(randomEvent);
+      if (!hasMilestone) {
+        const randomEvent = this.eventManager.checkRandomEvents();
+        if (randomEvent) {
+          triggeredEvents.push(randomEvent);
+        }
       }
 
       this.addHistory("...正在检查条件过滤事件");
       const filteredEvts = this.eventManager.getFilteredEventsForTurn();
       for (const fev of filteredEvts) {
-        if (Math.random() > 0.5) continue;
+        if (!this.rngChance(0.5)) continue;
+
+        const totalEventsThisTurn = triggeredEvents.length;
+        if (totalEventsThisTurn >= EVENT_BUDGET.maxEventsPerTurn) break;
+
         this.addHistory(`触发条件事件: ${fev.title}`);
         this.eventManager.markFilteredEventTriggered(fev.id, this.year);
 
@@ -224,6 +259,21 @@ export class Game {
   public checkVictoryConditions(): void {
     const conditions: VictoryCondition[] = [
       {
+        type: "HIDDEN",
+        label: "死神永生 · 小宇宙",
+        description: "归零者的讯息抵达，人类选择将小宇宙的质量归还大宇宙，文明化为永恒的生态球",
+        check: () => {
+          if (this.year < 350 || this.epoch < EpochType.GALAXY) return false;
+          if (this.earthCivi.culture < 800) return false;
+          if (!this.hasFlag("galaxy_exodus_seen")) return false;
+          if (!this.hasFlag("alien_alliance")) return false;
+          if (this.earthCivi.population <= 0) return false;
+          if (this.earthCivi.deterrenceValue < 30) return false;
+          const tm = this.earthCivi.tecTreeManager;
+          return tm.isTecFinishedAnywhere("黑域生成") || tm.isTecFinishedAnywhere("数字方舟");
+        }
+      },
+      {
         type: "WANDERING",
         label: "流浪胜利",
         description: "完成行星发动机Ⅲ型与新家园选址，带领地球踏上星辰大海",
@@ -248,7 +298,8 @@ export class Game {
         check: () => {
           return this.epoch >= EpochType.DETERRENCE &&
                  this.earthCivi.swordholder !== null &&
-                 this.earthCivi.population > 0;
+                 this.earthCivi.population > 0 &&
+                 this.earthCivi.deterrenceValue >= 80;
         }
       },
       {
@@ -264,7 +315,7 @@ export class Game {
         label: "黑域胜利",
         description: "完成黑域生成技术，发布宇宙安全声明",
         check: () => {
-          return this.earthCivi.tecTreeManager.isTecFinished(TecTreeType.PHYSICS, "黑域生成");
+          return this.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成");
         }
       },
     ];
@@ -274,6 +325,7 @@ export class Game {
         this.isGameOver = true;
         this.gameOverReason = `${cond.label}: ${cond.description}`;
         this.victoryType = VictoryType[cond.type as keyof typeof VictoryType];
+        this.playerTimeline.push({ year: this.year, event: `【大结局】达成 ${cond.label}` });
         window.dispatchEvent(new CustomEvent('game-over'));
         return;
       }
@@ -281,21 +333,29 @@ export class Game {
 
     if (this.earthCivi.treachery >= 100) {
       this.isGameOver = true;
+      this.defeatType = DefeatType.TREACHERY;
       this.gameOverReason = "逃亡主义失控：人类放弃了最后的希望，文明在内耗中走向崩溃。";
+      this.playerTimeline.push({ year: this.year, event: '【终结】逃亡主义吞噬了文明最后的秩序' });
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
 
     if (this.earthCivi.population <= 0) {
       this.isGameOver = true;
+      this.defeatType = DefeatType.EXTINCTION;
       this.gameOverReason = "文明灭绝：地球已成为一颗死寂的星球。";
+      this.playerTimeline.push({ year: this.year, event: '【终结】最后的人类在沉默中消逝' });
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
 
-    if (this.year > 400 && this.epoch < EpochType.GALAXY) {
+    if (this.year > 350 && !this.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成") && !this.earthCivi.tecTreeManager.isTecFinishedAnywhere("数字方舟") && !this.hasFlag("dimensional_defense") && !this.hasFlag("wandering_chosen")) {
       this.isGameOver = true;
-      this.gameOverReason = "太阳氦闪：漫长的等待终结于刺眼的白光，地球未能逃离。";
+      this.defeatType = DefeatType.HELIUM_FLASH;
+      this.gameOverReason = this.loreMode === 'strict_three_body'
+        ? "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。"
+        : "太阳氦闪：漫长的等待终结于刺眼的白光，地球未能逃离。";
+      this.playerTimeline.push({ year: this.year, event: this.loreMode === 'strict_three_body' ? '【终结】二向箔降维打击抹去了整个太阳系' : '【终结】太阳的死亡终结了一切' });
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
@@ -524,7 +584,20 @@ export class GameInstance {
     safeSP(inst.starManager, StarManager.prototype);
     safeSP(inst.personManager, PersonManager.prototype);
     safeSP(inst.eventManager, GameEventManager.prototype);
-    inst.eventManager?.init();
+    if (inst.eventManager && (!inst.eventManager.events || inst.eventManager.events.length === 0)) {
+      inst.eventManager.init();
+    }
+    if (inst.eventManager) {
+      if (!(inst.eventManager.lastLaneTriggeredYear instanceof Map)) {
+        inst.eventManager.lastLaneTriggeredYear = new Map(Object.entries(inst.eventManager.lastLaneTriggeredYear || {})) as Map<import('../types/enums').EventLane, number>;
+      }
+      if (!(inst.eventManager.randomEventTriggerCounts instanceof Map)) {
+        inst.eventManager.randomEventTriggerCounts = new Map(Object.entries(inst.eventManager.randomEventTriggerCounts || {}));
+      }
+      if (!(inst.eventManager.lastTagTriggeredYear instanceof Map)) {
+        inst.eventManager.lastTagTriggeredYear = new Map(Object.entries(inst.eventManager.lastTagTriggeredYear || {}));
+      }
+    }
 
     if (inst.earthCivi?.tecTreeManager?.trees) {
       for (const tree of inst.earthCivi.tecTreeManager.trees.values()) {
@@ -573,8 +646,7 @@ export class GameInstance {
   }
 
   private static replacer(_key: string, value: any) {
-    // 排除运行时状态，防止存档死锁
-    if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing') {
+    if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider') {
       return undefined;
     }
 

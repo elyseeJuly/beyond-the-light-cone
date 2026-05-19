@@ -1,4 +1,16 @@
-import { EventEffect, EpochType } from "./enums";
+import { EventEffect, EpochType, EventLane, LoreDomain } from "./enums";
+
+export interface EventCadenceMeta {
+  lane: EventLane;
+  loreDomain: LoreDomain;
+  weight: number;
+  probability?: number;
+  minGapTurns?: number;
+  cooldownYears?: number;
+  maxTriggers?: number;
+  tags?: string[];
+  severity?: 1 | 2 | 3 | 4 | 5;
+}
 
 export interface DialogNode {
   speakerName: string;
@@ -42,6 +54,7 @@ export interface FilteredEventCondition {
   maxTreachery?: number;
   friendshipReq?: { alienName: string; minLevel: number; };
   probability?: number;
+  loreDomain?: LoreDomain;
 }
 
 export interface FilteredEventPayload {

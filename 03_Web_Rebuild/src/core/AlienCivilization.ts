@@ -5,6 +5,7 @@ import { createFleet } from "./Fleet";
 import { CombatEngine } from "./CombatEngine";
 import { createBarback } from "./Barback";
 import aliensData from "../data/aliens.json";
+import type { RngProvider } from "./Game";
 
 export class AlienCivilization extends Civilization {
   public typeIndex: number;
@@ -12,6 +13,8 @@ export class AlienCivilization extends Civilization {
   public attackCooldown: number = 0;
   public lastAttackYear: number = 0;
   public starsys: number = 0;
+
+  private _rngProvider: RngProvider | null = null;
 
   constructor(name: string, typeIndex: number, personality: AiPersonality, starsys: number = 1) {
     super(name);
@@ -24,6 +27,14 @@ export class AlienCivilization extends Civilization {
     this.resource = 1000;
   }
 
+  public setRngProvider(provider: RngProvider): void {
+    this._rngProvider = provider;
+  }
+
+  private rng(): number {
+    return this._rngProvider ? this._rngProvider.random() : Math.random();
+  }
+
   public runARound(): void {
     if (this.isDieOut()) return;
     const game = GameInstance.get();
@@ -34,9 +45,9 @@ export class AlienCivilization extends Civilization {
   }
 
   private growEconomy(): void {
-    this.resource += Math.floor(Math.random() * 10);
+    this.resource += Math.floor(this.rng() * 10);
     this.army += 2;
-    if (Math.random() < 0.12) this.population += Math.floor(Math.random() * 10) + 5;
+    if (this.rng() < 0.12) this.population += Math.floor(this.rng() * 10) + 5;
   }
 
   private ageBehavior(game: any): void {
@@ -72,12 +83,12 @@ export class AlienCivilization extends Civilization {
   }
 
   private hunterBehavior(game: any, deterrenceRate: number): void {
-    if (!game.earthCivi.isDieOut() && deterrenceRate < 90 && Math.random() < 0.18) {
+    if (!game.earthCivi.isDieOut() && deterrenceRate < 90 && this.rng() < 0.18) {
       if (game.epoch === EpochType.DETERRENCE || game.epoch === EpochType.BROADCAST) {
-        if (Math.random() < 0.3) return;
+        if (this.rng() < 0.3) return;
       }
       if (this.attackCooldown === 0) {
-        this.attackCooldown = 5 + Math.floor(Math.random() * 6);
+        this.attackCooldown = 5 + Math.floor(this.rng() * 6);
         game.addHistory(`【情报】${this.name} 舰队正在集结，预计 ${this.attackCooldown} 年后抵达太阳系。`);
       } else if (this.attackCooldown > 1) {
         this.attackCooldown--;
@@ -90,9 +101,9 @@ export class AlienCivilization extends Civilization {
   }
 
   private cleanerBehavior(game: any, deterrenceRate: number): void {
-    if (!game.earthCivi.isDieOut() && deterrenceRate < 70 && Math.random() < 0.12) {
+    if (!game.earthCivi.isDieOut() && deterrenceRate < 70 && this.rng() < 0.12) {
       if (this.attackCooldown === 0) {
-        this.attackCooldown = 3 + Math.floor(Math.random() * 4);
+        this.attackCooldown = 3 + Math.floor(this.rng() * 4);
         game.addHistory(`【侦测】探测到 ${this.name} 具有清理倾向！舰队正在接近。`);
       } else if (this.attackCooldown > 1) {
         this.attackCooldown--;
@@ -104,11 +115,11 @@ export class AlienCivilization extends Civilization {
   }
 
   private expansionistBehavior(game: any, deterrenceRate: number): void {
-    if (Math.random() < 0.10) {
+    if (this.rng() < 0.10) {
       const allStars = game.starManager.getAllStars();
       const unowned = allStars.filter((s: any) => s.isPlanet && !s.belongToCivi && s.index > 8);
       if (unowned.length > 0 && deterrenceRate < 80) {
-        const target = unowned[Math.floor(Math.random() * unowned.length)];
+        const target = unowned[Math.floor(this.rng() * unowned.length)];
         target.belongToCivi = this.name;
         this.starIndices.add(target.index);
         game.addHistory(`${this.name} 扩张至 ${target.name}。`);
@@ -117,20 +128,20 @@ export class AlienCivilization extends Civilization {
   }
 
   private defensiveBehavior(game: any, _deterrenceRate: number): void {
-    if (Math.random() < 0.05) {
+    if (this.rng() < 0.05) {
       game.addHistory(`${this.name} 保持防御态势，加固现有领地。`);
     }
     this.army += 5;
   }
 
   private opportunistBehavior(game: any, deterrenceRate: number): void {
-    if (this.friendshipType >= FriendshipType.FRIEND && Math.random() < 0.08) {
+    if (this.friendshipType >= FriendshipType.FRIEND && this.rng() < 0.08) {
       const received = Math.min(100, Math.floor(game.earthCivi.economy * 0.1));
       game.earthCivi.economy -= received;
       game.addHistory(`${this.name} 以友好名义索取了 ${received} 经济援助。`);
       return;
     }
-    if (deterrenceRate < 50 && Math.random() < 0.25) {
+    if (deterrenceRate < 50 && this.rng() < 0.25) {
       this.launchFleetAttack(game, 3);
     }
   }
@@ -204,6 +215,12 @@ export class AlienCiviManager {
       }
     }
     return this.aliens.size > 0;
+  }
+
+  public setRngProvider(provider: RngProvider): void {
+    for (const alien of this.aliens.values()) {
+      alien.setRngProvider(provider);
+    }
   }
 
   public runARound(): void {

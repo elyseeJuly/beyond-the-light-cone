@@ -1,9 +1,9 @@
 import { EventEffect, EventType, EpochType } from "../types/enums";
-import { DialogNode } from "../types/narrative";
+import { DialogNode, EventCadenceMeta } from "../types/narrative";
 
 export interface GameEventChoice {
   label: string;
-  effects?: any[]; // 对应 JSON 中的 effects
+  effects?: any[];
   action?: () => void;
 }
 
@@ -11,6 +11,13 @@ export interface TriggerCondition {
   epoch?: string | EpochType;
   probability?: number;
   reqTech?: string | null;
+  lane?: string;
+  loreDomain?: string;
+  weight?: number;
+  cooldownYears?: number;
+  maxTriggers?: number;
+  tags?: string[];
+  severity?: number;
 }
 
 export interface GameEvent {
@@ -25,6 +32,7 @@ export interface GameEvent {
   triggerCondition?: TriggerCondition;
   choices?: GameEventChoice[];
   effects?: any[];
+  cadenceMeta?: EventCadenceMeta;
 }
 
 export function createGameEvent(

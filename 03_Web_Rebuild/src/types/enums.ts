@@ -68,6 +68,12 @@ export enum VictoryType {
   COUNT = 6
 }
 
+export enum DefeatType {
+  TREACHERY = 0,
+  EXTINCTION = 1,
+  HELIUM_FLASH = 2,
+}
+
 export enum WeaponType {
   UNIT = 0,
   EXPENDABLE = 1,
@@ -104,3 +110,9 @@ export enum EventEffect {
   MOON_CRISIS = 6,
   WANDERING_EARTH = 7
 }
+
+export type EventLane = 'milestone' | 'major' | 'ambient' | 'crisis' | 'character';
+
+export type LoreDomain = 'three_body_canon' | 'liu_cixin_crossover' | 'original_expansion';
+
+export type LoreMode = 'strict_three_body' | 'liu_cixin_mixed' | 'sandbox';

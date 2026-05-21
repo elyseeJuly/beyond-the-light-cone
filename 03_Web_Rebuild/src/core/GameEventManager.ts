@@ -82,7 +82,9 @@ export class GameEventManager {
       "zhuhanyang": "character_zhuhanyang_1778833149488.png",
       "liucixin": "character_liucixin_1778819370180.png",
       "keiko": "character_keiko_1778724347302.png",
-      "shanshanhuizi": "character_keiko_1778724347302.png"
+      "shanshanhuizi": "character_keiko_1778724347302.png",
+      "say": "character_say_1779341254257.png",
+      "sayi": "character_say_1779341254257.png"
     };
 
     if (mapping[name]) return getImageUrl(mapping[name]);
@@ -191,8 +193,8 @@ export class GameEventManager {
         title: "面壁者选拔",
         tip: "联合国行星防御理事会(PCD)正在选拔面壁者。",
         dialogQueue: [
-          { speakerName: "联合国秘书长", content: "女士们先生们，现在是人类文明存亡的危急关头。我们正式启动面壁计划。", avatarUrl: this.mapAvatar("default") },
-          { speakerName: "萨伊", content: "四位面壁者将获得人类文明的全部资源支持。", avatarUrl: this.mapAvatar("default") }
+          { speakerName: "联合国秘书长", content: "女士们先生们，现在是人类文明存亡的危急关头。我们正式启动面壁计划。", avatarUrl: this.mapAvatar("default", "联合国秘书长") },
+          { speakerName: "萨伊", content: "四位面壁者将获得人类文明的全部资源支持。", avatarUrl: this.mapAvatar("say") }
         ],
         condition: { minYear: 10, maxYear: 50, epoch: "CRISIS", minCulture: 30 },
         choices: [
@@ -235,8 +237,8 @@ export class GameEventManager {
         title: "流浪地球大辩论",
         tip: "面对即将到来的太阳氦闪，人类必须在多个方案中做出选择。",
         dialogQueue: [
-          { speakerName: "联合政府发言人", content: "经过充分论证，流浪地球计划是人类唯一的生路。", avatarUrl: this.mapAvatar("default") },
-          { speakerName: "反对派", content: "这是拿全人类的生命在赌博！我们需要数字方舟方案！", avatarUrl: this.mapAvatar("default") }
+          { speakerName: "联合政府发言人", content: "经过充分论证，流浪地球计划是人类唯一的生路。", avatarUrl: this.mapAvatar("default", "联合政府发言人") },
+          { speakerName: "反对派", content: "这是拿全人类的生命在赌博！我们需要数字方舟方案！", avatarUrl: this.mapAvatar("default", "反对派") }
         ],
         condition: { minYear: 100, epoch: "CRISIS", reqTech: "行星发动机基础", loreDomain: "liu_cixin_crossover" },
         choices: [
@@ -265,8 +267,8 @@ export class GameEventManager {
         title: "逃亡主义叛乱",
         tip: "逃亡主义的蔓延正在撕裂人类社会的根基。",
         dialogQueue: [
-          { speakerName: "褚岩", content: "我们有权离开！我们有权活下去！", avatarUrl: this.mapAvatar("default") },
-          { speakerName: "联合政府发言人", content: "请保持冷静，逃亡即是背叛全人类。", avatarUrl: this.mapAvatar("default") }
+          { speakerName: "褚岩", content: "我们有权离开！我们有权活下去！", avatarUrl: this.mapAvatar("default", "褚岩") },
+          { speakerName: "联合政府发言人", content: "请保持冷静，逃亡即是背叛全人类。", avatarUrl: this.mapAvatar("default", "联合政府发言人") }
         ],
         condition: { minYear: 60, maxTreachery: 30, epoch: "CRISIS" },
         choices: [
@@ -281,7 +283,7 @@ export class GameEventManager {
         tip: "550W量子计算机研制成功，智子科技封锁出现破口。",
         dialogQueue: [
           { speakerName: "罗辑", content: "智子的监视盲区被我们找到了。", avatarUrl: this.mapAvatar("luoji") },
-          { speakerName: "面壁者", content: "从这一刻开始，真正的面壁计划正式开始。", avatarUrl: this.mapAvatar("default") }
+          { speakerName: "面壁者", content: "从这一刻开始，真正的面壁计划正式开始。", avatarUrl: this.mapAvatar("default", "面壁者") }
         ],
         condition: { minYear: 30, reqTech: "550W量子计算机", reqNotFlag: "sophon_countermeasure_activated" },
         choices: [
@@ -294,7 +296,7 @@ export class GameEventManager {
         title: "全球资源危机",
         tip: "工业扩张导致地球资源链濒临崩溃，各国代表齐聚联合国紧急会议。",
         dialogQueue: [
-          { speakerName: "联合国秘书长", content: "诸位，我们正在消耗地球最后的气力。", avatarUrl: this.mapAvatar("default") },
+          { speakerName: "联合国秘书长", content: "诸位，我们正在消耗地球最后的气力。", avatarUrl: this.mapAvatar("default", "联合国秘书长") },
           { speakerName: "雷迪亚兹", content: "核爆采矿可以在小行星带提供无限资源。", avatarUrl: this.mapAvatar("reydiaz") }
         ],
         condition: { minYear: 25, epoch: "CRISIS", minEconomy: 30 },
@@ -309,7 +311,7 @@ export class GameEventManager {
         title: "联合国紧急大会",
         tip: "面对危机，联合国召开全球领导人大会，决定人类未来的战略方向。",
         dialogQueue: [
-          { speakerName: "萨伊", content: "我们必须在全面军备和文明存续之间做出选择。", avatarUrl: this.mapAvatar("default") },
+          { speakerName: "萨伊", content: "我们必须在全面军备和文明存续之间做出选择。", avatarUrl: this.mapAvatar("say") },
           { speakerName: "泰勒", content: "只有最强大的军队才能保障我们的生存。", avatarUrl: this.mapAvatar("tyler") }
         ],
         condition: { minYear: 15, epoch: "CRISIS", minPopulation: 100 },
@@ -474,7 +476,7 @@ export class GameEventManager {
         title: "文明内讧危机",
         tip: "长期的星际航行导致了社会分裂，舰队内部出现了两个对立的派系。",
         dialogQueue: [
-          { speakerName: "褚岩", content: "我们已经不是地球人类了，应该有新的规则。", avatarUrl: this.mapAvatar("default") },
+          { speakerName: "褚岩", content: "我们已经不是地球人类了，应该有新的规则。", avatarUrl: this.mapAvatar("default", "褚岩") },
           { speakerName: "庄颜", content: "但我们的根永远在那里。分崩离析只会毁灭我们自己。", avatarUrl: this.mapAvatar("zhuangyan") }
         ],
         condition: { minYear: 160, epoch: "BROADCAST", minCulture: 40 },

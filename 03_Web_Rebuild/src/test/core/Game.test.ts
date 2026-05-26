@@ -281,10 +281,10 @@ describe('Game Core Extended', () => {
       }
     });
 
-    it('military target 创建舰队', () => {
-      const before = game.earthCivi.fleets.length;
+    it('military target 增加军力', () => {
+      const before = game.earthCivi.army;
       game.applyNewEffects([{ type: 'resource', target: 'military', value: 2 }]);
-      expect(game.earthCivi.fleets.length).toBe(before + 2);
+      expect(game.earthCivi.army).toBe(before + 2);
     });
 
     it('空effects不崩', () => {

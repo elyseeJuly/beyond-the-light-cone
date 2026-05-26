@@ -12,6 +12,7 @@ import { GameInstance } from './core/Game';
 import { GameEventPayload } from './types/narrative';
 import { EndGameScreen } from './components/EndGameScreen';
 import { AnnouncementBoard } from './components/AnnouncementBoard';
+import { FleetModal } from './components/FleetModal';
 
 export const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -23,6 +24,7 @@ export const App: React.FC = () => {
   const [currentEvent, setCurrentEvent] = useState<GameEventPayload | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showTutorial, setShowTutorial] = useState(() => !localStorage.getItem('game-tutorial-seen'));
+  const [showFleetModal, setShowFleetModal] = useState(false);
 
   // Apply dark mode class to html element
   useEffect(() => {
@@ -42,13 +44,16 @@ export const App: React.FC = () => {
       }
     };
     const handleOpenTutorial = () => setShowTutorial(true);
+    const handleOpenFleetModal = () => setShowFleetModal(true);
     
     window.addEventListener('theme-change', handleThemeChange);
     window.addEventListener('open-tutorial', handleOpenTutorial);
+    window.addEventListener('open-fleet-modal', handleOpenFleetModal);
     
     return () => {
       window.removeEventListener('theme-change', handleThemeChange);
       window.removeEventListener('open-tutorial', handleOpenTutorial);
+      window.removeEventListener('open-fleet-modal', handleOpenFleetModal);
     };
   }, []);
 
@@ -118,6 +123,10 @@ export const App: React.FC = () => {
 
       {showTutorial && (
         <Tutorial onComplete={() => setShowTutorial(false)} />
+      )}
+
+      {showFleetModal && (
+        <FleetModal onClose={() => setShowFleetModal(false)} />
       )}
 
       {isGameOver && <EndGameScreen />}

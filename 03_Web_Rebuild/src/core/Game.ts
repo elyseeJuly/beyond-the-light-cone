@@ -427,13 +427,7 @@ export class Game {
         if (val < 0) {
           switch (eff.target) {
             case 'military':
-              // Negative military effect destroys fleets or reduces army
-              const fleetsToDestroy = Math.min(this.earthCivi.fleets.length, Math.floor(Math.abs(val) / 50));
-              for (let i = 0; i < fleetsToDestroy; i++) {
-                this.earthCivi.fleets.pop();
-              }
-              const dropArmy = Math.min(this.earthCivi.army * 0.5, Math.abs(val));
-              this.earthCivi.army -= dropArmy;
+              this.earthCivi.army -= Math.min(this.earthCivi.army * 0.5, Math.abs(val));
               break;
             case 'economy': this.earthCivi.economy -= Math.min(this.earthCivi.economy * 0.5, Math.abs(val)); break;
             case 'population': this.earthCivi.population -= Math.min(this.earthCivi.population * 0.5, Math.abs(val)); break;
@@ -445,13 +439,8 @@ export class Game {
           }
         } else {
           switch (eff.target) {
-            case 'military':
-              const fleetsToAdd = Math.max(0, val);
-              for (let i = 0; i < fleetsToAdd; i++) {
-                const fleet = createFleet(`第${this.earthCivi.fleets.length + 1}舰队`, "地球", 4, 4, 0);
-                fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 50 });
-                this.earthCivi.fleets.push(fleet);
-              }
+            case 'military': 
+              this.earthCivi.army += val; 
               break;
             case 'economy': this.earthCivi.economy += val; break;
             case 'population': this.earthCivi.population += val; break;

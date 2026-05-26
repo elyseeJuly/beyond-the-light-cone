@@ -81,31 +81,7 @@ export const RightInspector: React.FC = () => {
       alert("经济不足 80 点！");
     }
   };
-  const handleBuildFleet = () => {
-    if (earth.economy >= 100) {
-      earth.economy -= 100;
-      const fleet = createFleet("地球舰队", "地球", star.index, 0, 0);
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
-      fleet.leaderName = null;
-      earth.fleets.push(fleet);
-      game.addHistory(`在 ${star.name} 开始建造恒星级战舰编队（3艘，消耗 100 经济），舰队已就绪等待出击。`);
-      forceUpdate(n => n + 1);
-      window.dispatchEvent(new CustomEvent('game-turn-complete'));
-    } else {
-      alert("经济不足 100 点！");
-    }
-  };
-  const handleDispatchFleet = () => {
-    const fleet = createFleet("地球第一舰队", "地球", star.index, STAR_INDEX.MARS, 3);
-    fleet.leaderName = null;
-    fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
-    earth.fleets.push(fleet);
-    game.addHistory(`【出征】组建 ${fleet.name} 离开 ${star.name}，目标火星，预计 3 回合后抵达。`);
-    forceUpdate(n => n + 1);
-    window.dispatchEvent(new CustomEvent('game-turn-complete'));
-  };
+
 
   return (
     <aside className="w-80 h-full glass-panel border-l border-white/5 flex flex-col p-6 animate-in slide-in-from-right duration-300">
@@ -263,90 +239,18 @@ export const RightInspector: React.FC = () => {
 
             <section className="space-y-3">
               <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-primary)]">军工与舰队</h3>
-              <div className="space-y-2">
-                <button onClick={handleBuildFleet} className="w-full flex items-center justify-between p-3 rounded-lg border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 transition-all">
-                  <div className="flex items-center gap-3">
-                    <Zap className="text-[var(--color-primary)]" size={18} />
-                    <div className="text-left">
-                      <div className="text-sm font-bold">建造战舰 (3 艘)</div>
-                      <div className="text-[10px] text-[var(--text-secondary)]">消耗 100 经济</div>
-                    </div>
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent('open-fleet-modal'))}
+                className="w-full flex items-center justify-between p-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 transition-all shadow-lg shadow-cyan-900/20"
+              >
+                <div className="flex items-center gap-3">
+                  <Rocket className="text-cyan-400" size={18} />
+                  <div className="text-left">
+                    <div className="text-sm font-bold text-cyan-50">🚀 舰队指挥中心</div>
+                    <div className="text-[10px] text-cyan-400/60">当前现役: {earth.fleets.length} 支舰队</div>
                   </div>
-                </button>
-                <button onClick={handleDispatchFleet} className="w-full flex items-center justify-between p-3 rounded-lg border border-orange-500/30 hover:bg-orange-500/10 transition-all">
-                  <div className="flex items-center gap-3">
-                    <Rocket className="text-orange-500" size={18} />
-                    <div className="text-left">
-                      <div className="text-sm font-bold text-orange-400">🚀 派遣舰队</div>
-                      <div className="text-[10px] text-[var(--text-secondary)]">目标: 木星</div>
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              {earth.fleets.filter(f => f.weapons.length > 0).length > 0 && (
-                <div className="mt-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Wrench size={12} className="text-[var(--text-secondary)]" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">武器建造进度</span>
-                  </div>
-                  {earth.fleets.filter(f => f.weapons.length > 0).map((fleet) => (
-                    <div key={fleet.id} className="bg-black/5 dark:bg-white/5 rounded-lg border border-white/5 p-2.5">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-1.5">
-                          <Anchor size={12} className="text-[var(--color-primary)]" />
-                          <span className="text-[11px] font-bold truncate max-w-[140px]">{fleet.name}</span>
-                        </div>
-                        <select
-                          value={fleet.leaderName || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (val) {
-                              const p = game.personManager.getPerson(val);
-                              if (p) {
-                                fleet.leaderName = val;
-                                forceUpdate(n => n + 1);
-                              }
-                            } else {
-                              fleet.leaderName = null;
-                              forceUpdate(n => n + 1);
-                            }
-                          }}
-                          className="bg-transparent border-none text-[9px] text-[var(--text-secondary)] outline-none cursor-pointer hover:text-white"
-                        >
-                          <option value="">未指派</option>
-                          {Array.from(game.personManager.availablePersons).map(name => {
-                            const p = game.personManager.getPerson(name);
-                            if (p && p.army > 0) return <option key={name} value={name}>{name}</option>;
-                            return null;
-                          })}
-                        </select>
-                      </div>
-                      {fleet.weapons.map((wp, wi) => {
-                        const proto = (weaponsData as any[]).find((w: any) => w.name === wp.weaponName);
-                        const totalBuild = proto?.totalBuild ?? 100;
-                        const pct = Math.min((wp.currentBuild / totalBuild) * 100, 100);
-                        const isFinished = wp.currentBuild >= totalBuild;
-                        return (
-                          <div key={wi} className="flex items-center gap-2 mb-1 last:mb-0">
-                            <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isFinished ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                            <span className="text-[10px] text-[var(--text-secondary)] flex-shrink-0 w-14 truncate">{wp.weaponName}</span>
-                            <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                              <div
-                                className={`h-full rounded-full transition-all ${isFinished ? 'bg-green-500' : 'bg-yellow-500'}`}
-                                style={{ width: `${pct}%` }}
-                              />
-                            </div>
-                            <span className={`text-[9px] font-bold flex-shrink-0 w-8 text-right ${isFinished ? 'text-green-500' : 'text-[var(--text-secondary)]'}`}>
-                              {isFinished ? '✓' : `${Math.floor(pct)}%`}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))}
                 </div>
-              )}
+              </button>
             </section>
           </>
         )}

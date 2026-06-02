@@ -70,6 +70,8 @@ export class GameEventManager {
       "dingyi": "unified_dingyi_1779691512032.png",
       "evans": "unified_evans_1779691557999.png",
       "yiwensi": "unified_evans_1779691557999.png",
+      "lin": "unified_linyun_1779691542667.png",
+      "guan": "unified_guanyifan_1779691901857.png",
       "yangdong": "unified_yangdong_1779691583143.png",
       "changweisi": "unified_changweisi_1779691759159.png",
       "dongfang": "unified_dongfang_1779691773663.png",
@@ -80,18 +82,18 @@ export class GameEventManager {
       "yiyi": "character_yiyi_1778724524669.png",
       "hawking": "character_hawking_1778726088806.png",
       "huoking": "character_hawking_1778726088806.png",
-      "zhuangyan": "character_zhuangyan_1778724322851.png",
-      "shuiwa": "character_shuiwa_1778726120500.png",
-      "leizhicheng": "character_leizhicheng_1778818873520.png",
-      "yangweining": "character_yangweining_1778818900159.png",
+      "zhuangyan": "unified_zhuangyan_1779712921189.png",
+      "shuiwa": "unified_shuiwa_1779712987486.png",
+      "leizhicheng": "unified_leizhicheng_1779713006589.png",
+      "yangweining": "unified_yangweining_1779713020653.png",
       "yanjing": "character_yanjing_1778819395854.png",
-      "baibing": "character_baibing_1778819424975.png",
-      "miaofuquan": "character_miaofuquan_1778818954566.png",
-      "huatang": "character_huatang_1778819276066.png",
-      "zhuhanyang": "character_zhuhanyang_1778833149488.png",
-      "liucixin": "character_liucixin_1778819370180.png",
-      "keiko": "character_keiko_1778724347302.png",
-      "shanshanhuizi": "character_keiko_1778724347302.png",
+      "baibing": "unified_baibing_1779713036549.png",
+      "miaofuquan": "unified_miaofuquan_1779713095135.png",
+      "huatang": "unified_huatang_1779713110568.png",
+      "zhuhanyang": "unified_zhuhanyang_1779713125007.png",
+      "liucixin": "unified_liucixin_1779712937103.png",
+      "keiko": "unified_keiko_1779713141458.png",
+      "shanshanhuizi": "unified_keiko_1779713141458.png",
       "say": "character_say_1779341254257.png",
       "sayi": "character_say_1779341254257.png"
     };
@@ -212,7 +214,7 @@ export class GameEventManager {
           { speakerName: "联合国秘书长", content: "女士们先生们，现在是人类文明存亡的危急关头。我们正式启动面壁计划。", avatarUrl: this.mapAvatar("default", "联合国秘书长") },
           { speakerName: "萨伊", content: "四位面壁者将获得人类文明的全部资源支持。", avatarUrl: this.mapAvatar("say") }
         ],
-        condition: { minYear: 10, maxYear: 50, epoch: "CRISIS", minCulture: 30 },
+        condition: { minYear: 10, maxYear: 50, epoch: "CRISIS", minCulture: 10 },
         choices: [
           { label: "全力支持面壁计划", effects: [{ type: "flag", target: "wallfacer_project", value: 1 }, { type: "resource", target: "culture", value: 20 }] },
           { label: "谨慎观望", effects: [{ type: "flag", target: "wallfacer_cautious", value: 1 }, { type: "resource", target: "military", value: 2 }] }
@@ -240,7 +242,7 @@ export class GameEventManager {
           { speakerName: "智子", content: "你们是虫子。", avatarUrl: this.mapAvatar("sophon") },
           { speakerName: "丁仪", content: "我们的基础物理学...被锁死了。", avatarUrl: this.mapAvatar("dingyi") }
         ],
-        condition: { minYear: 10, maxYear: 200, epoch: "CRISIS", reqNotFlag: "sophon_broken" },
+        condition: { minYear: 10, maxYear: 300, epoch: "CRISIS", reqNotFlag: "sophon_broken" },
         choices: [
           { label: "加速研发量子计算机", effects: [{ type: "flag", target: "quantum_focus", value: 1 }, { type: "resource", target: "economy", value: -20 }] },
           { label: "放弃基础物理，主攻应用技术", effects: [{ type: "flag", target: "applied_tech_focus", value: 1 }, { type: "resource", target: "economy", value: 30 }] }
@@ -286,8 +288,7 @@ export class GameEventManager {
         choices: [
           { label: "严厉打击逃亡主义", effects: [{ type: "resource", target: "treachery", value: -15 }, { type: "resource", target: "military", value: 3 }] },
           { label: "疏导安抚民心", effects: [{ type: "resource", target: "treachery", value: -5 }, { type: "resource", target: "culture", value: 15 }] }
-        ],
-        cooldownYears: 15
+        ]
       },
       {
         id: "sophon_countermeasure",
@@ -314,8 +315,7 @@ export class GameEventManager {
         choices: [
           { label: "推进小行星带采矿计划", effects: [{ type: "flag", target: "asteroid_mining", value: 1 }, { type: "resource", target: "economy", value: -40 }, { type: "resource", target: "resource", value: 80 }] },
           { label: "实施全球资源配给制", effects: [{ type: "resource", target: "economy", value: -10 }, { type: "resource", target: "treachery", value: 10 }, { type: "resource", target: "prestige", value: -10 }] }
-        ],
-        cooldownYears: 20
+        ]
       },
       {
         id: "united_nations_assembly",
@@ -329,8 +329,7 @@ export class GameEventManager {
         choices: [
           { label: "以军事为优先", effects: [{ type: "flag", target: "military_first", value: 1 }, { type: "resource", target: "military", value: 5 }, { type: "resource", target: "culture", value: -10 }] },
           { label: "科技与文化并重", effects: [{ type: "flag", target: "balanced_approach", value: 1 }, { type: "resource", target: "culture", value: 15 }, { type: "resource", target: "prestige", value: 10 }] }
-        ],
-        cooldownYears: 18
+        ]
       },
       {
         id: "technological_breakthrough",
@@ -344,8 +343,7 @@ export class GameEventManager {
         choices: [
           { label: "全力资助新理论研究", effects: [{ type: "flag", target: "scientific_push", value: 1 }, { type: "resource", target: "economy", value: -30 }, { type: "resource", target: "prestige", value: 30 }] },
           { label: "谨慎观望，继续应用研究", effects: [{ type: "resource", target: "economy", value: 15 }, { type: "resource", target: "prestige", value: -5 }] }
-        ],
-        cooldownYears: 22
+        ]
       },
       {
         id: "stf_formation",
@@ -359,8 +357,7 @@ export class GameEventManager {
         choices: [
           { label: "任命常伟思为太空军总司令", effects: [{ type: "flag", target: "stf_established", value: 1 }, { type: "resource", target: "military", value: 8 }, { type: "resource", target: "prestige", value: 20 }] },
           { label: "暂缓太空军建设", effects: [{ type: "resource", target: "economy", value: 20 }, { type: "resource", target: "military", value: 1 }] }
-        ],
-        cooldownYears: 12
+        ]
       },
       {
         id: "deterrence_strain",
@@ -374,8 +371,7 @@ export class GameEventManager {
         choices: [
           { label: "坚守威慑底线，增加投入", effects: [{ type: "flag", target: "deterrence_reinforced", value: 1 }, { type: "resource", target: "economy", value: -30 }] },
           { label: "推行和平共处外交", effects: [{ type: "resource", target: "culture", value: 25 }, { type: "resource", target: "treachery", value: -5 }] }
-        ],
-        cooldownYears: 16
+        ]
       },
       {
         id: "lightspeed_project",
@@ -389,8 +385,7 @@ export class GameEventManager {
         choices: [
           { label: "秘密资助光速飞船研究", effects: [{ type: "flag", target: "lightspeed_project_approved", value: 1 }, { type: "resource", target: "economy", value: -50 }, { type: "resource", target: "prestige", value: 30 }] },
           { label: "公开否决，维护威慑体系", effects: [{ type: "resource", target: "prestige", value: -15 }, { type: "flag", target: "lightspeed_rejected", value: 1 }] }
-        ],
-        cooldownYears: 30
+        ]
       },
       {
         id: "broadcast_era_dawn",
@@ -404,8 +399,7 @@ export class GameEventManager {
         choices: [
           { label: "加速建设掩体计划", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "economy", value: -40 }] },
           { label: "全力发展逃亡科技", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "flag", target: "escape_tech_focus", value: 1 }, { type: "resource", target: "culture", value: -10 }] }
-        ],
-        cooldownYears: 25
+        ]
       },
       {
         id: "bunker_project_debate",
@@ -490,8 +484,7 @@ export class GameEventManager {
         choices: [
           { label: "武力镇压分裂势力", effects: [{ type: "resource", target: "treachery", value: -15 }, { type: "resource", target: "military", value: 3 }, { type: "resource", target: "prestige", value: -15 }] },
           { label: "召开全民公决大会", effects: [{ type: "resource", target: "treachery", value: -5 }, { type: "resource", target: "culture", value: 25 }, { type: "resource", target: "prestige", value: 10 }] }
-        ],
-        cooldownYears: 20
+        ]
       },
       {
         id: "great_filter_confrontation",
@@ -505,8 +498,7 @@ export class GameEventManager {
         choices: [
           { label: "全文明进入静默状态", effects: [{ type: "flag", target: "great_filter_silence", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -50 }] },
           { label: "尝试建立联系", effects: [{ type: "flag", target: "great_filter_contact", value: 1 }, { type: "resource", target: "prestige", value: -30 }] }
-        ],
-        cooldownYears: 50
+        ]
       },
     ];
   }

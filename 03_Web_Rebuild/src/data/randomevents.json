@@ -61,7 +61,7 @@
     "dialogQueue": [
       {
         "speakerName": "雷迪亚兹",
-        "avatarUrl": "/images/character_reydiaz_1778724231986.png",
+        "avatarUrl": "reydiaz",
         "content": "这是我计划的一部分。通过对全球资源的非线性调度，我们可以避开智子的视线。"
       },
       {
@@ -92,7 +92,7 @@
       },
       {
         "speakerName": "常伟思",
-        "avatarUrl": "/images/character_changweisi_1778724189193.png",
+        "avatarUrl": "changweisi",
         "content": "还有别的路。我们可以尝试用反向脉冲强行湮灭那东西。成功的概率不足15%，但一旦成功，我们将掌握宇宙底层法则。不敢冒险的人，不配存活。"
       }
     ],
@@ -964,7 +964,7 @@
       },
       {
         "speakerName": "常伟思",
-        "avatarUrl": "/images/character_changweisi_1778724189193.png",
+        "avatarUrl": "changweisi",
         "content": "它在测量我们，在丈量猎物的体型。开动你们那些被恐惧冻住的脑子想一想，当猎人开始测量，扣动扳机还需要多久？"
       }
     ],
@@ -1022,7 +1022,7 @@
       },
       {
         "speakerName": "常伟思",
-        "avatarUrl": "/images/character_changweisi_1778724189193.png",
+        "avatarUrl": "changweisi",
         "content": "这不是意外。毒剂配方需要专业化学知识。我怀疑是ETO的潜伏破坏，旨在制造恐慌瘫痪我们的配给系统。必须立刻全城搜捕。"
       }
     ],
@@ -1930,7 +1930,7 @@
       },
       {
         "speakerName": "常伟思",
-        "avatarUrl": "/images/character_changweisi_1778724189193.png",
+        "avatarUrl": "changweisi",
         "content": "这是ETO典型的斩首行动。没有身份验证，我们甚至无法区分谁是破坏者。必须紧急恢复数据，同时进行全城生物特征大排查。"
       }
     ],
@@ -2051,7 +2051,7 @@
       },
       {
         "speakerName": "常伟思",
-        "avatarUrl": "/images/character_changweisi_1778724189193.png",
+        "avatarUrl": "changweisi",
         "content": "他们极可能逃往三体舰队的方向。如果让他们与三体取得联系，我们的威慑将出现致命破绽。必须立即发射轨道截击器，摧毁所有未经授权的飞行器。"
       }
     ],
@@ -7312,7 +7312,7 @@
       },
       {
         "speakerName": "常伟思",
-        "avatarUrl": "/images/character_changweisi_1778724189193.png",
+        "avatarUrl": "changweisi",
         "content": "接受她的数据，但不要相信她的忏悔。她永远是那个按下按钮的人。"
       }
     ],
@@ -7533,7 +7533,7 @@
       },
       {
         "speakerName": "人类文化学者",
-        "avatarUrl": "/images/npc_civilian.png",
+        "avatarUrl": "npc_civilian.png",
         "content": "执政官，这就是‘大艺术’的终极形态！在神级文明眼中，生存与毁灭都不如一首完美的诗作重要。我们必须用文化与他对话！"
       }
     ],

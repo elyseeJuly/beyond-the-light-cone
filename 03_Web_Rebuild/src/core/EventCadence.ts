@@ -49,6 +49,10 @@ export function normalizeEventMeta(event: GameEvent): GameEvent {
     event.cadenceMeta.probability = 1.0;
   }
 
+  if (event.cadenceMeta.maxTriggers === undefined || event.cadenceMeta.maxTriggers > 1) {
+    event.cadenceMeta.maxTriggers = 1;
+  }
+
   return event;
 }
 

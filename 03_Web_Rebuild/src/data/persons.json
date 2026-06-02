@@ -1,7 +1,7 @@
 [
   {
     "name": "丁仪",
-    "faceFile": "character_dingyi_1778724123469.png",
+    "faceFile": "unified_dingyi_1779691512032.png",
     "army": 50,
     "economy": 50,
     "leadership": 50,
@@ -23,7 +23,7 @@
   },
   {
     "name": "林云",
-    "faceFile": "character_linyun_1778724276166.png",
+    "faceFile": "unified_linyun_1779691542667.png",
     "army": 80,
     "economy": 30,
     "leadership": 60,
@@ -67,7 +67,7 @@
   },
   {
     "name": "沈渊",
-    "faceFile": "character_shenyuan_1778726061895.png",
+    "faceFile": "unified_shenyuan_1779691919176.png",
     "army": 30,
     "economy": 30,
     "leadership": 40,
@@ -89,7 +89,7 @@
   },
   {
     "name": "常伟思",
-    "faceFile": "character_changweisi_1778724189193.png",
+    "faceFile": "unified_changweisi_1779691759159.png",
     "army": 90,
     "economy": 50,
     "leadership": 95,
@@ -100,7 +100,7 @@
   },
   {
     "name": "庄颜",
-    "faceFile": "character_zhuangyan_1778724322851.png",
+    "faceFile": "unified_zhuangyan_1779712921189.png",
     "army": 10,
     "economy": 20,
     "leadership": 20,
@@ -122,7 +122,7 @@
   },
   {
     "name": "水娃",
-    "faceFile": "character_shuiwa_1778726120500.png",
+    "faceFile": "unified_shuiwa_1779712987486.png",
     "army": 20,
     "economy": 10,
     "leadership": 15,
@@ -144,7 +144,7 @@
   },
   {
     "name": "希恩斯",
-    "faceFile": "character_hines_1778724207245.png",
+    "faceFile": "unified_hines_1779691718751.png",
     "army": 20,
     "economy": 40,
     "leadership": 50,
@@ -155,7 +155,7 @@
   },
   {
     "name": "雷迪亚兹",
-    "faceFile": "character_reydiaz_1778724231986.png",
+    "faceFile": "unified_reydiaz_1779691732536.png",
     "army": 85,
     "economy": 70,
     "leadership": 80,
@@ -166,7 +166,7 @@
   },
   {
     "name": "泰勒",
-    "faceFile": "character_tyler_1778724253558.png",
+    "faceFile": "unified_tyler_1779691745991.png",
     "army": 60,
     "economy": 80,
     "leadership": 75,
@@ -177,7 +177,7 @@
   },
   {
     "name": "东方延绪",
-    "faceFile": "character_dongfang_1778724498758.png",
+    "faceFile": "unified_dongfang_1779691773663.png",
     "army": 75,
     "economy": 40,
     "leadership": 80,
@@ -188,7 +188,7 @@
   },
   {
     "name": "雷志成",
-    "faceFile": "character_leizhicheng_1778818873520.png",
+    "faceFile": "unified_leizhicheng_1779713006589.png",
     "army": 50,
     "economy": 40,
     "leadership": 60,
@@ -199,7 +199,7 @@
   },
   {
     "name": "杨卫宁",
-    "faceFile": "character_yangweining_1778818900159.png",
+    "faceFile": "unified_yangweining_1779713020653.png",
     "army": 30,
     "economy": 30,
     "leadership": 50,
@@ -221,7 +221,7 @@
   },
   {
     "name": "白冰",
-    "faceFile": "character_baibing_1778819424975.png",
+    "faceFile": "unified_baibing_1779713036549.png",
     "army": 30,
     "economy": 30,
     "leadership": 40,
@@ -232,7 +232,7 @@
   },
   {
     "name": "苗福全",
-    "faceFile": "character_miaofuquan_1778818954566.png",
+    "faceFile": "unified_miaofuquan_1779713095135.png",
     "army": 20,
     "economy": 90,
     "leadership": 50,
@@ -243,7 +243,7 @@
   },
   {
     "name": "滑膛",
-    "faceFile": "character_huatang_1778819276066.png",
+    "faceFile": "unified_huatang_1779713110568.png",
     "army": 95,
     "economy": 30,
     "leadership": 60,
@@ -254,7 +254,7 @@
   },
   {
     "name": "朱汉扬",
-    "faceFile": "character_zhuhanyang_1778833149488.png",
+    "faceFile": "unified_zhuhanyang_1779713125007.png",
     "army": 60,
     "economy": 40,
     "leadership": 70,
@@ -265,7 +265,7 @@
   },
   {
     "name": "刘慈欣",
-    "faceFile": "character_liucixin_1778819370180.png",
+    "faceFile": "unified_liucixin_1779712937103.png",
     "army": 50,
     "economy": 50,
     "leadership": 60,
@@ -309,7 +309,7 @@
   },
   {
     "name": "艾AA",
-    "faceFile": "character_aiaa_1778724300313.png",
+    "faceFile": "unified_aiaa_1779691888124.png",
     "army": 30,
     "economy": 80,
     "leadership": 35,
@@ -331,7 +331,7 @@
   },
   {
     "name": "汪淼",
-    "faceFile": "character_wangmiao_1778724166873.png",
+    "faceFile": "unified_wangmiao_1779691527760.png",
     "army": 10,
     "economy": 30,
     "leadership": 25,
@@ -342,7 +342,7 @@
   },
   {
     "name": "杨冬",
-    "faceFile": "character_yangdong_1778724413422.png",
+    "faceFile": "unified_yangdong_1779691583143.png",
     "army": 5,
     "economy": 10,
     "leadership": 10,
@@ -353,7 +353,7 @@
   },
   {
     "name": "伊文斯",
-    "faceFile": "character_evans_1778724472738.png",
+    "faceFile": "unified_evans_1779691557999.png",
     "army": 40,
     "economy": 95,
     "leadership": 80,
@@ -364,7 +364,7 @@
   },
   {
     "name": "关一帆",
-    "faceFile": "character_guanyifan_1778724448368.png",
+    "faceFile": "unified_guanyifan_1779691901857.png",
     "army": 30,
     "economy": 30,
     "leadership": 40,
@@ -375,7 +375,7 @@
   },
   {
     "name": "山杉惠子",
-    "faceFile": "character_keiko_1778724347302.png",
+    "faceFile": "unified_keiko_1779713141458.png",
     "army": 25,
     "economy": 40,
     "leadership": 50,

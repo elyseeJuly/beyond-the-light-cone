@@ -654,6 +654,9 @@ export class GameInstance {
       if (!(inst.eventManager.lastTagTriggeredYear instanceof Map)) {
         inst.eventManager.lastTagTriggeredYear = new Map(Object.entries(inst.eventManager.lastTagTriggeredYear || {}));
       }
+      if (inst.eventManager.triggeredFilteredIds && !(inst.eventManager.triggeredFilteredIds instanceof Set)) {
+        inst.eventManager.triggeredFilteredIds = new Set(inst.eventManager.triggeredFilteredIds);
+      }
     }
 
     if (inst.earthCivi?.tecTreeManager?.trees) {

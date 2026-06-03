@@ -194,7 +194,14 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                     <p className="text-[10px] font-bold text-[var(--text-secondary)]/40 tracking-[0.4em] uppercase">Narrative Sequence Node</p>
                     <h2 className="text-2xl font-black tracking-tight text-[var(--text-primary)] flex items-center gap-3">
                       <span className="w-2 h-6 bg-[var(--color-primary)]" />
-                      {event.title.includes('事件_') ? event.title : `【 ${event.title} 】`}
+                      {(() => {
+                        if (event.title.includes('事件_')) return event.title;
+                        let cleanTitle = event.title.trim();
+                        if (cleanTitle.startsWith('【') && cleanTitle.endsWith('】')) {
+                          cleanTitle = cleanTitle.slice(1, -1).trim();
+                        }
+                        return `【 ${cleanTitle} 】`;
+                      })()}
                     </h2>
                   </div>
                   <div className="text-right">

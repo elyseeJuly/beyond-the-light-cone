@@ -72,6 +72,7 @@ Diagnostic reviews and balance reports.
 *   [AUDIT_20260519_OPTIMIZATION_NOTES.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260519_OPTIMIZATION_NOTES.md) — *Core engine optimization notes*
 *   [AUDIT_20260520_RANDOM_EVENTS_CANON_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260520_RANDOM_EVENTS_CANON_ANALYSIS.md) — *Canonical analysis of pure random events and infinite triggers audit*
 *   [AUDIT_20260525_FULL_NARRATIVE_PHYSICS_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260525_FULL_NARRATIVE_PHYSICS_AUDIT.md) — *Full narrative/physics/balance deep audit with optimization proposals for AI handoff*
+*   [AUDIT_20260603_GODOT_MIGRATION_FEASIBILITY.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260603_GODOT_MIGRATION_FEASIBILITY.md) — *Feasibility analysis and evaluation on Godot transplantation vs. Web rebuild roadmap*
 
 ### 4.3 Testing Standards & Coverage (`TEST_`)
 Standards and definitions of tests.

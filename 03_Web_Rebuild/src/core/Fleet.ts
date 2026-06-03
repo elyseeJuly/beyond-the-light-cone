@@ -19,9 +19,10 @@ export function createFleet(
   belongToCivi: string,
   source: number,
   target: number,
-  eta: number
+  eta: number,
+  autoEquip?: boolean
 ): Fleet {
-  return {
+  const fleet: Fleet = {
     id: `fleet_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
     name,
     belongToCivi,
@@ -32,4 +33,17 @@ export function createFleet(
     totalEta: eta,
     eta: eta
   };
+
+  if (autoEquip) {
+    if (belongToCivi === "地球") {
+      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 20 });
+    } else if (belongToCivi === "三体") {
+      fleet.weapons.push({ weaponName: "水滴型战舰", currentBuild: 80 });
+      fleet.weapons.push({ weaponName: "强互作用探测器", currentBuild: 40 });
+    } else {
+      fleet.weapons.push({ weaponName: "星际无畏舰", currentBuild: 50 });
+    }
+  }
+
+  return fleet;
 }

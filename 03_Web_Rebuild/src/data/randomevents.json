@@ -55,8 +55,7 @@
       "probability": 0.04,
       "lane": "major",
       "loreDomain": "three_body_canon",
-      "maxTriggers": 1,
-      "cooldownYears": 20
+      "maxTriggers": 1
     },
     "dialogQueue": [
       {
@@ -66,7 +65,7 @@
       },
       {
         "speakerName": "史强",
-        "avatarUrl": "character_dashi.png",
+        "avatarUrl": "shiqiang",
         "content": "虽然听不懂，但听起来很带劲。干吧！"
       }
     ]
@@ -132,7 +131,7 @@
     "id": "revolt_eto_engine_sabotage",
     "title": "【红色警报：行星发动机控制节点被篡改】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -472,7 +471,7 @@
     "id": "revolt_strike_mining_colony_12",
     "title": "【停工报告：第12矿业殖民地全面罢工】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.08
     },
     "dialogQueue": [
@@ -586,7 +585,7 @@
     "id": "revolt_refugee_caravan_breakthrough",
     "title": "【边界冲突：难民潮冲破隔离墙】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -752,7 +751,7 @@
     "id": "dilemma_suicide_fleet_decoy",
     "title": "【终极抉择：诱饵舰队计划】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -1027,7 +1026,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -800
+            "value": -1
           }
         ]
       },
@@ -1114,7 +1113,7 @@
     "id": "revolt_child_abduction_rumor",
     "title": "【蔓延的恐慌：儿童失踪案】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -1213,7 +1212,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -500
+            "value": -1
           }
         ]
       }
@@ -1332,7 +1331,7 @@
     "id": "tech_cryo_failure_epidemic",
     "title": "【冷冻休眠舱集体故障】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -1602,7 +1601,7 @@
     "id": "dilemma_sacrifice_colony_for_earth",
     "title": "【电报：火星殖民地爆发X病原体】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.04
     },
     "dialogQueue": [
@@ -1659,7 +1658,7 @@
     "id": "dilemma_two_worlds_trolley",
     "title": "【终极电车：两个宜居行星，一次选择】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.02
     },
     "dialogQueue": [
@@ -1830,7 +1829,7 @@
     "id": "revolt_religious_fervor_engine_cult",
     "title": "【新信仰蔓延：发动机崇拜运动】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -1862,7 +1861,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -300
+            "value": -1
           }
         ]
       },
@@ -2105,7 +2104,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -200
+            "value": -1
           }
         ]
       }
@@ -2172,7 +2171,7 @@
     "id": "tech_zero_point_extraction_breach",
     "title": "【空间破裂：零点能提取事故】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.04
     },
     "dialogQueue": [
@@ -2219,7 +2218,7 @@
     "id": "tech_gravity_control_failure",
     "title": "【重力反转：人工重力装置失效】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -2328,7 +2327,7 @@
     "id": "tech_terraforming_bacteria_escape",
     "title": "【生态灾难：改造菌株泄露】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -2489,7 +2488,7 @@
     "id": "dilemma_hibernate_priority",
     "title": "【冬眠权争夺：谁进入方舟】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -2685,7 +2684,7 @@
     "id": "revolt_aging_population_burden",
     "title": "【人口炸弹：老龄潮冲击养老体系】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.08
     },
     "dialogQueue": [
@@ -2737,7 +2736,7 @@
     "id": "revolt_ice_quake_shelter_breach",
     "title": "【天灾与人祸：冰震导致地下城开裂】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.09
     },
     "dialogQueue": [
@@ -2846,7 +2845,7 @@
     "id": "revolt_back_to_surface_movement",
     "title": "【地表回归运动：他们要回家】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -2888,7 +2887,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -500
+            "value": -1
           }
         ]
       }
@@ -3112,7 +3111,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -200
+            "value": -1
           },
           {
             "type": "resource",
@@ -3127,7 +3126,7 @@
     "id": "tech_plasma_eruption_sun",
     "title": "【太阳危机：异常日冕物质抛射】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -3216,7 +3215,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -1000
+            "value": -1
           }
         ]
       },
@@ -3308,7 +3307,7 @@
     "id": "dilemma_eugenics_program",
     "title": "【基因净化计划：剔除缺陷基因】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -3553,7 +3552,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -800
+            "value": -1
           },
           {
             "type": "resource",
@@ -3640,7 +3639,7 @@
     "id": "revolt_gravity_train_hijack",
     "title": "【劫持：跨大陆重力列车被控】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -3667,7 +3666,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -600
+            "value": -1
           },
           {
             "type": "resource",
@@ -3806,7 +3805,7 @@
     "id": "tech_antimatter_harvesting",
     "title": "【机遇：反物质雷暴收集】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.04
     },
     "dialogQueue": [
@@ -3967,7 +3966,7 @@
     "id": "tech_self_replicating_mining",
     "title": "【失控：自复制采矿机暴走】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -4133,7 +4132,7 @@
     "id": "dilemma_divide_the_sleepers",
     "title": "【分裂：冬眠舱舰队航线分歧】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.05,
       "reqTech": "冬眠技术"
     },
@@ -4285,7 +4284,7 @@
     "id": "dark_forest_last_message_of_dying_star",
     "title": "【垂死恒星的最后讯息】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER,GALAXY",
       "probability": 0.012
     },
     "dialogQueue": [
@@ -4337,7 +4336,7 @@
     "id": "revolt_suicide_booth_craze",
     "title": "【精神崩溃：“安乐亭”排起长队】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.08
     },
     "dialogQueue": [
@@ -4389,7 +4388,7 @@
     "id": "revolt_fuel_siphon_rings",
     "title": "【能源黑市：盗取发动机燃料网】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -4483,7 +4482,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -200
+            "value": -1
           }
         ]
       }
@@ -4582,7 +4581,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -500
+            "value": -1
           }
         ]
       }
@@ -4592,7 +4591,7 @@
     "id": "revolt_deep_sleep_deaths",
     "title": "【冬眠舱谋杀：连环杀人案】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -4686,7 +4685,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -1000
+            "value": -1
           }
         ]
       }
@@ -4748,7 +4747,7 @@
     "id": "revolt_engine_cult_immolation",
     "title": "【信仰之火：发动机自焚事件】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -4957,7 +4956,7 @@
     "id": "tech_nanite_grey_goo_warning",
     "title": "【灰蛊警报：纳米机器人失联】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -5098,7 +5097,7 @@
     "id": "tech_plasma_window_breach",
     "title": "【真空泄漏：等离子窗集体失压】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -5197,7 +5196,7 @@
     "id": "tech_vacuum_energy_parasite",
     "title": "【外来物：寄生在真空能上的未知结构】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.03
     },
     "dialogQueue": [
@@ -5405,7 +5404,7 @@
     "id": "dilemma_launch_earth_alone",
     "title": "【分裂：抛下月球基地？】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.05
     },
     "dialogQueue": [
@@ -5462,7 +5461,7 @@
     "id": "dilemma_black_market_organ_legal",
     "title": "【生存与伦理：有偿器官捐献合法化】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -5489,7 +5488,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -500
+            "value": -1
           },
           {
             "type": "resource",
@@ -5519,7 +5518,7 @@
     "id": "dilemma_scuttle_civilian_ships",
     "title": "【极寒抉择：凿沉难民船】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.07
     },
     "dialogQueue": [
@@ -5598,7 +5597,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": -200
+            "value": -1
           },
           {
             "type": "resource",
@@ -5655,7 +5654,7 @@
           {
             "type": "resource",
             "target": "population",
-            "value": 1000
+            "value": 1
           },
           {
             "type": "resource",
@@ -5737,7 +5736,7 @@
     "id": "dark_forest_cosmic_graffiti",
     "title": "【宇宙涂鸦：银河悬臂上的雕刻】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER,GALAXY",
       "probability": 0.015
     },
     "dialogQueue": [
@@ -5784,7 +5783,7 @@
     "id": "dark_forest_rogue_planet_hail",
     "title": "【漂流瓶：来自流浪行星的问候】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER,GALAXY",
       "probability": 0.012
     },
     "dialogQueue": [
@@ -6664,7 +6663,7 @@
     "id": "aa_orbital_company_crisis",
     "title": "【经济危机：艾AA的太空城集团濒临破产】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER,GALAXY",
       "probability": 0.06
     },
     "dialogQueue": [
@@ -6971,7 +6970,7 @@
     "id": "tyler_quantum_ghost_fleet",
     "title": "【幽灵舰队：泰勒的遗产】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST,BUNKER",
       "probability": 0.04
     },
     "dialogQueue": [
@@ -7018,7 +7017,7 @@
     "id": "chengxin_staircase_probe",
     "title": "【迟来的重逢：阶梯计划探测器回音】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BROADCAST",
       "probability": 0.04
     },
     "dialogQueue": [
@@ -7276,26 +7275,26 @@
   },
   {
     "id": "aa_pleasure_city_scandal",
-    "title": "【丑闻：艾AA的太空娱乐城涉黄赌毒】",
+    "title": "【危机：星环城商业集团遭遇信任风波】",
     "triggerCondition": {
-      "epoch": "WANDERING",
+      "epoch": "BUNKER",
       "probability": 0.05
     },
     "dialogQueue": [
       {
-        "speakerName": "廉政公署",
+        "speakerName": "PDC联合监督署",
         "avatarUrl": "default",
-        "content": "调查显示，艾AA旗下的太空娱乐城实为洗钱和非法人体实验的幌子。她本人声称是被AI篡改了账目。"
+        "content": "调查显示，艾AA旗下的星环太空城集团涉嫌违规挪用巨额地球防卫建设资金。她本人声称这完全是为了推进非公开发的光速飞船研发项目。"
       },
       {
         "speakerName": "艾AA",
         "avatarUrl": "aa",
-        "content": "执政官，我是被陷害的！这些娱乐城是维持太空移民心理健康的必要设施，有人想搞垮我。"
+        "content": "执政官，星环太空城集团是被冤枉的！太空城的工业基础设施要想在严酷的环境中维持，必须依靠灵活的资金调度。我没有挪用一分钱，这全是为了推进光速引擎研发以保住人类生路！"
       }
     ],
     "choices": [
       {
-        "label": "查封娱乐城，逮捕艾AA。净化环境，但损害太空经济。",
+        "label": "彻查星环集团，没收违规资金并加强收归公有监管。(经济受损，政府声望增加)",
         "effects": [
           {
             "type": "resource",
@@ -7305,12 +7304,12 @@
           {
             "type": "resource",
             "target": "prestige",
-            "value": 3
+            "value": 10
           }
         ]
       },
       {
-        "label": "从轻发落，罚款并加强监管。保住经济支柱。",
+        "label": "予以宽免，支持星环集团的技术攻关试点。(经济增长，政府声望微降)",
         "effects": [
           {
             "type": "resource",
@@ -7320,7 +7319,7 @@
           {
             "type": "resource",
             "target": "prestige",
-            "value": -4
+            "value": -5
           }
         ]
       }
@@ -7565,8 +7564,7 @@
       "epoch": "GALAXY",
       "weight": 10,
       "probability": 0.05,
-      "lane": "major",
-      "cooldownYears": 20
+      "lane": "major"
     },
     "choices": [
       {
@@ -7613,8 +7611,7 @@
       "epoch": "GALAXY",
       "weight": 5,
       "probability": 0.04,
-      "lane": "crisis",
-      "cooldownYears": 15
+      "lane": "crisis"
     },
     "choices": [
       {
@@ -7666,8 +7663,7 @@
       "epoch": "GALAXY",
       "weight": 5,
       "probability": 0.05,
-      "lane": "ambient",
-      "cooldownYears": 10
+      "lane": "ambient"
     },
     "choices": [
       {
@@ -7715,8 +7711,7 @@
       "epoch": "GALAXY",
       "weight": 5,
       "probability": 0.05,
-      "lane": "crisis",
-      "cooldownYears": 15
+      "lane": "crisis"
     },
     "choices": [
       {
@@ -7768,8 +7763,7 @@
       "epoch": "GALAXY",
       "weight": 3,
       "probability": 0.02,
-      "lane": "major",
-      "cooldownYears": 50
+      "lane": "major"
     },
     "choices": [
       {
@@ -7816,8 +7810,7 @@
       "epoch": "GALAXY",
       "weight": 4,
       "probability": 0.05,
-      "lane": "major",
-      "cooldownYears": 20
+      "lane": "major"
     },
     "choices": [
       {
@@ -7865,8 +7858,7 @@
       "epoch": "GALAXY",
       "weight": 5,
       "probability": 0.05,
-      "lane": "ambient",
-      "cooldownYears": 15
+      "lane": "ambient"
     },
     "choices": [
       {
@@ -7913,8 +7905,7 @@
       "epoch": "GALAXY",
       "weight": 5,
       "probability": 0.04,
-      "lane": "ambient",
-      "cooldownYears": 25
+      "lane": "ambient"
     },
     "choices": [
       {
@@ -7944,6 +7935,352 @@
             "type": "resource",
             "target": "culture",
             "value": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bunker_jupiter_city_construction",
+    "title": "【战略情报：木星掩体基地群成型】",
+    "eventtype": 2,
+    "eventeffect": 2,
+    "eventvalue": 100,
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "probability": 0.08,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "PDC联合监督署",
+        "avatarUrl": "default",
+        "content": "执政官，木星背后的掩体太空城群‘新北京’、‘新上海’已建设过半，它们将隐蔽在巨行星那巨大的背阳阴影里，为人类防范太阳毁灭危机提供最后的庇护。"
+      },
+      {
+        "speakerName": "艾AA",
+        "avatarUrl": "aa",
+        "content": "我们星环集团承建的第三区已顺利交付。这些由超轻碳纳米管支撑起的巨型穹顶可以完全自给自足。执政官，太空城是人类未来的诺亚方舟。"
+      }
+    ],
+    "choices": [
+      {
+        "label": "全力推进工程建设，调拨更多资源进行保障。(增加大量经济与威望，但消耗较多基础资源)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": 200
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 15
+          },
+          {
+            "type": "resource",
+            "target": "resource",
+            "value": -80
+          }
+        ]
+      },
+      {
+        "label": "维持正常建设节奏，将资源保留给地球防御。(平稳过度，无额外消耗)",
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "bunker_light_speed_research",
+    "title": "【绝密工程：星环集团光速引擎试验】",
+    "eventtype": 2,
+    "eventeffect": 2,
+    "eventvalue": 100,
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "probability": 0.06,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "维德",
+        "avatarUrl": "wade",
+        "content": "前进！前进！不择手段地前进！光速飞船的预研工作已经取得突破性进展。我们需要更多的科研潜力去完成光速推进的试飞。这是真正能飞出太阳系、实现宇宙逃亡的唯一机会！"
+      },
+      {
+        "speakerName": "程心",
+        "avatarUrl": "chengxin",
+        "content": "维德，这会引发全球恐慌，导致逃亡主义大抬头，联合国会宣布这为非法项目。难道我们要抛下绝大多数人吗？"
+      }
+    ],
+    "choices": [
+      {
+        "label": "顶住PDC的政治压力，向维德的星环集团秘密输送技术资金。(大幅增加科研文化与技术潜力，但大幅提高社会浮躁与反叛值)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 80
+          },
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": 15
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -100
+          }
+        ]
+      },
+      {
+        "label": "严守联合政府禁令，强制关停星环集团的秘密试验区。(降低反叛，但错失关键逃亡机会)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": -20
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bunker_2d_foil_warning",
+    "title": "【防御演习：联合政府二向箔避难预案】",
+    "eventtype": 2,
+    "eventeffect": 2,
+    "eventvalue": 100,
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "probability": 0.07,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "PDC联合防卫军司令",
+        "avatarUrl": "default",
+        "content": "执政官，太空城群正在举行针对空间降维打击(二向箔)的战略避难演习。监测仪显示，太空城内部的重力自适应系统在高速转移演练中出现了微小的谐振不匹配。"
+      },
+      {
+        "speakerName": "新北京 太空城居民",
+        "avatarUrl": "default",
+        "content": "当降维攻击真的来临时，我们这些三维太空城不过是水面上的肥皂泡。真的有必要花这么多钱演练那些几乎为零的生还方案吗？"
+      }
+    ],
+    "choices": [
+      {
+        "label": "调拨备用资金升级太空城的紧急变轨推进器。(消耗资源，但极大地提振民心，减少反叛)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "resource",
+            "value": -50
+          },
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": -12
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 10
+          }
+        ]
+      },
+      {
+        "label": "维持现状，告知民众演练是防御的基石。(平稳，无影响)",
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "bunker_earth_remnant_preservation",
+    "title": "【文化遗产：地球博物馆计划】",
+    "eventtype": 2,
+    "eventeffect": 2,
+    "eventvalue": 100,
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "probability": 0.08,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "艾AA",
+        "avatarUrl": "aa",
+        "content": "大部分人都已经搬进了木星和土星背后的太空城，地球快要彻底荒废了。我们星环集团想牵头在地球表面保留若干历史古迹，作为全人类永远的精神锚点。"
+      },
+      {
+        "speakerName": "历史学家",
+        "avatarUrl": "default",
+        "content": "是的，无论在星空走得多远，地球母亲都是我们文化的根。请求给予政策拨款，将卢浮宫、紫禁城和金字塔包裹在巨型恒温力场罩中。"
+      }
+    ],
+    "choices": [
+      {
+        "label": "慷慨拨款，冠名资助‘地球母亲博物馆’工程。(增加大量文化值，提升极高的文明凝聚声望，但消耗较多经济)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 100
+          },
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 20
+          },
+          {
+            "type": "resource",
+            "target": "economy",
+            "value": -150
+          }
+        ]
+      },
+      {
+        "label": "拒绝提案，宣称在危机纪元每一枚硬币都要用于生存防御。(削弱文化增长，增加少许备战效率)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": -20
+          },
+          {
+            "type": "resource",
+            "target": "military",
+            "value": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bunker_dome_leakage_crisis",
+    "title": "【紧急险情：太空城‘新北京’穹顶微裂】",
+    "eventtype": 2,
+    "eventeffect": 2,
+    "eventvalue": 100,
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "probability": 0.06,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "太空城市长",
+        "avatarUrl": "default",
+        "content": "执政官，因陨石雨扰动，‘新北京’太空城南部第4区穹顶发生微米级应力开裂，气体漏失率正在加速，居民区陷入恐慌！"
+      },
+      {
+        "speakerName": "穹顶维护总工程师",
+        "avatarUrl": "default",
+        "content": "需要紧急抽调工业机器人，将快速固化纳米凝胶注入裂缝中。我们需要大量工业资源来压制险情。"
+      }
+    ],
+    "choices": [
+      {
+        "label": "立刻调拨储备物资封堵裂隙，疏散南部居民区。(消耗工业资源，但保住全部人口且抚平民心)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "resource",
+            "value": -80
+          },
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": -15
+          }
+        ]
+      },
+      {
+        "label": "由太空城就地自筹资金封堵，不占用最高防卫署的战略物资。(可能因延误导致部分人口伤亡和恐慌增加)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "population",
+            "value": -10
+          },
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": 10
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bunker_dark_forest_telemetry",
+    "title": "【战略大辩论：低光速‘黑域’安全声明可行性】",
+    "eventtype": 2,
+    "eventeffect": 2,
+    "eventvalue": 100,
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "probability": 0.08,
+      "lane": "major",
+      "loreDomain": "three_body_canon",
+      "maxTriggers": 1
+    },
+    "dialogQueue": [
+      {
+        "speakerName": "维德",
+        "avatarUrl": "wade",
+        "content": "制造低光速黑域，把自己永远封闭在一个只进不出的死屋里，这是懦夫的苟延残喘之计！人类本可以带着光速引擎冲向群星！"
+      },
+      {
+        "speakerName": "程心",
+        "avatarUrl": "chengxin",
+        "content": "但是维德，黑域是全宇宙唯一能够证明人类无害的安全声明！只有这样，猎人的枪口才会移开，太阳系才能免于遭受二向箔攻击！"
+      }
+    ],
+    "choices": [
+      {
+        "label": "偏向低光速黑域研究，支持制造‘安全声明’理论。(增加极大的防御与社会和谐，但永远失去远航探索潜力)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": -20
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 40
+          }
+        ]
+      },
+      {
+        "label": "偏向维德的光速远航派，继续支持高科技群星探索。(大量增加科研威望，但威慑不稳定性增加)",
+        "effects": [
+          {
+            "type": "resource",
+            "target": "prestige",
+            "value": 20
+          },
+          {
+            "type": "resource",
+            "target": "culture",
+            "value": 80
+          },
+          {
+            "type": "resource",
+            "target": "treachery",
+            "value": 10
           }
         ]
       }

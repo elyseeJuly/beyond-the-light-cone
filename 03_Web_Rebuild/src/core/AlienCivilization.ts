@@ -13,6 +13,11 @@ export class AlienCivilization extends Civilization {
   public attackCooldown: number = 0;
   public lastAttackYear: number = 0;
   public starsys: number = 0;
+  
+  public waterdropCount: number = 0;
+  public waterdropCooldown: number = 0;
+  public hasDimensionStruck: boolean = false;
+  public dimensionStrikeWarningTurns: number = 0;
 
   private _rngProvider: RngProvider | null = null;
 
@@ -39,8 +44,21 @@ export class AlienCivilization extends Civilization {
     if (this.isDieOut()) return;
     const game = GameInstance.get();
 
+    if (this.waterdropCooldown > 0) this.waterdropCooldown--;
+
     this.growEconomy();
     this.ageBehavior(game);
+    this.processDimensionStrike(game);
+
+    // AI Special Weapons Triggers
+    if (this.friendshipType === FriendshipType.VERYANGRY) {
+      if (this.waterdropCooldown === 0 && this.waterdropCount < 3 && this.rng() < 0.15) {
+        this.launchWaterdropAttack(game);
+      } else if (!this.hasDimensionStruck && this.rng() < 0.05 && game.year > 150) {
+        this.triggerDimensionStrike(game);
+      }
+    }
+
     this.processFleets(game);
   }
 
@@ -179,6 +197,61 @@ export class AlienCivilization extends Civilization {
           }
         }
       }
+    }
+  }
+
+  public launchWaterdropAttack(game: any): void {
+    if (this.waterdropCount >= 3 || this.waterdropCooldown > 0) return;
+    if (game.earthCivi.starIndices.size <= 1) return; // Safety valve
+
+    this.waterdropCount++;
+    this.waterdropCooldown = 10;
+    
+    game.addHistory(`【黑暗森林警报】智子观测到 ${this.name} 文明的「水滴」探测器已进入超高速巡航，预计 3 回合后抵达太阳系！`);
+    
+    const targetIdx = 3;
+    const fleet = createFleet(`「水滴」绝对静止探测器`, this.name, targetIdx, 0, 3, true);
+    this.fleets.push(fleet);
+  }
+
+  public triggerDimensionStrike(game: any): void {
+    if (this.hasDimensionStruck) return;
+    if (game.earthCivi.starIndices.size <= 1) return; // Safety valve
+
+    this.hasDimensionStruck = true;
+    this.dimensionStrikeWarningTurns = 5;
+    game.addHistory(`【死神警报】深空雷达侦测到一颗由 ${this.name} 抛出的微小薄膜物体正以光速扑向太阳系！高维空间崩塌倒计时开始：5回合后！`);
+  }
+
+  private processDimensionStrike(game: any): void {
+    if (this.dimensionStrikeWarningTurns > 0) {
+      this.dimensionStrikeWarningTurns--;
+      if (this.dimensionStrikeWarningTurns > 0) {
+        game.addHistory(`【二向箔倒计时】坍缩波前锋正在加速靠近，剩余 ${this.dimensionStrikeWarningTurns} 回合！`);
+      } else {
+        game.addHistory(`【高维坍缩】二向箔最终降临太阳系！三维空间以光速坍塌至二维！`);
+        const tm = game.earthCivi.tecTreeManager;
+        const survives = tm.isTecFinishedAnywhere("黑域生成") || tm.isTecFinishedAnywhere("数字方舟") || game.hasFlag("galaxy_exodus_seen") || game.hasFlag("wandering_completed");
+        
+        if (survives) {
+          game.addHistory(`【生存奇迹】由于已构建光速安全声明/数字意识备份，人类文明的部分火种在坍缩中逃逸生存！`);
+          game.earthCivi.population = Math.max(1, Math.floor(game.earthCivi.population * 0.5));
+          game.earthCivi.resource = Math.max(1, Math.floor(game.earthCivi.resource * 0.5));
+        } else {
+          game.isGameOver = true;
+          game.defeatType = 2; // Extinction/helium flash
+          game.gameOverReason = `二向箔打击：黑暗森林打击全面爆发，太阳系沦为一幅没有厚度的平面画作。人类文明宣告彻底覆灭。`;
+          window.dispatchEvent(new CustomEvent('game-over'));
+        }
+      }
+    }
+  }
+
+  public checkGravityBroadcast(game: any): void {
+    if (!game.hasFlag(`${this.name}_broadcast_sent`)) {
+      game.addFlag(`${this.name}_broadcast_sent`);
+      game.addHistory(`【黑暗森林广播】${this.name} 在母星系面临崩溃前，通过引力波向全宇宙广播了太阳系与三体星系的精确坐标！坐标已完全暴露！`);
+      game.earthCivi.treachery = Math.min(100, game.earthCivi.treachery + 25);
     }
   }
 }

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Zap, ArrowUpCircle, Rocket, Factory, Pickaxe, Building, Gem, Skull, Crown, Anchor, Wrench } from 'lucide-react';
+import { Target, ArrowUpCircle, Rocket, Factory, Pickaxe, Building, Gem, Skull, Crown } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { Star } from '../core/Star';
-import { createFleet } from '../core/Fleet';
-import weaponsData from '../data/weapons.json';
 import { STAR_INDEX } from '../config/starIndices';
 
 export const RightInspector: React.FC = () => {
@@ -150,23 +148,65 @@ export const RightInspector: React.FC = () => {
             </section>
 
             <section className="space-y-3">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-primary)]">工人分配</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-[10px]">
-                  <span className="text-[var(--text-secondary)]">采矿工人</span>
-                  <span className="font-bold">{earth.miningWorkers}</span>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-primary)]">工人分配与占比调整</h3>
+              <div className="space-y-3 bg-black/10 dark:bg-white/5 p-3 rounded-lg border border-white/5">
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[var(--text-secondary)]">采矿比例: {earth.miningRatio}%</span>
+                    <span className="font-bold text-cyan-400 font-data">{earth.miningWorkers} 人</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={earth.miningRatio} 
+                    onChange={(ev) => {
+                      earth.miningRatio = parseInt(ev.target.value, 10);
+                      earth.allocateWorkers();
+                      forceUpdate(n => n + 1);
+                    }}
+                    className="w-full h-1 bg-cyan-950 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  />
                 </div>
-                <div className="flex justify-between text-[10px]">
-                  <span className="text-[var(--text-secondary)]">工厂工人</span>
-                  <span className="font-bold">{earth.factoryWorkers}</span>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[var(--text-secondary)]">加工比例: {earth.factoryRatio}%</span>
+                    <span className="font-bold text-emerald-400 font-data">{earth.factoryWorkers} 人</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={earth.factoryRatio} 
+                    onChange={(ev) => {
+                      earth.factoryRatio = parseInt(ev.target.value, 10);
+                      earth.allocateWorkers();
+                      forceUpdate(n => n + 1);
+                    }}
+                    className="w-full h-1 bg-emerald-950 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                  />
                 </div>
-                <div className="flex justify-between text-[10px]">
-                  <span className="text-[var(--text-secondary)]">文化工人</span>
-                  <span className="font-bold">{earth.cultureWorkers}</span>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[var(--text-secondary)]">文化比例: {earth.cultureRatio}%</span>
+                    <span className="font-bold text-purple-400 font-data">{earth.cultureWorkers} 人</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={earth.cultureRatio} 
+                    onChange={(ev) => {
+                      earth.cultureRatio = parseInt(ev.target.value, 10);
+                      earth.allocateWorkers();
+                      forceUpdate(n => n + 1);
+                    }}
+                    className="w-full h-1 bg-purple-950 rounded-lg appearance-none cursor-pointer accent-purple-400"
+                  />
                 </div>
-                <div className="flex justify-between text-[10px]">
+                <div className="flex justify-between text-[10px] pt-1.5 border-t border-white/5">
                   <span className="text-[var(--text-secondary)]">闲置工人</span>
-                  <span className="font-bold">{earth.idleWorkers}</span>
+                  <span className="font-bold text-slate-300 font-data">{earth.idleWorkers} 人</span>
                 </div>
               </div>
             </section>

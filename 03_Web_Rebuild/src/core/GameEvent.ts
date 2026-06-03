@@ -18,6 +18,7 @@ export interface TriggerCondition {
   maxTriggers?: number;
   tags?: string[];
   severity?: number;
+  reqStar?: string;
 }
 
 export interface GameEvent {

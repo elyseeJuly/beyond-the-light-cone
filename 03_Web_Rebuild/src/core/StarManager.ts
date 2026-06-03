@@ -26,6 +26,10 @@ export class StarManager {
       this.stars.set(star.index, star);
     });
 
+    // 50光年 18-100
+    const lightYear50 = generateStars(5005, 18, 83, [100, 500], [50, 300], "LY50");
+    lightYear50.forEach(star => this.stars.set(star.index, star));
+
     // 1万光年 101-200
     const lightYear1W = generateStars(1001, 101, 100, [100, 1000], [100, 500], "LY");
     lightYear1W.forEach(star => this.stars.set(star.index, star));
@@ -50,6 +54,10 @@ export class StarManager {
 
   public getAllStars(): Star[] {
     return Array.from(this.stars.values());
+  }
+
+  public getStarByName(name: string): Star | undefined {
+    return this.getAllStars().find(s => s.name === name);
   }
 
   public getStarsByArea(area: StarArea): Star[] {

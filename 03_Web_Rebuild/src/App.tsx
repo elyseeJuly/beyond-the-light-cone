@@ -14,6 +14,8 @@ import { EndGameScreen } from './components/EndGameScreen';
 import { AnnouncementBoard } from './components/AnnouncementBoard';
 import { FleetModal } from './components/FleetModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { BattleScreen } from './components/BattleScreen';
+import { DiplomacyPanel } from './components/DiplomacyPanel';
 
 export const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -21,11 +23,12 @@ export const App: React.FC = () => {
     return saved !== null ? saved === 'dark' : true;
   });
   const [showInspector] = useState(true);
-  const [activeView, setActiveView] = useState<'starmap' | 'techtree' | 'timeline'>('starmap');
+  const [activeView, setActiveView] = useState<'starmap' | 'techtree' | 'timeline' | 'diplomacy'>('starmap');
   const [currentEvent, setCurrentEvent] = useState<GameEventPayload | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showTutorial, setShowTutorial] = useState(() => !localStorage.getItem('game-tutorial-seen'));
   const [showFleetModal, setShowFleetModal] = useState(false);
+  const [showBattleScreen, setShowBattleScreen] = useState(false);
 
   // Apply dark mode class to html element
   useEffect(() => {
@@ -46,15 +49,18 @@ export const App: React.FC = () => {
     };
     const handleOpenTutorial = () => setShowTutorial(true);
     const handleOpenFleetModal = () => setShowFleetModal(true);
+    const handleBattleTriggered = () => setShowBattleScreen(true);
     
     window.addEventListener('theme-change', handleThemeChange);
     window.addEventListener('open-tutorial', handleOpenTutorial);
     window.addEventListener('open-fleet-modal', handleOpenFleetModal);
+    window.addEventListener('battle-triggered', handleBattleTriggered);
     
     return () => {
       window.removeEventListener('theme-change', handleThemeChange);
       window.removeEventListener('open-tutorial', handleOpenTutorial);
       window.removeEventListener('open-fleet-modal', handleOpenFleetModal);
+      window.removeEventListener('battle-triggered', handleBattleTriggered);
     };
   }, []);
 
@@ -133,6 +139,10 @@ export const App: React.FC = () => {
         <FleetModal onClose={() => setShowFleetModal(false)} />
       )}
 
+      {showBattleScreen && (
+        <BattleScreen onClose={() => setShowBattleScreen(false)} />
+      )}
+
       {isGameOver && <EndGameScreen />}
 
       {/* Top HUD */}
@@ -163,6 +173,16 @@ export const App: React.FC = () => {
                 <div id="tech-tree-container" className="min-h-[500px]">
                   {/* Tech tree content will be rendered here by legacy logic */}
                 </div>
+              </div>
+            </div>
+          ) : activeView === 'diplomacy' ? (
+            <div className="h-full w-full p-8 overflow-y-auto">
+              <div className="max-w-6xl mx-auto">
+                <div className="mb-8">
+                  <h1 className="text-3xl font-bold text-[var(--color-primary)]">联络与威慑中心</h1>
+                  <p className="text-[var(--text-secondary)] mt-2">监控并接触已知的三维异星文明，控制威慑平衡。</p>
+                </div>
+                <DiplomacyPanel />
               </div>
             </div>
           ) : (

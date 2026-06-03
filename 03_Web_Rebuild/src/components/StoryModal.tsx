@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { GameEventPayload, EventEffectDef } from '../types/narrative';
-import { ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { GameEventPayload } from '../types/narrative';
+import { ChevronRight } from 'lucide-react';
 import { getImageUrl } from '../utils/assetUrl';
 
 interface StoryModalProps {

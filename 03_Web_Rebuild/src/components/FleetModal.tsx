@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Rocket, Crosshair, Wrench, Shield, ArrowRight, Zap, Target } from 'lucide-react';
+import { X, Rocket, Wrench, Shield, ArrowRight, Zap, Target } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { createFleet, Fleet } from '../core/Fleet';
 import weaponsData from '../data/weapons.json';

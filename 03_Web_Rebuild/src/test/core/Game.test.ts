@@ -67,41 +67,41 @@ describe('Game Core Extended', () => {
   });
 
   describe('纪元更替 updateEpoch', () => {
-    it('year 0-200 危机纪元', () => {
-      game.year = 0;
+    it('culture 0-199 危机纪元', () => {
+      game.earthCivi.culture = 0;
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.CRISIS);
-      game.year = 200;
+      game.earthCivi.culture = 199;
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.CRISIS);
     });
 
-    it('year 201-260 威慑纪元', () => {
-      game.year = 201;
+    it('culture 200-499 威慑纪元', () => {
+      game.earthCivi.culture = 200;
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.DETERRENCE);
     });
 
-    it('year 261-300 广播纪元', () => {
-      game.year = 261;
+    it('culture 500-799 广播纪元', () => {
+      game.earthCivi.culture = 500;
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.BROADCAST);
     });
 
-    it('year 301-350 掩体纪元', () => {
-      game.year = 301;
+    it('culture 800-1199 掩体纪元', () => {
+      game.earthCivi.culture = 800;
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.BUNKER);
     });
 
-    it('year 351+ 银河纪元', () => {
-      game.year = 351;
+    it('culture 1200+ 银河纪元', () => {
+      game.earthCivi.culture = 1200;
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.GALAXY);
     });
 
     it('纪元变更时记录历史', () => {
-      game.year = 201;
+      game.earthCivi.culture = 200;
       game.updateEpoch();
       const hasEpochChange = game.historyLogs.some(log => log.includes('纪元更替'));
       expect(hasEpochChange).toBe(true);

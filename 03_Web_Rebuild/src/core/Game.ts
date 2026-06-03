@@ -8,9 +8,10 @@ import { AlienCiviManager, AlienCivilization } from "./AlienCivilization";
 import { TecTreeManager } from "./TecTreeManager";
 import { TecTree } from "./TecTree";
 import { GameEventPayload, VictoryCondition, FilteredEventPayload } from "../types/narrative";
-import { createFleet } from "./Fleet";
 import { createGameEvent } from "./GameEvent";
 import { EVENT_BUDGET } from "./EventCadence";
+import { PlanetEngine } from "./PlanetEngine";
+import { DigitalLife } from "./DigitalLife";
 
 export interface RngProvider {
   random(): number;
@@ -27,6 +28,8 @@ export class Game {
   public personManager: PersonManager;
   public weaponManager: WeaponManager;
   public eventManager: GameEventManager;
+  public planetEngine: PlanetEngine;
+  public digitalLife: DigitalLife;
 
   public earthCivi: EarthCivilization;
   public alienCiviManager: AlienCiviManager;
@@ -50,6 +53,8 @@ export class Game {
     this.personManager = new PersonManager();
     this.weaponManager = new WeaponManager();
     this.eventManager = new GameEventManager();
+    this.planetEngine = new PlanetEngine();
+    this.digitalLife = new DigitalLife();
 
     this.earthCivi = new EarthCivilization();
     this.alienCiviManager = new AlienCiviManager();
@@ -137,6 +142,14 @@ export class Game {
         this.earthCivi.runARound();
       } catch (e: any) {
         this.addHistory(`[警告] 地球模拟出现异常: ${e.message}`);
+      }
+
+      this.addHistory("...正在推进发动机与数字生命结算");
+      try {
+        this.planetEngine.processTurn();
+        this.digitalLife.processTurn();
+      } catch (e: any) {
+        this.addHistory(`[警告] 推进引擎子系统异常: ${e.message}`);
       }
 
       this.addHistory("...正在评估异星文明威胁");
@@ -246,16 +259,17 @@ export class Game {
 
   public updateEpoch(): void {
     const prevEpoch = this.epoch;
+    const culture = this.earthCivi?.culture || 0;
 
-    if (this.year >= 1 && this.year <= 200) {
+    if (culture >= 0 && culture <= 199) {
       this.epoch = EpochType.CRISIS;
-    } else if (this.year >= 201 && this.year <= 260) {
+    } else if (culture >= 200 && culture <= 499) {
       this.epoch = EpochType.DETERRENCE;
-    } else if (this.year >= 261 && this.year <= 300) {
+    } else if (culture >= 500 && culture <= 799) {
       this.epoch = EpochType.BROADCAST;
-    } else if (this.year >= 301 && this.year <= 350) {
+    } else if (culture >= 800 && culture <= 1199) {
       this.epoch = EpochType.BUNKER;
-    } else if (this.year >= 351) {
+    } else if (culture >= 1200) {
       this.epoch = EpochType.GALAXY;
     }
 
@@ -419,11 +433,34 @@ export class Game {
     window.dispatchEvent(new CustomEvent('game-turn-complete'));
   }
 
+  private clampEffectValue(target: string, rawValue: number): number {
+    const e = this.earthCivi;
+    if (!e) return rawValue;
+
+    if (target === 'population') {
+      const maxAbsChange = Math.max(10, e.population * 0.3);
+      const absVal = Math.min(maxAbsChange, Math.abs(rawValue));
+      return rawValue >= 0 ? absVal : -absVal;
+    }
+
+    if (['economy', 'culture', 'prestige', 'military', 'resource', 'army'].includes(target)) {
+      let current = 0;
+      if (target === 'prestige') current = e.deterrenceValue || 0;
+      else if (target === 'military' || target === 'army') current = e.army || 0;
+      else current = (e as any)[target] || 0;
+
+      const maxAbsChange = Math.max(50, current * 0.5);
+      const absVal = Math.min(maxAbsChange, Math.abs(rawValue));
+      return rawValue >= 0 ? absVal : -absVal;
+    }
+    return rawValue;
+  }
+
   public applyNewEffects(effects: any[]): void {
     if (!effects) return;
     effects.forEach(eff => {
       if (eff.type === 'resource') {
-        const val = Number(eff.value);
+        const val = this.clampEffectValue(eff.target, Number(eff.value));
         if (val < 0) {
           switch (eff.target) {
             case 'military':
@@ -641,8 +678,27 @@ export class GameInstance {
     safeSP(inst.starManager, StarManager.prototype);
     safeSP(inst.personManager, PersonManager.prototype);
     safeSP(inst.eventManager, GameEventManager.prototype);
+    safeSP(inst.planetEngine, PlanetEngine.prototype);
+    safeSP(inst.digitalLife, DigitalLife.prototype);
+
+    if (inst.digitalLife) {
+      if (inst.digitalLife.resurrectedPersons && !(inst.digitalLife.resurrectedPersons instanceof Set)) {
+        inst.digitalLife.resurrectedPersons = new Set(inst.digitalLife.resurrectedPersons);
+      }
+    }
+
     if (inst.eventManager && (!inst.eventManager.events || inst.eventManager.events.length === 0)) {
+      const savedCounts = inst.eventManager.randomEventTriggerCounts;
+      const savedFilteredIds = inst.eventManager.triggeredFilteredIds;
+      const savedLaneYears = inst.eventManager.lastLaneTriggeredYear;
+      const savedTagYears = inst.eventManager.lastTagTriggeredYear;
+      const savedAnyYear = inst.eventManager.lastAnyEventYear;
       inst.eventManager.init();
+      if (savedCounts) inst.eventManager.randomEventTriggerCounts = savedCounts;
+      if (savedFilteredIds) inst.eventManager.triggeredFilteredIds = savedFilteredIds;
+      if (savedLaneYears) inst.eventManager.lastLaneTriggeredYear = savedLaneYears;
+      if (savedTagYears) inst.eventManager.lastTagTriggeredYear = savedTagYears;
+      if (savedAnyYear !== undefined) inst.eventManager.lastAnyEventYear = savedAnyYear;
     }
     if (inst.eventManager) {
       if (!(inst.eventManager.lastLaneTriggeredYear instanceof Map)) {

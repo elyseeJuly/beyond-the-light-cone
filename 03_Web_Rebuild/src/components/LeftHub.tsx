@@ -23,8 +23,8 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
 );
 
 interface LeftHubProps {
-  activeView: 'starmap' | 'techtree' | 'timeline';
-  setActiveView: (view: 'starmap' | 'techtree' | 'timeline') => void;
+  activeView: 'starmap' | 'techtree' | 'timeline' | 'diplomacy';
+  setActiveView: (view: 'starmap' | 'techtree' | 'timeline' | 'diplomacy') => void;
 }
 
 // Singleton department panel for legacy bridge
@@ -90,6 +90,12 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="编年史观测" 
           active={activeView === 'timeline'} 
           onClick={() => setActiveView('timeline')}
+        />
+        <NavItem 
+          icon={<Users2 size={18} />} 
+          label="战略外交" 
+          active={activeView === 'diplomacy'} 
+          onClick={() => setActiveView('diplomacy')}
         />
       </div>
 

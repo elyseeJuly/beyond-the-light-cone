@@ -656,6 +656,24 @@ export class GameEventManager {
     return triggered;
   }
 
+  private isPersonAliveInEpoch(personName: string, epochName: string): boolean {
+    const epochDeathMap: Record<string, string[]> = {
+      "伊文斯": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "林云": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "泰勒": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "雷迪亚兹": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "章北海": ["BROADCAST", "BUNKER", "GALAXY"],
+      "丁仪": ["BROADCAST", "BUNKER", "GALAXY"],
+      "维德": ["CRISIS"],
+      "程心": ["CRISIS"],
+      "云天明": ["CRISIS"],
+      "艾AA": ["CRISIS"],
+      "智子": ["CRISIS"],
+      "关一帆": ["CRISIS", "DETERRENCE"],
+    };
+    return !(epochDeathMap[personName] || []).includes(epochName);
+  }
+
   private isEventCharactersUnlocked(e: GameEvent): boolean {
     const game = GameInstance.get();
     if (!game) return true;
@@ -668,14 +686,24 @@ export class GameEventManager {
       "章北海", "庄颜", "程心", "维德", "艾AA", "云天明", "智子", "关一帆"
     ];
 
+    const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
+    const currentEpoch = epochNames[game.epoch];
+
     if (e.dialogNodes) {
       for (const node of e.dialogNodes) {
         const speaker = node.speakerName;
         if (speaker) {
+          // Skip alive check for historical records/playbacks/inspections
+          if (speaker.includes("历史") || speaker.includes("录像") || speaker.includes("档案") || speaker.includes("遗言")) {
+            continue;
+          }
           // Check if speaker contains any core person name (e.g., "安全官 维德" contains "维德")
           for (const corePerson of coreStoryPersons) {
             if (speaker.includes(corePerson)) {
               if (!available.has(corePerson)) {
+                return false;
+              }
+              if (!this.isPersonAliveInEpoch(corePerson, currentEpoch)) {
                 return false;
               }
             }
@@ -709,6 +737,13 @@ export class GameEventManager {
 
       if (e.triggerCondition?.reqTech) {
         if (!game.earthCivi.tecTreeManager.isTecFinishedAnywhere(e.triggerCondition.reqTech)) {
+          continue;
+        }
+      }
+
+      if (e.triggerCondition?.reqStar) {
+        const star = game.starManager.getStarByName(e.triggerCondition.reqStar);
+        if (!star || star.belongToCivi !== "地球") {
           continue;
         }
       }

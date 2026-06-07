@@ -103,6 +103,39 @@
     }
   },
   {
+    "name": 80,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "unified_wade_1778921437022.png",
+    "talk0_talker": "维德",
+    "talk0_content": "只送大脑。只要能把他的大脑送入三体舰队，我们就拥有了刺入敌人心脏的眼线。执政官，我需要全部的资源支持。",
+    "effects": [
+      {
+        "type": "unlock_person",
+        "target": "维德"
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": -100
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 10
+      },
+      {
+        "type": "flag",
+        "target": "staircase_project_sent"
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS"
+    }
+  },
+  {
     "name": 200,
     "eventtype": 0,
     "eventeffect": 0,
@@ -118,15 +151,133 @@
       },
       {
         "type": "unlock_person",
-        "target": "维德"
-      },
-      {
-        "type": "unlock_person",
         "target": "艾AA"
       }
     ],
     "triggerCondition": {
       "epoch": "DETERRENCE"
+    }
+  },
+  {
+    "name": 205,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_droplet_attack_placeholder.png",
+    "talk0_talker": "最高统帅部",
+    "talk0_content": "【末日之战】一个微小的三体探测器（水滴）在不到三十分钟内，如死神的飞梭一般彻底摧毁了太阳系舰队的两千艘战舰。人类的骄傲灰飞烟灭，舰队全军覆没！",
+    "effects": [
+      {
+        "type": "resource",
+        "target": "military",
+        "value": -800
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -50
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 30
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE"
+    }
+  },
+  {
+    "name": 210,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_deterrence_established_placeholder.png",
+    "talk0_talker": "罗辑",
+    "talk0_content": "【威慑建立】我代表人类，向三体世界发出最后通牒。如果你们不停止对太阳系的入侵，我将通过雪地工程引力波广播，向宇宙公布两个世界的坐标。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "deterrence_established"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 80
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": -20
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE"
+    }
+  },
+  {
+    "name": 220,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_deterrence_broken_placeholder.png",
+    "talk0_talker": "智子",
+    "talk0_content": "【威慑中止】程心女士，你确实没有按下按钮的决心。水滴已经摧毁了地球上所有的引力波广播天线。威慑纪元结束了，人类准备接受流放吧。",
+    "effects": [
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -90
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 40
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": -20
+      },
+      {
+        "type": "flag",
+        "target": "deterrence_broken"
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE"
+    }
+  },
+  {
+    "name": 230,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_gravitational_broadcast_placeholder.png",
+    "talk0_talker": "万有引力号",
+    "talk0_content": "【引力波广播】万有引力号与蓝色空间号共同启动了引力波广播。三体星系和太阳系的坐标已被广播至全宇宙。黑暗森林的枪口已经对准了我们。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "coordinates_broadcasted"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 30
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 20
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BROADCAST"
     }
   },
   {
@@ -154,6 +305,35 @@
     ],
     "triggerCondition": {
       "epoch": "BROADCAST"
+    }
+  },
+  {
+    "name": 280,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_bunker_world_placeholder.png",
+    "talk0_talker": "联合政府",
+    "talk0_content": "【掩体世界落成】分布在木星、土星、天王星和海王星背面的掩体太空城市群宣告全部落成。上亿人口已迁入这些太空城，躲避即将到来的太阳黑暗森林打击。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "bunker_world_completed"
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": 200
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": 15
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER"
     }
   },
   {

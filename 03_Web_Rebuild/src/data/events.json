@@ -7,7 +7,10 @@
     "talkcount": 1,
     "talk0_pic": "event_crisis_start_1778921554350.png",
     "talk0_talker": "联合政府",
-    "talk0_content": "执政官，由于三体舰队的发现，全球已进入危机纪元。行星防御理事会（PDC）正式授权您接管最高统帅权。基础物理已被锁死，但人类文明的火种绝不能熄灭！"
+    "talk0_content": "执政官，由于三体舰队的发现，全球已进入危机纪元。行星防御理事会（PDC）正式授权您接管最高统帅权。基础物理已被锁死，但人类文明的火种绝不能熄灭！",
+    "triggerCondition": {
+      "epoch": "CRISIS"
+    }
   },
   {
     "name": 2,
@@ -27,7 +30,10 @@
         "type": "unlock_person",
         "target": "林云"
       }
-    ]
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS"
+    }
   },
   {
     "name": 10,
@@ -55,7 +61,10 @@
         "type": "unlock_person",
         "target": "希恩斯"
       }
-    ]
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS"
+    }
   },
   {
     "name": 15,
@@ -75,7 +84,10 @@
         "type": "unlock_person",
         "target": "庄颜"
       }
-    ]
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS"
+    }
   },
   {
     "name": 50,
@@ -85,19 +97,9 @@
     "talkcount": 1,
     "talk0_pic": "event_moon_crisis_1778921627726.png",
     "talk0_talker": "最高统帅部",
-    "talk0_content": "月球危机爆发！由于过度开采和潮汐引力异常，月球即将解体坠落！我们需要立即调集所有资源推开月球碎片！"
-  },
-  {
-    "name": 300,
-    "eventtype": 0,
-    "eventeffect": 7,
-    "eventvalue": 0,
-    "talkcount": 1,
-    "talk0_pic": "event_wandering_earth_1778921665842.png",
-    "talk0_talker": "联合政府",
-    "talk0_content": "太阳系即将毁灭。如果我们掌握了重核聚变行星发动机，我们将开启流浪地球计划！",
+    "talk0_content": "月球危机爆发！由于过度开采 and 潮汐引力异常，月球即将解体坠落！我们需要立即调集所有资源推开月球碎片！",
     "triggerCondition": {
-      "loreDomain": "liu_cixin_crossover"
+      "epoch": "CRISIS"
     }
   },
   {
@@ -122,7 +124,10 @@
         "type": "unlock_person",
         "target": "艾AA"
       }
-    ]
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE"
+    }
   },
   {
     "name": 260,
@@ -146,6 +151,23 @@
         "type": "unlock_person",
         "target": "关一帆"
       }
-    ]
+    ],
+    "triggerCondition": {
+      "epoch": "BROADCAST"
+    }
+  },
+  {
+    "name": 300,
+    "eventtype": 0,
+    "eventeffect": 7,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_wandering_earth_1778921665842.png",
+    "talk0_talker": "联合政府",
+    "talk0_content": "太阳系即将毁灭。如果我们掌握了重核聚变行星发动机，我们将开启流浪地球计划！",
+    "triggerCondition": {
+      "loreDomain": "liu_cixin_crossover",
+      "epoch": "BROADCAST,BUNKER,GALAXY"
+    }
   }
 ]

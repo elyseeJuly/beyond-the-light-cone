@@ -558,9 +558,14 @@ export class GameEventManager {
     if (cond.reqFlag && !game.hasFlag(cond.reqFlag)) return false;
     if (cond.reqNotFlag && game.hasFlag(cond.reqNotFlag)) return false;
     if (cond.minEconomy !== undefined && e.economy < cond.minEconomy) return false;
+    if (cond.maxEconomy !== undefined && e.economy > cond.maxEconomy) return false;
     if (cond.minPopulation !== undefined && e.population < cond.minPopulation) return false;
+    if (cond.maxPopulation !== undefined && e.population > cond.maxPopulation) return false;
     if (cond.minCulture !== undefined && e.culture < cond.minCulture) return false;
+    if (cond.maxCulture !== undefined && e.culture > cond.maxCulture) return false;
     if (cond.minDeterrence !== undefined && e.deterrenceValue < cond.minDeterrence) return false;
+    if (cond.maxDeterrence !== undefined && e.deterrenceValue > cond.maxDeterrence) return false;
+    if (cond.minTreachery !== undefined && e.treachery < cond.minTreachery) return false;
     if (cond.maxTreachery !== undefined && e.treachery > cond.maxTreachery) return false;
 
     if (cond.probability && game.rng() > cond.probability) return false;
@@ -642,11 +647,17 @@ export class GameEventManager {
     const game = GameInstance.get();
     const triggered: GameEvent[] = [];
     this.events.forEach(e => {
-      if (!e.hasTriggered && e.inYear === currentYear) {
+      if (!e.hasTriggered && currentYear >= e.inYear) {
         // Enforce loreMode for fixed events if they have a loreDomain defined
         if (e.cadenceMeta && e.cadenceMeta.loreDomain) {
           if (game && game.loreMode === 'strict_three_body' && e.cadenceMeta.loreDomain !== 'three_body_canon') {
             return; // Skip this event
+          }
+        }
+        // Enforce triggerCondition if defined (e.g. epoch checking)
+        if (e.triggerCondition) {
+          if (!this.checkFilterConditions(e.triggerCondition)) {
+            return; // Skip for now, will check again in future turns
           }
         }
         e.hasTriggered = true;
@@ -662,13 +673,16 @@ export class GameEventManager {
       "林云": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
       "泰勒": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
       "雷迪亚兹": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "希恩斯": ["BROADCAST", "BUNKER", "GALAXY"],
+      "罗辑": ["GALAXY"],
       "章北海": ["BROADCAST", "BUNKER", "GALAXY"],
       "丁仪": ["BROADCAST", "BUNKER", "GALAXY"],
-      "维德": ["CRISIS"],
-      "程心": ["CRISIS"],
-      "云天明": ["CRISIS"],
+      "庄颜": ["BROADCAST", "BUNKER", "GALAXY"],
+      "维德": ["GALAXY"],
+      "程心": [],
+      "云天明": [],
       "艾AA": ["CRISIS"],
-      "智子": ["CRISIS"],
+      "智子": [],
       "关一帆": ["CRISIS", "DETERRENCE"],
     };
     return !(epochDeathMap[personName] || []).includes(epochName);
@@ -729,25 +743,24 @@ export class GameEventManager {
       // Enforce: Wallfacer/Story characters must be unlocked before their random events can trigger
       if (!this.isEventCharactersUnlocked(e)) continue;
 
+      if (e.triggerCondition) {
+        const cond = { ...e.triggerCondition };
+        // Exclude probability from checkFilterConditions to prevent double rolling
+        delete cond.probability;
+
+        if (!this.checkFilterConditions(cond)) {
+          continue;
+        }
+
+        if (e.triggerCondition.reqStar) {
+          const star = game.starManager.getStarByName(e.triggerCondition.reqStar);
+          if (!star || star.belongToCivi !== "地球") {
+            continue;
+          }
+        }
+      }
+
       const prob = (e.cadenceMeta?.probability) ?? 0.02;
-
-      if (e.triggerCondition?.epoch && !this.isEpochMatch(e.triggerCondition.epoch, epochName)) {
-        continue;
-      }
-
-      if (e.triggerCondition?.reqTech) {
-        if (!game.earthCivi.tecTreeManager.isTecFinishedAnywhere(e.triggerCondition.reqTech)) {
-          continue;
-        }
-      }
-
-      if (e.triggerCondition?.reqStar) {
-        const star = game.starManager.getStarByName(e.triggerCondition.reqStar);
-        if (!star || star.belongToCivi !== "地球") {
-          continue;
-        }
-      }
-
       e.cadenceMeta!.probability = prob;
       eligible.push(e);
     }

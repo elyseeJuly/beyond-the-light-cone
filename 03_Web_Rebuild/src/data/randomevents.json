@@ -11,7 +11,8 @@
       "probability": 0.03,
       "lane": "ambient",
       "loreDomain": "three_body_canon",
-      "maxTriggers": 2
+      "maxTriggers": 2,
+      "minCulture": 50
     },
     "dialogQueue": [
       {
@@ -33,7 +34,8 @@
       "probability": 0.02,
       "lane": "ambient",
       "loreDomain": "three_body_canon",
-      "maxTriggers": 2
+      "maxTriggers": 2,
+      "minTreachery": 30
     },
     "dialogQueue": [
       {
@@ -132,7 +134,8 @@
     "title": "【红色警报：行星发动机控制节点被篡改】",
     "triggerCondition": {
       "epoch": "BUNKER,GALAXY",
-      "probability": 0.06
+      "probability": 0.06,
+      "minTreachery": 40
     },
     "dialogQueue": [
       {
@@ -415,7 +418,8 @@
     "title": "【紧急事态：第七区食物配给暴动】",
     "triggerCondition": {
       "epoch": "ANY",
-      "probability": 0.1
+      "probability": 0.1,
+      "maxEconomy": 150
     },
     "dialogQueue": [
       {
@@ -819,7 +823,8 @@
     "title": "【大低谷记忆：最后的种子库】",
     "triggerCondition": {
       "epoch": "CRISIS",
-      "probability": 0.04
+      "probability": 0.04,
+      "maxEconomy": 200
     },
     "dialogQueue": [
       {

@@ -24,6 +24,9 @@ describe('GameEventManager', () => {
   });
 
   it('checkEvents 按年份返回事件', () => {
+    // Run sequentially to clear out earlier events
+    em.checkEvents(0);
+    em.checkEvents(2);
     const eventsInYear10 = em.checkEvents(10);
     eventsInYear10.forEach(e => {
       expect(e.inYear).toBe(10);
@@ -31,6 +34,9 @@ describe('GameEventManager', () => {
   });
 
   it('checkEvents 已触发事件不重复返回', () => {
+    // Run sequentially to clear out earlier events
+    em.checkEvents(0);
+    em.checkEvents(2);
     const first = em.checkEvents(10);
     const second = em.checkEvents(10);
     expect(second.length).toBeLessThanOrEqual(first.length);
@@ -40,7 +46,10 @@ describe('GameEventManager', () => {
   });
 
   it('checkEvents 无匹配年份返回空数组', () => {
-    const result = em.checkEvents(99999);
+    // Run year 0 to trigger the start event
+    em.checkEvents(0);
+    // Checking a year with no registered events should return empty
+    const result = em.checkEvents(1);
     expect(result).toEqual([]);
   });
 

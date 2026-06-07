@@ -52,6 +52,7 @@ describe('EarthCivilization', () => {
   });
 
   it('runARound 推进文明回合', () => {
+    game.rng = () => 0.9; // Disable random events to prevent test flakiness
     game.runARound();
     if (game.currentEvent) {
       game.applyEventEffect(0);

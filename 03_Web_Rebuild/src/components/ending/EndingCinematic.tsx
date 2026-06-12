@@ -230,55 +230,69 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[300] flex flex-col items-center justify-center overflow-hidden"
-      style={{
-        background: `linear-gradient(180deg, ${config.gradientFrom} 0%, ${config.gradientTo} 100%)`,
-      }}
+      className="fixed inset-0 z-[300] flex flex-col items-center justify-between overflow-hidden bg-black"
     >
-      {/* Particle canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+      {/* Background Image (Full Viewport with pan-zoom) */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {!imageError ? (
+          <img
+            src={imgSrc}
+            alt={config.title}
+            className="w-full h-full object-cover opacity-60 animate-[pan-zoom_30s_linear_infinite] transition-opacity duration-1000"
+            onError={() => {
+              if (imgSrc.includes('ending_')) {
+                setImgSrc(imgSrc.replace('ending_', 'cg_'));
+              } else {
+                setImageError(true);
+              }
+            }}
+          />
+        ) : (
+          <div
+            className="w-full h-full"
+            style={{
+              background: `linear-gradient(135deg, ${config.gradientFrom}E6, ${config.accentColor}22, ${config.gradientTo}E6)`,
+            }}
+          />
+        )}
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-black/70" />
+      </div>
 
-      {/* Scene image placeholder / fallback gradient */}
-      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
-        <div className="w-full aspect-[21/9] rounded-sm overflow-hidden mb-8 relative">
-          {!imageError ? (
-            <img
-              src={imgSrc}
-              alt={config.title}
-              className="w-full h-full object-cover opacity-80 transition-opacity duration-1000"
-              onError={() => {
-                if (imgSrc.includes('ending_')) {
-                  setImgSrc(imgSrc.replace('ending_', 'cg_'));
-                } else {
-                  setImageError(true);
-                }
-              }}
-            />
-          ) : (
-            /* Gradient fallback when scene image not yet available */
-            <div
-              className="w-full h-full flex items-center justify-center"
-              style={{
-                background: `linear-gradient(135deg, ${config.gradientFrom}CC, ${config.accentColor}33, ${config.gradientTo}CC)`,
-              }}
-            >
-              <div className="text-center">
-                <span className="text-6xl block mb-4">{config.iconSymbol}</span>
-                <p className="text-white/30 text-sm tracking-widest uppercase">Scene Image Pending</p>
-              </div>
-            </div>
-          )}
-          {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+      {/* Particle canvas (Overlaying image) */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10" />
+
+      {/* Cinematic Content overlay */}
+      <div className="relative z-20 flex flex-col items-center justify-between h-full w-full py-16 px-6 pointer-events-none">
+        {/* Top Header */}
+        <div className="text-center space-y-1 select-none animate-in fade-in slide-in-from-top-4 duration-1000">
+          <p
+            className="text-[10px] md:text-xs font-mono font-bold tracking-[0.4em] uppercase"
+            style={{ color: config.accentColor + 'CC' }}
+          >
+            {config.isVictory ? 'VICTORY ACHIEVED' : 'CIVILIZATION LOST'}
+          </p>
+          <h1
+            className="text-3xl md:text-5xl font-black tracking-widest text-white uppercase italic"
+            style={{ textShadow: `0 0 20px ${config.accentColor}44` }}
+          >
+            {config.title}
+          </h1>
         </div>
 
-        {/* Epilogue text */}
+        {/* Center/Bottom Epilogue */}
         <div
-          className={`max-w-2xl px-6 transition-all duration-1000 ${
-            showEpilogue ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          className={`max-w-2xl w-full p-8 rounded border transition-all duration-1000 ${
+            showEpilogue ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
           }`}
+          style={{
+            borderColor: config.accentColor + '22',
+            background: 'rgba(5, 10, 31, 0.45)',
+            backdropFilter: 'blur(12px)',
+            boxShadow: `0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px ${config.accentColor}11`,
+          }}
         >
-          <p className="text-lg md:text-xl leading-relaxed text-white/70 italic text-center font-light">
+          <p className="text-base md:text-lg leading-relaxed text-white/90 italic text-center font-light tracking-wide font-sans">
             {displayedEpilogue}
             {showEpilogue && typeRef.current < config.epilogue.length && (
               <span
@@ -288,12 +302,15 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
             )}
           </p>
         </div>
+
+        {/* Spacer for bottom button alignment */}
+        <div className="h-8" />
       </div>
 
       {/* Skip */}
       <button
         onClick={onComplete}
-        className="absolute bottom-8 right-8 text-white/20 hover:text-white/50 text-xs tracking-widest uppercase transition-colors z-20"
+        className="absolute bottom-8 right-8 text-white/20 hover:text-white/50 text-xs tracking-widest uppercase transition-colors z-30"
       >
         Skip →
       </button>

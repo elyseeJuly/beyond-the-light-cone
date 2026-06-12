@@ -736,10 +736,6 @@ export class GameEventManager {
 
   public checkRandomEvents(): GameEvent | null {
     const game = GameInstance.get();
-    const currentEpoch = game.epoch;
-    const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
-    const epochName = epochNames[currentEpoch];
-
     const eligible: GameEvent[] = [];
 
     for (const e of this.randomEvents) {

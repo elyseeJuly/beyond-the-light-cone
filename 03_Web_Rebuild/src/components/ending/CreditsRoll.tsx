@@ -7,46 +7,19 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { EndingConfig, FINALE_THEME_PATH, CREDITS_LIST } from '../../config/endingConfig';
+import { EndingConfig, CREDITS_LIST } from '../../config/endingConfig';
 import { RefreshCw } from 'lucide-react';
-import { getAssetUrl } from '../../utils/assetUrl';
 
 interface Props {
   config: EndingConfig;
   onRestart: () => void;
+  musicPlaying: boolean;
+  musicAvailable: boolean;
 }
 
-export const CreditsRoll: React.FC<Props> = ({ config, onRestart }) => {
+export const CreditsRoll: React.FC<Props> = ({ config, onRestart, musicPlaying, musicAvailable }) => {
   const [showButtons, setShowButtons] = useState(false);
-  const [musicPlaying, setMusicPlaying] = useState(false);
-  const [musicAvailable, setMusicAvailable] = useState(true);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const creditsRef = useRef<HTMLDivElement>(null);
-
-  // Attempt to play theme song
-  useEffect(() => {
-    const audio = new Audio(getAssetUrl(FINALE_THEME_PATH));
-    audioRef.current = audio;
-    audio.volume = 0.6;
-    audio.loop = false;
-
-    audio.addEventListener('canplaythrough', () => {
-      audio.play().then(() => setMusicPlaying(true)).catch(() => setMusicAvailable(false));
-    });
-    audio.addEventListener('error', () => {
-      console.log('[CreditsRoll] Finale theme song not found at', FINALE_THEME_PATH, '— degrading gracefully');
-      setMusicAvailable(false);
-    });
-    audio.addEventListener('ended', () => setMusicPlaying(false));
-
-    // Force load attempt
-    audio.load();
-
-    return () => {
-      audio.pause();
-      audio.src = '';
-    };
-  }, []);
 
   // Show restart buttons after credits scroll completes
   useEffect(() => {

@@ -17,7 +17,10 @@ interface BgmPlayerProps {
 }
 
 export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(() => {
+    const savedMuted = localStorage.getItem('game-bgm-muted');
+    return savedMuted !== 'true';
+  });
   const [isMuted, setIsMuted] = useState(() => {
     const saved = localStorage.getItem('game-bgm-muted');
     return saved === 'true';
@@ -156,6 +159,36 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver }) => {
       setIsPlaying(false);
     }
   }, [isGameOver]);
+
+  // Listen for user interaction to resume play if blocked by autoplay policy
+  useEffect(() => {
+    if (isPlaying || isMuted || !isAvailable || isGameOver) return;
+
+    const resumeAudio = () => {
+      if (audioRef.current && !isPlaying && !isMuted && !isGameOver) {
+        audioRef.current.play()
+          .then(() => {
+            setIsPlaying(true);
+            cleanup();
+          })
+          .catch((err) => {
+            console.log('[BgmPlayer] Interaction play failed:', err);
+          });
+      }
+    };
+
+    const cleanup = () => {
+      window.removeEventListener('click', resumeAudio);
+      window.removeEventListener('keydown', resumeAudio);
+      window.removeEventListener('touchstart', resumeAudio);
+    };
+
+    window.addEventListener('click', resumeAudio);
+    window.addEventListener('keydown', resumeAudio);
+    window.addEventListener('touchstart', resumeAudio);
+
+    return cleanup;
+  }, [isPlaying, isMuted, isAvailable, isGameOver]);
 
   const togglePlay = () => {
     if (!isAvailable) return;

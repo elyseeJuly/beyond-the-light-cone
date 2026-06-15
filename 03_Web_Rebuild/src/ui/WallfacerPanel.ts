@@ -168,20 +168,14 @@ export class WallfacerPanel {
                            game.hasFlag("galaxy_exodus_seen") || 
                            game.hasFlag("wandering_completed");
 
-          game.isGameOver = true;
-          if (survives) {
-            game.victoryType = 5; // VictoryType.HIDDEN
-            game.gameOverReason = "太阳系坐标宣告暴露，但幸存的人类先驱已通过光速飞船或数字方舟逃逸。在大宇宙热寂到来之前，你们在归零者的小宇宙中将火种延续下去。";
-          } else {
-            game.defeatType = 1; // DefeatType.EXTINCTION
-            game.gameOverReason = "引力波发射塔发射了精确的星系坐标信号，黑暗森林打击全面爆发。地球和三体世界在光粒打击中双双被湮灭，未做逃逸准备的人类文明彻底断绝。";
-          }
+          game.broadcastTriggered = true;
+          game.broadcastSurvives = survives;
           
           // Close the modal container first so it doesn't block ending screen rendering
           const modal = document.getElementById("modal-container");
           if (modal) modal.classList.add("hidden");
           
-          window.dispatchEvent(new CustomEvent('game-over'));
+          game.checkVictoryConditions();
         }
       });
     }

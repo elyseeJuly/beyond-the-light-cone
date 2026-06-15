@@ -18,7 +18,8 @@ export type EndingKey =
   | 'HIDDEN'
   | 'DEFEAT_TREACHERY'
   | 'DEFEAT_EXTINCTION'
-  | 'DEFEAT_HELIUM_FLASH';
+  | 'DEFEAT_HELIUM_FLASH'
+  | 'DEFEAT_DIMENSION_STRIKE';
 
 export interface EndingConfig {
   key: EndingKey;
@@ -190,6 +191,21 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
     iconSymbol: '☀️',
     isVictory: false,
   },
+  DEFEAT_DIMENSION_STRIKE: {
+    key: 'DEFEAT_DIMENSION_STRIKE',
+    title: '二向箔降维',
+    subtitle: '空间坍缩 · 降维打击',
+    declaration: '二向箔降临，太阳系沦为一幅没有厚度的平面画作。三维世界的物理规律被剥离，所有物质在跌落二维的深渊中化为了永恒的信息与线条。',
+    epilogue: '这是一场无声的毁灭。地球、恒星、乃至整个星系都被二维化，平铺在宇宙的画布上。高维的物理规律是不可逆的，你们作为三维生命，在此画作中彻底永眠。',
+    gradientFrom: '#020202',
+    gradientTo: '#0C0F26',
+    accentColor: '#00E5FF',
+    particleColor: '#00B0FF',
+    particleEffect: 'collapse',
+    sceneImage: getImageUrl('ending_defeat_dimension_strike.png'),
+    iconSymbol: '🖼️',
+    isVictory: false,
+  },
 };
 
 /**
@@ -216,9 +232,38 @@ export function resolveEndingKey(
       [DefeatType.TREACHERY]: 'DEFEAT_TREACHERY',
       [DefeatType.EXTINCTION]: 'DEFEAT_EXTINCTION',
       [DefeatType.HELIUM_FLASH]: 'DEFEAT_HELIUM_FLASH',
+      [DefeatType.DIMENSION_STRIKE]: 'DEFEAT_DIMENSION_STRIKE',
     };
     return map[defeatType] || 'DEFEAT_EXTINCTION';
   }
 
   return 'DEFEAT_EXTINCTION';
 }
+
+/** 新周目 (New Game Plus) 加成配置 */
+export const NG_PLUS_BONUSES: Record<string, { name: string; desc: string }> = {
+  unlocked_victory_HIDDEN: {
+    name: '死神永生之火种',
+    desc: '新周目初始自动解锁“观察者视角”功能，窥探更深层的宇宙法则。'
+  },
+  unlocked_victory_DIGITAL: {
+    name: '数字方舟协议',
+    desc: '初始经济 +500，文化 +200。数字意识形态提前播种。'
+  },
+  unlocked_victory_WANDERING: {
+    name: '重力喷流核心',
+    desc: '初始星际军队战力 +50。行星发动机工程获取军事加成。'
+  },
+  unlocked_victory_DETERRENCE: {
+    name: '执剑人威慑链',
+    desc: '初始威慑度 +20。三体世界对人类产生天然忌惮。'
+  },
+  unlocked_victory_CONQUEST: {
+    name: '全知深空网络',
+    desc: '开局自动解锁与所有异星文明（三体、歌者等）的通信信道。'
+  },
+  unlocked_victory_DARK_DOMAIN: {
+    name: '低维安全声明',
+    desc: '初始资源 +500。黑域降速的物理法则对人类生产力产生额外加成。'
+  }
+};

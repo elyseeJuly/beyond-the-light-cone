@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Map, Cpu, Swords, BarChart3, Users2, Building2, AlertOctagon, Globe, Atom, Rocket, Zap, Telescope, FlaskConical, Microscope, Clock } from 'lucide-react';
+import { Map, Cpu, Swords, BarChart3, Users2, Building2, AlertOctagon, Globe, Atom, Rocket, Zap, Telescope, FlaskConical, Microscope, Clock, BookOpen } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { DepartmentType } from '../types/enums';
 import { wallfacerPanel } from '../ui/WallfacerPanel';
@@ -26,12 +26,13 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
 interface LeftHubProps {
   activeView: 'starmap' | 'techtree' | 'timeline' | 'diplomacy';
   setActiveView: (view: 'starmap' | 'techtree' | 'timeline' | 'diplomacy') => void;
+  onOpenMuseum?: () => void;
 }
 
 // Singleton department panel for legacy bridge
 const deptPanel = new DepartmentPanel();
 
-export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) => {
+export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView, onOpenMuseum }) => {
   const [sophonBlocked, setSophonBlocked] = useState(false);
   const [diversity, setDiversity] = useState({ triggered: 0, total: 0, percentage: 0 });
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -124,6 +125,12 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="战略外交" 
           active={activeView === 'diplomacy'} 
           onClick={() => setActiveView('diplomacy')}
+        />
+        <div className="h-px bg-white/5 my-2" />
+        <NavItem 
+          icon={<BookOpen size={18} className="text-cyan-400" />} 
+          label="岁月史书" 
+          onClick={onOpenMuseum}
         />
       </div>
 

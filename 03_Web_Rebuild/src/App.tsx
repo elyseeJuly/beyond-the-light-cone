@@ -18,6 +18,7 @@ import { BattleScreen } from './components/BattleScreen';
 import { DiplomacyPanel } from './components/DiplomacyPanel';
 import { AtmosphereProvider } from './components/AtmosphereProvider';
 import { TechUnlockModal } from './components/TechUnlockModal';
+import { MuseumGallery } from './components/MuseumGallery';
 
 export const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -28,6 +29,7 @@ export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<'starmap' | 'techtree' | 'timeline' | 'diplomacy'>('starmap');
   const [currentEvent, setCurrentEvent] = useState<GameEventPayload | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [showMuseum, setShowMuseum] = useState(false);
   const [showTutorial, setShowTutorial] = useState(() => !localStorage.getItem('game-tutorial-seen'));
   const [showFleetModal, setShowFleetModal] = useState(false);
   const [showBattleScreen, setShowBattleScreen] = useState(false);
@@ -88,10 +90,15 @@ export const App: React.FC = () => {
       setIsGameOver(true);
     };
 
+    const handleObserverMode = () => {
+      setIsGameOver(false);
+    };
+
     window.addEventListener('game-event-triggered', handleEvent);
     window.addEventListener('game-turn-complete', handleEvent);
     window.addEventListener('game-loaded', handleEvent);
     window.addEventListener('game-over', handleGameOver);
+    window.addEventListener('observer-mode-activated', handleObserverMode);
     
     // Auto-load on mount
     if (GameInstance.loadGame()) {
@@ -116,6 +123,7 @@ export const App: React.FC = () => {
       window.removeEventListener('game-turn-complete', handleEvent);
       window.removeEventListener('game-loaded', handleEvent);
       window.removeEventListener('game-over', handleGameOver);
+      window.removeEventListener('observer-mode-activated', handleObserverMode);
       window.removeEventListener('error', globalErrorHandler);
     };
   }, []);
@@ -255,6 +263,10 @@ export const App: React.FC = () => {
 
       {isGameOver && <EndGameScreen />}
 
+      {showMuseum && (
+        <MuseumGallery onClose={() => setShowMuseum(false)} />
+      )}
+
       {/* Top HUD */}
       <TopHUD />
 
@@ -264,7 +276,7 @@ export const App: React.FC = () => {
       {/* Main Layout Body */}
       <main className="flex-1 flex overflow-hidden">
         {/* Left Hub */}
-        <LeftHub activeView={activeView} setActiveView={setActiveView} />
+        <LeftHub activeView={activeView} setActiveView={setActiveView} onOpenMuseum={() => setShowMuseum(true)} />
 
         {/* Dynamic Center Viewport */}
         <div className="flex-1 relative overflow-hidden bg-black/20">

@@ -168,8 +168,9 @@ describe('AlienCivilization and Manager tests', () => {
       expect(tm.isTecFinishedAnywhere('数字方舟')).toBe(false);
 
       (trisolaris as any).processDimensionStrike(game);
+      game.checkVictoryConditions();
       expect(game.isGameOver).toBe(true);
-      expect(game.defeatType).toBe(2);
+      expect(game.defeatType).toBe(3);
 
       // Reset and trigger survival case
       game.isGameOver = false;

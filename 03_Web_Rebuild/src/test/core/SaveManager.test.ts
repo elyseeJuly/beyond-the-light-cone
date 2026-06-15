@@ -121,4 +121,31 @@ describe('SaveManager', () => {
     localStorage.setItem('LegendOfUni_Save', JSON.stringify(parsed));
     expect(() => SaveManager.load()).toThrow('哈希校验失败');
   });
+
+  describe('Ruins Persistence', () => {
+    it('saveRuinRecord & getRuinHistory & clearRuinHistory 存取与清空正常', () => {
+      expect(SaveManager.getRuinHistory()).toEqual([]);
+
+      SaveManager.saveRuinRecord({ year: 100, culture: 500, techCount: 15 });
+      const history = SaveManager.getRuinHistory();
+      expect(history.length).toBe(1);
+      expect(history[0].year).toBe(100);
+      expect(history[0].culture).toBe(500);
+      expect(history[0].techCount).toBe(15);
+      expect(history[0].timestamp).toBeGreaterThan(0);
+
+      SaveManager.clearRuinHistory();
+      expect(SaveManager.getRuinHistory()).toEqual([]);
+    });
+
+    it('saveRuinRecord 最多保存 5 条记录，超出时移出最旧的一条', () => {
+      for (let i = 1; i <= 6; i++) {
+        SaveManager.saveRuinRecord({ year: i * 10, culture: i * 100, techCount: i });
+      }
+      const history = SaveManager.getRuinHistory();
+      expect(history.length).toBe(5);
+      expect(history[0].year).toBe(20); // 最旧的 year 10 被移除了
+      expect(history[4].year).toBe(60); // 最后的 year 60 保留
+    });
+  });
 });

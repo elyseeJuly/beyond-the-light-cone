@@ -72,6 +72,7 @@ export enum DefeatType {
   TREACHERY = 0,
   EXTINCTION = 1,
   HELIUM_FLASH = 2,
+  DIMENSION_STRIKE = 3,
 }
 
 export enum WeaponType {

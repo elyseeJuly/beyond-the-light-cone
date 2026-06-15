@@ -199,7 +199,7 @@ export class EarthCivilization extends Civilization {
     }
   }
 
-  private sanitizeResources(game: any): void {
+  private sanitizeResources(_game: any): void {
     this.population = Math.max(0, this.population);
     this.economy = Math.max(0, this.economy);
     this.resource = Math.max(0, this.resource);
@@ -209,12 +209,6 @@ export class EarthCivilization extends Civilization {
     this.idleWorkers = Math.max(0, this.idleWorkers);
     this.idlePopulation = Math.max(0, this.idlePopulation);
 
-    if (this.population <= 0 && !game.isGameOver) {
-      game.addHistory("【灭绝】地球文明人口耗尽，文明灭亡。");
-      game.isGameOver = true;
-      game.gameOverReason = "文明灭绝：地球已成为一颗死寂的星球。";
-      window.dispatchEvent(new CustomEvent('game-over'));
-    }
   }
 
   public autoAssignMinisters(game: any): void {

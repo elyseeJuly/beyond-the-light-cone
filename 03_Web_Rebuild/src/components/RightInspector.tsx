@@ -4,6 +4,7 @@ import { GameInstance } from '../core/Game';
 import { Star } from '../core/Star';
 import { STAR_INDEX } from '../config/starIndices';
 import { t } from '../utils/i18n';
+import { EndingForecastPanel } from './ending/EndingForecastPanel';
 
 export const RightInspector: React.FC = () => {
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
@@ -326,6 +327,10 @@ export const RightInspector: React.FC = () => {
                   </div>
                 </div>
               </button>
+            </section>
+
+            <section className="space-y-3">
+              <EndingForecastPanel />
             </section>
           </>
         )}

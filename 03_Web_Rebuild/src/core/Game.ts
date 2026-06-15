@@ -62,6 +62,15 @@ export class Game {
   public defeatType: DefeatType | null = null;
   public isProcessing: boolean = false;
 
+  // 新增状态字段，用于结局重写与高级扩展
+  public deterrenceEnduranceRounds: number = 0;
+  public dimensionStrikeTriggered: boolean = false;
+  public dimensionStrikeYear: number = 0;
+  public broadcastTriggered: boolean = false;
+  public broadcastSurvives: boolean = false;
+  public isObserverMode: boolean = false;
+  public turnHistory: string[] = [];
+
   public flags: Set<string> = new Set();
   public filteredEvents: FilteredEventPayload[] = [];
   public loreMode: LoreMode = 'strict_three_body';
@@ -154,7 +163,24 @@ export class Game {
   }
 
   public runARound(): void {
-    if (this.isGameOver) return;
+    if (this.isGameOver && !this.isObserverMode) return;
+
+    // 录入当前回合的存档快照，用于命运分歧点回溯
+    if (!this.turnHistory) this.turnHistory = [];
+    this.turnHistory.push(JSON.stringify(this, (key, val) => {
+      if (key === 'currentEvent' || key === 'eventQueue' || key === 'isProcessing' || key === '_rngProvider' || key === 'turnHistory') {
+        return undefined;
+      }
+      if (val instanceof Map) {
+        return { dataType: 'Map', value: Array.from(val.entries()) };
+      } else if (val instanceof Set) {
+        return { dataType: 'Set', value: Array.from(val) };
+      }
+      return val;
+    }));
+    if (this.turnHistory.length > 10) {
+      this.turnHistory.shift();
+    }
 
     if (this.currentEvent || this.eventQueue.length > 0) {
       this.addHistory("提示：请先处理当前的剧情事件。");
@@ -426,6 +452,48 @@ export class Game {
           console.warn("[SliceNarrative] 生成异常:", e.message);
         }
 
+        // 1. 更新威慑维持回合计数器
+        if (this.epoch >= EpochType.DETERRENCE && this.earthCivi.swordholder !== null) {
+          if (this.earthCivi.deterrenceValue >= 80) {
+            this.deterrenceEnduranceRounds++;
+          } else {
+            this.deterrenceEnduranceRounds = 0;
+          }
+        } else {
+          this.deterrenceEnduranceRounds = 0;
+        }
+
+        // 2. 黑暗森林遗迹事件（检测跨周目数据）
+        if (this.year === 50 && !this.flags.has("ruins_checked")) {
+          this.flags.add("ruins_checked");
+          const ruins = SaveManager.getRuinHistory();
+          if (ruins.length > 0) {
+            const latestRuin = ruins[ruins.length - 1];
+            const ruinsEvent: GameEventPayload = {
+              id: "event_df_ruins",
+              title: "深空异常遗迹",
+              dialogQueue: [{
+                speakerName: "科学执政官",
+                content: `深空探测器在远古坐标发现了一处破碎的人类飞船遗迹。这似乎是另一个平行时间线中，毁灭于 ${latestRuin.year} 年、曾积累了 ${latestRuin.culture} 文化强度的古老地球文明残留物。我们的科学家从残骸中解译出了一些技术图纸。`
+              }],
+              choices: [{
+                label: "继承文化遗产（文化 +200）",
+                action: () => {
+                  this.earthCivi.culture += 200;
+                  this.earthCivi.resource += 100;
+                }
+              }, {
+                label: "逆向研究核心技术（资源 +400）",
+                action: () => {
+                  this.earthCivi.resource += 400;
+                  this.earthCivi.economy += 100;
+                }
+              }]
+            };
+            this.eventQueue.push(ruinsEvent);
+          }
+        }
+
         this.year++;
         this.updateEpoch();
         this.checkVictoryConditions();
@@ -492,6 +560,58 @@ export class Game {
   }
 
   public checkVictoryConditions(): void {
+    // 0. 坐标广播处理
+    if (this.broadcastTriggered) {
+      this.isGameOver = true;
+      if (this.broadcastSurvives) {
+        this.victoryType = VictoryType.HIDDEN;
+        this.gameOverReason = "太阳系坐标宣告暴露，但幸存的人类先驱已通过光速飞船或数字方舟逃逸。在大宇宙热寂到来之前，你们在归零者的小宇宙中将火种延续下去。";
+        SaveManager.recordEnding({
+          victoryType: this.victoryType,
+          defeatType: null,
+          label: "死神永生 · 小宇宙",
+          year: this.year,
+          epoch: this.epoch,
+          keyFlags: Array.from(this.flags),
+          timestamp: Date.now()
+        });
+        this.tagManager.applyWorldTag('victory_hidden', 100, 'game:ending', this.year);
+        this.tagManager.applyWorldTag('ending_completed', 100, 'game:ending', this.year);
+      } else {
+        this.defeatType = DefeatType.EXTINCTION;
+        this.gameOverReason = "引力波发射塔发射了精确的星系坐标信号，黑暗森林打击全面爆发。地球和三体世界在光粒打击中双双被湮灭，未做逃逸准备的人类文明彻底断绝。";
+        SaveManager.recordEnding({
+          victoryType: null,
+          defeatType: this.defeatType,
+          label: "文明灭绝",
+          year: this.year,
+          epoch: this.epoch,
+          keyFlags: Array.from(this.flags),
+          timestamp: Date.now()
+        });
+        
+        let finishedTechs = 0;
+        if (this.earthCivi?.tecTreeManager?.trees) {
+          for (const tree of this.earthCivi.tecTreeManager.trees.values()) {
+            if (tree.nodes) {
+              for (const node of tree.nodes.values()) {
+                if (node.finished) finishedTechs++;
+              }
+            }
+          }
+        }
+        SaveManager.saveRuinRecord({
+          year: this.year,
+          culture: this.earthCivi?.culture || 0,
+          techCount: finishedTechs
+        });
+        
+        this.tagManager.applyWorldTag('ending_completed', 100, 'game:ending', this.year);
+      }
+      window.dispatchEvent(new CustomEvent('game-over'));
+      return;
+    }
+
     const conditions: VictoryCondition[] = [
       {
         type: "HIDDEN",
@@ -499,13 +619,15 @@ export class Game {
         description: "归零者的讯息抵达，人类选择将小宇宙的质量归还大宇宙，文明化为永恒的生态球",
         check: () => {
           if (this.year < 350 || this.epoch < EpochType.GALAXY) return false;
-          if (this.earthCivi.culture < 800) return false;
+          if (this.earthCivi.culture < 1000) return false;
           if (!this.hasFlag("galaxy_exodus_seen")) return false;
           if (!this.hasFlag("alien_alliance")) return false;
+          if (!this.hasFlag("zero_homer_contacted")) return false;
+          if (!this.hasFlag("mini_universe_built")) return false;
           if (this.earthCivi.population <= 0) return false;
-          if (this.earthCivi.deterrenceValue < 30) return false;
+          if (this.earthCivi.deterrenceValue < 50) return false;
           const tm = this.earthCivi.tecTreeManager;
-          return tm.isTecFinishedAnywhere("黑域生成") || tm.isTecFinishedAnywhere("数字方舟");
+          return tm.isTecFinishedAnywhere("黑域生成") && tm.isTecFinishedAnywhere("数字方舟");
         }
       },
       {
@@ -514,8 +636,16 @@ export class Game {
         description: "完成行星发动机Ⅲ型与新家园选址，带领地球踏上星辰大海",
         check: () => {
           const tm = this.earthCivi.tecTreeManager;
-          return tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型") &&
-                 tm.isTecFinished(TecTreeType.INTERSTELLAR, "新家园选址");
+          return this.year >= 250 &&
+                 this.earthCivi.population > 0 &&
+                 tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型") &&
+                 tm.isTecFinished(TecTreeType.INTERSTELLAR, "新家园选址") &&
+                 this.hasFlag("wandering_completed") &&
+                 !this.hasFlag("digital_ark_upgrade") &&
+                 !this.hasFlag("dark_domain_decision") &&
+                 !this.hasFlag("conquest_declared") &&
+                 !this.hasFlag("swordholder_appointed") &&
+                 !this.hasFlag("zero_homer_contacted");
         }
       },
       {
@@ -523,7 +653,15 @@ export class Game {
         label: "数字永生胜利",
         description: "完成数字方舟，将人类意识上传至虚拟世界",
         check: () => {
-          return this.earthCivi.tecTreeManager.isTecFinished(TecTreeType.INFORMATION, "数字方舟");
+          return this.year >= 200 &&
+                 this.earthCivi.population > 50 &&
+                 this.earthCivi.tecTreeManager.isTecFinished(TecTreeType.INFORMATION, "数字方舟") &&
+                 this.hasFlag("digital_ark_upgrade") &&
+                 !this.hasFlag("wandering_completed") &&
+                 !this.hasFlag("dark_domain_decision") &&
+                 !this.hasFlag("conquest_declared") &&
+                 !this.hasFlag("swordholder_appointed") &&
+                 !this.hasFlag("zero_homer_contacted");
         }
       },
       {
@@ -534,7 +672,14 @@ export class Game {
           return this.epoch >= EpochType.DETERRENCE &&
                  this.earthCivi.swordholder !== null &&
                  this.earthCivi.population > 0 &&
-                 this.earthCivi.deterrenceValue >= 80;
+                 this.earthCivi.deterrenceValue >= 90 &&
+                 this.deterrenceEnduranceRounds >= 20 &&
+                 !this.alienCiviManager.hasAnyAtWar() &&
+                 !this.hasFlag("conquest_declared") &&
+                 !this.hasFlag("wandering_completed") &&
+                 !this.hasFlag("digital_ark_upgrade") &&
+                 !this.hasFlag("dark_domain_decision") &&
+                 !this.hasFlag("zero_homer_contacted");
         }
       },
       {
@@ -542,7 +687,16 @@ export class Game {
         label: "征服胜利",
         description: "消灭所有异星文明或使其臣服",
         check: () => {
-          return this.alienCiviManager.isAllCiviConquered();
+          return this.year >= 200 &&
+                 this.earthCivi.population > 10 &&
+                 this.earthCivi.treachery < 50 &&
+                 this.alienCiviManager.isAllCiviConquered() &&
+                 this.hasFlag("conquest_declared") &&
+                 !this.hasFlag("swordholder_appointed") &&
+                 !this.hasFlag("wandering_completed") &&
+                 !this.hasFlag("digital_ark_upgrade") &&
+                 !this.hasFlag("dark_domain_decision") &&
+                 !this.hasFlag("zero_homer_contacted");
         }
       },
       {
@@ -550,7 +704,16 @@ export class Game {
         label: "黑域胜利",
         description: "完成黑域生成技术，发布宇宙安全声明",
         check: () => {
-          return this.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成");
+          return this.year >= 250 &&
+                 this.earthCivi.population > 0 &&
+                 this.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成") &&
+                 this.hasFlag("dark_domain_decision") &&
+                 this.earthCivi.treachery < 80 &&
+                 !this.hasFlag("conquest_declared") &&
+                 !this.hasFlag("swordholder_appointed") &&
+                 !this.hasFlag("wandering_completed") &&
+                 !this.hasFlag("digital_ark_upgrade") &&
+                 !this.hasFlag("zero_homer_contacted");
         }
       },
     ];
@@ -601,21 +764,67 @@ export class Game {
         victoryType: null, defeatType: this.defeatType, label: "文明灭绝",
         year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
       });
+      
+      let finishedTechs = 0;
+      if (this.earthCivi?.tecTreeManager?.trees) {
+        for (const tree of this.earthCivi.tecTreeManager.trees.values()) {
+          if (tree.nodes) {
+            for (const node of tree.nodes.values()) {
+              if (node.finished) finishedTechs++;
+            }
+          }
+        }
+      }
+      SaveManager.saveRuinRecord({
+        year: this.year,
+        culture: this.earthCivi?.culture || 0,
+        techCount: finishedTechs
+      });
+      
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
 
-    if (this.year > 350 && !this.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成") && !this.earthCivi.tecTreeManager.isTecFinishedAnywhere("数字方舟") && !this.hasFlag("dimensional_defense") && !this.hasFlag("wandering_chosen")) {
+    if ((this.year > 350 || this.dimensionStrikeTriggered) &&
+        !this.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成") &&
+        !this.earthCivi.tecTreeManager.isTecFinishedAnywhere("数字方舟") &&
+        !this.hasFlag("dimensional_defense") &&
+        !this.hasFlag("dimensional_defense_completed") &&
+        !this.hasFlag("wandering_completed")) {
       this.isGameOver = true;
-      this.defeatType = DefeatType.HELIUM_FLASH;
-      this.gameOverReason = this.loreMode === 'strict_three_body'
-        ? "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。"
-        : "太阳氦闪：漫长的等待终结于刺眼的白光，地球未能逃离。";
-      this.playerTimeline.push({ year: this.year, event: this.loreMode === 'strict_three_body' ? '【终结】二向箔降维打击抹去了整个太阳系' : '【终结】太阳的死亡终结了一切' });
+      const isStrikeText = this.dimensionStrikeTriggered || this.loreMode === 'strict_three_body';
+      if (this.dimensionStrikeTriggered) {
+        this.defeatType = DefeatType.DIMENSION_STRIKE;
+        this.gameOverReason = "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。";
+        this.playerTimeline.push({ year: this.year, event: '【终结】二向箔降维打击抹去了整个太阳系' });
+      } else {
+        this.defeatType = DefeatType.HELIUM_FLASH;
+        this.gameOverReason = isStrikeText
+          ? "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。"
+          : "太阳氦闪：漫长的等待终结于刺眼的白光，地球未能逃离。";
+        this.playerTimeline.push({ year: this.year, event: isStrikeText ? '【终结】二向箔降维打击抹去了整个太阳系' : '【终结】太阳的死亡终结了一切' });
+      }
       SaveManager.recordEnding({
-        victoryType: null, defeatType: this.defeatType, label: "二向箔打击/太阳氦闪",
+        victoryType: null, defeatType: this.defeatType, label: this.dimensionStrikeTriggered ? "二向箔打击" : "太阳氦闪",
         year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
       });
+      
+      let finishedTechs = 0;
+      if (this.earthCivi?.tecTreeManager?.trees) {
+        for (const tree of this.earthCivi.tecTreeManager.trees.values()) {
+          if (tree.nodes) {
+            for (const node of tree.nodes.values()) {
+              if (node.finished) finishedTechs++;
+            }
+          }
+        }
+      }
+      SaveManager.saveRuinRecord({
+        year: this.year,
+        culture: this.earthCivi?.culture || 0,
+        techCount: finishedTechs
+      });
+      
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
@@ -957,7 +1166,68 @@ export class Game {
     return [0, 70, 200, 500, 1000][level] || 0;
   }
 
+  public getEndingForecast(): Array<{ name: string; progress: number; isThreat: boolean }> {
+    const forecast: Array<{ name: string; progress: number; isThreat: boolean }> = [];
+    
+    // 1. WANDERING
+    let wanderingProgress = 0;
+    const tm = this.earthCivi.tecTreeManager;
+    if (tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型")) wanderingProgress += 25;
+    if (tm.isTecFinished(TecTreeType.INTERSTELLAR, "新家园选址")) wanderingProgress += 25;
+    if (this.hasFlag("wandering_completed")) wanderingProgress += 25;
+    if (this.year >= 250) wanderingProgress += 25;
+    else wanderingProgress += Math.floor((this.year / 250) * 25);
+    forecast.push({ name: "流浪胜利", progress: wanderingProgress, isThreat: false });
 
+    // 2. DIGITAL
+    let digitalProgress = 0;
+    if (tm.isTecFinished(TecTreeType.INFORMATION, "数字方舟")) digitalProgress += 40;
+    if (this.hasFlag("digital_ark_upgrade")) digitalProgress += 30;
+    if (this.year >= 200) digitalProgress += 30;
+    else digitalProgress += Math.floor((this.year / 200) * 30);
+    forecast.push({ name: "数字飞升", progress: digitalProgress, isThreat: false });
+
+    // 3. DETERRENCE
+    let deterrenceProgress = 0;
+    if (this.epoch >= EpochType.DETERRENCE) deterrenceProgress += 20;
+    if (this.earthCivi.swordholder !== null) deterrenceProgress += 20;
+    if (this.earthCivi.deterrenceValue >= 80) deterrenceProgress += 30;
+    else deterrenceProgress += Math.floor((this.earthCivi.deterrenceValue / 80) * 30);
+    if (this.year >= 150) deterrenceProgress += 30;
+    else deterrenceProgress += Math.floor((this.year / 150) * 30);
+    forecast.push({ name: "黑暗森林威慑", progress: deterrenceProgress, isThreat: false });
+
+    // 4. DARK_DOMAIN
+    let darkDomainProgress = 0;
+    if (tm.isTecFinished(TecTreeType.PHYSICS, "光速飞船推进器")) darkDomainProgress += 40;
+    if (this.hasFlag("dark_domain_declared")) darkDomainProgress += 30;
+    if (this.year >= 280) darkDomainProgress += 30;
+    else darkDomainProgress += Math.floor((this.year / 280) * 30);
+    forecast.push({ name: "黑域安全声明", progress: darkDomainProgress, isThreat: false });
+
+    // 5. CONQUEST
+    let conquestProgress = 0;
+    if (this.alienCiviManager.isAllCiviConquered()) conquestProgress += 50;
+    if (this.hasFlag("conquest_declared")) conquestProgress += 30;
+    if (this.year >= 200) conquestProgress += 20;
+    else conquestProgress += Math.floor((this.year / 200) * 20);
+    forecast.push({ name: "星系征服", progress: conquestProgress, isThreat: false });
+
+    // 6. HELIUM_FLASH (Threat)
+    let heliumProgress = Math.floor((this.year / 350) * 100);
+    if (heliumProgress > 100) heliumProgress = 100;
+    forecast.push({ name: "氦闪危机", progress: heliumProgress, isThreat: true });
+
+    // 7. TREACHERY (Threat)
+    const treacheryProgress = Math.floor(this.earthCivi.treachery);
+    forecast.push({ name: "逃亡崩溃", progress: treacheryProgress, isThreat: true });
+
+    return forecast;
+  }
+
+  public static rollbackToFateDivergence(): boolean {
+    return GameInstance.rollbackToFateDivergence();
+  }
 }
 
 // 全局单例管理器
@@ -1167,7 +1437,7 @@ export class GameInstance {
   }
 
   private static replacer(_key: string, value: any) {
-    if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider') {
+    if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory') {
       return undefined;
     }
 
@@ -1189,6 +1459,41 @@ export class GameInstance {
       }
     }
     return value;
+  }
+
+  public static rollbackToFateDivergence(): boolean {
+    if (!this.instance || !this.instance.turnHistory || this.instance.turnHistory.length === 0) return false;
+    try {
+      const dataStr = this.instance.turnHistory[0]; // 回滚到10回合前（或者是最久远的一个快照）
+      const parsedData = JSON.parse(dataStr, this.reviver);
+      
+      const carryOverHistory = [...this.instance.turnHistory];
+      carryOverHistory.shift(); // 移除最老的一个快照，防止死循环
+      
+      this.instance = new Game();
+      Object.assign(this.instance, parsedData);
+      this.restorePrototypes();
+      
+      this.instance.turnHistory = carryOverHistory;
+      this.instance.isGameOver = false;
+      this.instance.victoryType = null;
+      this.instance.defeatType = null;
+      this.instance.gameOverReason = "";
+      this.instance.isProcessing = false;
+      this.instance.currentEvent = null;
+      this.instance.eventQueue = [];
+      this.instance.isObserverMode = false;
+      
+      this.instance.addHistory("【系统】时间线已回溯至分歧点（约 10 回合前）。");
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('game-loaded'));
+        window.dispatchEvent(new CustomEvent('ticker-message-added'));
+      }
+      return true;
+    } catch (e) {
+      console.error("Failed to rollback to fate divergence:", e);
+      return false;
+    }
   }
 }
 

@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { EndingConfig } from '../../config/endingConfig';
+import { getPerformanceConfig } from './particlePerformance';
 
 interface Props {
   config: EndingConfig;
@@ -183,11 +184,15 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
       }
     };
 
+    const perfConfig = getPerformanceConfig();
+    const maxParticles = perfConfig.maxParticles;
+    const enableGlow = perfConfig.enableGlow;
+
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Spawn new particles
-      if (particles.length < 150) {
+      if (particles.length < maxParticles) {
         particles.push(spawnParticle());
       }
 
@@ -210,10 +215,12 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
         ctx.fill();
 
         // Glow effect
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = pColor + Math.floor(p.alpha * 40).toString(16).padStart(2, '0');
-        ctx.fill();
+        if (enableGlow) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = pColor + Math.floor(p.alpha * 40).toString(16).padStart(2, '0');
+          ctx.fill();
+        }
       }
 
       animRef.current = requestAnimationFrame(animate);

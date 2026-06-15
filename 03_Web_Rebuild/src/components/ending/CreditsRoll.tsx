@@ -8,16 +8,27 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { EndingConfig, CREDITS_LIST } from '../../config/endingConfig';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, RotateCcw, Eye } from 'lucide-react';
+import { KeyDecisionRetrospective } from './KeyDecisionRetrospective';
+import { GameInstance } from '../../core/Game';
 
 interface Props {
   config: EndingConfig;
   onRestart: () => void;
+  onRollback: () => void;
+  onObserverMode: () => void;
   musicPlaying: boolean;
   musicAvailable: boolean;
 }
 
-export const CreditsRoll: React.FC<Props> = ({ config, onRestart, musicPlaying, musicAvailable }) => {
+export const CreditsRoll: React.FC<Props> = ({ 
+  config, 
+  onRestart, 
+  onRollback, 
+  onObserverMode, 
+  musicPlaying, 
+  musicAvailable 
+}) => {
   const [showButtons, setShowButtons] = useState(false);
   const creditsRef = useRef<HTMLDivElement>(null);
 
@@ -81,7 +92,7 @@ export const CreditsRoll: React.FC<Props> = ({ config, onRestart, musicPlaying, 
           <div className="h-screen" />
 
           {/* Game title */}
-          <div className="text-center mb-20">
+          <div className="text-center mb-20 animate-pulse">
             <p className="text-white/20 text-xs tracking-[0.5em] uppercase mb-4">— A Three-Body Universe Simulation —</p>
             <h1
               className="text-5xl font-black tracking-tight mb-3"
@@ -93,7 +104,7 @@ export const CreditsRoll: React.FC<Props> = ({ config, onRestart, musicPlaying, 
           </div>
 
           {/* Ending achieved */}
-          <div className="text-center mb-20">
+          <div className="text-center mb-20 animate-pulse">
             <p className="text-white/30 text-xs tracking-[0.4em] uppercase mb-3">You Achieved</p>
             <p
               className="text-2xl font-bold tracking-wider"
@@ -146,31 +157,78 @@ export const CreditsRoll: React.FC<Props> = ({ config, onRestart, musicPlaying, 
         </div>
       </div>
 
-      {/* Restart / buttons (appear after credits) */}
-      <div
-        className={`absolute bottom-12 z-20 flex gap-6 transition-all duration-1000 ${
-          showButtons ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
-        }`}
-      >
-        <button
-          onClick={onRestart}
-          className="group flex items-center gap-3 px-10 py-4 border text-sm font-bold uppercase tracking-widest transition-all rounded-sm"
+      {/* Restart / buttons & Retrospective (appear after credits) */}
+      {showButtons && (
+        <div
+          className="absolute inset-0 z-40 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-8 animate-in fade-in zoom-in-95 duration-700"
           style={{
-            backgroundColor: config.accentColor + '15',
-            borderColor: config.accentColor + '50',
-            color: config.accentColor,
-          }}
-          onMouseEnter={e => {
-            (e.target as HTMLElement).style.backgroundColor = config.accentColor + '30';
-          }}
-          onMouseLeave={e => {
-            (e.target as HTMLElement).style.backgroundColor = config.accentColor + '15';
+            background: 'rgba(5, 10, 31, 0.92)',
+            backdropFilter: 'blur(20px)',
           }}
         >
-          <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-700" />
-          重新启航
+          {/* Left: Key Decisions */}
+          <div className="w-full md:w-1/2 max-w-md max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar pointer-events-auto">
+            <KeyDecisionRetrospective accentColor={config.accentColor} />
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex flex-col gap-4 w-full md:w-auto max-w-xs shrink-0 pointer-events-auto">
+            <h4 className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-white/45 text-center md:text-left mb-2">
+              Timeline Command // 时间线指令
+            </h4>
+            
+            {/* 1. 重新启航 */}
+            <button
+              onClick={onRestart}
+              className="group flex items-center justify-center gap-3 px-8 py-4 border text-sm font-bold uppercase tracking-widest transition-all rounded bg-white/[0.03] hover:bg-white/[0.08] cursor-pointer"
+              style={{
+                borderColor: config.accentColor + '40',
+                color: '#FFFFFF',
+              }}
+            >
+              <RefreshCw size={16} className="group-hover:rotate-180 transition-transform duration-700 text-yellow-400" />
+              重新启航 (新周目)
+            </button>
+
+            {/* 2. 时间回溯 */}
+            <button
+              onClick={onRollback}
+              disabled={!GameInstance.get().turnHistory || GameInstance.get().turnHistory.length === 0}
+              className="group flex items-center justify-center gap-3 px-8 py-4 border text-sm font-bold uppercase tracking-widest transition-all rounded bg-white/[0.03] hover:bg-white/[0.08] disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              style={{
+                borderColor: config.accentColor + '40',
+                color: '#FFFFFF',
+              }}
+            >
+              <RotateCcw size={16} className="group-hover:-rotate-180 transition-transform duration-700 text-cyan-400" />
+              时间回溯 (穿梭)
+            </button>
+
+            {/* 3. 观察者模式 */}
+            <button
+              onClick={onObserverMode}
+              className="group flex items-center justify-center gap-3 px-8 py-4 border text-sm font-bold uppercase tracking-widest transition-all rounded bg-white/[0.03] hover:bg-white/[0.08] cursor-pointer"
+              style={{
+                borderColor: config.accentColor + '40',
+                color: '#FFFFFF',
+              }}
+            >
+              <Eye size={16} className="group-hover:scale-110 transition-transform duration-300 text-purple-400" />
+              宇宙观察者模式
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Skip */}
+      {!showButtons && (
+        <button
+          onClick={() => setShowButtons(true)}
+          className="absolute bottom-8 right-8 text-white/20 hover:text-white/50 text-xs tracking-widest uppercase transition-colors z-20 pointer-events-auto cursor-pointer"
+        >
+          Skip →
         </button>
-      </div>
+      )}
 
       {/* Credits scroll keyframe style */}
       <style>{`

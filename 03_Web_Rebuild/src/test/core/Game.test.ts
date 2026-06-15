@@ -432,6 +432,10 @@ describe('Game Core Extended', () => {
     });
 
     it('征服胜利 所有异星被征服', () => {
+      game.year = 250;
+      game.earthCivi.population = 100;
+      game.earthCivi.treachery = 0;
+      game.addFlag("conquest_declared");
       for (const alien of game.alienCiviManager.aliens.values()) {
         alien.isBund = true;
       }

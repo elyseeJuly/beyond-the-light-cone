@@ -88,6 +88,7 @@ describe('EarthCivilization', () => {
     game.earthCivi.population = 0;
     game.earthCivi.starIndices.add(3);
     (game.earthCivi as any).sanitizeResources(game);
+    game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.gameOverReason).toContain('文明灭绝');
   });

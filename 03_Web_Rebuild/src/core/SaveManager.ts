@@ -177,4 +177,29 @@ export class SaveManager {
     }
     return unlocked;
   }
+
+  public static saveRuinRecord(record: { year: number; culture: number; techCount: number }): void {
+    try {
+      const raw = localStorage.getItem('LegendOfUni_RuinHistory');
+      const history = raw ? JSON.parse(raw) : [];
+      history.push({ ...record, timestamp: Date.now() });
+      if (history.length > 5) history.shift();
+      localStorage.setItem('LegendOfUni_RuinHistory', JSON.stringify(history));
+    } catch (e) {
+      console.error("Failed to save ruin history:", e);
+    }
+  }
+
+  public static getRuinHistory(): Array<{ year: number; culture: number; techCount: number; timestamp: number }> {
+    try {
+      const raw = localStorage.getItem('LegendOfUni_RuinHistory');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  public static clearRuinHistory(): void {
+    localStorage.removeItem('LegendOfUni_RuinHistory');
+  }
 }

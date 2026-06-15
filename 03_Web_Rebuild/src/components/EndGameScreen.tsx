@@ -11,7 +11,7 @@
  */
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { GameInstance } from '../core/Game';
+import { Game, GameInstance } from '../core/Game';
 import { ENDING_CONFIGS, resolveEndingKey, FINALE_THEME_PATH } from '../config/endingConfig';
 import { EndingDeclaration } from './ending/EndingDeclaration';
 import { EndingCinematic } from './ending/EndingCinematic';
@@ -104,6 +104,24 @@ export const EndGameScreen: React.FC = () => {
     window.location.reload();
   }, []);
 
+  const handleRollback = useCallback(() => {
+    const success = Game.rollbackToFateDivergence();
+    if (success) {
+      window.dispatchEvent(new CustomEvent('observer-mode-activated'));
+      window.location.reload();
+    } else {
+      alert("回溯失败，未找到有效的分歧点快照。");
+    }
+  }, []);
+
+  const handleObserverMode = useCallback(() => {
+    const game = GameInstance.get();
+    game.isObserverMode = true;
+    game.isGameOver = false;
+    window.dispatchEvent(new CustomEvent('observer-mode-activated'));
+    game.addHistory("【观察者模式】人类文明已静默，您当前以量子幽灵视点静观宇宙流转。");
+  }, []);
+
   const advanceTo = useCallback((next: Phase) => {
     setPhase(next);
   }, []);
@@ -132,6 +150,8 @@ export const EndGameScreen: React.FC = () => {
         <CreditsRoll
           config={config}
           onRestart={handleRestart}
+          onRollback={handleRollback}
+          onObserverMode={handleObserverMode}
           musicPlaying={musicPlaying}
           musicAvailable={musicAvailable}
         />

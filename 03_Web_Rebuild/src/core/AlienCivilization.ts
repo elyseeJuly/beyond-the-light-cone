@@ -300,10 +300,8 @@ export class AlienCivilization extends Civilization {
           game.earthCivi.population = Math.max(1, Math.floor(game.earthCivi.population * 0.5));
           game.earthCivi.resource = Math.max(1, Math.floor(game.earthCivi.resource * 0.5));
         } else {
-          game.isGameOver = true;
-          game.defeatType = 2; // Extinction/helium flash
-          game.gameOverReason = `二向箔打击：黑暗森林打击全面爆发，太阳系沦为一幅没有厚度的平面画作。人类文明宣告彻底覆灭。`;
-          window.dispatchEvent(new CustomEvent('game-over'));
+          game.dimensionStrikeTriggered = true;
+          game.dimensionStrikeYear = game.year;
         }
       }
     }
@@ -378,5 +376,14 @@ export class AlienCiviManager {
     for (const alien of this.aliens.values()) {
       alien.runARound();
     }
+  }
+
+  public hasAnyAtWar(): boolean {
+    for (const alien of this.aliens.values()) {
+      if (!alien.isDieOut() && alien.friendshipType === FriendshipType.VERYANGRY) {
+        return true;
+      }
+    }
+    return false;
   }
 }

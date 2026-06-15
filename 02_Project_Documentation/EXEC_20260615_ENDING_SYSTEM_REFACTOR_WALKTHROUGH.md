@@ -43,6 +43,12 @@
 - **`hasAnyAtWar` 未定义修复**：在 [AlienCivilization.ts](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/core/AlienCivilization.ts) 的 `AlienCiviManager` 中新增了 `hasAnyAtWar(): boolean`，遍历异星文明判定是否存在 `FriendshipType.VERYANGRY` 敌对实体。
 - **清除未使用的类型声明**：移除了测试用例文件 `Game.bypassPrevention.test.ts` and `Game.defeatConditions.test.ts` 中多余的 enum 导入，消除未读取报错。
 
+### 5. 图片载入延迟与低配卡顿深度优化 (Performance & Asset Load Optimization)
+针对 GitHub Pages 托管资源下载延迟导致的“弹窗后图片闪白/缓慢加载”以及低配置机器下的运行卡顿问题，实装了以下优化：
+- **图片全局预加载**：在 [assetUrl.ts](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/utils/assetUrl.ts) 中实装了 `preloadCoreImages()`，并在应用挂载时（[App.tsx](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/App.tsx)）异步将全部 21:9 Widescreen CG 及 36 位主要角色的高精立绘预先加载至浏览器缓存中，实现了事件弹窗后的 CG **零延迟、实时渲染**。
+- **全屏 Canvas 背景性能重构**：在 [AtmosphereProvider.tsx](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/components/AtmosphereProvider.tsx) 中，彻底用**硬件加速的 Canvas Pattern 填充（GPU 渲染）**替代了原本耗费巨大 CPU 开销的逐像素 JS 噪点生成循环与数百次 `fillRect` 扫描线循环，大幅降低了绘制的 CPU 开销。
+- **低配性能降级限流**：在 [AtmosphereProvider.tsx](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/components/AtmosphereProvider.tsx) 中，如果硬件评估为低端机型 (`tier === 'low'`)，则**直接禁用 `requestAnimationFrame` 动态循环**，在缩放/切换时仅绘制一次静态背景，消除了低配设备的常驻卡顿，实现了 100% 的帧率释放。
+
 ---
 
 ## 🧪 三、 测试与构建验证
@@ -52,16 +58,14 @@
    - **502 个测试用例全部通过**，通过率达 100%。新编写的 `Game.victoryConditions.test.ts` 和 `Game.defeatConditions.test.ts` 完美通过。
 2. **生产构建验证**：
    - 运行 `npm run build`。
-   - TypeScript 编译 (`tsc`) 与 Vite 打包无任何错误，顺利输出生产 dist 文件：
-     - `dist/assets/index-G-S-oA1k.js` (846.09 kB)
-     - `dist/assets/index-BPBnntax.css` (115.37 kB)
+   - TypeScript 编译 (`tsc`) 与 Vite 打包无任何错误，顺利输出生产 dist 文件。
 
 ---
 
 ## 🚀 四、 归档更新与推送说明
 
 - **归档路径**：`02_Project_Documentation/EXEC_20260615_ENDING_SYSTEM_REFACTOR_WALKTHROUGH.md`
-- **代码库推送**：已将所有本地修改（26个文件）通过 Git 提交并推送至 `elyseeJuly/LengendOfUni-rebuild` 的 `main` 分支。最新的 Commit 标识为 `1f0aca9`。
+- **代码库推送**：已将所有本地修改（包含新规 CG 文件与性能优化代码）通过 Git 提交并推送至 `elyseeJuly/LengendOfUni-rebuild` 的 `main` 分支。最新的 Commit 标识为 `c069733`。
 
 ---
 

@@ -1,13 +1,13 @@
 # Legend of Uni: Three-Body Rebuild | 宇宙群英传：三体重构
 
 [![Web Version](https://img.shields.io/badge/Web_Version-Alpha_2.1-orange.svg)](#-web-reconstruction-web重构版)
-[![Play Online](https://img.shields.io/badge/Play_Online-GitHub_Pages-success.svg)](https://elyseejuly.github.io/LengendOfUni-rebuild/)
+[![Play Online](https://img.shields.io/badge/Play_Online-GitHub_Pages-success.svg)](https://elyseejuly.github.io/beyond-the-light-cone/)
 [![Windows Version](https://img.shields.io/badge/Windows_Version-Legacy_Finished-blue.svg)](#-windows-legacy-source-windows版源码)
 [![Stack](https://img.shields.io/badge/Stack-React_19_|_Vite_8_|_TS_5-61dafb.svg)](#)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#-开源协议-license)
 [![Build](https://img.shields.io/badge/TypeScript-零错误零警告-success.svg)](#)
 
-👉 **[在线游玩 Web 重构版](https://elyseejuly.github.io/LengendOfUni-rebuild/)** 👈
+👉 **[在线游玩 Web 重构版](https://elyseejuly.github.io/beyond-the-light-cone/)** 👈
 
 > *「失去人性，失去很多；失去兽性，失去一切。」—— 基于《三体》宇宙观的回合制 4X 太空策略模拟游戏*
 
@@ -147,7 +147,7 @@
 ## 📂 项目结构
 
 ```
-LengendOfUni-rebuild/
+beyond-the-light-cone/
 ├── 01_Windows_Source/            # 原始 MFC C++ 源码（重构修复版）
 │   ├── 3DPrelude/                # 3D 预渲染片头
 │   └── LengendOfUni/             # 核心游戏逻辑

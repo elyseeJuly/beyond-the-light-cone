@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Landmark as CiviLevelIcon } from 'lucide-react';
+import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 
 interface TopHUDStatItemProps {
@@ -47,13 +47,25 @@ export const TopHUD: React.FC = () => {
     const deterrence = Math.floor(earth.deterrenceValue);
 
     // Dynamic Stability calculation
+    let finishedTechs = 0;
+    let totalTechs = 0;
+    for (const tree of earth.tecTreeManager.trees.values()) {
+      for (const node of tree.nodes.values()) {
+        totalTechs++;
+        if (node.finished) {
+          finishedTechs++;
+        }
+      }
+    }
+    const techProgress = Math.floor((finishedTechs / Math.max(1, totalTechs)) * 100);
+
     const econFactor = Math.min(25, (eco / 120) * 25);
     const armyFactor = Math.min(25, (army / 25) * 25);
     const treacheryPenalty = treachery * 0.4;
-    const popFactor = Math.min(25, (pop / 80) * 25);
+    const techFactor = Math.min(25, (finishedTechs / Math.max(1, totalTechs)) * 25);
     const cultureFactor = Math.min(25, (cul / 100) * 25);
     
-    let stability = Math.max(5, Math.min(100, Math.floor(econFactor + armyFactor + popFactor + cultureFactor + (40 - treacheryPenalty))));
+    let stability = Math.max(5, Math.min(100, Math.floor(econFactor + armyFactor + techFactor + cultureFactor + (40 - treacheryPenalty))));
     if (game.victoryType !== null || game.defeatType !== null) {
       stability = 0;
     }
@@ -73,6 +85,7 @@ export const TopHUD: React.FC = () => {
       civiLevel: earth.civiLevel,
       civiLevelLabel: earth.getCiviLevelLabel(),
       stability,
+      techProgress,
       isGameOver: game.victoryType !== null || game.defeatType !== null
     };
   }, [updateCount]);
@@ -121,13 +134,6 @@ export const TopHUD: React.FC = () => {
 
       {/* Left: Civilization Attributes */}
       <div className="flex items-center gap-1.5">
-        <TopHUDStatItem 
-          icon={<LandiviIcon className="w-3.5 h-3.5 stroke-[1.5]" />}
-          label="文明等级"
-          value={stats.civiLevelLabel}
-          colorClass="text-[var(--color-primary)]"
-        />
-        
         {/* Stability with click dropdown */}
         <div className="relative" ref={dropdownRef}>
           <TopHUDStatItem 
@@ -153,8 +159,8 @@ export const TopHUD: React.FC = () => {
                   <span className="text-white font-bold">{stats.cul}</span>
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">人口基数</span>
-                  <span className="text-white font-bold">{stats.pop} 万</span>
+                  <span className="text-[var(--text-secondary)]">科技研发度</span>
+                  <span className="text-white font-bold">{stats.techProgress}%</span>
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
                   <span className="text-[var(--text-secondary)]">逃亡系数</span>
@@ -223,5 +229,4 @@ export const TopHUD: React.FC = () => {
   );
 };
 
-// Simple alias component for CiviLevelIcon to avoid duplicate name collision
-const LandiviIcon = CiviLevelIcon;
+

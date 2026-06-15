@@ -35,10 +35,16 @@ We have successfully executed the UI/UX rebuilding tasks as outlined in the impl
 - **[BattleScreen.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/BattleScreen.tsx)**: Applied deep-space background style and cyan vector borders to replace bright gradient overlays.
 - **[Tutorial.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/Tutorial.tsx)**: Simplified category button tabs and unified gradient card background colors into the translucent `glass-archive` styling.
 
+### 1.5 Feedback Iteration Tweaks
+- **[StoryModal.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/StoryModal.tsx)**: Restored dynamic CG background loading (with pan-zoom animation) and speaker portraits split layout. Speaker names are dynamically mapped to their Gongbi Cyberpunk portrait assets.
+- **[TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx)**: Removed "文明等级" to align with original HUD layout. Replaced the redundant "人口基数" inside the stability details dropdown with "科技研发度" (calculated from completed tech tree nodes), and updated the aggregate stability formula to use technology progress instead of population.
+- **[index.css](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/index.css)**: Enhanced the `glass-archive` visual dynamic feedback by adding smooth transitions and glowing borders on hover.
+
 ---
 
 ## 2. Compilation and Build Metrics
 
 - **Typecheck Status**: Clean compile via `npm run typecheck` (`tsc --noEmit`) with zero errors/warnings.
 - **Production Bundle**: Successful production bundle output via `npm run build` (`tsc && vite build`):
-  - Assets generated: `dist/assets/index-D6fRXDl8.css` (106.54 kB) and `dist/assets/index-jpPa7k8A.js` (885.53 kB).
+  - Assets generated: `dist/assets/index-DM_2cR3D.css` (111.82 kB) and `dist/assets/index-D9qTUMtU.js` (889.70 kB).
+- **Git Sync**: Code committed and pushed successfully to GitHub repository.

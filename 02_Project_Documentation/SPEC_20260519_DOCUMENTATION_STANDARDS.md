@@ -106,6 +106,7 @@ Archived logs and historical progression tracking.
 *   [HIST_20260519_DEVELOPMENT_LOG_M0_M9.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/HIST_20260519_DEVELOPMENT_LOG_M0_M9.md) — *Web Rebuild full dev chronologies M0-M9*
 *   [HIST_20260520_DEVELOPMENT_V7.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/HIST_20260520_DEVELOPMENT_V7.md) — *Development log V7*
 *   [HIST_20260525_ART_UI_UNIFICATION.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/HIST_20260525_ART_UI_UNIFICATION.md) — *Archived dev history of characters Gongbi Cyberpunk style and letterbox UI*
+*   [HIST_20260615_UI_REBUILD_DIALOGUE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/HIST_20260615_UI_REBUILD_DIALOGUE.md) — *Dialogue and decision chronicles of the UI/UX refactoring*
 
 ### 4.5 Active Execution & Tasks (`EXEC_`)
 Active development logs, blueprints, and task runners.
@@ -144,6 +145,8 @@ Active development logs, blueprints, and task runners.
 *   [EXEC_20260615_MUSIC_INTEGRATION_PLAN.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_PLAN.md) — *Execution plan for renaming music assets and pre-configuring BGM slots in code*
 *   [EXEC_20260615_MUSIC_INTEGRATION_TASK.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_TASK.md) — *Task checklist for music assets renaming and BGM slots integration*
 *   [EXEC_20260615_MUSIC_INTEGRATION_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_WALKTHROUGH.md) — *Walkthrough report with file integration specifications and tests verification*
+*   [EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_PLAN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_PLAN.md) — *Execution plan for star map viewport reconstruction and settings integration*
+*   [EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_WALKTHROUGH.md) — *Walkthrough of the completed star map viewports, settings modal, and modals styling unification*
 
 ---
 

@@ -19,6 +19,7 @@ import { DiplomacyPanel } from './components/DiplomacyPanel';
 import { AtmosphereProvider } from './components/AtmosphereProvider';
 import { TechUnlockModal } from './components/TechUnlockModal';
 import { MuseumGallery } from './components/MuseumGallery';
+import { preloadCoreImages } from './utils/assetUrl';
 
 export const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -48,6 +49,7 @@ export const App: React.FC = () => {
   }, [isDarkMode]);
 
   useEffect(() => {
+    preloadCoreImages();
     const handleThemeChange = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail && typeof detail.isDark === 'boolean') {

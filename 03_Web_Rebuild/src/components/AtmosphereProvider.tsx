@@ -7,6 +7,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { AtmosphereConfig, AtmosphereState } from '../core/AtmosphereEngine';
+import { getPerformanceConfig } from './ending/particlePerformance';
 
 const AtmosphereContext = createContext<AtmosphereConfig | null>(null);
 
@@ -52,38 +53,99 @@ export const AtmosphereProvider: React.FC<Props> = ({ engineRef, children }) => 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Helper to generate static pattern canvases
+    const createNoisePattern = (opacity: number): HTMLCanvasElement => {
+      const size = 128;
+      const patCanvas = document.createElement('canvas');
+      patCanvas.width = size;
+      patCanvas.height = size;
+      const patCtx = patCanvas.getContext('2d');
+      if (patCtx) {
+        const imgData = patCtx.createImageData(size, size);
+        const data = imgData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const val = Math.random() * 255;
+          data[i] = val;
+          data[i + 1] = val;
+          data[i + 2] = val;
+          data[i + 3] = Math.floor(val * opacity * 0.15); // Scale alpha based on noiseLevel
+        }
+        patCtx.putImageData(imgData, 0, 0);
+      }
+      return patCanvas;
+    };
+
+    const createScanlinePattern = (opacity: number): HTMLCanvasElement => {
+      const patCanvas = document.createElement('canvas');
+      patCanvas.width = 1;
+      patCanvas.height = 3;
+      const patCtx = patCanvas.getContext('2d');
+      if (patCtx) {
+        patCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
+        patCtx.fillRect(0, 0, 1, 1); // 1px scanline, 2px gap
+      }
+      return patCanvas;
+    };
+
+    // Pre-create patterns
+    const noisePatCanvas = createNoisePattern(config.noiseLevel);
+    const noisePattern = ctx.createPattern(noisePatCanvas, 'repeat');
+
+    const scanlinePatCanvas = createScanlinePattern(config.scanlineOpacity);
+    const scanlinePattern = ctx.createPattern(scanlinePatCanvas, 'repeat');
+
+    const perf = getPerformanceConfig();
+    const isLowPerf = perf.tier === 'low';
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      if (isLowPerf) {
+        // For low performance, draw static once on resize
+        renderStatic();
+      }
     };
-    resize();
+
+    const renderStatic = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (config.noiseLevel > 0 && noisePattern) {
+        ctx.fillStyle = noisePattern;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      if (config.scanlineOpacity > 0 && scanlinePattern) {
+        ctx.fillStyle = scanlinePattern;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+
     window.addEventListener('resize', resize);
+    resize();
+
+    if (isLowPerf) {
+      // For low spec machines, do not run animation loop. Just draw static once and exit.
+      renderStatic();
+      return () => {
+        window.removeEventListener('resize', resize);
+      };
+    }
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 噪点
-      if (config.noiseLevel > 0) {
-        const imageData = ctx.createImageData(canvas.width, canvas.height);
-        const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          if (Math.random() < config.noiseLevel) {
-            const val = Math.random() * 255;
-            data[i] = val;
-            data[i + 1] = val;
-            data[i + 2] = val;
-            data[i + 3] = 30;
-          }
-        }
-        ctx.putImageData(imageData, 0, 0);
+      // Noise
+      if (config.noiseLevel > 0 && noisePattern) {
+        ctx.save();
+        // Shift pattern offset randomly to simulate moving static noise
+        ctx.translate(Math.floor(Math.random() * 128), Math.floor(Math.random() * 128));
+        ctx.fillStyle = noisePattern;
+        ctx.fillRect(-128, -128, canvas.width + 128, canvas.height + 128);
+        ctx.restore();
       }
 
-      // 扫描线
-      if (config.scanlineOpacity > 0) {
-        ctx.fillStyle = `rgba(0, 0, 0, ${config.scanlineOpacity})`;
-        for (let y = 0; y < canvas.height; y += 3) {
-          ctx.fillRect(0, y, canvas.width, 1);
-        }
+      // Scanlines
+      if (config.scanlineOpacity > 0 && scanlinePattern) {
+        ctx.fillStyle = scanlinePattern;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       animFrameRef.current = requestAnimationFrame(draw);

@@ -139,6 +139,7 @@ Active development logs, blueprints, and task runners.
 *   [EXEC_20260612_CRITICAL_ISSUES_IMPLEMENTATION_PLAN.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260612_CRITICAL_ISSUES_IMPLEMENTATION_PLAN.md) — *Critical issues implementation plan addressing six user-reported problems*
 *   [EXEC_20260612_CRITICAL_ISSUES_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260612_CRITICAL_ISSUES_WALKTHROUGH.md) — *Walkthrough of the six critical issues resolution and test verification*
 *   [EXEC_20260615_CHARACTER_ART_REMEDIATION_V2.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_CHARACTER_ART_REMEDIATION_V2.md) — *Second character art audit and remediation execution report fixing AIAA, Tyler, Ding Yi, and Guan Yifan*
+*   [EXEC_20260615_AVATAR_FALLBACK_AND_THEME_REMEDIATION.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_AVATAR_FALLBACK_AND_THEME_REMEDIATION.md) — *Execution report on resolving avatar fallbacks, Sophon portrait, light theme default, and dark theme softening*
 
 ---
 

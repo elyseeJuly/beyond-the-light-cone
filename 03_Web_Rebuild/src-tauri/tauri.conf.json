@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicklasxyz/tauri-v2-schemas/main/tauri.conf.schema.json",
-  "productName": "宇宙群英传",
+  "productName": "BeyondTheLightCone",
   "version": "1.0.0",
-  "identifier": "com.emberois.legend-of-uni",
+  "identifier": "com.emberois.beyond-the-light-cone",
   "build": {
     "beforeDevCommand": "",
     "beforeBuildCommand": "npm run build",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "宇宙群英传",
+        "title": "光锥之外：纪元往事",
         "width": 1600,
         "height": 900,
         "resizable": true,

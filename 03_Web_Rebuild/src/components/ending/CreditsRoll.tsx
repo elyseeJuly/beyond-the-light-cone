@@ -95,12 +95,13 @@ export const CreditsRoll: React.FC<Props> = ({
           <div className="text-center mb-20 animate-pulse">
             <p className="text-white/20 text-xs tracking-[0.5em] uppercase mb-4">— A Three-Body Universe Simulation —</p>
             <h1
-              className="text-5xl font-black tracking-tight mb-3"
+              className="text-4xl font-black tracking-tight mb-3"
               style={{ color: config.accentColor }}
             >
-              宇宙群英传
+              光锥之外：纪元往事
             </h1>
-            <p className="text-xl text-white/50 italic tracking-wider">Legend of Uni</p>
+            <p className="text-lg text-white/50 italic tracking-wider">Beyond the Light Cone: Epoch Chronicles</p>
+            <p className="text-[10px] text-white/30 tracking-[0.25em] uppercase mt-2">— 宇宙群英传重构计划 / Legend of Uni Rebuild —</p>
           </div>
 
           {/* Ending achieved */}

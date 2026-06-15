@@ -4,7 +4,7 @@ export type Language = 'zh' | 'en';
 
 const translations: Record<Language, Record<string, string>> = {
   zh: {
-    "game_title": "宇宙群英传",
+    "game_title": "光锥之外：纪元往事",
     "next_turn": "下一回合",
     "processing": "处理中...",
     "save_game": "保存存档",
@@ -35,7 +35,7 @@ const translations: Record<Language, Record<string, string>> = {
     "high_contrast": "切换高对比度"
   },
   en: {
-    "game_title": "Legend of Uni",
+    "game_title": "Beyond the Light Cone: Epoch Chronicles",
     "next_turn": "Next Turn",
     "processing": "Processing...",
     "save_game": "Save Game",

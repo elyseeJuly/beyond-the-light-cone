@@ -1,7 +1,7 @@
 [package]
-name = "legend-of-uni"
+name = "beyond-the-light-cone"
 version = "1.0.0"
-description = "宇宙群英传 - 三体宇宙策略叙事游戏"
+description = "光锥之外：纪元往事 - 三体宇宙策略叙事游戏"
 authors = ["Emberois"]
 edition = "2021"
 

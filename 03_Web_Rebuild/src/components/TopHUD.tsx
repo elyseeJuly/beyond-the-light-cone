@@ -77,9 +77,10 @@ export const TopHUD: React.FC = () => {
   const stats = useMemo(() => {
     const game = GameInstance.get();
     const earth = game.earthCivi;
-    const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元"];
+    const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
     return {
       year: game.year,
+      epoch: game.epoch,
       epochName: epochNames[game.epoch] || "未知纪元",
       pop: earth.population,
       eco: Math.floor(earth.economy),
@@ -226,7 +227,7 @@ export const TopHUD: React.FC = () => {
 
       {/* Right: System Operations */}
       <div className="flex items-center gap-3">
-        <BgmPlayer isGameOver={stats.isGameOver} />
+        <BgmPlayer isGameOver={stats.isGameOver} epoch={stats.epoch} />
         
         <button onClick={() => setHighContrast(v => !v)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-[var(--text-secondary)] cursor-pointer" title={t('high_contrast') || "高对比度模式"}>
           <Contrast size={20} />

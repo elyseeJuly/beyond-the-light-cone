@@ -9,14 +9,15 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Volume2, VolumeX, Play } from 'lucide-react';
-import { GAMEPLAY_BGM_PATH } from '../config/endingConfig';
+import { GAMEPLAY_BGM_PATH, ERA_BGM_PATHS } from '../config/endingConfig';
 import { getAssetUrl } from '../utils/assetUrl';
 
 interface BgmPlayerProps {
   isGameOver: boolean;
+  epoch: number;
 }
 
-export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver }) => {
+export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
   const [isPlaying, setIsPlaying] = useState(() => {
     const savedMuted = localStorage.getItem('game-bgm-muted');
     return savedMuted !== 'true';
@@ -30,28 +31,60 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver }) => {
     return saved !== null ? parseFloat(saved) : 0.4;
   });
   const [isAvailable, setIsAvailable] = useState(true);
+  const [loadedPath, setLoadedPath] = useState('');
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize and load audio
   useEffect(() => {
-    const audio = new Audio(getAssetUrl(GAMEPLAY_BGM_PATH));
-    audioRef.current = audio;
+    const epochKeys = ['CRISIS', 'DETERRENCE', 'BROADCAST', 'BUNKER', 'GALAXY', 'STARDUST'] as const;
+    const epochKey = epochKeys[epoch] || 'CRISIS';
+    const specificPath = ERA_BGM_PATHS[epochKey];
+    let currentPath = specificPath;
+
+    // Reuse or create audio element
+    let audio = audioRef.current;
+    if (!audio) {
+      audio = new Audio();
+      audioRef.current = audio;
+    }
     audio.loop = true;
     audio.volume = isMuted ? 0 : volume;
 
-    audio.addEventListener('error', () => {
-      console.log('[BgmPlayer] BGM "Base of Years" not found at', GAMEPLAY_BGM_PATH, '— running in silent mode');
-      setIsAvailable(false);
-    });
+    const tryLoadAudio = (path: string) => {
+      currentPath = path;
+      setLoadedPath(path);
+      audio!.src = getAssetUrl(path);
+      audio!.load();
+      if (isPlaying && !isGameOver) {
+        audio!.play().catch((err) => {
+          console.log('[BgmPlayer] Autoplay blocked or failed for path:', path, err.message);
+        });
+      }
+      setIsAvailable(true);
+    };
 
-    audio.load();
+    const handleError = () => {
+      console.log('[BgmPlayer] Audio file not found at:', currentPath);
+      if (currentPath === specificPath && specificPath !== GAMEPLAY_BGM_PATH) {
+        console.log('[BgmPlayer] Gracefully falling back to default gameplay BGM:', GAMEPLAY_BGM_PATH);
+        tryLoadAudio(GAMEPLAY_BGM_PATH);
+      } else {
+        console.log('[BgmPlayer] Both specific and default BGM not found, running in silent mode.');
+        setIsAvailable(false);
+      }
+    };
+
+    audio.addEventListener('error', handleError);
+
+    tryLoadAudio(specificPath);
 
     return () => {
-      audio.pause();
-      audio.src = '';
+      audio!.removeEventListener('error', handleError);
+      audio!.pause();
+      audio!.src = '';
     };
-  }, []);
+  }, [epoch]);
 
   // Update volume / mute settings
   useEffect(() => {
@@ -202,11 +235,14 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver }) => {
     }
   };
 
+  const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+  const currentEpochName = epochNames[epoch] || "主背景";
+
   if (!isAvailable) {
     return (
       <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-sm text-[10px] text-white/30 tracking-widest uppercase">
         <VolumeX size={12} className="opacity-50" />
-        <span>岁月底座 BGM 待加入</span>
+        <span>《{currentEpochName} BGM》待加入</span>
       </div>
     );
   }
@@ -261,7 +297,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver }) => {
       />
 
       <span className="text-[10px] text-white/40 tracking-wider font-bold select-none hidden md:inline">
-        《岁月底座》
+        {loadedPath === GAMEPLAY_BGM_PATH ? "《岁月底座》" : `《${currentEpochName}》`}
       </span>
 
       <style>{`

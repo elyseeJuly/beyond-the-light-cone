@@ -14,12 +14,12 @@ describe('Appendix B Improvements tests', () => {
     it('should support switching languages', () => {
       setLanguage('zh');
       expect(getLanguage()).toBe('zh');
-      expect(t('game_title')).toBe('宇宙群英传');
+      expect(t('game_title')).toBe('光锥之外：纪元往事');
       expect(t('next_turn')).toBe('下一回合');
 
       setLanguage('en');
       expect(getLanguage()).toBe('en');
-      expect(t('game_title')).toBe('Legend of Uni');
+      expect(t('game_title')).toBe('Beyond the Light Cone: Epoch Chronicles');
       expect(t('next_turn')).toBe('Next Turn');
     });
 

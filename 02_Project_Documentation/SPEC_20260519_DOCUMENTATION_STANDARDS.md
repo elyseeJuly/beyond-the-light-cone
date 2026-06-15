@@ -62,6 +62,7 @@ Documents defining features, architectures, and design directives.
 *   [SPEC_20260608_SUPPLEMENTARY_CG_PROMPTS_SPEC.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260608_SUPPLEMENTARY_CG_PROMPTS_SPEC.md) — *Midjourney generation prompts and naming requirements spec for supplementary CGs*
 *   [SPEC_20260612_UNIVERSAL_EVENT_ENGINE_V1.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_UNIVERSAL_EVENT_ENGINE_V1.md) — *Universal Event Engine (UEE v1.0) architecture and dynamic generation rules*
 *   [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) — *Comprehensive architecture refactoring specification blueprints*
+*   [SPEC_20260615_EPOCH_CHRONICLES_OST.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260615_EPOCH_CHRONICLES_OST.md) — *Beyond the Light Cone: Epoch Chronicles OST specifications planning book*
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.
@@ -140,6 +141,9 @@ Active development logs, blueprints, and task runners.
 *   [EXEC_20260612_CRITICAL_ISSUES_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260612_CRITICAL_ISSUES_WALKTHROUGH.md) — *Walkthrough of the six critical issues resolution and test verification*
 *   [EXEC_20260615_CHARACTER_ART_REMEDIATION_V2.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_CHARACTER_ART_REMEDIATION_V2.md) — *Second character art audit and remediation execution report fixing AIAA, Tyler, Ding Yi, and Guan Yifan*
 *   [EXEC_20260615_AVATAR_FALLBACK_AND_THEME_REMEDIATION.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_AVATAR_FALLBACK_AND_THEME_REMEDIATION.md) — *Execution report on resolving avatar fallbacks, Sophon portrait, light theme default, and dark theme softening*
+*   [EXEC_20260615_MUSIC_INTEGRATION_PLAN.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_PLAN.md) — *Execution plan for renaming music assets and pre-configuring BGM slots in code*
+*   [EXEC_20260615_MUSIC_INTEGRATION_TASK.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_TASK.md) — *Task checklist for music assets renaming and BGM slots integration*
+*   [EXEC_20260615_MUSIC_INTEGRATION_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_WALKTHROUGH.md) — *Walkthrough report with file integration specifications and tests verification*
 
 ---
 

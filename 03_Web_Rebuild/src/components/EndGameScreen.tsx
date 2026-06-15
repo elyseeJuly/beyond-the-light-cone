@@ -12,7 +12,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Game, GameInstance } from '../core/Game';
-import { ENDING_CONFIGS, resolveEndingKey, FINALE_THEME_PATH } from '../config/endingConfig';
+import { ENDING_CONFIGS, resolveEndingKey, FINALE_THEME_PATH, ENDING_BGM_PATHS } from '../config/endingConfig';
 import { EndingDeclaration } from './ending/EndingDeclaration';
 import { EndingCinematic } from './ending/EndingCinematic';
 import { TimelineRetrospective } from './ending/TimelineRetrospective';
@@ -37,10 +37,19 @@ export const EndGameScreen: React.FC = () => {
     const savedMuted = localStorage.getItem('game-bgm-muted') === 'true';
     const savedVolume = parseFloat(localStorage.getItem('game-bgm-volume') || '0.4');
 
-    const audio = new Audio(getAssetUrl(FINALE_THEME_PATH));
+    const specificPath = ENDING_BGM_PATHS[endingKey] || FINALE_THEME_PATH;
+    let currentPath = specificPath;
+
+    const audio = new Audio();
     audioRef.current = audio;
     audio.volume = savedMuted ? 0 : savedVolume;
     audio.loop = true;
+
+    const tryLoad = (path: string) => {
+      currentPath = path;
+      audio.src = getAssetUrl(path);
+      audio.load();
+    };
 
     audio.addEventListener('canplaythrough', () => {
       audio.play()
@@ -51,20 +60,28 @@ export const EndGameScreen: React.FC = () => {
         });
     });
 
-    audio.addEventListener('error', () => {
-      console.log('[EndGameScreen] Finale theme song not found at', FINALE_THEME_PATH, '— degrading gracefully');
-      setMusicAvailable(false);
-    });
+    const handleError = () => {
+      console.log('[EndGameScreen] Audio not found at', currentPath);
+      if (currentPath === specificPath && specificPath !== FINALE_THEME_PATH) {
+        console.log('[EndGameScreen] Falling back to default ending theme:', FINALE_THEME_PATH);
+        tryLoad(FINALE_THEME_PATH);
+      } else {
+        console.log('[EndGameScreen] Running in silent mode');
+        setMusicAvailable(false);
+      }
+    };
 
+    audio.addEventListener('error', handleError);
     audio.addEventListener('ended', () => setMusicPlaying(false));
 
-    audio.load();
+    tryLoad(specificPath);
 
     return () => {
+      audio.removeEventListener('error', handleError);
       audio.pause();
       audio.src = '';
     };
-  }, []);
+  }, [endingKey]);
 
   // Listen for user interaction to resume play if blocked by autoplay policy
   useEffect(() => {

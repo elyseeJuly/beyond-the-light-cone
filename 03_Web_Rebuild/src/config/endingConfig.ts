@@ -40,8 +40,33 @@ export interface EndingConfig {
 /** 正常游戏背景音乐："岁月底座" */
 export const GAMEPLAY_BGM_PATH = '/audio/years_base.mp3';
 
-/** 大结局主题曲："星屑" */
-export const FINALE_THEME_PATH = '/audio/stardust.mp3';
+/** 大结局主题曲："Stardust Exodus" */
+export const FINALE_THEME_PATH = '/audio/stardust Exodus.mp3';
+
+/** 纪元动态 BGM 预留音乐位 */
+export const ERA_BGM_PATHS = {
+  CRISIS: '/audio/era_crisis.mp3',           // 危机纪元
+  DETERRENCE: '/audio/era_deterrence.mp3',   // 威慑纪元
+  BROADCAST: '/audio/era_broadcast.mp3',     // 广播纪元
+  BUNKER: '/audio/era_bunker.mp3',           // 掩体纪元
+  GALAXY: '/audio/era_galaxy.mp3',           // 银河纪元
+  STARDUST: '/audio/era_stardust.mp3',       // 星屑纪元
+};
+
+/** 结局与终章专属 BGM 预留音乐位 */
+export const ENDING_BGM_PATHS = {
+  CONQUEST: '/audio/ending_conquest.mp3',               // 征服胜利
+  DETERRENCE: '/audio/ending_deterrence.mp3',           // 威慑胜利
+  DARK_DOMAIN: '/audio/ending_dark_domain.mp3',         // 黑域结局：《Death of the Light Cone》
+  WANDERING: '/audio/ending_wandering.mp3',             // 流浪胜利
+  DIGITAL: '/audio/ending_digital.mp3',                 // 数字永生：《Ghost in the Quantum》
+  HIDDEN: '/audio/ending_hidden.mp3',                   // 隐藏结局：《The Last Archive》
+  CREDITS_PLATINUM: '/audio/credits_platinum.mp3',     // 全图鉴白金神曲：《A Past Within the Light Cone》
+  DEFEAT_TREACHERY: '/audio/ending_defeat_treachery.mp3',
+  DEFEAT_EXTINCTION: '/audio/ending_defeat_extinction.mp3',
+  DEFEAT_HELIUM_FLASH: '/audio/ending_defeat_helium_flash.mp3',
+  DEFEAT_DIMENSION_STRIKE: '/audio/ending_defeat_dimension_strike.mp3',
+};
 
 /** Credits 制作人员名单 */
 export const CREDITS_LIST = [

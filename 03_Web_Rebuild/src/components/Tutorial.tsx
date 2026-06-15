@@ -137,24 +137,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   },
 ];
 
-// Category colors
-const CATEGORY_COLORS: Record<string, string> = {
-  '序章': 'from-blue-500/20 to-cyan-500/20',
-  '界面导览': 'from-violet-500/20 to-purple-500/20',
-  '核心玩法': 'from-emerald-500/20 to-teal-500/20',
-  '胜利之路': 'from-amber-500/20 to-yellow-500/20',
-  '生存指南': 'from-red-500/20 to-orange-500/20',
-  '出发': 'from-blue-500/20 to-cyan-500/20',
-};
 
-const CATEGORY_BORDER_COLORS: Record<string, string> = {
-  '序章': 'border-cyan-500/30',
-  '界面导览': 'border-violet-500/30',
-  '核心玩法': 'border-emerald-500/30',
-  '胜利之路': 'border-amber-500/30',
-  '生存指南': 'border-red-500/30',
-  '出发': 'border-cyan-500/30',
-};
 
 export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [step, setStep] = useState(0);
@@ -251,25 +234,25 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       <div className={`relative z-[502] w-full max-w-2xl mx-4 flex flex-col transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
         
         {/* Progress bar */}
-        <div className="w-full h-1 bg-white/10 rounded-full mb-4 overflow-hidden">
+        <div className="w-full h-1 bg-white/10 rounded mb-4 overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-[var(--color-primary)] to-cyan-400 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-[var(--color-primary)] rounded transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
 
         {/* Chapter navigation */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3 select-none">
           {categories.map((cat, ci) => {
             const isActive = step >= cat.startIdx && step < cat.startIdx + cat.count;
             return (
               <button 
                 key={ci}
                 onClick={() => handleGoTo(cat.startIdx)}
-                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border transition-all ${
+                className={`text-[10px] font-title font-bold uppercase tracking-wider px-3 py-1 rounded border transition-all cursor-pointer ${
                   isActive 
-                    ? 'bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 text-[var(--color-primary)]' 
-                    : 'border-white/10 text-white/30 hover:text-white/60 hover:border-white/20'
+                    ? 'bg-[rgba(var(--color-primary-rgb),0.1)] border-[var(--color-primary)] text-[var(--color-primary)] shadow-[0_0_8px_rgba(0,184,255,0.25)]' 
+                    : 'border-[#243245]/60 text-[var(--text-secondary)]/50 hover:text-white hover:border-white/30 bg-[#070B14]/40'
                 }`}
               >
                 {cat.name}
@@ -277,45 +260,50 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
             );
           })}
           <div className="flex-1" />
-          <span className="text-[10px] text-white/30 font-mono">{step + 1}/{TUTORIAL_STEPS.length}</span>
+          <span className="text-[10px] text-[var(--text-secondary)]/30 font-mono">{step + 1}/{TUTORIAL_STEPS.length}</span>
         </div>
 
         {/* Content card */}
-        <div className={`bg-gradient-to-br ${CATEGORY_COLORS[current.category] || 'from-blue-500/20 to-cyan-500/20'} backdrop-blur-xl rounded-2xl border ${CATEGORY_BORDER_COLORS[current.category] || 'border-white/10'} p-8 flex flex-col gap-5`}>
-          
+        <div className="relative glass-archive border border-[#243245]/60 rounded p-8 flex flex-col gap-5 overflow-hidden">
+          {/* Glow corner decorations */}
+          <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/40 pointer-events-none" />
+          <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-[var(--color-primary)]/40 pointer-events-none" />
+          <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-[var(--color-primary)]/40 pointer-events-none" />
+          <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[var(--color-primary)]/40 pointer-events-none" />
+
           {/* Skip button */}
-          <button onClick={handleSkip} className="tutorial-modal-close-btn absolute top-6 right-6 text-white/30 hover:text-white/70 transition-colors z-10">
-            <X size={18} />
+          <button onClick={handleSkip} className="tutorial-modal-close-btn absolute top-5 right-5 text-[var(--text-secondary)] hover:text-white transition-colors z-10 cursor-pointer">
+            <X size={16} />
           </button>
 
           {/* Icon + Title */}
           <div className={`flex items-center gap-4 transition-all duration-200 ${isAnimating ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'}`}>
-            <div className="w-14 h-14 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-[var(--color-primary)] shrink-0">
+            <div className="w-12 h-12 rounded bg-white/5 border border-[#243245]/40 flex items-center justify-center text-[var(--color-primary)] shrink-0">
               {current.icon}
             </div>
             <div>
-              <div className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em] mb-0.5">{current.category}</div>
-              <h2 className="text-xl font-black text-white tracking-tight">{current.title}</h2>
+              <div className="text-[9px] font-mono font-bold text-[var(--text-secondary)]/45 uppercase tracking-[0.15em] mb-0.5">{current.category}</div>
+              <h2 className="text-lg font-title font-extrabold text-white tracking-widest">{current.title}</h2>
             </div>
           </div>
 
           {/* Description */}
-          <div className={`transition-all duration-200 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
-            <p className="text-sm text-white/70 leading-relaxed whitespace-pre-line">
+          <div className={`transition-all duration-200 ${isAnimating ? 'opacity-0' : 'opacity-100'} font-sans text-xs`}>
+            <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
               {current.description}
             </p>
           </div>
 
           {/* Tips */}
           {current.tips && current.tips.length > 0 && (
-            <div className={`bg-white/5 rounded-xl p-4 border border-white/5 transition-all duration-200 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
-              <div className="flex items-center gap-2 text-[10px] font-bold text-amber-400/80 uppercase tracking-wider mb-2">
-                <Lightbulb size={12} />
-                <span>小贴士</span>
+            <div className={`bg-[#070B14]/40 border border-[#243245]/40 rounded p-4 transition-all duration-200 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+              <div className="flex items-center gap-2 text-[9px] font-title font-bold text-amber-400 uppercase tracking-wider mb-2">
+                <Lightbulb size={11} />
+                <span>小贴士 / Strategic Tips</span>
               </div>
-              <ul className="space-y-1">
+              <ul className="space-y-1.5 font-mono text-[11px]">
                 {current.tips.map((tip, i) => (
-                  <li key={i} className="text-xs text-white/50 flex items-start gap-2">
+                  <li key={i} className="text-[var(--text-secondary)]/75 flex items-start gap-2">
                     <span className="text-amber-400/60 mt-0.5">•</span>
                     <span>{tip}</span>
                   </li>
@@ -326,15 +314,15 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         </div>
 
         {/* Navigation footer */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-4 select-none">
           <button 
             onClick={handlePrev} 
             disabled={step === 0}
-            className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-              step === 0 ? 'opacity-0 cursor-default' : 'text-white/50 hover:text-white hover:bg-white/5'
+            className={`flex items-center gap-1 px-4 py-2 rounded text-xs font-bold transition-all ${
+              step === 0 ? 'opacity-0 cursor-default' : 'text-[var(--text-secondary)]/50 hover:text-white hover:bg-white/5 cursor-pointer'
             }`}
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={14} />
             上一步
           </button>
 
@@ -344,9 +332,9 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
               <button 
                 key={i} 
                 onClick={() => handleGoTo(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                className={`w-1.5 h-1.5 rounded transition-all cursor-pointer ${
                   i === step 
-                    ? 'bg-[var(--color-primary)] scale-150' 
+                    ? 'bg-[var(--color-primary)] scale-125' 
                     : i < step 
                       ? 'bg-[var(--color-primary)]/40 hover:bg-[var(--color-primary)]/60' 
                       : 'bg-white/15 hover:bg-white/30'
@@ -357,10 +345,10 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
           <button 
             onClick={handleNext} 
-            className="flex items-center gap-2 px-6 py-2 bg-[var(--color-primary)] text-white dark:text-blue-950 font-bold rounded-lg hover:brightness-110 transition-all"
+            className="flex items-center gap-1.5 px-5 py-2 bg-[var(--color-primary)] hover:brightness-110 text-black font-extrabold rounded text-xs cursor-pointer shadow-[0_0_12px_rgba(0,184,255,0.4)] transition-all"
           >
             {step < TUTORIAL_STEPS.length - 1 ? (
-              <>下一步 <ChevronRight size={16} /></>
+              <>下一步 <ChevronRight size={14} /></>
             ) : (
               '🚀 开始游戏'
             )}

@@ -113,74 +113,80 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
   const isDefenderHit = lastRound && lastRound.atkDamage > 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 overflow-y-auto">
-      {/* Retro sci-fi background scanline */}
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,3px_100%] opacity-25"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 overflow-y-auto">
+      {/* 2-second hologram scan line */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+        <div className="absolute inset-x-0 h-[2px] bg-[var(--color-primary)]/10 opacity-30 shadow-[0_0_15px_var(--color-primary)] animate-[hologram-sweep_2s_linear_infinite]" />
+      </div>
 
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-4xl bg-slate-900 border border-cyan-500/30 rounded-lg shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col overflow-hidden relative select-none"
+        className="relative w-full max-w-4xl h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none"
       >
-        
+        {/* Glow corner decorations */}
+        <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/50 pointer-events-none" />
+        <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-[var(--color-primary)]/50 pointer-events-none" />
+        <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-[var(--color-primary)]/50 pointer-events-none" />
+        <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[var(--color-primary)]/50 pointer-events-none" />
+
         {/* Header Row */}
-        <div className="bg-slate-950 border-b border-cyan-500/20 p-4 flex items-center justify-between">
+        <div className="bg-[#070B14] border-b border-[#243245]/40 px-6 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-4 bg-cyan-400 rounded-sm shadow-[0_0_8px_rgba(6,182,212,0.8)] animate-pulse"></div>
-            <span className="text-cyan-400 font-mono font-bold tracking-widest text-sm uppercase">
-              PDC 全息战术演练系统 · 星际遭遇战
+            <Swords className="text-[var(--color-primary)] w-4 h-4" />
+            <span className="text-[var(--color-primary)] font-title font-bold tracking-widest text-xs uppercase">
+              PDC 战术演练系统 · 星际遭遇战档案
             </span>
           </div>
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className="text-cyan-500/70 hover:text-cyan-400 p-1.5 rounded transition-all hover:bg-cyan-950/40"
+              className="text-[var(--text-secondary)] hover:text-white p-1 rounded transition-colors cursor-pointer hover:bg-white/5"
               title={soundEnabled ? "静音" : "开启声音"}
             >
-              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
             </button>
             <button 
               onClick={onClose}
-              className="text-slate-500 hover:text-red-400 p-1.5 rounded transition-all hover:bg-slate-800"
+              className="text-[var(--text-secondary)] hover:text-white p-1 rounded transition-colors cursor-pointer hover:bg-white/5"
             >
-              <X className="w-4.5 h-4.5" />
+              <X size={14} />
             </button>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 flex flex-col gap-6 max-h-[80vh] overflow-y-auto">
+        <div className="flex-1 flex flex-col gap-4 p-6 overflow-hidden">
           
           {/* Battle Location banner */}
-          <div className="text-center bg-cyan-950/20 border border-cyan-500/10 p-3 rounded font-mono">
-            <span className="text-cyan-500/60 text-[10px] tracking-widest block uppercase">BATTLEZONE COORD</span>
-            <span className="text-cyan-200 text-lg font-bold">星系 [{planetName}] 边缘空间对决</span>
+          <div className="text-center bg-[#070B14]/40 border border-[#243245]/30 p-2.5 rounded font-mono shrink-0">
+            <span className="text-[var(--text-secondary)]/50 text-[9px] tracking-widest block uppercase">BATTLEZONE COORD</span>
+            <span className="text-white text-sm font-bold tracking-wider">星系 [{planetName}] 边缘空间对决</span>
           </div>
 
           {/* Dueling Parties Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0 font-mono text-xs">
             {/* Attacker Panel */}
             <motion.div 
               key={`atk_${displayedRounds.length}`}
               animate={isAttackerHit ? {
-                x: [0, -8, 8, -6, 6, -4, 4, 0],
-                borderColor: ["rgba(239, 68, 68, 0.2)", "rgba(239, 68, 68, 0.9)", "rgba(239, 68, 68, 0.2)"],
-                backgroundColor: ["rgba(2, 6, 23, 0.6)", "rgba(239, 68, 68, 0.15)", "rgba(2, 6, 23, 0.6)"]
+                x: [0, -4, 4, -3, 3, -2, 2, 0],
+                borderColor: ["#243245", "#FF5252", "#243245"],
+                backgroundColor: ["rgba(7, 11, 20, 0.4)", "rgba(255, 82, 82, 0.1)", "rgba(7, 11, 20, 0.4)"]
               } : {}}
               transition={{ duration: 0.4 }}
-              className="bg-slate-950/60 border border-red-500/20 p-4 rounded flex flex-col gap-2 shadow-[inset_0_0_15px_rgba(239,68,68,0.05)] relative overflow-hidden"
+              className="bg-[#070B14]/40 border border-[#243245]/30 p-3.5 rounded flex flex-col gap-1.5 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rotate-45 transform translate-x-12 -translate-y-12"></div>
-              <div className="text-red-400 font-mono text-[10px] tracking-wider uppercase font-bold">ATTACK FORCES / 攻方</div>
-              <div className="text-slate-100 text-lg font-bold truncate">{attackerName}</div>
-              <div className="flex justify-between items-center mt-2 border-t border-red-500/10 pt-2 font-mono">
-                <span className="text-slate-500 text-xs">初始威慑强度:</span>
-                <span className="text-red-400 text-sm font-bold">{attackerPower}</span>
+              <div className="text-[#FF5252] text-[9px] tracking-wider uppercase font-bold">ATTACK FORCES / 攻方</div>
+              <div className="text-white text-sm font-bold truncate">{attackerName}</div>
+              <div className="flex justify-between items-center mt-1 border-t border-[#243245]/20 pt-1.5">
+                <span className="text-[var(--text-secondary)]/60">初始威慑强度:</span>
+                <span className="text-[#FF5252] font-bold">{attackerPower}</span>
               </div>
-              <div className="flex justify-between items-center font-mono">
-                <span className="text-slate-500 text-xs">实时剩余结构:</span>
-                <span className="text-slate-200 text-sm font-bold">
+              <div className="flex justify-between items-center">
+                <span className="text-[var(--text-secondary)]/60">实时剩余结构:</span>
+                <span className="text-slate-200 font-bold">
                   {Math.max(0, currentRoundIdx === rounds.length ? attackerRemainingHp : Math.max(1, attackerPower - (currentRoundIdx * (attackerPower / (rounds.length + 1)))))}
                 </span>
               </div>
@@ -190,23 +196,22 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
             <motion.div 
               key={`def_${displayedRounds.length}`}
               animate={isDefenderHit ? {
-                x: [0, -8, 8, -6, 6, -4, 4, 0],
-                borderColor: ["rgba(6, 182, 212, 0.2)", "rgba(255, 255, 255, 0.9)", "rgba(6, 182, 212, 0.2)"],
-                backgroundColor: ["rgba(2, 6, 23, 0.6)", "rgba(6, 182, 212, 0.15)", "rgba(2, 6, 23, 0.6)"]
+                x: [0, -4, 4, -3, 3, -2, 2, 0],
+                borderColor: ["#243245", "[var(--color-primary)]", "#243245"],
+                backgroundColor: ["rgba(7, 11, 20, 0.4)", "rgba(0, 184, 255, 0.1)", "rgba(7, 11, 20, 0.4)"]
               } : {}}
               transition={{ duration: 0.4 }}
-              className="bg-slate-950/60 border border-cyan-500/20 p-4 rounded flex flex-col gap-2 shadow-[inset_0_0_15px_rgba(6,182,212,0.05)] relative overflow-hidden"
+              className="bg-[#070B14]/40 border border-[#243245]/30 p-3.5 rounded flex flex-col gap-1.5 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rotate-45 transform translate-x-12 -translate-y-12"></div>
-              <div className="text-cyan-400 font-mono text-[10px] tracking-wider uppercase font-bold">DEFEND FORCES / 守方</div>
-              <div className="text-slate-100 text-lg font-bold truncate">{defenderName}</div>
-              <div className="flex justify-between items-center mt-2 border-t border-cyan-500/10 pt-2 font-mono">
-                <span className="text-slate-500 text-xs">初始工事强度:</span>
-                <span className="text-cyan-400 text-sm font-bold">{defenderPower}</span>
+              <div className="text-[var(--color-primary)] text-[9px] tracking-wider uppercase font-bold">DEFEND FORCES / 守方</div>
+              <div className="text-white text-sm font-bold truncate">{defenderName}</div>
+              <div className="flex justify-between items-center mt-1 border-t border-[#243245]/20 pt-1.5">
+                <span className="text-[var(--text-secondary)]/60">初始工事强度:</span>
+                <span className="text-[var(--color-primary)] font-bold">{defenderPower}</span>
               </div>
-              <div className="flex justify-between items-center font-mono">
-                <span className="text-slate-500 text-xs">实时剩余结构:</span>
-                <span className="text-slate-200 text-sm font-bold">
+              <div className="flex justify-between items-center">
+                <span className="text-[var(--text-secondary)]/60">实时剩余结构:</span>
+                <span className="text-slate-200 font-bold">
                   {Math.max(0, currentRoundIdx === rounds.length ? defenderRemainingHp : Math.max(1, defenderPower - (currentRoundIdx * (defenderPower / (rounds.length + 1)))))}
                 </span>
               </div>
@@ -214,34 +219,34 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           </div>
 
           {/* Dueling Visual Logs */}
-          <div className="flex-1 bg-slate-950 border border-cyan-500/15 rounded p-4 h-64 overflow-y-auto space-y-2.5 font-mono scrollbar-thin scrollbar-thumb-cyan-500/20 scrollbar-track-transparent">
+          <div className="flex-1 bg-[#070B14]/60 border border-[#243245]/30 rounded p-4 overflow-y-auto space-y-2.5 font-mono scrollbar-thin scrollbar-thumb-[var(--color-primary)]/20 scrollbar-track-transparent">
             {displayedRounds.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs italic gap-2 py-8">
-                <Swords className="w-8 h-8 text-cyan-500/30 animate-bounce" />
-                <span>全息微观战术交锋已就位，请点击【下一轮交锋】或【跳过动画】开始解密战斗序列。</span>
+              <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)]/40 text-[11px] italic gap-2 py-8 text-center">
+                <Swords className="w-8 h-8 text-[var(--color-primary)]/20 animate-pulse" />
+                <span>全息微观战术交锋已就位，请开始解密战斗序列。</span>
               </div>
             ) : (
               displayedRounds.map((rnd, idx) => (
                 <motion.div 
                   key={idx}
-                  initial={{ opacity: 0, x: -15 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="bg-cyan-950/10 border border-cyan-500/5 p-3 rounded hover:bg-cyan-950/20 transition-all duration-200 flex flex-col gap-1.5"
+                  className="bg-[#070B14]/40 border border-[#243245]/20 p-2.5 rounded hover:bg-white/5 transition-colors flex flex-col gap-1"
                 >
-                  <div className="flex items-center justify-between text-[10px] text-cyan-500/60 border-b border-cyan-500/5 pb-1">
+                  <div className="flex items-center justify-between text-[9px] text-[var(--color-primary)]/60 border-b border-[#243245]/20 pb-1">
                     <span className="font-bold">ENGAGEMENT PHASE {rnd.round}</span>
                     <span className="flex items-center gap-1.5 font-bold uppercase">
                       {getWeaponIcon(rnd.attackerType)} {rnd.attackerType} vs {rnd.defenderType}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-200 leading-relaxed pl-1.5 border-l-2 border-cyan-500/30">
+                  <div className="text-[11px] text-slate-200 leading-relaxed pl-1.5 border-l border-[var(--color-primary)]/40">
                     {rnd.log}
                   </div>
                   {rnd.atkDamage > 0 || rnd.defDamage > 0 ? (
-                    <div className="flex gap-4 text-[10px] text-slate-500 pl-1.5">
-                      {rnd.atkDamage > 0 && <span className="text-red-400/90 font-bold">攻方输出: -{rnd.atkDamage}HP</span>}
-                      {rnd.defDamage > 0 && <span className="text-cyan-400/90 font-bold">守方输出: -{rnd.defDamage}HP</span>}
+                    <div className="flex gap-4 text-[9px] text-slate-500 pl-1.5 font-bold">
+                      {rnd.atkDamage > 0 && <span className="text-red-400">攻方输出: -{rnd.atkDamage}HP</span>}
+                      {rnd.defDamage > 0 && <span className="text-cyan-400">守方输出: -{rnd.defDamage}HP</span>}
                     </div>
                   ) : null}
                 </motion.div>
@@ -250,16 +255,16 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
             
             {/* Show final battle result card */}
             {(battleFinished || currentRoundIdx >= rounds.length) && rounds.length > 0 && (
-              <div className="bg-cyan-950/20 border border-cyan-500/35 p-4 rounded flex flex-col gap-2 items-center text-center animate-scale-in">
-                <div className="w-9 h-9 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.5)]">
+              <div className="bg-[#070B14] border border-[#243245]/50 p-4 rounded flex flex-col gap-2 items-center text-center animate-scale-in">
+                <div className="w-9 h-9 rounded-full bg-[#070B14] border border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary)] shadow-[0_0_12px_rgba(0,184,255,0.3)]">
                   {winner.includes(attackerName) ? <Flame className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
                 </div>
-                <div className="text-cyan-300 text-sm font-bold tracking-widest uppercase mt-1">【最终战报结算】</div>
-                <div className="text-xs text-slate-200 font-sans px-4 max-w-lg leading-relaxed mt-1">
+                <div className="text-[var(--color-primary)] text-xs font-bold tracking-widest uppercase mt-1">【最终战报结算】</div>
+                <div className="text-[11px] text-slate-300 font-sans px-4 max-w-lg leading-relaxed mt-1">
                   {outcomeLog}
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-cyan-400/70 uppercase tracking-widest mt-2">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-2 text-[9px] text-[var(--color-primary)]/70 uppercase tracking-widest mt-2 font-mono">
+                  <Sparkles className="w-3 h-3" />
                   WINNER: {winner}
                 </div>
               </div>
@@ -267,22 +272,22 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           </div>
 
           {/* Interactive controls */}
-          <div className="flex items-center justify-between border-t border-slate-800 pt-4 shrink-0">
-            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-              STEP: {currentRoundIdx} / {rounds.length} SEQS
+          <div className="flex items-center justify-between border-t border-[#243245]/20 pt-4 shrink-0 font-mono">
+            <span className="text-[9px] text-[var(--text-secondary)]/50 uppercase tracking-widest">
+              SEQS: {currentRoundIdx} / {rounds.length}
             </span>
             <div className="flex items-center gap-3">
               {currentRoundIdx < rounds.length ? (
                 <>
                   <button
                     onClick={handleSkipAll}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-mono text-xs cursor-pointer border border-slate-700 transition-all active:scale-95"
+                    className="px-3.5 py-1.5 bg-[#070B14] hover:bg-white/5 text-[var(--text-secondary)] rounded text-xs cursor-pointer border border-[#243245] transition-colors"
                   >
                     跳过动画
                   </button>
                   <button
                     onClick={handleNextRound}
-                    className="px-5 py-2 bg-cyan-950 hover:bg-cyan-900 text-cyan-300 font-bold rounded font-mono text-xs cursor-pointer border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.1)] transition-all active:scale-95 flex items-center gap-1.5"
+                    className="px-4 py-1.5 bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] text-[var(--color-primary)] font-bold rounded text-xs cursor-pointer border border-[var(--color-primary)]/40 shadow-[0_0_10px_rgba(0,184,255,0.15)] transition-colors flex items-center gap-1.5"
                   >
                     <Swords className="w-3.5 h-3.5 animate-pulse" />
                     下一轮交锋
@@ -291,7 +296,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
               ) : (
                 <button
                   onClick={onClose}
-                  className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded font-mono text-xs cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all active:scale-95"
+                  className="px-5 py-1.5 bg-[var(--color-primary)] hover:brightness-110 text-black font-extrabold rounded text-xs cursor-pointer shadow-[0_0_12px_rgba(0,184,255,0.4)] transition-all"
                 >
                   关闭终端
                 </button>
@@ -303,29 +308,22 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       </motion.div>
 
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
         @keyframes scaleIn {
           from { opacity: 0; transform: scale(0.97); }
           to { opacity: 1; transform: scale(1); }
         }
-        .animate-fade-in {
-          animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
         .animate-scale-in {
-          animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .scrollbar-thin::-webkit-scrollbar {
           width: 4px;
         }
         .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: rgba(6, 182, 212, 0.15);
+          background: rgba(0, 184, 255, 0.15);
           border-radius: 2px;
         }
         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: rgba(6, 182, 212, 0.3);
+          background: rgba(0, 184, 255, 0.3);
         }
       `}</style>
     </div>

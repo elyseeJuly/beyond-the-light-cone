@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Map, Cpu, Swords, BarChart3, Users2, Building2, AlertOctagon, Globe, Atom, Rocket, Zap, Telescope, FlaskConical, Microscope, Clock, BookOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Map, Cpu, Landmark, Archive, Radio, AlertTriangle, Settings } from 'lucide-react';
 import { GameInstance } from '../core/Game';
-import { DepartmentType } from '../types/enums';
-import { wallfacerPanel } from '../ui/WallfacerPanel';
-import { DepartmentPanel } from '../ui/DepartmentPanel';
 import { t } from '../utils/i18n';
+import { BgmPlayer } from './BgmPlayer';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -19,28 +17,29 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
     onClick={onClick}
   >
     {icon}
-    <span className="text-sm tracking-wide">{label}</span>
+    <span className="text-sm tracking-wide font-medium">{label}</span>
   </div>
 );
 
+export type ActiveViewType = 'starmap' | 'techtree' | 'intelligence' | 'government' | 'archive';
+
 interface LeftHubProps {
-  activeView: 'starmap' | 'techtree' | 'timeline' | 'diplomacy';
-  setActiveView: (view: 'starmap' | 'techtree' | 'timeline' | 'diplomacy') => void;
-  onOpenMuseum?: () => void;
+  activeView: ActiveViewType;
+  setActiveView: (view: ActiveViewType) => void;
 }
 
-// Singleton department panel for legacy bridge
-const deptPanel = new DepartmentPanel();
-
-export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView, onOpenMuseum }) => {
+export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) => {
   const [sophonBlocked, setSophonBlocked] = useState(false);
   const [diversity, setDiversity] = useState({ triggered: 0, total: 0, percentage: 0 });
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [epoch, setEpoch] = useState(0);
 
   useEffect(() => {
     const check = () => {
       try {
-        setSophonBlocked(GameInstance.get().isSophonBlocked());
+        const game = GameInstance.get();
+        setSophonBlocked(game.isSophonBlocked());
+        setEpoch(game.epoch);
       } catch { /* ignore */ }
     };
     const updateStats = () => {
@@ -62,131 +61,114 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView, onO
 
     window.addEventListener('game-turn-complete', check);
     window.addEventListener('game-turn-complete', updateStats);
+    window.addEventListener('game-loaded', check);
     window.addEventListener('game-loaded', updateStats);
-    window.addEventListener('game-language-changed', updateStats);
 
     return () => {
       window.removeEventListener('game-turn-complete', check);
       window.removeEventListener('game-turn-complete', updateStats);
+      window.removeEventListener('game-loaded', check);
       window.removeEventListener('game-loaded', updateStats);
-      window.removeEventListener('game-language-changed', updateStats);
     };
   }, []);
 
-  const handleDeptClick = useCallback((deptType: number, deptName: string) => {
-    if (deptType === DepartmentType.ASTROSOCIOLOGY) {
-      wallfacerPanel.open();
-    } else {
-      deptPanel.open(deptType, deptName);
-    }
-  }, []);
-
-  const departments = [
-    { type: DepartmentType.ECONOMY, icon: <BarChart3 size={18} />, label: "经济部" },
-    { type: DepartmentType.ARMY, icon: <Swords size={18} />, label: "军事部" },
-    { type: DepartmentType.CULTURE, icon: <Users2 size={18} />, label: "文化部" },
-    { type: DepartmentType.HUMANRES, icon: <Building2 size={18} />, label: "人力资源部" },
-    { type: DepartmentType.ASTROSOCIOLOGY, icon: <Globe size={18} />, label: "宇宙社会学" },
-    { type: DepartmentType.NUCLEAR, icon: <Atom size={18} />, label: "核技术" },
-    { type: DepartmentType.SPACEFIGHT, icon: <Rocket size={18} />, label: "航天技术" },
-    { type: DepartmentType.PROTON, icon: <Zap size={18} />, label: "质子技术" },
-    { type: DepartmentType.ASTROPHYSICS, icon: <Telescope size={18} />, label: "天体物理" },
-    { type: DepartmentType.CULTURETEC, icon: <FlaskConical size={18} />, label: "文化研究所" },
-    { type: DepartmentType.ECONOMYTEC, icon: <Microscope size={18} />, label: "经济研究所" },
-  ];
-
   return (
-    <aside className="w-64 h-full glass-panel flex flex-col border-r border-white/5">
-      {/* Top: Global Viewport Switch */}
-      <div className="p-4 flex flex-col gap-1">
-        <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em] mb-2 px-4">
-          Global Viewport
+    <aside className="w-[240px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-r border-[#243245]/50 flex flex-col justify-between select-none">
+      {/* Navigation Menu */}
+      <div className="p-4 flex flex-col gap-1.5">
+        <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3 px-3">
+          Galactic Console
         </div>
+        
         <NavItem 
-          icon={<Map size={18} />} 
+          icon={<Map size={18} className="stroke-[1.5]" />} 
           label="战略星图" 
           active={activeView === 'starmap'} 
           onClick={() => setActiveView('starmap')}
         />
+        
         <NavItem 
-          icon={<Cpu size={18} />} 
+          icon={<Radio size={18} className="stroke-[1.5]" />} 
+          label="情报中心" 
+          active={activeView === 'intelligence'} 
+          onClick={() => setActiveView('intelligence')}
+        />
+        
+        <NavItem 
+          icon={<Cpu size={18} className="stroke-[1.5]" />} 
           label="科技研发" 
           active={activeView === 'techtree'} 
           onClick={() => setActiveView('techtree')}
         />
+        
         <NavItem 
-          icon={<Clock size={18} />} 
-          label="编年史观测" 
-          active={activeView === 'timeline'} 
-          onClick={() => setActiveView('timeline')}
+          icon={<Landmark size={18} className="stroke-[1.5]" />} 
+          label="政府管理" 
+          active={activeView === 'government'} 
+          onClick={() => setActiveView('government')}
         />
+        
         <NavItem 
-          icon={<Users2 size={18} />} 
-          label="战略外交" 
-          active={activeView === 'diplomacy'} 
-          onClick={() => setActiveView('diplomacy')}
-        />
-        <div className="h-px bg-white/5 my-2" />
-        <NavItem 
-          icon={<BookOpen size={18} className="text-cyan-400" />} 
-          label="岁月史书" 
-          onClick={onOpenMuseum}
+          icon={<Archive size={18} className="stroke-[1.5]" />} 
+          label="文明档案" 
+          active={activeView === 'archive'} 
+          onClick={() => setActiveView('archive')}
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-1 border-t border-white/5">
-        <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em] mb-2 px-4">
-          Government Departments
-        </div>
-        {departments.map(dept => (
-          <NavItem 
-            key={dept.type}
-            icon={dept.icon} 
-            label={dept.label} 
-            onClick={() => handleDeptClick(dept.type, dept.label)}
-          />
-        ))}
-      </div>
-
-      {/* Event Diversity Stats */}
-      <div className="p-4 border-t border-white/5 bg-black/5">
-        <div 
-          className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em] mb-1.5 flex justify-between items-center cursor-pointer select-none hover:text-white transition-colors"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        >
-          <span className="flex items-center gap-1">
-            <span className="text-[9px] transition-transform duration-300" style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}>▼</span>
-            {t('event_diversity') || '事件多样性观测'}
-          </span>
-          <span className="text-[var(--color-primary)] font-data">{diversity.triggered} / {diversity.total}</span>
-        </div>
-        {!isCollapsed && (
-          <div className="mt-2 transition-all duration-300 animate-in fade-in slide-in-from-top-1 duration-200">
-            <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mb-1">
-              <div className="h-full bg-[var(--color-primary)] rounded-full transition-all duration-500" style={{ width: `${diversity.percentage}%` }} />
-            </div>
-            <div className="flex justify-between text-[9px] text-[var(--text-secondary)] font-mono">
-              <span>{t('unique_trigger_rate') || '独特事件触发率'}</span>
-              <span>{diversity.percentage}%</span>
-            </div>
+      {/* Stats and Alerts Container */}
+      <div className="flex flex-col gap-2 p-4 border-t border-[#243245]/30 bg-[#070B14]/40">
+        {/* Event Diversity Stats */}
+        <div className="px-1">
+          <div 
+            className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em] mb-1.5 flex justify-between items-center cursor-pointer select-none hover:text-white transition-colors"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            <span className="flex items-center gap-1 font-mono">
+              <span className="text-[8px] transition-transform duration-300" style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}>▼</span>
+              {t('event_diversity') || '档案同步率'}
+            </span>
+            <span className="text-[var(--color-primary)] font-data font-bold">{diversity.triggered} / {diversity.total}</span>
           </div>
-        )}
-      </div>
+          {!isCollapsed && (
+            <div className="mt-2 transition-all duration-300">
+              <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mb-1 border border-white/5">
+                <div className="h-full bg-[var(--color-primary)] transition-all duration-500" style={{ width: `${diversity.percentage}%` }} />
+              </div>
+              <div className="flex justify-between text-[9px] text-[var(--text-secondary)] font-mono">
+                <span>存档已读取比例</span>
+                <span>{diversity.percentage}%</span>
+              </div>
+            </div>
+          )}
+        </div>
 
-      {/* Bottom: Emergency Alerts */}
-      {sophonBlocked && (
-        <div className="p-4">
-          <div className="bg-orange-500/10 dark:bg-orange-500/10 border border-orange-500/30 p-3 rounded-lg flex gap-3 items-start animate-pulse">
-            <AlertOctagon className="text-orange-500 shrink-0" size={18} />
+        {/* Sophon Alert */}
+        {sophonBlocked && (
+          <div className="mt-2 bg-red-500/10 border border-red-500/35 p-3 rounded flex gap-2.5 items-start">
+            <AlertTriangle className="text-red-400 shrink-0 stroke-[1.5]" size={16} />
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-orange-500 uppercase tracking-wider">智子干扰提示</span>
-              <p className="text-[10px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                基础物理研究进度已锁定，当前科研产出效率 -40%。
+              <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider font-title">智子干扰中</span>
+              <p className="text-[9px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
+                基础物理研究已被锁定，科研产出效率衰减 40%。
               </p>
             </div>
           </div>
+        )}
+
+        {/* System Toolbar */}
+        <div className="flex items-center justify-between gap-1 border-t border-[#243245]/20 pt-3 mt-2 shrink-0">
+          <BgmPlayer isGameOver={false} epoch={epoch} />
+          
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))} 
+            className="p-2 hover:bg-white/5 rounded text-[var(--text-secondary)] hover:text-white cursor-pointer transition-colors"
+            title="系统设置"
+          >
+            <Settings size={15} />
+          </button>
         </div>
-      )}
+      </div>
     </aside>
   );
 };

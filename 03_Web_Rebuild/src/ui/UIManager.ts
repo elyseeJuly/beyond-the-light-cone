@@ -4,7 +4,6 @@ import { MainLayout } from "./MainLayout";
 import { Star } from "../core/Star";
 import { DepartmentPanel } from "./DepartmentPanel";
 import { wallfacerPanel } from "./WallfacerPanel";
-import { systemMenuPanel } from "./SystemMenuPanel";
 import { createFleet } from "../core/Fleet";
 
 export class UIManager {
@@ -65,7 +64,7 @@ export class UIManager {
 
     // Bind System Menu
     document.getElementById("btn-system-menu")?.addEventListener("click", () => {
-      systemMenuPanel.open();
+      window.dispatchEvent(new CustomEvent("open-settings"));
     });
 
     // Listen to load game event

@@ -1,128 +1,90 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { Users, TrendingUp, Landmark, Shield, AlertTriangle, Settings, Save, SkipForward, Gem, Skull, HelpCircle, Contrast } from 'lucide-react';
+import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Landmark as CiviLevelIcon } from 'lucide-react';
 import { GameInstance } from '../core/Game';
-import { systemMenuPanel } from '../ui/SystemMenuPanel';
-import { t, setLanguage, getLanguage } from '../utils/i18n';
-import { useFloatingText, FloatingLayer } from './FloatingText';
-import { BgmPlayer } from './BgmPlayer';
 
-interface ResourceItemProps {
+interface TopHUDStatItemProps {
   icon: React.ReactNode;
   label: string;
-  value: number;
+  value: string | number;
   colorClass?: string;
-  delta?: number;
-  floaters: any[];
+  onClick?: () => void;
+  className?: string;
 }
 
-const ResourceItem: React.FC<ResourceItemProps> = ({ icon, label, value, colorClass = "", delta = 0, floaters }) => {
-  const isHighLoss = delta < -value * 0.2 && value > 0;
-  
+const TopHUDStatItem: React.FC<TopHUDStatItemProps> = ({ icon, label, value, colorClass = "", onClick, className = "" }) => {
   return (
-    <div className={`relative flex flex-col items-center justify-center px-4 border-r border-white/5 last:border-r-0 transition-colors duration-500 ${isHighLoss ? 'bg-red-500/10 animate-pulse border-red-500/50' : ''}`}>
-      <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] uppercase font-bold tracking-tight">
+    <div 
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center px-4 py-1.5 transition-colors cursor-pointer select-none rounded hover:bg-white/5 ${className}`}
+    >
+      <div className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] font-title font-bold tracking-wider uppercase">
         {icon}
         <span>{label}</span>
       </div>
-      <div className={`text-xl font-data font-bold ${colorClass}`}>
+      <div className={`text-base font-data font-bold tracking-tight mt-0.5 ${colorClass}`}>
         {value}
       </div>
-      <FloatingLayer floaters={floaters} />
     </div>
   );
 };
 
 export const TopHUD: React.FC = () => {
   const [updateCount, setUpdateCount] = useState(0);
-  const prevStatsRef = useRef<any>(null);
-  
-  const [lang, setLangState] = useState(getLanguage());
-  const [highContrast, setHighContrast] = useState(() => localStorage.getItem('high-contrast') === 'true');
-
-  useEffect(() => {
-    if (highContrast) {
-      document.body.classList.add('high-contrast');
-    } else {
-      document.body.classList.remove('high-contrast');
-    }
-    localStorage.setItem('high-contrast', String(highContrast));
-  }, [highContrast]);
-
-  useEffect(() => {
-    const handleLangChange = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      setLangState(detail);
-      setUpdateCount(n => n + 1);
-    };
-    const handleContrastChange = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      setHighContrast(detail);
-    };
-    window.addEventListener('game-language-changed', handleLangChange);
-    window.addEventListener('high-contrast-changed', handleContrastChange);
-    return () => {
-      window.removeEventListener('game-language-changed', handleLangChange);
-      window.removeEventListener('high-contrast-changed', handleContrastChange);
-    };
-  }, []);
-  
-  const { addFloater: addPopFloater, floaters: popFloaters } = useFloatingText();
-  const { addFloater: addEcoFloater, floaters: ecoFloaters } = useFloatingText();
-  const { addFloater: addCulFloater, floaters: culFloaters } = useFloatingText();
-  const { addFloater: addArmyFloater, floaters: armyFloaters } = useFloatingText();
-  const { addFloater: addResFloater, floaters: resFloaters } = useFloatingText();
-  const { addFloater: addTreacheryFloater, floaters: treacheryFloaters } = useFloatingText();
-  const { addFloater: addDetFloater, floaters: detFloaters } = useFloatingText();
+  const [showStabilityDropdown, setShowStabilityDropdown] = useState(false);
 
   const stats = useMemo(() => {
     const game = GameInstance.get();
     const earth = game.earthCivi;
     const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+    const epochNamesEn = ["CRISIS ERA", "DETERRENCE ERA", "BROADCAST ERA", "BUNKER ERA", "GALACTIC ERA", "STARDUST ERA"];
+    
+    const pop = earth.population;
+    const eco = Math.floor(earth.economy);
+    const cul = Math.floor(earth.culture);
+    const army = earth.army;
+    const res = earth.resource;
+    const treachery = earth.treachery;
+    const deterrence = Math.floor(earth.deterrenceValue);
+
+    // Dynamic Stability calculation
+    const econFactor = Math.min(25, (eco / 120) * 25);
+    const armyFactor = Math.min(25, (army / 25) * 25);
+    const treacheryPenalty = treachery * 0.4;
+    const popFactor = Math.min(25, (pop / 80) * 25);
+    const cultureFactor = Math.min(25, (cul / 100) * 25);
+    
+    let stability = Math.max(5, Math.min(100, Math.floor(econFactor + armyFactor + popFactor + cultureFactor + (40 - treacheryPenalty))));
+    if (game.victoryType !== null || game.defeatType !== null) {
+      stability = 0;
+    }
+
     return {
       year: game.year,
       epoch: game.epoch,
       epochName: epochNames[game.epoch] || "未知纪元",
-      pop: earth.population,
-      eco: Math.floor(earth.economy),
-      cul: Math.floor(earth.culture),
-      army: earth.army,
-      res: earth.resource,
-      treachery: earth.treachery,
-      deterrence: Math.floor(earth.deterrenceValue),
+      epochNameEn: epochNamesEn[game.epoch] || "UNKNOWN ERA",
+      pop,
+      eco,
+      cul,
+      army,
+      res,
+      treachery,
+      deterrence,
+      civiLevel: earth.civiLevel,
+      civiLevelLabel: earth.getCiviLevelLabel(),
+      stability,
       isGameOver: game.victoryType !== null || game.defeatType !== null
     };
   }, [updateCount]);
 
-  useEffect(() => {
-    const prev = prevStatsRef.current;
-    if (prev) {
-      if (stats.pop !== prev.pop) addPopFloater(stats.pop - prev.pop);
-      if (stats.eco !== prev.eco) addEcoFloater(stats.eco - prev.eco);
-      if (stats.cul !== prev.cul) addCulFloater(stats.cul - prev.cul);
-      if (stats.army !== prev.army) addArmyFloater(stats.army - prev.army);
-      if (stats.res !== prev.res) addResFloater(stats.res - prev.res);
-      if (stats.treachery !== prev.treachery) addTreacheryFloater(stats.treachery - prev.treachery);
-      if (stats.deterrence !== prev.deterrence) addDetFloater(stats.deterrence - prev.deterrence);
-    }
-    prevStatsRef.current = stats;
-  }, [stats.year, stats.pop, stats.eco, stats.cul, stats.army, stats.res, stats.treachery, stats.deterrence, addPopFloater, addEcoFloater, addCulFloater, addArmyFloater, addResFloater, addTreacheryFloater, addDetFloater]);
+  const stabilityColor = useMemo(() => {
+    const s = stats.stability;
+    if (s >= 80) return "text-emerald-400";
+    if (s >= 60) return "text-cyan-400";
+    if (s >= 30) return "text-amber-500";
+    return "text-red-500 animate-pulse";
+  }, [stats.stability]);
 
-  const handleNextTurn = () => {
-    GameInstance.get().runARound();
-    setUpdateCount(n => n + 1);
-    window.dispatchEvent(new CustomEvent('game-turn-complete'));
-  };
-
-  const handleSave = () => {
-    GameInstance.saveGame();
-    alert(t("saving_success") || "游戏存档成功！");
-  };
-
-  const handleSettings = () => {
-    systemMenuPanel.open();
-  };
-
-  // Listen for external game state changes (load, etc.)
   useEffect(() => {
     const refresh = () => setUpdateCount(n => n + 1);
     window.addEventListener('game-loaded', refresh);
@@ -135,130 +97,131 @@ export const TopHUD: React.FC = () => {
     };
   }, []);
 
-  const getDelta = (key: string) => {
-    if (!prevStatsRef.current) return 0;
-    return (stats as any)[key] - (prevStatsRef.current as any)[key];
-  };
-
-  const handleSyncState = () => {
-    const game = GameInstance.get();
-    game.isProcessing = false;
-    game.currentEvent = null;
-    // @ts-ignore
-    game.eventQueue = [];
-    game.addHistory("【系统自愈】已强制同步逻辑状态，解除所有交互锁定。");
+  const handleNextTurn = () => {
+    GameInstance.get().runARound();
     setUpdateCount(n => n + 1);
     window.dispatchEvent(new CustomEvent('game-turn-complete'));
   };
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowStabilityDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
   return (
-    <header className="h-16 w-full glass-panel flex items-center justify-between px-6 z-50">
-      {/* Left: Era Display */}
-      <div 
-        className="flex items-center gap-4 cursor-pointer group relative"
-        onClick={handleSyncState}
-        title="点击强制同步状态"
-      >
-        <div className="text-sm font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em] group-hover:text-[var(--color-primary)] transition-colors">
-          Current Era
-        </div>
-        <div className="text-2xl font-bold tracking-tighter text-[var(--color-primary)] group-hover:scale-105 transition-transform">
-          {stats.epochName} <span className="text-sm ml-1 opacity-70">YEAR {stats.year}</span>
-        </div>
-        <div className="absolute top-full left-0 mt-1 p-2 bg-black/80 backdrop-blur-md rounded border border-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-          如遇死锁请点击同步状态
-        </div>
-      </div>
+    <header className="h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-6 z-50 select-none relative">
+      {/* Dynamic scanline overlay for Top HUD */}
+      <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent" />
 
-      {/* Center: Core Resources */}
-      <div className="flex h-full">
-        <ResourceItem 
-          icon={<Users size={14} />} 
-          label="人口" 
-          value={stats.pop} 
-          delta={getDelta('pop')}
-          floaters={popFloaters} 
+      {/* Left: Civilization Attributes */}
+      <div className="flex items-center gap-1.5">
+        <TopHUDStatItem 
+          icon={<LandiviIcon className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="文明等级"
+          value={stats.civiLevelLabel}
+          colorClass="text-[var(--color-primary)]"
         />
-        <ResourceItem 
-          icon={<TrendingUp size={14} />} 
-          label="经济" 
-          value={stats.eco} 
-          delta={getDelta('eco')}
-          floaters={ecoFloaters} 
-        />
-        <ResourceItem 
-          icon={<Landmark size={14} />} 
-          label="文化" 
-          value={stats.cul} 
-          delta={getDelta('cul')}
-          floaters={culFloaters} 
-        />
-        <ResourceItem 
-          icon={<Shield size={14} />} 
-          label="军力" 
-          value={stats.army} 
-          delta={getDelta('army')}
-          floaters={armyFloaters} 
-        />
-        <ResourceItem 
-          icon={<Gem size={14} />} 
-          label="资源" 
-          value={stats.res} 
-          delta={getDelta('res')}
-          floaters={resFloaters} 
-        />
-        <ResourceItem 
-          icon={<Skull size={14} />} 
-          label="逃亡" 
-          value={stats.treachery} 
-          delta={getDelta('treachery')}
-          colorClass={stats.treachery > 80 ? "text-[var(--color-danger)]" : ""}
-          floaters={treacheryFloaters}
-        />
-        <ResourceItem 
-          icon={<AlertTriangle size={14} />} 
-          label="威慑度" 
-          value={stats.deterrence} 
-          delta={getDelta('deterrence')}
-          colorClass="text-[var(--color-danger)]" 
-          floaters={detFloaters}
-        />
-      </div>
-
-      {/* Right: System Operations */}
-      <div className="flex items-center gap-3">
-        <BgmPlayer isGameOver={stats.isGameOver} epoch={stats.epoch} />
         
-        <button onClick={() => setHighContrast(v => !v)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-[var(--text-secondary)] cursor-pointer" title={t('high_contrast') || "高对比度模式"}>
-          <Contrast size={20} />
-        </button>
-        <button 
-          onClick={() => setLanguage(lang === 'zh' ? 'en' : 'zh')} 
-          className="px-2.5 py-1 hover:bg-black/5 dark:hover:bg-white/5 rounded border border-white/10 text-xs font-bold font-mono text-[var(--text-secondary)] cursor-pointer" 
-          title="切换语言 / Switch Language"
-        >
-          {lang === 'zh' ? 'EN' : '中文'}
-        </button>
+        {/* Stability with click dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <TopHUDStatItem 
+            icon={<Landmark className="w-3.5 h-3.5 stroke-[1.5]" />}
+            label="稳定度"
+            value={`${stats.stability}%`}
+            colorClass={stabilityColor}
+            onClick={() => setShowStabilityDropdown(!showStabilityDropdown)}
+            className={showStabilityDropdown ? "bg-white/5" : ""}
+          />
+          {showStabilityDropdown && (
+            <div className="absolute top-[52px] left-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
+              <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-2 uppercase tracking-wider">
+                文明发展指标详情
+              </div>
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between border-b border-[#243245]/30 pb-1">
+                  <span className="text-[var(--text-secondary)]">经济指数</span>
+                  <span className="text-white font-bold">{stats.eco}</span>
+                </div>
+                <div className="flex justify-between border-b border-[#243245]/30 pb-1">
+                  <span className="text-[var(--text-secondary)]">文化资产</span>
+                  <span className="text-white font-bold">{stats.cul}</span>
+                </div>
+                <div className="flex justify-between border-b border-[#243245]/30 pb-1">
+                  <span className="text-[var(--text-secondary)]">人口基数</span>
+                  <span className="text-white font-bold">{stats.pop} 万</span>
+                </div>
+                <div className="flex justify-between border-b border-[#243245]/30 pb-1">
+                  <span className="text-[var(--text-secondary)]">逃亡系数</span>
+                  <span className={`${stats.treachery > 50 ? 'text-red-400' : 'text-white'} font-bold`}>
+                    {stats.treachery}%
+                  </span>
+                </div>
+              </div>
+              <div className="text-[9px] text-[var(--text-secondary)] leading-relaxed mt-2.5 italic border-t border-[#243245]/40 pt-2">
+                * 稳定度决定文明生命线，当稳定度降为零时文明将被判定终结。
+              </div>
+            </div>
+          )}
+        </div>
 
-        <button onClick={() => window.dispatchEvent(new CustomEvent('open-tutorial'))} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-[var(--text-secondary)] cursor-pointer" title={t('help') || "帮助教程"}>
-          <HelpCircle size={20} />
-        </button>
-        <button onClick={handleSave} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-[var(--text-secondary)] cursor-pointer" title={t('save_game') || "保存存档"}>
-          <Save size={20} />
-        </button>
-        <button onClick={handleSettings} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-[var(--text-secondary)] cursor-pointer" title={t('settings') || "系统设置"}>
-          <Settings size={20} />
-        </button>
+        <TopHUDStatItem 
+          icon={<Users className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="人口"
+          value={`${stats.pop}M`}
+        />
+
+        <TopHUDStatItem 
+          icon={<Gem className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="资源"
+          value={stats.res}
+        />
+
+        <TopHUDStatItem 
+          icon={<Swords className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="军力"
+          value={stats.army}
+        />
+
+        <TopHUDStatItem 
+          icon={<AlertTriangle className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="威慑度"
+          value={stats.deterrence}
+          colorClass="text-red-400"
+        />
+      </div>
+
+      {/* Center: Prominent Era and Year Display */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center font-title text-center">
+        <span className="text-[9px] font-bold text-[var(--color-primary)] tracking-[0.35em] uppercase opacity-90">
+          {stats.epochNameEn}
+        </span>
+        <span className="text-lg font-extrabold tracking-widest text-[var(--text-primary)] mt-0.5">
+          {stats.epochName} · 第 {stats.year} 年
+        </span>
+      </div>
+
+      {/* Right: Operations Block */}
+      <div className="flex items-center gap-3">
         <button 
           onClick={handleNextTurn} 
-          disabled={GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0}
-          className={`btn-next-turn flex items-center gap-2 ${(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0) ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+          disabled={GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver}
+          className={`btn-next-turn flex items-center gap-2 ${(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver) ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}`}
         >
-          <span>{(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0) ? (t('processing') || "处理中...") : (t('next_turn') || "下一回合")}</span>
-          <SkipForward size={18} />
+          <span className="text-xs font-title font-bold tracking-wider">
+            {(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0) ? "同步逻辑中" : "下一回合"}
+          </span>
+          <SkipForward size={14} className="stroke-[2.5]" />
         </button>
       </div>
     </header>
   );
 };
 
+// Simple alias component for CiviLevelIcon to avoid duplicate name collision
+const LandiviIcon = CiviLevelIcon;

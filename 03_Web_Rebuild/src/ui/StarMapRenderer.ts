@@ -1,5 +1,6 @@
 import { Star } from "../core/Star";
 import { GameInstance } from "../core/Game";
+import { StarArea } from "../types/enums";
 
 interface RenderStar {
   star: Star;
@@ -10,6 +11,8 @@ interface RenderStar {
   angle: number;       // 当前轨道角度
   speed: number;       // 轨道运动速度
   parentIndex?: number; // 母星Index（如果是卫星）
+  offsetX?: number;
+  offsetY?: number;
 }
 
 export class StarMapRenderer {
@@ -20,6 +23,7 @@ export class StarMapRenderer {
   private renderStars: RenderStar[] = [];
   private animationId: number = 0;
   
+  public activeArea: StarArea = StarArea.SOLARSYSTEM;
   public hoveredStar: RenderStar | null = null;
   public selectedStar: RenderStar | null = null;
 
@@ -61,6 +65,35 @@ export class StarMapRenderer {
   public zoomIn(): void { this.zoomLevel = Math.min(3.0, this.zoomLevel + 0.2); }
   public zoomOut(): void { this.zoomLevel = Math.max(0.3, this.zoomLevel - 0.2); }
   public resetView(): void { this.zoomLevel = 1.0; this.panX = 0; this.panY = 0; }
+
+  public setActiveArea(area: StarArea): void {
+    this.activeArea = area;
+    this.hoveredStar = null;
+    this.selectedStar = null;
+    
+    // Auto scale and center
+    if (area === StarArea.SOLARSYSTEM) {
+      this.zoomLevel = 1.0;
+    } else if (area === StarArea.LIGHTYEAR_50) {
+      this.zoomLevel = 0.8;
+    } else if (area === StarArea.LIGHTYEAR_1W) {
+      this.zoomLevel = 0.6;
+    } else if (area === StarArea.GALAXY) {
+      this.zoomLevel = 0.45;
+    }
+    this.panX = 0;
+    this.panY = 0;
+  }
+
+  public isStarInActiveArea(star: Star): boolean {
+    const area = this.activeArea;
+    const idx = star.index;
+    if (area === StarArea.SOLARSYSTEM) return idx <= 10;
+    if (area === StarArea.LIGHTYEAR_50) return idx > 10 && idx <= 100;
+    if (area === StarArea.LIGHTYEAR_1W) return idx > 100 && idx <= 200;
+    if (area === StarArea.GALAXY) return idx > 200 && idx <= 1000;
+    return false;
+  }
 
   private resize() {
     const container = this.canvas.parentElement;
@@ -114,6 +147,8 @@ export class StarMapRenderer {
       let angle = Math.random() * Math.PI * 2;
       let speed = 0;
       let parentIndex: number | undefined = undefined;
+      let offsetX: number | undefined = undefined;
+      let offsetY: number | undefined = undefined;
 
       if (s.index <= 10) { // Solar System
         radius = sizeMap[s.index] || 4;
@@ -136,23 +171,48 @@ export class StarMapRenderer {
           // 限制最小速度
           if (speed < 0.0005) speed = 0.0005;
         }
-      } else if (s.index > 10) { // Extra-solar based on Distance
-        const distLy = s.Distance || (s.index * 2);
-        // Map real light-years to a logarithmic visual distance
-        orbitRadius = Math.log(distLy + 1) * 300 + 400; 
-        radius = 4 + Math.random() * 2;
-        speed = 0.0001;
+      } else { // Extra-solar based on Distance and index ranges
+        radius = 4 + (s.index % 3);
+        speed = 0;
+        
+        if (s.index <= 100) { // 50 Light Years
+          const offsetIndex = s.index - 10;
+          const r = Math.sqrt(offsetIndex) * 75 + 40;
+          const angle = offsetIndex * 2.39996; // Golden angle
+          offsetX = Math.cos(angle) * r * 1.5;
+          offsetY = Math.sin(angle) * r * 1.2;
+        } else if (s.index <= 200) { // 10k Light Years
+          const offsetIndex = s.index - 100;
+          const r = Math.sqrt(offsetIndex) * 90 + 50;
+          const angle = offsetIndex * 2.39996 + 1.2;
+          offsetX = Math.cos(angle) * r * 1.6;
+          offsetY = Math.sin(angle) * r * 1.3;
+        } else { // Galaxy
+          const offsetIndex = s.index - 200;
+          const arm = offsetIndex % 2 === 0 ? 0 : Math.PI; // 2 arms
+          const theta = Math.sqrt(offsetIndex) * 0.45; // spiral angle sweep
+          const r = Math.sqrt(offsetIndex) * 22 + 20; // spiral radius
+          
+          const jitterSeed = offsetIndex * 997;
+          const jitterX = ((jitterSeed % 50) - 25) * 1.2;
+          const jitterY = (((jitterSeed >> 3) % 40) - 20) * 1.2;
+          
+          offsetX = Math.cos(theta + arm) * r * 1.8 + jitterX;
+          offsetY = Math.sin(theta + arm) * r * 1.3 + jitterY;
+        }
       }
 
       const renderStar = {
         star: s,
-        x: cx,
-        y: cy,
+        x: cx + (offsetX || 0),
+        y: cy + (offsetY || 0),
         radius,
         orbitRadius,
         angle,
         speed,
-        parentIndex
+        parentIndex,
+        offsetX,
+        offsetY
       };
 
       this.renderStars.push(renderStar);
@@ -168,6 +228,8 @@ export class StarMapRenderer {
       
       this.hoveredStar = null;
       for (const rs of this.renderStars) {
+        if (!this.isStarInActiveArea(rs.star)) continue;
+
         // 逆向坐标变换，将世界坐标转换为屏幕坐标
         const screenX = (rs.x - this.width / 2) * this.zoomLevel + this.width / 2 + this.panX;
         const screenY = (rs.y - this.height / 2) * this.zoomLevel + this.height / 2 + this.panY;
@@ -221,47 +283,45 @@ export class StarMapRenderer {
     const cy = this.height / 2;
     
     for (const rs of this.renderStars) {
-      if (rs.orbitRadius > 0) {
-        rs.angle += rs.speed;
-        let baseX = cx;
-        let baseY = cy;
+      if (rs.star.index <= 10) { // Solar System (dynamic orbiters)
+        if (rs.orbitRadius > 0) {
+          rs.angle += rs.speed;
+          let baseX = cx;
+          let baseY = cy;
 
-        if (rs.parentIndex !== undefined) {
-          const parent = this.renderStars.find(s => s.star.index === rs.parentIndex);
-          if (parent) {
-            baseX = parent.x;
-            baseY = parent.y;
+          if (rs.parentIndex !== undefined) {
+            const parent = this.renderStars.find(s => s.star.index === rs.parentIndex);
+            if (parent) {
+              baseX = parent.x;
+              baseY = parent.y;
+            }
           }
-        }
 
-        rs.x = baseX + Math.cos(rs.angle) * rs.orbitRadius;
-        rs.y = baseY + Math.sin(rs.angle) * rs.orbitRadius * 0.8; // 微微的椭圆视角
-      } else {
-        rs.x = cx;
-        rs.y = cy;
+          rs.x = baseX + Math.cos(rs.angle) * rs.orbitRadius;
+          rs.y = baseY + Math.sin(rs.angle) * rs.orbitRadius * 0.8; // 微微的椭圆视角
+        } else {
+          rs.x = cx;
+          rs.y = cy;
+        }
+      } else { // Extra-solar stars (static offsets)
+        if (rs.offsetX !== undefined && rs.offsetY !== undefined) {
+          rs.x = cx + rs.offsetX;
+          rs.y = cy + rs.offsetY;
+        }
       }
     }
   }
 
   private draw() {
-    const bg = getComputedStyle(document.body).getPropertyValue('--bg-space-dark').trim() || "#02040a";
-    let trailColor = "rgba(5, 5, 10, 0.3)";
-    if (bg.startsWith('#')) {
-      const r = parseInt(bg.slice(1, 3), 16);
-      const g = parseInt(bg.slice(3, 5), 16);
-      const b = parseInt(bg.slice(5, 7), 16);
-      trailColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
-    } else if (bg.startsWith('rgb')) {
-      trailColor = bg.replace('rgb', 'rgba').replace(')', ', 0.3)');
-    }
-
-    this.ctx.fillStyle = trailColor;
+    // Holographic deep space background with trail effect
+    this.ctx.fillStyle = "rgba(7, 11, 20, 0.35)";
     this.ctx.fillRect(0, 0, this.width, this.height);
 
+    // Draw distant galaxy dust
     for (const g of this.distantGalaxies) {
       this.ctx.beginPath();
       this.ctx.arc(g.x, g.y, g.r, 0, Math.PI * 2);
-      this.ctx.fillStyle = `rgba(200, 220, 255, ${g.alpha})`;
+      this.ctx.fillStyle = `rgba(0, 184, 255, ${g.alpha * 0.4})`; // Soft blue star dust
       this.ctx.fill();
     }
 
@@ -270,64 +330,220 @@ export class StarMapRenderer {
     this.ctx.scale(this.zoomLevel, this.zoomLevel);
     this.ctx.translate(-this.width / 2, -this.height / 2);
 
-    for (const rs of this.renderStars) {
-      const { star, x, y, radius } = rs;
-      const isLightMode = document.body.classList.contains("light-mode");
+    const primaryColor = getComputedStyle(document.body).getPropertyValue('--color-primary').trim() || "#00B8FF";
+    const primaryColorRgb = getComputedStyle(document.body).getPropertyValue('--color-primary-rgb').trim() || "0, 184, 255";
+
+    const cx = this.width / 2;
+    const cy = this.height / 2;
+
+    // 1. Draw crosshair tactical grids in extra-solar modes (Background Layer)
+    if (this.activeArea !== StarArea.SOLARSYSTEM) {
+      this.ctx.strokeStyle = `rgba(${primaryColorRgb}, 0.03)`;
+      this.ctx.lineWidth = 1;
+      const gridSpacing = 150;
       
-      // Determine color
-      let color = isLightMode ? "#64748B" : "#556080"; 
-      let glowColor = isLightMode ? "rgba(100, 116, 139, 0.3)" : "rgba(85, 96, 128, 0.5)";
-      
-      if (star.index === 0) {
-        // Sun
-        color = isLightMode ? "#F59E0B" : "#FFD700";
-        glowColor = isLightMode ? "rgba(245, 158, 11, 0.6)" : "rgba(255, 215, 0, 0.8)";
-      } else if (star.belongToCivi === "地球") {
-        color = isLightMode ? "#2563EB" : "#00E5FF";
-        glowColor = isLightMode ? "rgba(37, 99, 235, 0.5)" : "rgba(0, 229, 255, 0.8)";
-      } else if (star.belongToCivi && star.belongToCivi !== "地球") {
-        color = isLightMode ? "#DC2626" : "#FF5500";
-        glowColor = isLightMode ? "rgba(220, 38, 38, 0.5)" : "rgba(255, 85, 0, 0.8)";
-      } else if (star.found) {
-        color = isLightMode ? "#475569" : "#AAAAAA";
-      }
-
-      // Draw Orbit (very faint)
-      if (rs.orbitRadius > 0) {
+      // Draw vertical grid lines
+      for (let x = cx - 3000; x <= cx + 3000; x += gridSpacing) {
         this.ctx.beginPath();
-        this.ctx.ellipse(this.width/2, this.height/2, rs.orbitRadius, rs.orbitRadius * 0.8, 0, 0, Math.PI * 2);
-        this.ctx.strokeStyle = isLightMode ? "rgba(0, 0, 0, 0.05)" : "rgba(255, 255, 255, 0.03)";
-        this.ctx.stroke();
-      }
-
-      // Draw Star
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-      this.ctx.fillStyle = color;
-      this.ctx.shadowBlur = isLightMode ? 10 : 15;
-      this.ctx.shadowColor = glowColor;
-      this.ctx.fill();
-      this.ctx.shadowBlur = 0; // Reset
-
-      // Selection / Hover rings
-      if (this.selectedStar === rs || this.hoveredStar === rs) {
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
-        this.ctx.strokeStyle = this.selectedStar === rs ? (isLightMode ? "#1E293B" : "#FFFFFF") : glowColor;
-        this.ctx.lineWidth = 2;
+        this.ctx.moveTo(x, cy - 3000);
+        this.ctx.lineTo(x, cy + 3000);
         this.ctx.stroke();
         
-        // Draw Name text
-        this.ctx.fillStyle = isLightMode ? "#1E293B" : "#FFFFFF";
-        this.ctx.font = "bold 12px Orbitron, sans-serif";
-        this.ctx.fillText(star.name, x + radius + 8, y + 4);
+        // draw tick label
+        if (Math.abs(x - cx) % 300 === 0 && Math.abs(x - cx) < 2000) {
+          this.ctx.fillStyle = `rgba(${primaryColorRgb}, 0.15)`;
+          this.ctx.font = "8px JetBrains Mono, monospace";
+          this.ctx.fillText(`SEC-${Math.round((x - cx)/10)}`, x + 5, cy + 12);
+        }
+      }
+      
+      // Draw horizontal grid lines
+      for (let y = cy - 3000; y <= cy + 3000; y += gridSpacing) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx - 3000, y);
+        this.ctx.lineTo(cx + 3000, y);
+        this.ctx.stroke();
+        
+        // draw tick label
+        if (Math.abs(y - cy) % 300 === 0 && Math.abs(y - cy) < 2000) {
+          this.ctx.fillStyle = `rgba(${primaryColorRgb}, 0.15)`;
+          this.ctx.font = "8px JetBrains Mono, monospace";
+          this.ctx.fillText(`LY-${Math.round((cy - y)/10)}`, cx + 5, y - 5);
+        }
       }
     }
 
-    // 绘制航行中的所有舰队 (地球 + 外星)
-    const game = GameInstance.get();
-    const isLightMode = document.body.classList.contains("light-mode");
+    // 2. Draw Constellation grid lines in 50LY & 10kLY modes (Background Layer)
+    if (this.activeArea === StarArea.LIGHTYEAR_50 || this.activeArea === StarArea.LIGHTYEAR_1W) {
+      const activeStars = this.renderStars.filter(rs => this.isStarInActiveArea(rs.star));
+      this.ctx.strokeStyle = `rgba(${primaryColorRgb}, 0.05)`;
+      this.ctx.lineWidth = 1;
+      for (let i = 0; i < activeStars.length; i++) {
+        for (let j = i + 1; j < activeStars.length; j++) {
+          const s1 = activeStars[i];
+          const s2 = activeStars[j];
+          const dx = s1.x - s2.x;
+          const dy = s1.y - s2.y;
+          const distSq = dx * dx + dy * dy;
+          // Connect if distance < 180px
+          if (distSq < 180 * 180) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(s1.x, s1.y);
+            this.ctx.lineTo(s2.x, s2.y);
+            this.ctx.stroke();
+          }
+        }
+      }
+    }
 
+    // 3. Draw Orbits first (Background Layer) - only for Solar System
+    if (this.activeArea === StarArea.SOLARSYSTEM) {
+      for (const rs of this.renderStars) {
+        if (rs.orbitRadius > 0 && this.isStarInActiveArea(rs.star)) {
+          this.ctx.beginPath();
+          this.ctx.ellipse(this.width / 2, this.height / 2, rs.orbitRadius, rs.orbitRadius * 0.8, 0, 0, Math.PI * 2);
+          this.ctx.strokeStyle = `rgba(${primaryColorRgb}, 0.05)`;
+          this.ctx.lineWidth = 1;
+          this.ctx.setLineDash([4, 6]);
+          this.ctx.stroke();
+          this.ctx.setLineDash([]);
+        }
+      }
+    }
+
+    // 4. Draw Stars (Middle Layer)
+    for (const rs of this.renderStars) {
+      if (!this.isStarInActiveArea(rs.star)) continue;
+      
+      const { star, x, y, radius } = rs;
+      
+      let color = "#556080"; 
+      let glowColor = `rgba(${primaryColorRgb}, 0.15)`;
+      
+      // Determine star/planet role colors and glow colors
+      if (star.index === 0) { // Sun
+        color = "#FFD54F"; // Golden
+        glowColor = "rgba(255, 213, 79, 0.4)";
+      } else if (star.belongToCivi === "地球") {
+        color = primaryColor;
+        glowColor = `rgba(${primaryColorRgb}, 0.5)`;
+      } else if (star.belongToCivi && star.belongToCivi !== "地球") {
+        color = "#FF5252"; // Crisis Red for alien threats
+        glowColor = "rgba(255, 82, 82, 0.4)";
+      } else if (star.found) {
+        color = `rgba(${primaryColorRgb}, 0.6)`;
+      }
+
+      // Draw vector core dot
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, radius * 0.6, 0, Math.PI * 2);
+      this.ctx.fillStyle = color;
+      this.ctx.fill();
+
+      // Draw thin outer radar ring
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, radius + 3, 0, Math.PI * 2);
+      this.ctx.strokeStyle = glowColor;
+      this.ctx.lineWidth = 1;
+      this.ctx.stroke();
+
+      // Pulsing territory boundaries & faction tags
+      if (star.belongToCivi) {
+        this.ctx.save();
+        this.ctx.strokeStyle = color;
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([3, 4]);
+        const pulseRadius = radius + 9 + Math.sin(Date.now() * 0.003) * 1.5;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, pulseRadius, 0, Math.PI * 2);
+        this.ctx.stroke();
+        this.ctx.restore();
+
+        // Faction tag below star
+        this.ctx.fillStyle = star.belongToCivi === "地球" ? "rgba(0, 184, 255, 0.5)" : "rgba(255, 82, 82, 0.5)";
+        this.ctx.font = "8px JetBrains Mono, monospace";
+        this.ctx.fillText(`[${star.belongToCivi}]`, x - 15, y + radius + 11);
+      }
+
+      // Dynamic Colony symbols & Name tag
+      if (star.belongToCivi) {
+        let symbolChar = "○"; // Outpost default
+        if (star.hasCity || star.currentPopulation >= 500) {
+          symbolChar = "◇"; // Metropolis
+        } else if (star.hasFactory || star.hasStope) {
+          symbolChar = "△"; // Industrial
+        }
+        
+        this.ctx.fillStyle = color;
+        this.ctx.font = "bold 10px Inter, sans-serif";
+        this.ctx.fillText(`${symbolChar} ${star.name}`, x - 18, y - radius - 7);
+      } else {
+        // Draw unowned star name
+        this.ctx.fillStyle = "rgba(221, 238, 255, 0.45)";
+        this.ctx.font = "9px Inter, sans-serif";
+        this.ctx.fillText(star.name, x - 15, y - radius - 5);
+      }
+
+      // Draw Anomaly (⚠) and Ruins (⬢) on extra-solar points when uncolonized
+      if (star.index > 10 && !star.belongToCivi) {
+        this.ctx.font = "9px Inter, sans-serif";
+        if (star.index === 13 || star.index === 17 || star.index === 23) { // Mock Anomaly
+          this.ctx.fillStyle = "#FFB300"; // Warning Orange
+          this.ctx.fillText("⚠ 异常", x - 14, y - radius - 15);
+        } else if (star.index === 15 || star.index === 21 || star.index === 28) { // Mock Ruin
+          this.ctx.fillStyle = "#66BB6A"; // Success Green for ruins
+          this.ctx.fillText("⬢ 遗迹", x - 14, y - radius - 15);
+        }
+      }
+
+      // Target bracket selection box if hovered or selected
+      if (this.selectedStar === rs || this.hoveredStar === rs) {
+        const size = radius + 6;
+        this.ctx.strokeStyle = this.selectedStar === rs ? primaryColor : "rgba(221, 238, 255, 0.4)";
+        this.ctx.lineWidth = 1;
+        
+        // Draw corners []
+        // Top-Left
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - size, y - size + 3);
+        this.ctx.lineTo(x - size, y - size);
+        this.ctx.lineTo(x - size + 3, y - size);
+        this.ctx.stroke();
+
+        // Top-Right
+        this.ctx.beginPath();
+        this.ctx.moveTo(x + size, y - size + 3);
+        this.ctx.lineTo(x + size, y - size);
+        this.ctx.lineTo(x + size - 3, y - size);
+        this.ctx.stroke();
+
+        // Bottom-Left
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - size, y + size - 3);
+        this.ctx.lineTo(x - size, y + size);
+        this.ctx.lineTo(x - size + 3, y + size);
+        this.ctx.stroke();
+
+        // Bottom-Right
+        this.ctx.beginPath();
+        this.ctx.moveTo(x + size, y + size - 3);
+        this.ctx.lineTo(x + size, y + size);
+        this.ctx.lineTo(x + size - 3, y + size);
+        this.ctx.stroke();
+
+        // Render tactical text tag
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.font = "bold 10px JetBrains Mono, monospace";
+        this.ctx.fillText(`ID: ${star.name.toUpperCase()}`, x + size + 6, y - 2);
+        
+        this.ctx.fillStyle = "rgba(221, 238, 255, 0.7)";
+        this.ctx.font = "9px Inter, sans-serif";
+        this.ctx.fillText(star.belongToCivi ? `CIV: ${star.belongToCivi}` : "SECTOR: UNMAPPED", x + size + 6, y + 8);
+      }
+    }
+
+    // 5. Draw Active Fleets (Foreground Layer)
+    const game = GameInstance.get();
     const allFleets: any[] = [];
     if (game.earthCivi && game.earthCivi.fleets) {
       game.earthCivi.fleets.forEach(f => allFleets.push(f));
@@ -346,43 +562,50 @@ export class StarMapRenderer {
         const dstStar = this.renderStarMap.get(fleet.targetStarIndex);
 
         if (srcStar && dstStar) {
+          // Filter fleets by activeArea
+          if (!this.isStarInActiveArea(srcStar.star) || !this.isStarInActiveArea(dstStar.star)) {
+            return;
+          }
+
           const isEarth = fleet.belongToCivi === "地球";
-          // 连线
+          
+          // Vector navigation route line
           this.ctx.beginPath();
           this.ctx.moveTo(srcStar.x, srcStar.y);
           this.ctx.lineTo(dstStar.x, dstStar.y);
           this.ctx.strokeStyle = isEarth 
-            ? (isLightMode ? "rgba(37, 99, 235, 0.3)" : "rgba(0, 229, 255, 0.2)")
-            : (isLightMode ? "rgba(220, 38, 38, 0.3)" : "rgba(255, 85, 0, 0.25)");
-          this.ctx.setLineDash([5, 5]);
+            ? `rgba(${primaryColorRgb}, 0.25)`
+            : "rgba(255, 82, 82, 0.25)";
+          this.ctx.setLineDash([3, 4]);
           this.ctx.stroke();
           this.ctx.setLineDash([]);
 
-          // 舰队当前位置插值
+          // Fleet position interpolation
           const total = fleet.totalEta > 0 ? fleet.totalEta : 1;
           const progress = 1 - (fleet.eta / total);
           const fx = srcStar.x + (dstStar.x - srcStar.x) * progress;
           const fy = srcStar.y + (dstStar.y - srcStar.y) * progress;
 
-          // 画舰队光点
-          this.ctx.beginPath();
-          this.ctx.arc(fx, fy, 4, 0, Math.PI * 2);
-          this.ctx.fillStyle = isEarth
-            ? (isLightMode ? "#2563EB" : "#00E5FF")
-            : (isLightMode ? "#DC2626" : "#FF5500");
-          this.ctx.shadowBlur = 10;
-          this.ctx.shadowColor = isEarth
-            ? (isLightMode ? "rgba(37, 99, 235, 0.5)" : "#00E5FF")
-            : (isLightMode ? "rgba(220, 38, 38, 0.5)" : "#FF5500");
-          this.ctx.fill();
-          this.ctx.shadowBlur = 0;
+          // Draw outlined triangle ▲ representing fleet vector
+          this.ctx.save();
+          this.ctx.translate(fx, fy);
+          const angle = Math.atan2(dstStar.y - srcStar.y, dstStar.x - srcStar.x);
+          this.ctx.rotate(angle);
 
-          // 舰队名字 + 倒计时
-          this.ctx.fillStyle = isEarth
-            ? (isLightMode ? "#1E293B" : "#00E5FF")
-            : (isLightMode ? "#DC2626" : "#FF5500");
-          this.ctx.font = "bold 9px sans-serif";
-          this.ctx.fillText(`${fleet.name} (${fleet.eta}回合)`, fx + 8, fy + 3);
+          this.ctx.beginPath();
+          this.ctx.moveTo(6, 0);
+          this.ctx.lineTo(-4, -4);
+          this.ctx.lineTo(-4, 4);
+          this.ctx.closePath();
+          
+          this.ctx.fillStyle = isEarth ? primaryColor : "#FF5252";
+          this.ctx.fill();
+          this.ctx.restore();
+
+          // Tactical fleet tag in JetBrains Mono
+          this.ctx.fillStyle = isEarth ? primaryColor : "#FF5252";
+          this.ctx.font = "bold 9px JetBrains Mono, monospace";
+          this.ctx.fillText(`${fleet.name.toUpperCase()} [ETA: ${fleet.eta}T]`, fx + 8, fy + 3);
         }
       }
     });

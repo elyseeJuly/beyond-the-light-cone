@@ -349,20 +349,20 @@ describe('Civilization', () => {
   it('getCiviLevelLabel 根据等级返回标签', () => {
     const civi = new Civilization('测试文明');
     civi.civiLevel = 0;
-    expect(civi.getCiviLevelLabel()).toBe('荒蛮');
+    expect(civi.getCiviLevelLabel()).toBe('荒蛮文明');
     civi.civiLevel = 1;
-    expect(civi.getCiviLevelLabel()).toBe('起源');
+    expect(civi.getCiviLevelLabel()).toBe('工业文明');
     civi.civiLevel = 2;
-    expect(civi.getCiviLevelLabel()).toBe('风暴');
+    expect(civi.getCiviLevelLabel()).toBe('星际文明');
     civi.civiLevel = 3;
-    expect(civi.getCiviLevelLabel()).toBe('逐鹿');
+    expect(civi.getCiviLevelLabel()).toBe('银河文明');
     civi.civiLevel = 4;
-    expect(civi.getCiviLevelLabel()).toBe('霸王');
+    expect(civi.getCiviLevelLabel()).toBe('超维文明');
   });
 
   it('getCiviLevelLabel 越界安全处理', () => {
     const civi = new Civilization('测试文明');
     civi.civiLevel = 99;
-    expect(civi.getCiviLevelLabel()).toBe('霸王');
+    expect(civi.getCiviLevelLabel()).toBe('超维文明');
   });
 });

@@ -33,7 +33,7 @@ export class Civilization {
   }
 
   public getCiviLevelLabel(): string {
-    const levels = ["荒蛮", "起源", "风暴", "逐鹿", "霸王"];
+    const levels = ["荒蛮文明", "工业文明", "星际文明", "银河文明", "超维文明"];
     return levels[Math.min(this.civiLevel, levels.length - 1)];
   }
 }

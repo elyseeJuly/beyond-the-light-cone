@@ -46,12 +46,12 @@ export const FINALE_THEME_PATH = '/audio/stardust Exodus.mp3';
 /** 纪元动态 BGM 预留音乐位 */
 export const ERA_BGM_PATHS = {
   GOLDEN: '/audio/years_base.mp3',           // 黄金岁月
-  CRISIS: '/audio/crisis_era.mp3',           // 危机纪元
-  DETERRENCE: '/audio/deterrence_era.mp3',   // 威慑纪元
-  BROADCAST: '/audio/broadcast_era.mp3',     // 广播纪元
-  BUNKER: '/audio/bunker_era.mp3',           // 掩体纪元
-  GALAXY: '/audio/galaxy_era.mp3',           // 银河纪元
-  STARDUST: '/audio/stardust_era.mp3',       // 星屑纪元
+  CRISIS: '/audio/era_crisis.mp3',           // 危机纪元
+  DETERRENCE: '/audio/era_deterrence.mp3',   // 威慑纪元
+  BROADCAST: '/audio/era_broadcast.mp3',     // 广播纪元
+  BUNKER: '/audio/era_bunker.mp3',           // 掩体纪元
+  GALAXY: '/audio/era_galaxy.mp3',           // 银河纪元
+  STARDUST: '/audio/era_stardust.mp3',       // 星屑纪元
 };
 
 /** 结局与终章专属 BGM 预留音乐位 */

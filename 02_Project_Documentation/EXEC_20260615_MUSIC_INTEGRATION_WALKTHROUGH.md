@@ -19,12 +19,12 @@ To integrate new music into the game, simply place your audio files in `03_Web_R
 | Game Era (Index) | Filename Required | Description | Default Fallback (If Missing) |
 | :--- | :--- | :--- | :--- |
 | **黄金岁月 (Golden Era - 0)** | `years_base.mp3` | Main gameplay BGM | Silent Mode |
-| **危机纪元 (Crisis Era - 1)** | `crisis_era.mp3` | Dynamic BGM for Crisis Era | `years_base.mp3` |
-| **威慑纪元 (Deterrence Era - 2)** | `deterrence_era.mp3` | Dynamic BGM variation for Deterrence Era | `years_base.mp3` |
-| **广播纪元 (Broadcast Era - 3)** | `broadcast_era.mp3` | Dynamic BGM for Broadcast Era | `years_base.mp3` |
-| **掩体纪元 (Bunker Era - 4)** | `bunker_era.mp3` | Dynamic BGM for Bunker Era | `years_base.mp3` |
-| **银河纪元 (Galaxy Era - 5)** | `galaxy_era.mp3` | Dynamic BGM for Galaxy Era | `years_base.mp3` |
-| **星屑纪元 (Stardust Era - 6)** | `stardust_era.mp3` | Dynamic BGM for Stardust Era | `years_base.mp3` |
+| **危机纪元 (Crisis Era - 1)** | `era_crisis.mp3` | Dynamic BGM for Crisis Era | `years_base.mp3` |
+| **威慑纪元 (Deterrence Era - 2)** | `era_deterrence.mp3` | Dynamic BGM variation for Deterrence Era | `years_base.mp3` |
+| **广播纪元 (Broadcast Era - 3)** | `era_broadcast.mp3` | Dynamic BGM for Broadcast Era | `years_base.mp3` |
+| **掩体纪元 (Bunker Era - 4)** | `era_bunker.mp3` | Dynamic BGM for Bunker Era | `years_base.mp3` |
+| **银河纪元 (Galaxy Era - 5)** | `era_galaxy.mp3` | Dynamic BGM for Galaxy Era | `years_base.mp3` |
+| **星屑纪元 (Stardust Era - 6)** | `era_stardust.mp3` | Dynamic BGM for Stardust Era | `years_base.mp3` |
 
 ### 2. Ending & Credits Theme Songs
 

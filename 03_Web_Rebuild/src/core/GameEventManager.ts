@@ -22,6 +22,10 @@ export class GameEventManager {
     this.init();
   }
 
+  public formatAvatarUrl(bmpName: string, speakerName?: string): string {
+    return this.mapAvatar(bmpName, speakerName);
+  }
+
   private mapAvatar(bmpName: string, speakerName?: string): string {
     // 1. If bmpName represents a CG image, resolve it first
     if (bmpName) {

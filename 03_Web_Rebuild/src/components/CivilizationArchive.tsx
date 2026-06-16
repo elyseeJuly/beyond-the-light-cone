@@ -62,7 +62,9 @@ export const CivilizationArchive: React.FC = () => {
   // Discovered Civs
   const discoveredCivs = useMemo(() => {
     if (!game.alienCiviManager) return [];
-    return Array.from(game.alienCiviManager.aliens.values()).map(alien => ({
+    return Array.from(game.alienCiviManager.aliens.values())
+      .filter(alien => alien.unlocked)
+      .map(alien => ({
       name: alien.name,
       friendship: alien.friendshipType,
       isDead: alien.isDieOut(),

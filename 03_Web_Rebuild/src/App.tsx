@@ -50,6 +50,12 @@ export const App: React.FC = () => {
         setUnlockedTech({ name: detail.techName, treeType: detail.treeType });
       }
     };
+    const handleActiveViewChanged = (e: Event) => {
+      const view = (e as CustomEvent).detail as ActiveViewType;
+      if (view) {
+        setActiveView(view);
+      }
+    };
     
     window.addEventListener('open-tutorial', handleOpenTutorial);
     window.addEventListener('open-fleet-modal', handleOpenFleetModal);
@@ -57,6 +63,7 @@ export const App: React.FC = () => {
     window.addEventListener('open-settings', handleOpenSettings);
     window.addEventListener('open-museum', handleOpenMuseum);
     window.addEventListener('game:tech:completed', handleTechCompleted);
+    window.addEventListener('change-active-view', handleActiveViewChanged);
     
     return () => {
       window.removeEventListener('open-tutorial', handleOpenTutorial);
@@ -65,6 +72,7 @@ export const App: React.FC = () => {
       window.removeEventListener('open-settings', handleOpenSettings);
       window.removeEventListener('open-museum', handleOpenMuseum);
       window.removeEventListener('game:tech:completed', handleTechCompleted);
+      window.removeEventListener('change-active-view', handleActiveViewChanged);
     };
   }, []);
 

@@ -5,6 +5,7 @@ import {
   Star,
   BookOpen, Lightbulb, Trophy, AlertOctagon, Clock, Crosshair, Landmark, Lock, Flag
 } from 'lucide-react';
+import { ActiveViewType } from './LeftHub';
 
 interface TutorialStep {
   icon: React.ReactNode;
@@ -13,6 +14,7 @@ interface TutorialStep {
   category: string;
   tips?: string[];
   highlightArea?: 'top' | 'left' | 'center' | 'right' | 'none';
+  activeView: ActiveViewType;
 }
 
 const TUTORIAL_STEPS: TutorialStep[] = [
@@ -23,6 +25,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     category: '序章',
     description: '权限验证通过。欢迎您，文明执政官。\n\n公元 2XXX 年，三体文明发现了地球的存在。作为地球防卫理事会最高指挥官，你将在黑暗森林法则的阴影下，带领人类文明穿越六大纪元。\n在这座银河文明档案馆中，你的每一个决策都将书写人类文明的历史。',
     highlightArea: 'none',
+    activeView: 'starmap',
   },
   {
     icon: <Clock size={32} />,
@@ -30,109 +33,83 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     category: '序章',
     description: '文明档案记录了六个宏大纪元，每个纪元都有独特的挑战与危机：\n\n• 危机纪元（第1-200年）— 面临智子封锁与生存危机\n• 威慑纪元（第201-260年）— 执剑人建立黑暗森林威慑\n• 广播纪元（第261-300年）— 坐标暴露，应对黑暗森林打击\n• 掩体纪元（第301-350年）— 太阳系最后的防御建设窗口\n• 银河纪元（第351年起）— 逃亡星海，成为星舰文明\n• 星屑纪元（尾声）— 宇宙降维崩塌中的最后火种',
     highlightArea: 'top',
+    activeView: 'starmap',
     tips: ['纪元会随文明发展进度与年份自动推进', '不同纪元会解锁不同的事件与科技路线'],
   },
 
-  // ===== 第二章：界面导览 =====
-  {
-    icon: <Landmark size={32} />,
-    title: '顶部统御中枢',
-    category: '档案馆导览',
-    description: '屏幕顶部是你的核心指挥枢纽，实时显示文明的生存状态：\n\n🏛 文明稳定度 — 最核心指标，综合考量了经济、文化、科技与军力。稳定度若降为零，文明将直接崩溃！\n👥 人口 — 工人来源，影响所有产出\n💎 资源 — 原材料，开采自星球矿场\n🛡 军力 — 防御与进攻的基础力量\n⚠️ 威慑度 — 震慑外星文明的核心指标\n\n点击“稳定度”面板可查看经济、文化、科技研发度与逃亡主义的具体指数。',
-    highlightArea: 'top',
-    tips: ['逃亡系数过高会严重拖累文明稳定度', '每回合各类数值变化会以浮动数字提示'],
-  },
-  {
-    icon: <BookOpen size={32} />,
-    title: '左侧档案索引',
-    category: '档案馆导览',
-    description: '左侧面板是文明档案馆的核心索引，包含六个关键系统：\n\n🗺 战略星图 — 俯瞰已知宇宙与殖民情况\n📡 情报中心 — 监测外星文明动向与外交状态\n🖥 科技研发 — 解锁五大科技树的未来技术\n🏛 政府枢纽 — 任命面壁者与各部门部长\n📜 岁月史书 — 查阅当前运行周期的详细事件编年史\n🏛 博物馆 — 检阅平行宇宙中已达成的结局与成就',
-    highlightArea: 'left',
-    tips: ['不同界面的切换不会消耗回合数', '在“政府”中任命部长能大幅提升对应领域的产出率'],
-  },
+  // ===== 第二章：战略星图与基础操作 =====
   {
     icon: <Star size={32} />,
     title: '战略星图观测仪',
-    category: '档案馆导览',
-    description: '中央区域是高维星图全息投影，展示太阳系及深空天体：\n\n• 🟡 发光大球 = 恒星（如太阳）\n• 🔵 蓝色光环 = 地球文明控制区\n• 🔴 红色光环 = 异星文明占领区\n• ⚪ 灰色光环 = 探测到的无主星球\n\n操作方式：\n• 鼠标悬停 — 显示星球名称与简报\n• 点击星球 — 在右侧终端查看详细开发指令\n• 滚轮缩放 — 调整星图投影焦距',
+    category: '战略指挥',
+    description: '欢迎进入高维星图全息投影。这里展示了人类的势力范围与深空星天：\n\n• 🟡 发光天体 = 恒星（如太阳）\n• 🔵 蓝色光环 = 人类控制区/己方势力\n• 🔴 红色光环 = 异星文明占领区（如三体）\n• ⚪ 灰色光环 = 无主星系，可派遣舰队开发\n\n操作方式：使用鼠标滚轮缩放星图，长按左键拖拽调整视角。',
     highlightArea: 'center',
-    tips: ['研发航天学“远镜望远”相关科技可扩展探测视野', '殖民地会产生动态归属标识'],
+    activeView: 'starmap',
+    tips: ['研究航天学相关科技可以扩大观测视野', '被占领星系的脉冲环颜色代表归属权'],
   },
   {
     icon: <TrendingUp size={32} />,
-    title: '详细指令终端',
-    category: '档案馆导览',
-    description: '右侧终端用于下达具体的行星开发指令：\n\n📋 状态简报 — 点击星球后显示其资源储量、人口规模与设施状况\n🏗 建设授权 — 在己方领土可建造采矿场、工厂或太空城\n📜 历史日志 — 实时滚动的重大战略记录与警报\n\n右下角的「下一回合」按钮是推进历史时间线的唯一途径。',
+    title: '行星指令开发终端',
+    category: '战略指挥',
+    description: '【手把手指令 ①】：\n现在，请跟随指引点击星图中央的「地球」星球。\n\n右侧的战略开发面板将立即开启：\n• 查看资源储量、人口规模与设施\n• 下达具体的建设授权指令\n\n⚠️ 开局至关重要的一步：点击右侧的「采矿场」进行建设！有了矿产资源，后续才能建造工厂、积累经济。',
     highlightArea: 'right',
-    tips: ['所有建设工程均需消耗经济点，并耗费数年完工', '日志中的红色高亮条目通常代表严重危机'],
+    activeView: 'starmap',
+    tips: ['必须先点击星图中的某个恒星/行星，右侧才会出现开发面板', '右下角的「下一回合」按钮是推进年份的唯一方式'],
   },
 
-  // ===== 第三章：核心玩法 =====
+  // ===== 第三章：内政管理与科学技术 =====
   {
-    icon: <Building2 size={32} />,
-    title: '基础维系原理',
-    category: '执政法则',
-    description: '维持高「文明稳定度」的关键在于三大工种的协同：\n\n⛏ 矿工 — 从星球深处开采原始资源\n🏭 工人 — 在工厂将资源转化为经济\n🎨 文化工 — 提升文化底蕴，维系社会凝聚力\n\n系统会自动按比例分配人口（默认各三分之一）。\n\n⚠️ 执政警告：工厂生产必须消耗资源，一旦资源枯竭，经济链将瞬间断裂！请务必先建设「采矿场」，再建设「工厂」。',
-    highlightArea: 'none',
-    tips: ['星球开发顺序：采矿场 ➔ 工厂 ➔ 太空城市', '太空城市用于突破自然环境的人口上限瓶颈'],
+    icon: <Landmark size={32} />,
+    title: '内阁政府管理中枢',
+    category: '内政管理',
+    description: '【手把手指令 ②】：\n系统已为您自动打开「政府」管理界面。\n\n在这里，您可以行使最高统帅权：\n• 任命科学、国防、文化、社会部长以获取各种产出加成\n• 指派面壁者秘密策划，应对三体危机\n\n⚠️ 开局提示：在第一回合迅速指派各部门官员，可以让您的产出速度提升一倍以上！',
+    highlightArea: 'center',
+    activeView: 'government',
+    tips: ['官员拥有不同的属性，Science 影响研发，Leadership 影响威慑与军事', '任命官员不会消耗本回合时间'],
   },
   {
     icon: <Cpu size={32} />,
-    title: '科技树解析',
-    category: '执政法则',
-    description: '文明的跃迁依赖五大科研领域的突破：\n\n🔬 物理学 — 智子工程、维度打击等基础真理\n🚀 航天学 — 行星发动机、曲率驱动\n⚔️ 军事学 — 恒星级战舰、黑暗森林打击系统\n💻 信息学 — 数字生命、思想钢印、量子计算\n🌌 星际学 — 宇宙社会学、掩体工程、黑域生成\n\n研发速度由相关部门长官的 Science 属性决定。科技进度在稳定度中占有重要权重。',
-    highlightArea: 'none',
-    tips: ['智子封锁期间，基础物理研究效率将惨遭腰斩', '率先研发“550W量子计算机”可一定程度抵消智子的干扰'],
+    title: '科学技术解码中心',
+    category: '内政管理',
+    description: '【手把手指令 ③】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！我们需要率先研发“550W量子计算机”等关键技术，降低智子的研究封锁惩罚。',
+    highlightArea: 'center',
+    activeView: 'techtree',
+    tips: ['未任命科学部长时，科研效率将极其低下', '研发高级科技需要对应的前置物理学突破'],
   },
   {
     icon: <Shield size={32} />,
-    title: '黑暗森林威慑',
-    category: '执政法则',
-    description: '为了在冷酷的黑暗森林中幸存，必须建立威慑系统：\n\n🧑‍💼 统御面壁者\n面壁者在暗中策划，每回合自动积攒威慑度与军备。\n\n⚔️ 执剑人（剑柄持有者）\n执剑人的 Leadership 属性直接决定威慑生效的概率。高威慑度将迫使带有敌意的异星文明暂停攻击步伐。\n\n⚠️ 如果只攒威慑度而没有强大的执剑人，或者威慑度归零，文明将毫无防护！',
-    highlightArea: 'left',
-    tips: ['挑选高 Leadership 和 Art 的领袖担任面壁者与执剑人', '一旦进入威慑纪元，执剑人的职责将重于泰山'],
+    title: '黑暗森林防备体系',
+    category: '外御备战',
+    description: '【手把手指令 ④】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明的入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！',
+    highlightArea: 'center',
+    activeView: 'government',
+    tips: ['威慑纪元来临时，必须慎重选择接任的执剑人', '一旦进入威慑，失去兽性将失去一切'],
   },
   {
     icon: <Crosshair size={32} />,
-    title: '异星接触法则',
-    category: '执政法则',
-    description: '宇宙中潜伏着多个异星文明（如三体、歌者等），它们遵循不同的 AI 逻辑：\n\n🎯 猎手型 — 极具侵略性，需高威慑力震慑\n🧹 清理者型 — 攻击频率低但手段具有毁灭性（如光粒）\n📡 机会主义型 — 欺软怕硬，伺机而动\n🌍 扩张主义型 — 热衷于抢占无主星系\n\n通过「情报中心」可进行跨星际沟通：谈判（提升关系）、贸易（资源互换）或缔结同盟。',
-    highlightArea: 'none',
-    tips: ['结盟需关系达到“亲密”', '所有文明消亡或全数结盟即可达成大一统胜利'],
-  },
-
-  // ===== 第四章：胜利条件 =====
-  {
-    icon: <Trophy size={32} />,
-    title: '文明命运分歧点',
-    category: '文明归宿',
-    description: '历史档案记录了六种人类文明的终极归宿：\n\n🏆 征服大同 — 肃清或结盟所有已知外星文明\n🛡 威慑堡垒 — 稳居威慑纪元，维持平衡\n💾 数字方舟 — 抛弃肉体，实现全人类意识上传\n🌑 绝对安全 — 降低光速，将太阳系化为黑域\n🌌 星舰流亡 — 乘曲率飞船逃离太阳系，散布星海\n⚡ 死神永生 — 响应归零者号召，归还小宇宙质量',
-    highlightArea: 'none',
-    tips: ['每种结局需要解锁特定的深层科技链（如黑域需曲率驱动前置）', '博物馆画廊中可以查阅已收集的终点记忆'],
-  },
-
-  // ===== 第五章：新手生存指南 =====
-  {
-    icon: <Lightbulb size={32} />,
-    title: '执政官生存法则',
-    category: '最终指示',
-    description: '在黑暗森林中起步的 10 个战略步骤：\n\n① 纪元 1：在地球建设「采矿场」\n② 纪元 5：矿场完工后立刻建设「工厂」\n③ 纪元 10：在「政府」指派各部核心长官\n④ 纪元 15：任命至少 2 名面壁者\n⑤ 纪元 20：指派执剑人，完善威慑链\n⑥ 纪元 25：向火星进发，建立外星矿区\n⑦ 纪元 30：密切关注科技树中的解锁项\n⑧ 纪元 40：组建第一支星际舰队\n⑨ 纪元 50：利用情报中心展开外交斡旋\n⑩ 时刻监视文明稳定度，防止内部逃亡主义撕裂社会！',
-    highlightArea: 'none',
+    title: '深空外交监测网络',
+    category: '外御备战',
+    description: '【手把手指令 ⑤】：\n系统已为您连接到「情报中心」的外星电波信道。\n\n在这里，宇宙的冷酷与利益交织展现：\n• 监测三体文明、歌者、归零者等宇宙文明的动态\n• 展开跨星际沟通：谈判（提升关系）、贸易（互换资源）或共同缔结结盟\n\n🎯 谈判技巧：当与其他文明的关系达到“亲密”时，可以尝试申请结盟。将全部存活文明消亡或全数纳为盟友，将达成伟大的“征服大同”胜利。',
+    highlightArea: 'center',
+    activeView: 'intelligence',
+    tips: ['关系过于恶劣的外星文明将拒绝接受任何贸易提案', '在实力薄弱时，依靠结盟外交是求生的不二法门'],
   },
   {
-    icon: <AlertOctagon size={32} />,
-    title: '历史的教训',
-    category: '最终指示',
-    description: '翻阅档案，无数前任执政官因为以下失误导致文明覆灭：\n\n❌ 盲目造厂 → 资源枯竭 → 经济崩盘 → 稳定度归零\n❌ 忽视防卫 → 威慑度极低 → 外星舰队如入无人之境\n❌ 放任民心 → 逃亡系数失控 → 社会发生暴乱\n❌ 科技停滞 → 固步自封 → 错失抵御大灾变的窗口期\n\n⚠️ 如果遭遇维度打击或光粒攻击，请及时利用掩体世界或太空城疏散人口。',
-    highlightArea: 'none',
-    tips: ['不要忘记经常点击系统设置中的存档按钮', '遭遇打击不要轻言放弃，星火可以燎原'],
+    icon: <Building2 size={32} />,
+    title: '文明稳定维系法则',
+    category: '生存危机',
+    description: '系统已将您的视角还原到主星图。请将视线移到顶部 HUD 指标区。\n\n🏛 文明稳定度是您执政的生命线：\n• 它由您的 经济能力、军事规模、科技研发度 以及 文化产出 四大维度加权决定\n• 🚨 惩罚因子：当文明内部积攒了过高的「逃亡倾向」时，社会秩序失控，稳定度会遭到沉重处罚！\n\n稳定度一旦降为 0%，您的本局游戏将立即宣告失败。请通过社会保障和文化建设，随时抚平社会的恐慌。',
+    highlightArea: 'top',
+    activeView: 'starmap',
+    tips: ['经济崩溃或军事大败会直接腰斩文明稳定度', '社会与文化部长的 Art 属性可以用来平复逃亡倾向'],
   },
   {
     icon: <Rocket size={32} />,
-    title: '授权通过',
+    title: '授权通过：执政官生存法则',
     category: '最终指示',
-    description: '档案阅览完毕，您的指挥官权限已全面激活。\n\n历史的笔柄现在交到了你的手上。\n• 维持稳定 — 协调发展\n• 保持震慑 — 捍卫尊严\n• 攀登科技 — 突破封锁\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官。',
+    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「采矿场」积累原始矿产\n② 建设「工厂」将矿产转化为经济收入\n③ 在政府中任命四个部门的执掌官员\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力的执剑人建立威慑盾牌\n⑥ 研发航天技术，向火星建立第二采矿基地\n⑦ 不要在无前置矿场时连续建造工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的官员疏导逃亡主义\n⑨ 太阳系打击降临时，依靠“掩体太空城”疏散人口\n⑩ 合理利用情报中心与异星斡旋。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
     highlightArea: 'none',
+    activeView: 'starmap',
   },
 ];
 
@@ -165,6 +142,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     } else {
       setExiting(true);
       localStorage.setItem('game-tutorial-seen', 'true');
+      window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
       setTimeout(onComplete, 400);
     }
   }, [step, onComplete, animateTransition]);
@@ -178,8 +156,16 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const handleSkip = useCallback(() => {
     setExiting(true);
     localStorage.setItem('game-tutorial-seen', 'true');
+    window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
     setTimeout(onComplete, 400);
   }, [onComplete]);
+
+  // Synchronize dynamic view switching with tutorial step
+  useEffect(() => {
+    if (current && current.activeView) {
+      window.dispatchEvent(new CustomEvent('change-active-view', { detail: current.activeView }));
+    }
+  }, [current]);
 
   // Keyboard navigation
   useEffect(() => {

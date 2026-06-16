@@ -65,6 +65,7 @@ export const STANDARD_TAGS: Record<string, {
   mil_threat:           { name: "军事威胁升级",   category: 'military', isMilestone: false, description: "外星文明军事威胁加剧" },
 
   /** 纪元状态 */
+  golden_age_deep:      { name: "黄金岁月",       category: 'epoch',    isMilestone: true,  description: "红岸基地建立，发送及接收三体信号，ETO成立前夜" },
   crisis_era_deep:      { name: "危机时代",       category: 'epoch',    isMilestone: true,  description: "人类处于危难时期" },
   deterrence_era:       { name: "威慑纪元",       category: 'epoch',    isMilestone: true,  description: "威慑纪元的主要特征" },
   broadcast_era:        { name: "广播纪元",       category: 'epoch',    isMilestone: true,  description: "广播纪元的事件特征" },

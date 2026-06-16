@@ -31,13 +31,14 @@ export enum TecTreeType {
 }
 
 export enum EpochType {
-  CRISIS = 0,
-  DETERRENCE = 1,
-  BROADCAST = 2,
-  BUNKER = 3,
-  GALAXY = 4,
-  STARDUST = 5,
-  COUNT = 6
+  GOLDEN = 0,
+  CRISIS = 1,
+  DETERRENCE = 2,
+  BROADCAST = 3,
+  BUNKER = 4,
+  GALAXY = 5,
+  STARDUST = 6,
+  COUNT = 7
 }
 
 export enum AiPersonality {

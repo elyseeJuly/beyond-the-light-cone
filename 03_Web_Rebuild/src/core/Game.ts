@@ -127,7 +127,7 @@ export class Game {
   }
 
   public addHistory(log: string, overrideYear?: number, overrideEpoch?: EpochType): void {
-    const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元"];
+    const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
     const targetEpoch = overrideEpoch !== undefined ? overrideEpoch : this.epoch;
     const targetYear = overrideYear !== undefined ? overrideYear : this.year;
     const prefix = `${epochNames[targetEpoch]} ${targetYear} 年 - `;
@@ -522,18 +522,19 @@ export class Game {
     }
 
     if (prevEpoch !== this.epoch) {
-      const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+      const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
       this.addHistory(`【纪元更替】进入${epochNames[this.epoch]}！`);
       this.playerTimeline.push({ year: this.year, event: `【纪元更替】人类正式进入${epochNames[this.epoch]}` });
 
       // UEE 纪元 Tag
       const epochTagMap: Record<number, string> = {
-        0: 'crisis_era_deep',
-        1: 'deterrence_era',
-        2: 'broadcast_era',
-        3: 'bunker_era_deep',
-        4: 'galaxy_era_deep',
-        5: 'stardust_era_deep',
+        0: 'golden_age_deep',
+        1: 'crisis_era_deep',
+        2: 'deterrence_era',
+        3: 'broadcast_era',
+        4: 'bunker_era_deep',
+        5: 'galaxy_era_deep',
+        6: 'stardust_era_deep',
       };
       const tagId = epochTagMap[this.epoch];
       if (tagId) {
@@ -1011,7 +1012,7 @@ export class Game {
           "关一帆": { role: "星舰探索员", content: "深空探索先驱，于宇宙二维化的宏大边缘守望最后的余晖。" }
         };
         const intro = introData[eff.target];
-        const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元"];
+        const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
         const epName = epochNames[this.epoch] || "未知纪元";
         if (intro) {
           this.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.year} 年 - 【重要人物正式入列】${eff.target} (${intro.role})。“${intro.content}”`);

@@ -130,7 +130,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
   }, [event.title, event.id]);
 
   const game = GameInstance.get();
-  const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+  const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
   const currentEraName = epochNames[game.epoch] || "未知纪元";
 
   const handleSelectChoice = (choice: any, idx: number) => {

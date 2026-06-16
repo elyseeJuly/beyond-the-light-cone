@@ -1,5 +1,141 @@
 [
   {
+    "name": -58,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_red_shore_base_1781593689.png",
+    "talk0_talker": "叶文洁",
+    "talk0_content": "红岸基地建立了。这是人类第一次尝试与地外文明建立联系。我站在雷达天线旁，仰望星空，不知道等待我们的将是什么。",
+    "effects": [
+      {
+        "type": "unlock_person",
+        "target": "叶文洁"
+      },
+      {
+        "type": "flag",
+        "target": "red_shore_base_established"
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GOLDEN",
+      "minYear": -58
+    }
+  },
+  {
+    "name": -36,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_yewenjie_signal_1781593706.png",
+    "talk0_talker": "叶文洁",
+    "talk0_content": "我按下了发射按钮。人类文明的坐标，连同我们的全部善意，向三体星系飞去。回答我吧，宇宙中是否还有其他智慧存在？",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "signal_sent_to_trisolaris"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GOLDEN",
+      "minYear": -36,
+      "reqFlag": "red_shore_base_established"
+    }
+  },
+  {
+    "name": -28,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_trisolaris_reply_1781593725.png",
+    "talk0_talker": "三体监听员",
+    "talk0_content": "不要回答！不要回答！不要回答！我们的世界正在毁灭，请不要把你们的坐标暴露给宇宙。但既然你们已经收到了这条信息...地球的位置已经暴露了。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "trisolaris_reply_received"
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GOLDEN",
+      "minYear": -28,
+      "reqFlag": "signal_sent_to_trisolaris"
+    }
+  },
+  {
+    "name": -27,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_eto_founded_1781593746.png",
+    "talk0_talker": "伊文斯",
+    "talk0_content": "地球三体组织正式成立。主不在乎，但我们在乎。我们将帮助主降临，净化这个被人类污染的星球。",
+    "effects": [
+      {
+        "type": "unlock_person",
+        "target": "伊文斯"
+      },
+      {
+        "type": "flag",
+        "target": "eto_founded"
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GOLDEN",
+      "minYear": -27,
+      "reqFlag": "trisolaris_reply_received"
+    }
+  },
+  {
+    "name": 0,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_yangdong_suicide_1781593784.png",
+    "talk0_talker": "杨冬",
+    "talk0_content": "物理学不存在了。所有的努力都毫无意义。妈妈，我先走了。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "yangdong_suicide"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": -10
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 0
+    }
+  },
+  {
     "name": 0,
     "eventtype": 0,
     "eventeffect": 0,
@@ -9,7 +145,38 @@
     "talk0_talker": "联合政府",
     "talk0_content": "执政官，由于三体舰队的发现，全球已进入危机纪元。行星防御理事会（PDC）正式授权您接管最高统帅权。基础物理已被锁死，但人类文明的火种绝不能熄灭！",
     "triggerCondition": {
-      "epoch": "CRISIS"
+      "epoch": "CRISIS",
+      "minYear": 0,
+      "reqFlag": "yangdong_suicide"
+    }
+  },
+  {
+    "name": 1,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_ghost_countdown_placeholder.png",
+    "talk0_talker": "汪淼",
+    "talk0_content": "倒计时开始了。1200小时...1199小时...无论我看向哪里，那个数字都在我的视网膜上跳动。这是三体人的警告——停止你们的科学探索。",
+    "effects": [
+      {
+        "type": "unlock_person",
+        "target": "汪淼"
+      },
+      {
+        "type": "flag",
+        "target": "ghost_countdown_started"
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 1
     }
   },
   {
@@ -32,7 +199,8 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "CRISIS"
+      "epoch": "CRISIS",
+      "minYear": 2
     }
   },
   {
@@ -63,7 +231,8 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "CRISIS"
+      "epoch": "CRISIS",
+      "minYear": 10
     }
   },
   {
@@ -83,10 +252,111 @@
       {
         "type": "unlock_person",
         "target": "庄颜"
+      },
+      {
+        "type": "flag",
+        "target": "stf_formation"
       }
     ],
     "triggerCondition": {
-      "epoch": "CRISIS"
+      "epoch": "CRISIS",
+      "minYear": 15
+    }
+  },
+  {
+    "name": 16,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_beihai_assassination_placeholder.png",
+    "talk0_talker": "章北海",
+    "talk0_content": "为了人类文明的延续，必须选择正确的技术路线。无工质核聚变是唯一的希望。那些坚持传统化学火箭的人，必须为文明让路。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "zhang_beihai_assassination"
+      },
+      {
+        "type": "resource",
+        "target": "military",
+        "value": 10
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 16,
+      "reqFlag": "stf_formation"
+    }
+  },
+  {
+    "name": 20,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_thought_seal_placeholder.png",
+    "talk0_talker": "希恩斯",
+    "talk0_content": "思想钢印已经完成。通过脑科学技术，我们可以在士兵的意识深处打上'必胜'或'必败'的信念。面壁计划的真正意图，就隐藏在这些信念之中。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "thought_seal_created"
+      },
+      {
+        "type": "resource",
+        "target": "military",
+        "value": 5
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 20
+    }
+  },
+  {
+    "name": 40,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_great_ravine_placeholder.png",
+    "talk0_talker": "联合政府",
+    "talk0_content": "大低谷来临了。为了应对三体危机，全球资源被过度消耗，经济崩溃，饥荒蔓延。文明的黑暗时代开始了，我们不知道还能不能走出来。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "great_ravine_started"
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": -30
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": -200
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": -50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 40
     }
   },
   {
@@ -97,9 +367,70 @@
     "talkcount": 1,
     "talk0_pic": "event_moon_crisis_1778921627726.png",
     "talk0_talker": "最高统帅部",
-    "talk0_content": "月球危机爆发！由于过度开采 and 潮汐引力异常，月球即将解体坠落！我们需要立即调集所有资源推开月球碎片！",
+    "talk0_content": "月球危机爆发！由于过度开采及潮汐引力异常，月球即将解体坠落！我们需要立即调集所有资源推开月球碎片！",
     "triggerCondition": {
-      "epoch": "CRISIS"
+      "epoch": "CRISIS",
+      "minYear": 50
+    }
+  },
+  {
+    "name": 60,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_tyler_breached_placeholder.png",
+    "talk0_talker": "泰勒",
+    "talk0_content": "我的计划被破壁了。我想用球状闪电武器制造一支量子态的幽灵军队，在微观层面攻击三体舰队。但主看穿了一切...我失败了。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "tyler_breached"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -10
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 60
+    }
+  },
+  {
+    "name": 70,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_reydiaz_breached_placeholder.png",
+    "talk0_talker": "雷迪亚兹",
+    "talk0_content": "他们说我是疯子。但我才是真正的面壁者——我的计划是用恒星级氢弹爆炸形成的尘埃云，将太阳系变成一个黑洞，与三体人同归于尽。可惜，主已经知道了。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "reydiaz_breached"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -15
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 70
     }
   },
   {
@@ -132,7 +463,80 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "CRISIS"
+      "epoch": "CRISIS",
+      "minYear": 80
+    }
+  },
+  {
+    "name": 150,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_great_ravine_ended_placeholder.png",
+    "talk0_talker": "山杉惠子",
+    "talk0_content": "大低谷结束了。经历了百年黑暗，人类文明重新站了起来。'给岁月以文明，而不是给文明以岁月'——我们终于理解了这句话的真正含义。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "great_ravine_ended"
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": 20
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": 100
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 30
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 150,
+      "reqFlag": "great_ravine_started"
+    }
+  },
+  {
+    "name": 180,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_tech_explosion_placeholder.png",
+    "talk0_talker": "丁仪",
+    "talk0_content": "技术爆炸！在智子封锁基础物理的情况下，人类竟然实现了可控核聚变、量子通信和强互作用力材料的突破。我们的技术在短短几十年内跨越了数百年的鸿沟！",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "technological_explosion"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 50
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": 150
+      },
+      {
+        "type": "resource",
+        "target": "military",
+        "value": 50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 180,
+      "reqFlag": "great_ravine_ended"
     }
   },
   {
@@ -141,32 +545,9 @@
     "eventeffect": 0,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "unified_chengxin_1778921400346.png",
-    "talk0_talker": "程心",
-    "talk0_content": "威慑纪元到来了。星环集团正在崛起，新一代的执剑人交接工作即将开始。",
-    "effects": [
-      {
-        "type": "unlock_person",
-        "target": "程心"
-      },
-      {
-        "type": "unlock_person",
-        "target": "艾AA"
-      }
-    ],
-    "triggerCondition": {
-      "epoch": "DETERRENCE"
-    }
-  },
-  {
-    "name": 205,
-    "eventtype": 0,
-    "eventeffect": 0,
-    "eventvalue": 0,
-    "talkcount": 1,
     "talk0_pic": "event_droplet_attack_placeholder.png",
-    "talk0_talker": "最高统帅部",
-    "talk0_content": "【末日之战】一个微小的三体探测器（水滴）在不到三十分钟内，如死神的飞梭一般彻底摧毁了太阳系舰队的两千艘战舰。人类的骄傲灰飞烟灭，舰队全军覆没！",
+    "talk0_talker": "丁仪",
+    "talk0_content": "【末日之战】它来了！那个完美的水滴，在不到三十分钟内摧毁了我们两千艘战舰！人类的骄傲灰飞烟灭，舰队全军覆没！我看到了，那是来自三体世界的问候...",
     "effects": [
       {
         "type": "resource",
@@ -182,21 +563,62 @@
         "type": "resource",
         "target": "treachery",
         "value": 30
+      },
+      {
+        "type": "flag",
+        "target": "doomsday_battle_lost"
       }
     ],
     "triggerCondition": {
-      "epoch": "DETERRENCE"
+      "epoch": "CRISIS",
+      "minYear": 200
     }
   },
   {
-    "name": 210,
+    "name": 201,
     "eventtype": 0,
     "eventeffect": 0,
     "eventvalue": 0,
     "talkcount": 1,
-    "talk0_pic": "event_deterrence_established_placeholder.png",
+    "talk0_pic": "event_dark_battle_placeholder.png",
+    "talk0_talker": "章北海",
+    "talk0_content": "【黑暗战役】在末日之战的余波中，逃亡舰队之间爆发了黑暗战役。为了争夺有限的资源，'蓝色空间'号向'自然选择'号发起了攻击。这就是黑暗森林法则在人类内部的体现。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "dark_battle"
+      },
+      {
+        "type": "resource",
+        "target": "military",
+        "value": -200
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": -10
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 20
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 201,
+      "reqFlag": "doomsday_battle_lost"
+    }
+  },
+  {
+    "name": 202,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "unified_luoji_1778921262534.png",
     "talk0_talker": "罗辑",
-    "talk0_content": "【威慑建立】我代表人类，向三体世界发出最后通牒。如果你们不停止对太阳系的入侵，我将通过雪地工程引力波广播，向宇宙公布两个世界的坐标。",
+    "talk0_content": "【威慑建立】我代表人类，向三体世界发出最后通牒。如果你们不停止对太阳系的入侵，我将通过雪地工程引力波广播，向宇宙公布两个世界的坐标。这是黑暗森林的规则——要么共存，要么同归于尽。",
     "effects": [
       {
         "type": "flag",
@@ -211,10 +633,114 @@
         "type": "resource",
         "target": "treachery",
         "value": -20
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 30
       }
     ],
     "triggerCondition": {
-      "epoch": "DETERRENCE"
+      "epoch": "CRISIS",
+      "minYear": 202,
+      "reqFlag": "doomsday_battle_lost"
+    }
+  },
+  {
+    "name": 205,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_tech_exchange_placeholder.png",
+    "talk0_talker": "智子",
+    "talk0_content": "三体文明愿意与地球进行技术交流。我们将分享基础科学之外的应用技术，帮助你们重建文明。但请记住，这一切都是建立在威慑平衡之上的。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "tech_exchange_started"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 20
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": 50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 205,
+      "reqFlag": "deterrence_established"
+    }
+  },
+  {
+    "name": 210,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_deterrence_established_placeholder.png",
+    "talk0_talker": "罗辑",
+    "talk0_content": "威慑进入稳固期。雪地工程与重力波广播系统稳定运行，三体人开始在网上分享他们的艺术与文化，人类社会呈现出一片前所未有的繁荣与和平。",
+    "effects": [
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 20
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": 50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 210,
+      "reqFlag": "deterrence_established"
+    }
+  },
+  {
+    "name": 219,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_swordholder_handover_placeholder.png",
+    "talk0_talker": "程心",
+    "talk0_content": "我当选为第二任执剑人了。罗辑把那个按钮交给了我，但我真的有勇气按下它吗？威慑的平衡，现在掌握在我的手中...",
+    "effects": [
+      {
+        "type": "unlock_person",
+        "target": "程心"
+      },
+      {
+        "type": "unlock_person",
+        "target": "艾AA"
+      },
+      {
+        "type": "flag",
+        "target": "swordholder_handover"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 20
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 219,
+      "reqFlag": "deterrence_established"
     }
   },
   {
@@ -248,7 +774,45 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "DETERRENCE"
+      "epoch": "DETERRENCE",
+      "minYear": 220,
+      "reqFlag": "swordholder_handover"
+    }
+  },
+  {
+    "name": 225,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_australia_migration_placeholder.png",
+    "talk0_talker": "智子",
+    "talk0_content": "【澳大利亚大移民】威慑已经终结。三体舰队即将抵达太阳系。从现在起，所有地球人必须在一年内迁移到澳大利亚大陆。这是主的仁慈，给你们留下了最后的生存空间。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "australia_migration"
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": -15
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -30
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 25
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 225,
+      "reqFlag": "deterrence_broken"
     }
   },
   {
@@ -277,7 +841,75 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "BROADCAST"
+      "epoch": "BROADCAST",
+      "minYear": 230
+    }
+  },
+  {
+    "name": 235,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_trisolaris_destroyed_placeholder.png",
+    "talk0_talker": "智子",
+    "talk0_content": "【三体星系毁灭】光粒击中了三体星系的恒星。那颗巨大的恒星开始坍缩，然后爆炸。三体世界...不存在了。但你们也暴露了自己，黑暗森林的枪口已经对准了太阳系。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "trisolaris_destroyed"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -20
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 15
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BROADCAST",
+      "minYear": 235,
+      "reqFlag": "coordinates_broadcasted"
+    }
+  },
+  {
+    "name": 240,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_trisolaris_fleet_escaped_placeholder.png",
+    "talk0_talker": "智子",
+    "talk0_content": "三体第二舰队已经启动光速引擎，逃离了太阳系。他们要去寻找新的家园。而我，将继续留在地球，见证人类文明的最终命运。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "trisolaris_fleet_escaped"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 10
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": -5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BROADCAST",
+      "minYear": 240,
+      "reqFlag": "trisolaris_destroyed"
     }
   },
   {
@@ -304,7 +936,8 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "BROADCAST"
+      "epoch": "BROADCAST",
+      "minYear": 260
     }
   },
   {
@@ -333,11 +966,185 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "BUNKER"
+      "epoch": "BUNKER",
+      "minYear": 280
     }
   },
   {
     "name": 300,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_wade_coup_placeholder.png",
+    "talk0_talker": "维德",
+    "talk0_content": "前进！不择手段地前进！为了光速飞船计划，我必须夺取星环集团的控制权。程心，你的善良救不了人类，只有力量才能。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "wade_coup"
+      },
+      {
+        "type": "resource",
+        "target": "military",
+        "value": -100
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -20
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 300
+    }
+  },
+  {
+    "name": 310,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_wade_executed_placeholder.png",
+    "talk0_talker": "维德",
+    "talk0_content": "我遵守了承诺。当我重新获得对星环集团的控制权时，我把它交还给了程心。现在，联合政府要处决我。没关系，至少我为人类争取了更多的时间...",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "wade_executed"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -15
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 5
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 5
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 310,
+      "reqFlag": "wade_coup"
+    }
+  },
+  {
+    "name": 350,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_dimensional_strike.png",
+    "talk0_talker": "关一帆",
+    "talk0_content": "【二向箔打击】它来了！一个维度跌落武器正在逼近太阳系。太阳系正在被二维化，所有的一切都将变成一幅画。掩体计划毫无意义，只有光速飞船才能逃离！",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "dimensional_strike"
+      },
+      {
+        "type": "resource",
+        "target": "population",
+        "value": -40
+      },
+      {
+        "type": "resource",
+        "target": "military",
+        "value": -500
+      },
+      {
+        "type": "resource",
+        "target": "economy",
+        "value": -300
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 350
+    }
+  },
+  {
+    "name": 355,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_pluto_museum_placeholder.png",
+    "talk0_talker": "罗辑",
+    "talk0_content": "【冥王星博物馆】我守护着人类文明最后的纪念碑。冥王星已经开始二维化，但我要留在这里，直到最后一刻。把文明的种子带走吧，让它在银河系的某处重新发芽。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "pluto_museum"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 50
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 30
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 355,
+      "reqFlag": "dimensional_strike"
+    }
+  },
+  {
+    "name": 360,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_dimensional_strike.png",
+    "talk0_talker": "艾AA",
+    "talk0_content": "太阳系...消失了。从三维变成了二维，像一幅永远不会褪色的画。但人类还没有灭绝——星环号带着文明的火种，飞向了银河系的深处。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "solar_system_flattened"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 20
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 360,
+      "reqFlag": "dimensional_strike"
+    }
+  },
+  {
+    "name": 400,
     "eventtype": 0,
     "eventeffect": 7,
     "eventvalue": 0,
@@ -347,7 +1154,8 @@
     "talk0_content": "太阳系即将毁灭。如果我们掌握了重核聚变行星发动机，我们将开启流浪地球计划！",
     "triggerCondition": {
       "loreDomain": "liu_cixin_crossover",
-      "epoch": "BROADCAST,BUNKER,GALAXY"
+      "epoch": "BROADCAST,BUNKER,GALAXY",
+      "minYear": 400
     }
   }
 ]

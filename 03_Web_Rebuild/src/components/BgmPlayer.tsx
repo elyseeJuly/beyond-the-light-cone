@@ -235,7 +235,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
     }
   };
 
-  const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+  const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
   const currentEpochName = epochNames[epoch] || "主背景";
 
   if (!isAvailable) {

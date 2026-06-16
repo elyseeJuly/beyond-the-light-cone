@@ -38,5 +38,37 @@
     "poplimit": 1000,
     "starsys": 3,
     "personality": 2
+  },
+  {
+    "name": "碳基联邦",
+    "isplanet": 1,
+    "res": 2500,
+    "poplimit": 800,
+    "starsys": 3,
+    "personality": 3
+  },
+  {
+    "name": "硅基帝国",
+    "isplanet": 1,
+    "res": 2800,
+    "poplimit": 600,
+    "starsys": 3,
+    "personality": 0
+  },
+  {
+    "name": "上帝文明",
+    "isplanet": 1,
+    "res": 3500,
+    "poplimit": 500,
+    "starsys": 2,
+    "personality": 2
+  },
+  {
+    "name": "量子态文明",
+    "isplanet": 0,
+    "res": 1500,
+    "poplimit": 200,
+    "starsys": 1,
+    "personality": 2
   }
 ]

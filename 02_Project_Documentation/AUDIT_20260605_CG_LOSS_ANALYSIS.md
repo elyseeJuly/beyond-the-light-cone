@@ -24,7 +24,7 @@
 ## 🔍 二、 核心原因二：为什么名称与图片不符，游戏画面“张冠李戴”？
 
 ### 2.1 提示词指南与事件链的严重错配
-对比文档 [ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/ART_PROMPTS_GUIDE.md) 与游戏实际事件数据 [events.json](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/data/events.json)：
+对比文档 [SPEC_20260616_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260616_ART_PROMPTS_GUIDE.md) 与游戏实际事件数据 [events.json](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/data/events.json)：
 
 | 指南定义的 Prompt 节点 | 游戏实际的主线事件链 (events.json) | 代码映射规则 (GameEventManager.ts) | 造成的视觉错乱 |
 | :--- | :--- | :--- | :--- |

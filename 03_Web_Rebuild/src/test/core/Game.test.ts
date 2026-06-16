@@ -110,6 +110,8 @@ describe('Game Core Extended', () => {
 
   describe('addHistory', () => {
     it('日志格式化包含纪元年份前缀', () => {
+      game.epoch = EpochType.CRISIS;
+      game.year = 0;
       game.addHistory('测试事件');
       const lastLog = game.historyLogs[game.historyLogs.length - 1];
       expect(lastLog).toContain('危机纪元');

@@ -150,4 +150,17 @@ describe('SliceNarrativeEngine', () => {
     expect(slice1.characterRole).toBeTruthy();
     expect(slice2.characterRole).toBeTruthy();
   });
+
+  it('generateSlice 优先选择活跃的世界标签叙事 (例如：人口危机)', () => {
+    tagManager.applyWorldTag('population_crisis', 100, 'test_source', 2050);
+    const slice = sne.generateSlice('event_pop_crisis', '年份推进', tagManager);
+    expect(slice.innerMonologue).toMatch(/配给大厅|空房间|人口危机/);
+    expect(slice.scene).toBeTruthy();
+  });
+
+  it('generateSlice 选择活跃的纪元标签叙事 (例如：威慑纪元)', () => {
+    tagManager.applyWorldTag('deterrence_era', 100, 'test_source', 2050);
+    const slice = sne.generateSlice('event_deterrence', '年份推进', tagManager);
+    expect(slice.innerMonologue).toMatch(/三体人|执剑者|罗辑|和平/);
+  });
 });

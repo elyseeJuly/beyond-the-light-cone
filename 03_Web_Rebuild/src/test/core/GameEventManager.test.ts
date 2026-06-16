@@ -95,8 +95,8 @@ describe('GameEventManager', () => {
     expect(testMatch('CRISIS', 'CRISIS')).toBe(true);
     expect(testMatch('CRISIS', 'DETERRENCE')).toBe(false);
     expect(testMatch('DETERRENCE', 'DETERRENCE')).toBe(true);
-    expect(testMatch(0, 'CRISIS')).toBe(true);
-    expect(testMatch(1, 'DETERRENCE')).toBe(true);
+    expect(testMatch(1, 'CRISIS')).toBe(true);
+    expect(testMatch(2, 'DETERRENCE')).toBe(true);
     expect(testMatch('WANDERING', 'BROADCAST')).toBe(true);
     expect(testMatch('WANDERING', 'BUNKER')).toBe(true);
     expect(testMatch('WANDERING', 'GALAXY')).toBe(true);

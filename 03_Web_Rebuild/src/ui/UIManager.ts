@@ -90,7 +90,7 @@ export class UIManager {
     const earth = game.earthCivi;
 
     // Update Top Bar Stats
-    const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元"];
+    const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
     const epochStr = epochNames[game.getEpoch()] || "未知纪元";
     
     this.setText("ui-epoch", `${epochStr} ${game.getYear()} 年`);

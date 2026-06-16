@@ -29,7 +29,7 @@
 - **特征**：重写意不重细节的 Craig Mullins 笔触，强烈的明暗对比（宏观尺度的巨物压迫感 vs 极其渺小的人类视角），强制使用 `--ar 21:9` 银幕全景画幅。
 - **成果**：生成并挂载了《三体》核心灾难 CG，以及涵盖“征服”、“黑域”、“太阳氦闪”等在内的 9 大结局 CG 指南。
 
-*(注：完整的生成 Prompt 规范已归档至 [ART_PROMPTS_GUIDE.md](./ART_PROMPTS_GUIDE.md))*
+*(注：完整的生成 Prompt 规范已归档至 [SPEC_20260616_ART_PROMPTS_GUIDE.md](./SPEC_20260616_ART_PROMPTS_GUIDE.md))*
 
 ---
 

@@ -1,8 +1,9 @@
 [
-  { "epoch": 0, "name": "危机纪元", "minCulture": 0, "maxCulture": 199 },
-  { "epoch": 1, "name": "威慑纪元", "minCulture": 200, "maxCulture": 499 },
-  { "epoch": 2, "name": "广播纪元", "minCulture": 500, "maxCulture": 799 },
-  { "epoch": 3, "name": "掩体纪元", "minCulture": 800, "maxCulture": 1199 },
-  { "epoch": 4, "name": "银河纪元", "minCulture": 1200, "maxCulture": 2499 },
-  { "epoch": 5, "name": "星屑纪元", "minCulture": 2500, "maxCulture": 999999 }
+  { "epoch": 0, "name": "黄金岁月", "minCulture": -100, "maxCulture": -1 },
+  { "epoch": 1, "name": "危机纪元", "minCulture": 0, "maxCulture": 199 },
+  { "epoch": 2, "name": "威慑纪元", "minCulture": 200, "maxCulture": 499 },
+  { "epoch": 3, "name": "广播纪元", "minCulture": 500, "maxCulture": 799 },
+  { "epoch": 4, "name": "掩体纪元", "minCulture": 800, "maxCulture": 1199 },
+  { "epoch": 5, "name": "银河纪元", "minCulture": 1200, "maxCulture": 2499 },
+  { "epoch": 6, "name": "星屑纪元", "minCulture": 2500, "maxCulture": 999999 }
 ]

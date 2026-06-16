@@ -3,7 +3,7 @@ import {
   ChevronRight, ChevronLeft, X, Shield, Rocket, 
   Building2, Cpu, TrendingUp, 
   Star,
-  BookOpen, Lightbulb, Trophy, AlertOctagon, Clock, Crosshair, Landmark, Lock, Flag
+  Lightbulb, Clock, Crosshair, Landmark, Lock, Flag
 } from 'lucide-react';
 import { ActiveViewType } from './LeftHub';
 

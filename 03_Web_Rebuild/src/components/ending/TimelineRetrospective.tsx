@@ -50,7 +50,7 @@ export const TimelineRetrospective: React.FC<Props> = ({ config, onComplete }) =
 
   // Add final summary card
   const e = game.earthCivi;
-  const epochNames = ['危机纪元', '威慑纪元', '广播纪元', '掩体纪元', '银河纪元'];
+  const epochNames = ['黄金岁月', '危机纪元', '威慑纪元', '广播纪元', '掩体纪元', '银河纪元', '星屑纪元'];
   entries.push({
     year: game.year,
     event: `历时 ${game.year} 年 · ${epochNames[game.epoch] || '未知纪元'} · 人口 ${Math.max(0, e.population).toLocaleString()} · 经济 ${Math.max(0, e.economy)} · 文化 ${Math.max(0, e.culture)} · 军力 ${Math.max(0, e.army)} · 文明等级 ${e.getCiviLevelLabel ? e.getCiviLevelLabel() : '未知'}`,

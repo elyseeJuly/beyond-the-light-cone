@@ -39,13 +39,34 @@ export class GameEventManager {
         if (name.startsWith("event_moon_crisis")) return getImageUrl("cg_moon_crisis.png");
         if (name.startsWith("event_wandering_earth")) return getImageUrl("cg_wandering_earth.png");
         if (name.startsWith("event_dimensional_strike") || name === "dimensional_threat_alert") return getImageUrl("cg_dimensional_strike.png");
-        if (name.startsWith("event_droplet_attack")) return getImageUrl("cg_droplet_attack.png");
+        if (name.startsWith("event_droplet_attack")) return getImageUrl("cg_doomsday_battle.png");
         if (name.startsWith("event_deterrence_established")) return getImageUrl("cg_deterrence_established.png");
         if (name.startsWith("event_deterrence_broken")) return getImageUrl("cg_deterrence_broken.png");
         if (name.startsWith("event_gravitational_broadcast")) return getImageUrl("cg_gravitational_broadcast.png");
         if (name.startsWith("event_bunker_world")) return getImageUrl("cg_bunker_world.png");
         if (name.startsWith("event_galaxy_era")) return getImageUrl("cg_galaxy_era.png");
         if (name.startsWith("event_stardust_era")) return getImageUrl("cg_stardust_era.png");
+        if (name.startsWith("event_red_shore_base")) return getImageUrl("cg_red_shore_base.png");
+        if (name.startsWith("event_yewenjie_signal")) return getImageUrl("cg_yewenjie_signal.png");
+        if (name.startsWith("event_trisolaris_reply")) return getImageUrl("cg_trisolaris_reply.png");
+        if (name.startsWith("event_eto_founded")) return getImageUrl("cg_eto_founded.png");
+        if (name.startsWith("event_yangdong_suicide")) return getImageUrl("cg_yangdong_suicide.png");
+        if (name.startsWith("event_ghost_countdown")) return getImageUrl("cg_ghost_countdown.png");
+        if (name.startsWith("event_beihai_assassination")) return getImageUrl("cg_beihai_assassination.png");
+        if (name.startsWith("event_thought_seal")) return getImageUrl("cg_thought_seal.png");
+        if (name.startsWith("event_great_ravine_ended")) return getImageUrl("cg_great_ravine_ended.png");
+        if (name.startsWith("event_great_ravine")) return getImageUrl("cg_great_ravine.png");
+        if (name.startsWith("event_tech_explosion")) return getImageUrl("cg_tech_explosion.png");
+        if (name.startsWith("event_dark_battle")) return getImageUrl("cg_dark_battle.png");
+        if (name.startsWith("event_tech_exchange")) return getImageUrl("cg_tech_exchange.png");
+        if (name.startsWith("event_australia_migration")) return getImageUrl("cg_australia_migration.png");
+        if (name.startsWith("event_trisolaris_destroyed")) return getImageUrl("cg_trisolaris_destroyed.png");
+        if (name.startsWith("event_trisolaris_fleet_escaped")) return getImageUrl("cg_trisolaris_fleet_escaped.png");
+        if (name.startsWith("event_wade_coup")) return getImageUrl("cg_wade_coup.png");
+        if (name.startsWith("event_wade_executed")) return getImageUrl("cg_wade_executed.png");
+        if (name.startsWith("event_pluto_museum")) return getImageUrl("cg_pluto_museum.png");
+        if (name.startsWith("event_solar_system_flattened")) return getImageUrl("cg_solar_system_flattened.png");
+        if (name.startsWith("event_swordholder_handover")) return getImageUrl("cg_swordholder_handover.png");
 
         const fileName = bmpName.replace(/^\/?images\//, "");
         return getImageUrl(fileName);
@@ -603,7 +624,7 @@ export class GameEventManager {
 
     let targetStr: string;
     if (typeof targetEpoch === "number") {
-      const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
+      const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
       targetStr = epochNames[targetEpoch] || "";
     } else {
       targetStr = targetEpoch;
@@ -623,7 +644,7 @@ export class GameEventManager {
   private checkFilterConditions(cond: any): boolean {
     const game = GameInstance.get();
     const e = game.earthCivi;
-    const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
+    const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
     const currentEpoch = epochNames[game.epoch];
 
     if (cond.loreDomain && game.loreMode === 'strict_three_body' && cond.loreDomain !== 'three_body_canon') return false;
@@ -777,7 +798,7 @@ export class GameEventManager {
       "章北海", "庄颜", "程心", "维德", "艾AA", "云天明", "智子", "关一帆"
     ];
 
-    const epochNames = ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"];
+    const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
     const currentEpoch = epochNames[game.epoch];
 
     if (e.dialogNodes) {

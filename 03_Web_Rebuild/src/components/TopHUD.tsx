@@ -35,8 +35,8 @@ export const TopHUD: React.FC = () => {
   const stats = useMemo(() => {
     const game = GameInstance.get();
     const earth = game.earthCivi;
-    const epochNames = ["危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-    const epochNamesEn = ["CRISIS ERA", "DETERRENCE ERA", "BROADCAST ERA", "BUNKER ERA", "GALACTIC ERA", "STARDUST ERA"];
+    const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+    const epochNamesEn = ["GOLDEN ERA", "CRISIS ERA", "DETERRENCE ERA", "BROADCAST ERA", "BUNKER ERA", "GALACTIC ERA", "STARDUST ERA"];
     
     const pop = earth.population;
     const eco = Math.floor(earth.economy);

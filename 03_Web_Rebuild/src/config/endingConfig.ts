@@ -62,7 +62,7 @@ export const ENDING_BGM_PATHS = {
   WANDERING: '/audio/ending_wandering.mp3',             // 流浪胜利
   DIGITAL: '/audio/ghost_in_the_quantum.mp3',          // 数字永生：《Ghost in the Quantum》
   HIDDEN: '/audio/the_last_archive.mp3',               // 隐藏结局：《The Last Archive》
-  CREDITS_PLATINUM: '/audio/a_past_within_the_light_cone.mp3', // 全图鉴白金神曲：《A Past Within the Light Cone》
+  CREDITS_PLATINUM: '/audio/fate_beyond_the_light_cone.mp3', // Fate Beyond the Light Cone：《A Past Within the Light Cone》
   DEFEAT_TREACHERY: '/audio/ending_defeat_treachery.mp3',
   DEFEAT_EXTINCTION: '/audio/ending_defeat_extinction.mp3',
   DEFEAT_HELIUM_FLASH: '/audio/ending_defeat_helium_flash.mp3',

@@ -52,7 +52,7 @@
 * **触发条件：** 文明自然衰亡。  
 * **AI 提示词：** \> \[Instrumental\] Melancholic solo piano, tape hiss, old radio static, fading memories, gentle oblivion, time passing by, ending with a distinct page turning sound, absolute silence.
 
-### **4\. 全图鉴白金神曲：《A Past Within the Light Cone》（光锥之内的往事） \[含人声\]**
+### **4\. Fate Beyond the Light Cone：《A Past Within the Light Cone》（光锥之内的往事） \[含人声\]**
 
 * **触发条件：** 解锁所有胜利与失败结局，于最终制作人员名单（Credits）播放。  
 * **曲风提示词：** \> Cinematic emotional masterpiece, starts with minimalist lonely piano, slowly building into full cinematic orchestral climax. Soulful and powerful female vocal, nostalgic, overwhelmingly emotional, Hans Zimmer style epic finish.

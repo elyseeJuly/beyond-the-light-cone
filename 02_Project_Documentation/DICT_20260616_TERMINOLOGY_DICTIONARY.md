@@ -662,7 +662,7 @@
 | Death of the Light Cone（光锥之死） | 纯器乐 | 黑域结局 | `OST_LIGHTCONE_DEATH` |
 | Ghost in the Quantum（量子幽灵） | 纯器乐 | 数字永生结局 | `OST_QUANTUM_GHOST` |
 | The Last Archive（最后的档案） | 纯器乐 | 文明自然衰亡 | `OST_LAST_ARCHIVE` |
-| A Past Within the Light Cone（光锥之内的往事） | 含人声 | 全图鉴白金结局 | `OST_LIGHTCONE_PAST` |
+| A Past Within the Light Cone（光锥之内的往事） | 含人声 | Fate Beyond the Light Cone 结局 | `OST_LIGHTCONE_PAST` |
 
 - **首次出现**: `SPEC_20260615_EPOCH_CHRONICLES_OST.md`
 

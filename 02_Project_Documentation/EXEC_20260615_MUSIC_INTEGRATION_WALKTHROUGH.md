@@ -37,7 +37,7 @@ To integrate new music into the game, simply place your audio files in `03_Web_R
 | **流浪胜利 (Wandering)** | `ending_wandering.mp3` | Journey theme | `stardust Exodus.mp3` |
 | **数字永生 (Digital)** | `ghost_in_the_quantum.mp3` | *Ghost in the Quantum* (量子幽灵) | `stardust Exodus.mp3` |
 | **隐藏结局 (Hidden)** | `the_last_archive.mp3` | *The Last Archive* (最后的档案) | `stardust Exodus.mp3` |
-| **全图鉴白金 (Platinum)** | `a_past_within_the_light_cone.mp3` | *A Past Within the Light Cone* (播放于Credits) | `stardust Exodus.mp3` |
+| **Fate Beyond the Light Cone (Platinum)** | `fate_beyond_the_light_cone.mp3` | *A Past Within the Light Cone* (播放于Credits) | `stardust Exodus.mp3` |
 | **逃亡瓦解 (Treachery)** | `ending_defeat_treachery.mp3` | Defeat theme | `stardust Exodus.mp3` |
 | **文明灭绝 (Extinction)** | `ending_defeat_extinction.mp3` | Defeat theme | `stardust Exodus.mp3` |
 | **太阳氦闪 (Helium Flash)** | `ending_defeat_helium_flash.mp3` | Defeat theme | `stardust Exodus.mp3` |

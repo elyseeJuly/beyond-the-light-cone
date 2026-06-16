@@ -13,6 +13,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Game, GameInstance } from '../core/Game';
 import { ENDING_CONFIGS, resolveEndingKey, FINALE_THEME_PATH, ENDING_BGM_PATHS } from '../config/endingConfig';
+import { SaveManager } from '../core/SaveManager';
 import { EndingDeclaration } from './ending/EndingDeclaration';
 import { EndingCinematic } from './ending/EndingCinematic';
 import { TimelineRetrospective } from './ending/TimelineRetrospective';
@@ -82,6 +83,38 @@ export const EndGameScreen: React.FC = () => {
       audio.src = '';
     };
   }, [endingKey]);
+
+  // Switch to Platinum theme in Credits if all endings are unlocked
+  useEffect(() => {
+    if (phase === 'credits' && audioRef.current && SaveManager.isAllEndingsUnlocked()) {
+      console.log('[EndGameScreen] Platinum collection achieved! Switching credits theme to "A Past Within the Light Cone"');
+      const savedMuted = localStorage.getItem('game-bgm-muted') === 'true';
+      const savedVolume = parseFloat(localStorage.getItem('game-bgm-volume') || '0.4');
+      
+      const handlePlatinumError = () => {
+        console.log('[EndGameScreen] Platinum theme not found, falling back to default ending theme.');
+        if (audioRef.current) {
+          audioRef.current.src = getAssetUrl(FINALE_THEME_PATH);
+          audioRef.current.loop = true;
+          audioRef.current.load();
+          audioRef.current.play().catch(() => {});
+        }
+      };
+
+      audioRef.current.pause();
+      audioRef.current.src = getAssetUrl(ENDING_BGM_PATHS.CREDITS_PLATINUM);
+      audioRef.current.volume = savedMuted ? 0 : savedVolume;
+      audioRef.current.loop = false; // The spec says single play: loop = false
+      audioRef.current.addEventListener('error', handlePlatinumError, { once: true });
+      audioRef.current.load();
+      audioRef.current.play()
+        .then(() => setMusicPlaying(true))
+        .catch(err => {
+          console.log('[EndGameScreen] Platinum theme autoplay blocked:', err.message);
+          setMusicPlaying(false);
+        });
+    }
+  }, [phase]);
 
   // Listen for user interaction to resume play if blocked by autoplay policy
   useEffect(() => {

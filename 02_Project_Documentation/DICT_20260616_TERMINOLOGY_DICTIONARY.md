@@ -1,7 +1,7 @@
 # 全局术语与代码命名规范词典 (Terminology & Naming Dictionary)
 > **Establishment Date**: 2026-06-16
-> **Last Updated**: 2026-06-16 (V2.0 — 全面补充审计)
-> **Authoritative Version**: V2.0
+> **Last Updated**: 2026-06-16 (V2.1 — 术语审计修复)
+> **Authoritative Version**: V2.1
 > **Target Directory**: `02_Project_Documentation/`
 
 ## 1. 概述与目的
@@ -107,6 +107,14 @@
 - **规范定义**: 文明军事力量的量化指标，影响舰队战斗力与防御能力。
 - **首次出现**: `src/core/Civilization.ts`
 - **同义词黑名单**: 🚫 `Military`, 🚫 `Soldiers`, 🚫 `CombatPower`
+- **注意**: 事件数据中允许使用 `"military"` 作为别名，在 `Game.EFFECT_TARGET_ALIAS` 中统一映射为 `army`。
+
+### 威慑度 (Deterrence Value)
+- **代码映射**: `EarthCivilization.deterrenceValue`
+- **规范定义**: 黑暗森林威慑的综合强度值，由执剑人领导力与面壁计划进度共同决定。影响外交成功率与三体文明的好战倾向。
+- **首次出现**: `src/core/EarthCivilization.ts`
+- **同义词黑名单**: 🚫 `prestige`, 🚫 `threatLevel`
+- **注意**: 事件数据中允许使用 `"prestige"` 作为别名，在 `Game.EFFECT_TARGET_ALIAS` 中统一映射为 `deterrenceValue`。
 
 ### 文明等级 (Civilization Level)
 - **代码映射**: `Civilization.civiLevel` → `getCiviLevelLabel()`

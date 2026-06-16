@@ -932,21 +932,30 @@ export class Game {
     }
   }
 
+  /** 效果别名字典：将非规范别名映射为 Civilization 规范属性名 */
+  private static readonly EFFECT_TARGET_ALIAS: Record<string, string> = {
+    'prestige': 'deterrenceValue',
+    'military': 'army',
+  };
+
   private clampEffectValue(target: string, rawValue: number): number {
     const e = this.earthCivi;
     if (!e) return rawValue;
 
-    if (target === 'population') {
+    // 规范化别名
+    const canonical = Game.EFFECT_TARGET_ALIAS[target] || target;
+
+    if (canonical === 'population') {
       const maxAbsChange = Math.max(10, e.population * 0.3);
       const absVal = Math.min(maxAbsChange, Math.abs(rawValue));
       return rawValue >= 0 ? absVal : -absVal;
     }
 
-    if (['economy', 'culture', 'prestige', 'military', 'resource', 'army'].includes(target)) {
+    if (['economy', 'culture', 'deterrenceValue', 'resource', 'army'].includes(canonical)) {
       let current = 0;
-      if (target === 'prestige') current = e.deterrenceValue || 0;
-      else if (target === 'military' || target === 'army') current = e.army || 0;
-      else current = (e as any)[target] || 0;
+      if (canonical === 'deterrenceValue') current = e.deterrenceValue || 0;
+      else if (canonical === 'army') current = e.army || 0;
+      else current = (e as any)[canonical] || 0;
 
       const maxAbsChange = Math.max(50, current * 0.5);
       const absVal = Math.min(maxAbsChange, Math.abs(rawValue));
@@ -959,32 +968,28 @@ export class Game {
     if (!effects) return;
     effects.forEach(eff => {
       if (eff.type === 'resource') {
-        const val = this.clampEffectValue(eff.target, Number(eff.value));
+        // 规范化别名后再处理
+        const canonicalTarget = Game.EFFECT_TARGET_ALIAS[eff.target] || eff.target;
+        const val = this.clampEffectValue(canonicalTarget, Number(eff.value));
         if (val < 0) {
-          switch (eff.target) {
-            case 'military':
-              this.earthCivi.army -= Math.min(this.earthCivi.army * 0.5, Math.abs(val));
-              break;
+          switch (canonicalTarget) {
+            case 'army': this.earthCivi.army -= Math.min(this.earthCivi.army * 0.5, Math.abs(val)); break;
             case 'economy': this.earthCivi.economy -= Math.min(this.earthCivi.economy * 0.5, Math.abs(val)); break;
             case 'population': this.earthCivi.population -= Math.min(this.earthCivi.population * 0.5, Math.abs(val)); break;
             case 'culture': this.earthCivi.culture -= Math.min(this.earthCivi.culture * 0.5, Math.abs(val)); break;
-            case 'prestige': this.earthCivi.deterrenceValue -= Math.min(this.earthCivi.deterrenceValue * 0.5, Math.abs(val)); break;
+            case 'deterrenceValue': this.earthCivi.deterrenceValue -= Math.min(this.earthCivi.deterrenceValue * 0.5, Math.abs(val)); break;
             case 'treachery': this.earthCivi.treachery = Math.max(0, this.earthCivi.treachery - Math.abs(val)); break;
             case 'resource': this.earthCivi.resource -= Math.min(this.earthCivi.resource * 0.5, Math.abs(val)); break;
-            case 'army': this.earthCivi.army -= Math.min(this.earthCivi.army * 0.5, Math.abs(val)); break;
           }
         } else {
-          switch (eff.target) {
-            case 'military': 
-              this.earthCivi.army += val; 
-              break;
+          switch (canonicalTarget) {
+            case 'army': this.earthCivi.army += val; break;
             case 'economy': this.earthCivi.economy += val; break;
             case 'population': this.earthCivi.population += val; break;
             case 'culture': this.earthCivi.culture += val; break;
-            case 'prestige': this.earthCivi.deterrenceValue += val; break;
+            case 'deterrenceValue': this.earthCivi.deterrenceValue += val; break;
             case 'treachery': this.earthCivi.treachery = Math.min(100, this.earthCivi.treachery + val); break;
             case 'resource': this.earthCivi.resource += val; break;
-            case 'army': this.earthCivi.army += val; break;
           }
         }
       } else if (eff.type === 'flag') {

@@ -174,8 +174,25 @@ export class SaveManager {
       if (record.victoryType !== null && record.victoryType !== undefined) {
         unlocked.add(`unlocked_victory_${record.victoryType}`);
       }
+      if (record.defeatType !== null && record.defeatType !== undefined) {
+        unlocked.add(`unlocked_defeat_${record.defeatType}`);
+      }
     }
     return unlocked;
+  }
+
+  public static isAllEndingsUnlocked(): boolean {
+    const unlocks = this.getEndingUnlocks();
+    const totalVictories = 6;
+    const totalDefeats = 4;
+    
+    for (let i = 0; i < totalVictories; i++) {
+      if (!unlocks.has(`unlocked_victory_${i}`)) return false;
+    }
+    for (let i = 0; i < totalDefeats; i++) {
+      if (!unlocks.has(`unlocked_defeat_${i}`)) return false;
+    }
+    return true;
   }
 
   public static saveRuinRecord(record: { year: number; culture: number; techCount: number }): void {

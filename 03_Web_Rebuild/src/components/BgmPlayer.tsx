@@ -37,8 +37,8 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
 
   // Initialize and load audio
   useEffect(() => {
-    const epochKeys = ['CRISIS', 'DETERRENCE', 'BROADCAST', 'BUNKER', 'GALAXY', 'STARDUST'] as const;
-    const epochKey = epochKeys[epoch] || 'CRISIS';
+    const epochKeys = ['GOLDEN', 'CRISIS', 'DETERRENCE', 'BROADCAST', 'BUNKER', 'GALAXY', 'STARDUST'] as const;
+    const epochKey = epochKeys[epoch] || 'GOLDEN';
     const specificPath = ERA_BGM_PATHS[epochKey];
     let currentPath = specificPath;
 

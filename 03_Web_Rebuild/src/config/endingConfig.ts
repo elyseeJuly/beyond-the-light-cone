@@ -45,23 +45,24 @@ export const FINALE_THEME_PATH = '/audio/stardust Exodus.mp3';
 
 /** 纪元动态 BGM 预留音乐位 */
 export const ERA_BGM_PATHS = {
-  CRISIS: '/audio/era_crisis.mp3',           // 危机纪元
-  DETERRENCE: '/audio/era_deterrence.mp3',   // 威慑纪元
-  BROADCAST: '/audio/era_broadcast.mp3',     // 广播纪元
-  BUNKER: '/audio/era_bunker.mp3',           // 掩体纪元
-  GALAXY: '/audio/era_galaxy.mp3',           // 银河纪元
-  STARDUST: '/audio/era_stardust.mp3',       // 星屑纪元
+  GOLDEN: '/audio/years_base.mp3',           // 黄金岁月
+  CRISIS: '/audio/crisis_era.mp3',           // 危机纪元
+  DETERRENCE: '/audio/deterrence_era.mp3',   // 威慑纪元
+  BROADCAST: '/audio/broadcast_era.mp3',     // 广播纪元
+  BUNKER: '/audio/bunker_era.mp3',           // 掩体纪元
+  GALAXY: '/audio/galaxy_era.mp3',           // 银河纪元
+  STARDUST: '/audio/stardust_era.mp3',       // 星屑纪元
 };
 
 /** 结局与终章专属 BGM 预留音乐位 */
 export const ENDING_BGM_PATHS = {
   CONQUEST: '/audio/ending_conquest.mp3',               // 征服胜利
   DETERRENCE: '/audio/ending_deterrence.mp3',           // 威慑胜利
-  DARK_DOMAIN: '/audio/ending_dark_domain.mp3',         // 黑域结局：《Death of the Light Cone》
+  DARK_DOMAIN: '/audio/death_of_the_light_cone.mp3',   // 黑域结局：《Death of the Light Cone》
   WANDERING: '/audio/ending_wandering.mp3',             // 流浪胜利
-  DIGITAL: '/audio/ending_digital.mp3',                 // 数字永生：《Ghost in the Quantum》
-  HIDDEN: '/audio/ending_hidden.mp3',                   // 隐藏结局：《The Last Archive》
-  CREDITS_PLATINUM: '/audio/credits_platinum.mp3',     // 全图鉴白金神曲：《A Past Within the Light Cone》
+  DIGITAL: '/audio/ghost_in_the_quantum.mp3',          // 数字永生：《Ghost in the Quantum》
+  HIDDEN: '/audio/the_last_archive.mp3',               // 隐藏结局：《The Last Archive》
+  CREDITS_PLATINUM: '/audio/a_past_within_the_light_cone.mp3', // 全图鉴白金神曲：《A Past Within the Light Cone》
   DEFEAT_TREACHERY: '/audio/ending_defeat_treachery.mp3',
   DEFEAT_EXTINCTION: '/audio/ending_defeat_extinction.mp3',
   DEFEAT_HELIUM_FLASH: '/audio/ending_defeat_helium_flash.mp3',

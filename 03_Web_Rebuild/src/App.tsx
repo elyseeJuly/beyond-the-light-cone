@@ -43,6 +43,7 @@ export const App: React.FC = () => {
     const handleOpenFleetModal = () => setShowFleetModal(true);
     const handleBattleTriggered = () => setShowBattleScreen(true);
     const handleOpenSettings = () => setShowSettings(true);
+    const handleOpenMuseum = () => setShowMuseum(true);
     const handleTechCompleted = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail && detail.techName) {
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
     window.addEventListener('open-fleet-modal', handleOpenFleetModal);
     window.addEventListener('battle-triggered', handleBattleTriggered);
     window.addEventListener('open-settings', handleOpenSettings);
+    window.addEventListener('open-museum', handleOpenMuseum);
     window.addEventListener('game:tech:completed', handleTechCompleted);
     
     return () => {
@@ -61,6 +63,7 @@ export const App: React.FC = () => {
       window.removeEventListener('open-fleet-modal', handleOpenFleetModal);
       window.removeEventListener('battle-triggered', handleBattleTriggered);
       window.removeEventListener('open-settings', handleOpenSettings);
+      window.removeEventListener('open-museum', handleOpenMuseum);
       window.removeEventListener('game:tech:completed', handleTechCompleted);
     };
   }, []);

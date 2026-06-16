@@ -25,13 +25,13 @@ function getCharacterAvatar(speakerName: string | undefined): string {
   if (name.includes("云天明")) return getImageUrl("unified_tianming_1778921470963.png");
   if (name.includes("汪淼")) return getImageUrl("unified_wangmiao_1779691527760.png");
   if (name.includes("希恩斯")) return getImageUrl("unified_hines_1779691718751.png");
-  if (name.includes("庄颜")) return getImageUrl("unified_zhuangyan_1779691689255.png");
-  if (name.includes("雷迪亚兹")) return getImageUrl("unified_reydiaz_1779691605335.png");
-  if (name.includes("泰勒")) return getImageUrl("unified_tyler_1779691583002.png");
-  if (name.includes("萨伊")) return getImageUrl("unified_say_1779691560931.png");
-  if (name.includes("杨冬")) return getImageUrl("unified_yangdong_1779691546221.png");
-  if (name.includes("常伟思")) return getImageUrl("unified_changweisi_1779691652433.png");
-  if (name.includes("关一帆")) return getImageUrl("unified_guanyifan_1779691819324.png");
+  if (name.includes("庄颜")) return getImageUrl("unified_zhuangyan_1779712921189.png");
+  if (name.includes("雷迪亚兹")) return getImageUrl("unified_reydiaz_1779691732536.png");
+  if (name.includes("泰勒")) return getImageUrl("unified_tyler_1779691745991.png");
+  if (name.includes("萨伊")) return getImageUrl("unified_say_1780649885202.png");
+  if (name.includes("杨冬")) return getImageUrl("unified_yangdong_1779691583143.png");
+  if (name.includes("常伟思")) return getImageUrl("unified_changweisi_1779691759159.png");
+  if (name.includes("关一帆")) return getImageUrl("unified_guanyifan_1779691901857.png");
 
   // NPC Fallbacks
   if (name.includes("科学家") || name.includes("研究员") || name.includes("学者")) return getImageUrl("npc_scientist.png");

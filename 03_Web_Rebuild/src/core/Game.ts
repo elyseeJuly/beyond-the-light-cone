@@ -1292,6 +1292,7 @@ export class GameInstance {
     const unlocked = SaveManager.getEndingUnlocks();
 
     localStorage.removeItem("LegendOfUni_Save");
+    localStorage.removeItem("game-tutorial-seen");
     this.instance = new Game();
 
     if (endingHistory.length > 0) {

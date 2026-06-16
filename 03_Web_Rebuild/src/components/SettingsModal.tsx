@@ -44,6 +44,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const handleRestart = () => {
     if (confirm("确认重置文明并重新开始吗？这会抹去当前的纪元进度。")) {
       GameInstance.reset();
+      localStorage.removeItem("game-tutorial-seen");
       window.location.reload();
     }
   };

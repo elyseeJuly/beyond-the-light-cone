@@ -167,7 +167,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
       {/* Main card box (820px width, 520px height) */}
       <div 
-        className="relative w-[820px] h-[520px] bg-[#070B14]/90 border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden"
+        className={`relative w-[820px] h-[520px] ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
       >
         {/* CG Full-bleed background layer */}
         {currentNode.isCG && (
@@ -175,7 +175,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
             <img 
               src={cgSrc || currentNode.avatarUrl || ""} 
               alt="CG Background"
-              className="w-full h-full object-cover opacity-[0.35] animate-[pan-zoom_30s_linear_infinite]"
+              className="w-full h-full object-cover opacity-[0.85] animate-[pan-zoom_30s_linear_infinite]"
               onError={() => {
                 if (cgSrc && cgSrc.includes('cg_')) {
                   setCgSrc(cgSrc.replace('cg_', 'event_'));
@@ -184,7 +184,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                 }
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070B14] via-transparent to-[#070B14]/40 opacity-90" />
+            {/* Soft dark gradient on the bottom to guarantee text legibility while keeping the top/middle CG clear */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070B14] via-[#070B14]/50 to-[#070B14]/10 opacity-90" />
           </div>
         )}
 
@@ -194,8 +195,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
         <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-[var(--color-primary)]/50 z-20" />
         <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[var(--color-primary)]/50 z-20" />
 
-        {/* Left Panel: Speaker Portrait (split layout) */}
-        {hasSpeaker && (
+        {/* Left Panel: Speaker Portrait (split layout) - Hidden during CG events */}
+        {hasSpeaker && !currentNode.isCG && (
           <div className="w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex flex-col justify-end items-center relative overflow-hidden group z-10">
             {/* Holographic scanner grids */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-primary),transparent_1px),linear-gradient(to_bottom,var(--color-primary),transparent_1px)] bg-[size:16px_16px] opacity-[0.03]" />
@@ -222,7 +223,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
         )}
 
         {/* Right Panel: Content Section */}
-        <div className="flex-1 flex flex-col justify-between p-6 relative z-10 bg-[#070B14]/65 backdrop-blur-[1px]">
+        <div className={`flex-1 flex flex-col justify-between p-6 relative z-10 ${currentNode.isCG ? 'bg-transparent' : 'bg-[#070B14]/65'} backdrop-blur-[1px]`}>
           {/* 1. Header Metadata block */}
           <div className="flex items-center justify-between border-b border-[#243245]/40 pb-3 shrink-0">
             <div className="flex items-center gap-2">

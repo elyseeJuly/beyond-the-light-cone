@@ -63,6 +63,7 @@ Documents defining features, architectures, and design directives.
 *   [SPEC_20260612_UNIVERSAL_EVENT_ENGINE_V1.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_UNIVERSAL_EVENT_ENGINE_V1.md) — *Universal Event Engine (UEE v1.0) architecture and dynamic generation rules*
 *   [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) — *Comprehensive architecture refactoring specification blueprints*
 *   [SPEC_20260615_EPOCH_CHRONICLES_OST.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260615_EPOCH_CHRONICLES_OST.md) — *Beyond the Light Cone: Epoch Chronicles OST specifications planning book*
+*   [SPEC_20260616_OST_LYRICS_MANIFEST.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260616_OST_LYRICS_MANIFEST.md) — *OST Vocal Lyrics & AI Music Scripts Manifest*
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.

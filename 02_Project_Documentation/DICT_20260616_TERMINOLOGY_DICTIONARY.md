@@ -697,6 +697,16 @@
 | 游戏模式与设定域 | §14 | 3个设定域+3种模式+2种战斗类型 |
 | OST与音乐术语 | §15 | 6首纪元BGM+5首结局曲目+3条设计原则 |
 
+### V2.1 审计修复清单
+
+| 修复项 | 类型 | 说明 |
+| :--- | :---: | :--- |
+| `deterrenceValue` 新增术语 | §3 补充 | 补充威慑度字段定义与代码映射 |
+| `EFFECT_TARGET_ALIAS` 映射规范 | §3 / `Game.ts` 修复 | 创建 `Game.EFFECT_TARGET_ALIAS` 字典将 `prestige→deterrenceValue`、`military→army` |
+| `clampEffectValue` 规范化 | `Game.ts` 修复 | 使用别名映射表而非硬编码分支 |
+| `applyNewEffects` 规范化 | `Game.ts` 修复 | switch-case 使用规范化后的 `canonicalTarget` |
+| 事件数据别名保留 | 兼容性声明 | events.json/randomevents.json 中 `"military"`/`"prestige"` 继续合法，由代码层归一 |
+
 ---
 
 > [!TIP]

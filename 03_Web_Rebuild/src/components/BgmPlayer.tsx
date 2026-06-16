@@ -130,6 +130,9 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
   useEffect(() => {
     const handlePauseMain = () => {
       setIsPlaying(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
     };
     window.addEventListener('pause-main-bgm', handlePauseMain);
     return () => window.removeEventListener('pause-main-bgm', handlePauseMain);
@@ -219,13 +222,13 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
 
   // Listen for user interaction to resume play if blocked by autoplay policy
   useEffect(() => {
-    if (isPlaying || isMuted || !isAvailable || isGameOver) return;
+    // Only listen for interaction to play if we WANT it to play (isPlaying is true)
+    if (!isPlaying || isMuted || !isAvailable || isGameOver) return;
 
     const resumeAudio = () => {
-      if (audioRef.current && !isPlaying && !isMuted && !isGameOver) {
+      if (audioRef.current && isPlaying && !isMuted && !isGameOver) {
         audioRef.current.play()
           .then(() => {
-            setIsPlaying(true);
             cleanup();
           })
           .catch((err) => {

@@ -306,12 +306,18 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
     localStorage.setItem('game-custom-bgm', path);
     setCustomBgm(path);
     window.dispatchEvent(new CustomEvent('bgm-settings-changed'));
+    if (isPlayingPreview) {
+      window.dispatchEvent(new CustomEvent('pause-main-bgm'));
+    }
   };
 
   const handleClearCustomBgm = () => {
     localStorage.removeItem('game-custom-bgm');
     setCustomBgm(null);
     window.dispatchEvent(new CustomEvent('bgm-settings-changed'));
+    if (isPlayingPreview) {
+      window.dispatchEvent(new CustomEvent('pause-main-bgm'));
+    }
   };
 
   const currentPlayingTrack = SOUNDTRACKS.find(t => t.path === currentPreviewPath);

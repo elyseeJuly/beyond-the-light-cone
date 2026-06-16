@@ -147,16 +147,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const current = TUTORIAL_STEPS[step];
   const progress = ((step + 1) / TUTORIAL_STEPS.length) * 100;
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'Enter') handleNext();
-      if (e.key === 'ArrowLeft') handlePrev();
-      if (e.key === 'Escape') handleSkip();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  });
+
 
   const animateTransition = useCallback((dir: 'left' | 'right', cb: () => void) => {
     if (isAnimating) return;
@@ -190,6 +181,17 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     setTimeout(onComplete, 400);
   }, [onComplete]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'Enter') handleNext();
+      if (e.key === 'ArrowLeft') handlePrev();
+      if (e.key === 'Escape') handleSkip();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleNext, handlePrev, handleSkip]);
+
   const handleGoTo = useCallback((index: number) => {
     if (index === step) return;
     animateTransition(index > step ? 'right' : 'left', () => setStep(index));
@@ -215,14 +217,14 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const activeHighlight = highlightStyle ? highlightStyle[current.highlightArea as keyof typeof highlightStyle] : null;
 
   return (
-    <div className={`fixed inset-0 z-[500] flex items-center justify-center transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
       {/* Darkened background with highlight cutout */}
       {!activeHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />}
       
       {/* Highlight glow */}
       {activeHighlight && (
         <div 
-          className={`absolute ${activeHighlight} border-2 border-[var(--color-primary)] z-[501] pointer-events-none transition-all duration-500`}
+          className={`absolute ${activeHighlight} border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-all duration-500`}
           style={{
             boxShadow: '0 0 0 9999px rgba(0,0,0,0.85), 0 0 30px rgba(0,229,255,0.3), inset 0 0 30px rgba(0,229,255,0.1)',
           }}
@@ -230,7 +232,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       )}
 
       {/* Main tutorial card */}
-      <div className={`relative z-[502] w-full max-w-2xl mx-4 flex flex-col transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
+      <div className={`relative z-[1002] w-full max-w-2xl mx-4 flex flex-col transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
         
         {/* Progress bar */}
         <div className="w-full h-1 bg-[#243245]/40 rounded-t overflow-hidden">
@@ -243,6 +245,10 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         {/* Content card */}
         <div className="relative bg-[#070B14]/90 backdrop-blur-md border border-[var(--color-primary)]/30 rounded-b p-8 flex flex-col gap-6 overflow-hidden shadow-[0_0_40px_rgba(0,184,255,0.15)]">
           
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-[var(--color-primary)]/10 border-x border-b border-[var(--color-primary)]/30 px-4 py-0.5 rounded-b text-[10px] text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase shadow-[0_0_10px_rgba(0,184,255,0.2)]">
+            光锥之外·纪元往事
+          </div>
+
           {/* Holographic scanner grids */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-primary),transparent_1px),linear-gradient(to_bottom,var(--color-primary),transparent_1px)] bg-[size:24px_24px] opacity-[0.02]" />
@@ -326,13 +332,23 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
           {/* Controls */}
           <div className={`flex items-center justify-between mt-2 pt-5 border-t border-[#243245]/40 transition-opacity duration-300 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
-            <button 
-              onClick={handlePrev}
-              disabled={step === 0}
-              className={`flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
-            >
-              <ChevronLeft size={16} /> 上一步
-            </button>
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={handlePrev}
+                disabled={step === 0}
+                className={`flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
+              >
+                <ChevronLeft size={16} /> 上一步
+              </button>
+              
+              <button 
+                onClick={handleSkip}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
+              >
+                跳过教程
+              </button>
+            </div>
+
             <button 
               onClick={handleNext}
               className="flex items-center gap-2 px-6 py-2.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 text-[var(--color-primary)] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(0,184,255,0.15)] hover:shadow-[0_0_20px_rgba(0,184,255,0.3)]"

@@ -148,6 +148,9 @@ Active development logs, blueprints, and task runners.
 *   [EXEC_20260615_MUSIC_INTEGRATION_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/EXEC_20260615_MUSIC_INTEGRATION_WALKTHROUGH.md) — *Walkthrough report with file integration specifications and tests verification*
 *   [EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_PLAN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_PLAN.md) — *Execution plan for star map viewport reconstruction and settings integration*
 *   [EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260615_STARMAP_AND_SETTINGS_REBUILD_WALKTHROUGH.md) — *Walkthrough of the completed star map viewports, settings modal, and modals styling unification*
+*   [EXEC_20260616_STARSEA_PHONOGRAPH_PLAN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_PLAN.md) — *Starsea Phonograph music gallery & custom BGM selection execution plan*
+*   [EXEC_20260616_STARSEA_PHONOGRAPH_TASK.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_TASK.md) — *Starsea Phonograph music gallery & custom BGM selection active checklist*
+*   [EXEC_20260616_STARSEA_PHONOGRAPH_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_WALKTHROUGH.md) — *Starsea Phonograph music gallery & custom BGM selection walkthrough*
 
 ---
 

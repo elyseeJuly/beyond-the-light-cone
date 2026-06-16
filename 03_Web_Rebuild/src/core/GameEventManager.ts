@@ -163,10 +163,25 @@ export class GameEventManager {
       "sayi": "unified_say_1780649885202.png"
     };
 
+    // Override CG mappings for Epochs and Major Events
+    if (name.startsWith("event_crisis_start")) return getImageUrl("cg_crisis_start.png");
+    if (name.startsWith("event_guzheng")) return getImageUrl("cg_guzheng.png");
+    if (name.startsWith("event_moon_crisis")) return getImageUrl("cg_moon_crisis.png");
+    if (name.startsWith("event_wandering_earth")) return getImageUrl("cg_wandering_earth.png");
+    if (name.startsWith("event_dimensional_strike") || name === "dimensional_threat_alert") return getImageUrl("cg_dimensional_strike.png");
+    if (name.startsWith("event_droplet_attack")) return getImageUrl("cg_droplet_attack.png");
+    if (name.startsWith("event_deterrence_established")) return getImageUrl("cg_deterrence_established.png");
+    if (name.startsWith("event_deterrence_broken")) return getImageUrl("cg_deterrence_broken.png");
+    if (name.startsWith("event_gravitational_broadcast")) return getImageUrl("cg_gravitational_broadcast.png");
+    if (name.startsWith("event_bunker_world")) return getImageUrl("cg_bunker_world.png");
+    if (name.startsWith("event_galaxy_era")) return getImageUrl("cg_galaxy_era.png");
+    if (name.startsWith("event_stardust_era")) return getImageUrl("cg_stardust_era.png");
+
     if (mapping[name]) return getImageUrl(mapping[name]);
 
     if (bmpName.startsWith("/images/") || bmpName.startsWith("images/") || bmpName.startsWith("character_") || bmpName.startsWith("unified_") || bmpName.startsWith("event_") || bmpName.startsWith("cg_") || bmpName.endsWith(".png")) {
-      const fileName = bmpName.replace(/^\/?images\//, "");
+      let fileName = bmpName.replace(/^\/?images\//, "");
+      if (!fileName.endsWith(".png")) fileName += ".png";
       return getImageUrl(fileName);
     }
 

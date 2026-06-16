@@ -581,7 +581,7 @@ export class Game {
         title: `纪元更替：${newEpochName}`,
         dialogQueue: [{
           speakerName: "历史观测记录",
-          avatarUrl: epochCG,
+          avatarUrl: this.eventManager.formatAvatarUrl(epochCG),
           content: epochContent,
           isCG: true
         }],

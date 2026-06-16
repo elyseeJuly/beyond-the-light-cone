@@ -12,6 +12,16 @@ import { Volume2, VolumeX, Play } from 'lucide-react';
 import { GAMEPLAY_BGM_PATH, ERA_BGM_PATHS } from '../config/endingConfig';
 import { getAssetUrl } from '../utils/assetUrl';
 
+const SONG_NAME_MAP: Record<string, string> = {
+  '/audio/years_base.mp3': '岁月底座',
+  '/audio/era_crisis.mp3': '危机之潮',
+  '/audio/era_deterrence.mp3': '执剑低吟',
+  '/audio/era_broadcast.mp3': '广播回响',
+  '/audio/era_bunker.mp3': '深空掩体',
+  '/audio/era_galaxy.mp3': '银河孤舟',
+  '/audio/era_stardust.mp3': '星屑余晖',
+};
+
 interface BgmPlayerProps {
   isGameOver: boolean;
   epoch: number;
@@ -30,6 +40,9 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
     const saved = localStorage.getItem('game-bgm-volume');
     return saved !== null ? parseFloat(saved) : 0.4;
   });
+  const [customBgmPath, setCustomBgmPath] = useState<string | null>(() => {
+    return localStorage.getItem('game-custom-bgm');
+  });
   const [isAvailable, setIsAvailable] = useState(true);
   const [loadedPath, setLoadedPath] = useState('');
 
@@ -39,7 +52,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
   useEffect(() => {
     const epochKeys = ['GOLDEN', 'CRISIS', 'DETERRENCE', 'BROADCAST', 'BUNKER', 'GALAXY', 'STARDUST'] as const;
     const epochKey = epochKeys[epoch] || 'GOLDEN';
-    const specificPath = ERA_BGM_PATHS[epochKey];
+    const specificPath = customBgmPath || ERA_BGM_PATHS[epochKey];
     let currentPath = specificPath;
 
     // Reuse or create audio element
@@ -84,7 +97,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
       audio!.pause();
       audio!.src = '';
     };
-  }, [epoch]);
+  }, [epoch, customBgmPath]);
 
   // Update volume / mute settings
   useEffect(() => {
@@ -95,13 +108,15 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
     localStorage.setItem('game-bgm-volume', String(volume));
   }, [volume, isMuted]);
 
-  // Listen to external settings changes (e.g. from SystemMenuPanel)
+  // Listen to external settings changes (e.g. from SystemMenuPanel or MuseumGallery)
   useEffect(() => {
     const handleExternalSettings = () => {
       const savedMuted = localStorage.getItem('game-bgm-muted') === 'true';
       const savedVolume = parseFloat(localStorage.getItem('game-bgm-volume') || '0.4');
+      const savedCustomBgm = localStorage.getItem('game-custom-bgm');
       setIsMuted(savedMuted);
       setVolume(savedVolume);
+      setCustomBgmPath(savedCustomBgm);
       
       if (!savedMuted && !isPlaying && !isGameOver) {
         setIsPlaying(true);
@@ -110,6 +125,15 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
     window.addEventListener('bgm-settings-changed', handleExternalSettings);
     return () => window.removeEventListener('bgm-settings-changed', handleExternalSettings);
   }, [isPlaying, isGameOver]);
+
+  // Listen to pause event from preview player
+  useEffect(() => {
+    const handlePauseMain = () => {
+      setIsPlaying(false);
+    };
+    window.addEventListener('pause-main-bgm', handlePauseMain);
+    return () => window.removeEventListener('pause-main-bgm', handlePauseMain);
+  }, []);
 
   // Listen to custom alert sound events
   useEffect(() => {
@@ -297,7 +321,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
       />
 
       <span className="text-[10px] text-white/40 tracking-wider font-bold select-none hidden md:inline">
-        {loadedPath === GAMEPLAY_BGM_PATH ? "《岁月底座》" : `《${currentEpochName}》`}
+        {customBgmPath ? `《${SONG_NAME_MAP[customBgmPath] || '自定义背景'} (自定义)》` : (loadedPath === GAMEPLAY_BGM_PATH ? "《岁月底座》" : `《${currentEpochName}》`)}
       </span>
 
       <style>{`

@@ -175,7 +175,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
             <img 
               src={cgSrc || currentNode.avatarUrl || ""} 
               alt="CG Background"
-              className="w-full h-full object-cover opacity-[0.85] animate-[pan-zoom_30s_linear_infinite]"
+              className="w-full h-full object-contain opacity-[0.95] animate-[gentle-pan_60s_ease-in-out_infinite]"
               onError={() => {
                 if (cgSrc && cgSrc.includes('cg_')) {
                   setCgSrc(cgSrc.replace('cg_', 'event_'));
@@ -184,8 +184,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                 }
               }}
             />
-            {/* Soft dark gradient on the bottom to guarantee text legibility while keeping the top/middle CG clear */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070B14] via-[#070B14]/50 to-[#070B14]/10 opacity-90" />
+            {/* Dark overlay at edges to ensure text legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070B14] via-[#070B14]/30 to-[#070B14]/10" />
           </div>
         )}
 
@@ -208,12 +208,15 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
             {/* Portrait Image */}
             <div className="w-full h-[95%] relative overflow-hidden flex items-end justify-center">
               <img 
-                src={getCharacterAvatar(currentNode.speakerName)} 
+                src={currentNode.avatarUrl || getCharacterAvatar(currentNode.speakerName)} 
                 alt={currentNode.speakerName} 
                 className="w-full h-full object-cover object-center transition-all duration-1000 group-hover:scale-105 filter contrast-110 saturate-[1.1] brightness-[0.85]"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  if (!target.src.includes('character_default.png')) {
+                  if (currentNode.avatarUrl && !target.src.includes('character_default.png')) {
+                    // Fallback to character name mapping if avatarUrl fails
+                    target.src = getCharacterAvatar(currentNode.speakerName);
+                  } else if (!target.src.includes('character_default.png')) {
                     target.src = getImageUrl('character_default.png');
                   }
                 }}
@@ -340,9 +343,14 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           0% { top: 0%; }
           100% { top: 100%; }
         }
+        @keyframes gentle-pan {
+          0% { transform: scale(1) translate(0, 0); }
+          50% { transform: scale(1.02) translate(-0.3%, -0.3%); }
+          100% { transform: scale(1) translate(0, 0); }
+        }
         @keyframes pan-zoom {
           0% { transform: scale(1) translate(0, 0); }
-          50% { transform: scale(1.08) translate(-0.5%, -0.5%); }
+          50% { transform: scale(1.03) translate(-0.3%, -0.3%); }
           100% { transform: scale(1) translate(0, 0); }
         }
       `}</style>

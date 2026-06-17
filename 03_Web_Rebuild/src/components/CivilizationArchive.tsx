@@ -29,7 +29,7 @@ export const CivilizationArchive: React.FC = () => {
     };
   }, []);
 
-  // Filter for Major Events
+  // Filter for Major Events (includes epoch transitions and CG events)
   const majorEvents = useMemo(() => {
     return playerTimeline.filter(evt => 
       evt.event.includes('【文明升级】') || 
@@ -38,7 +38,17 @@ export const CivilizationArchive: React.FC = () => {
       evt.event.includes('【数字永生】') || 
       evt.event.includes('【黑暗森林广播】') || 
       evt.event.includes('【高维坍缩】') || 
-      evt.event.includes('已完全部署就绪')
+      evt.event.includes('已完全部署就绪') ||
+      evt.event.includes('【纪元更替】') ||
+      evt.event.includes('【黑暗森林打击】') ||
+      evt.event.includes('【二向箔】') ||
+      evt.event.includes('【维度打击】') ||
+      evt.event.includes('【威慑】') ||
+      evt.event.includes('【征服】') ||
+      evt.event.includes('【流浪地球】') ||
+      evt.event.includes('【胜利】') ||
+      evt.event.includes('【失败】') ||
+      evt.event.includes('【结局】')
     );
   }, [playerTimeline]);
 

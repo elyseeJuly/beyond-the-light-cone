@@ -106,7 +106,7 @@ export class EarthCivilization extends Civilization {
     for (const wName of this.wallfacers) {
       const p = game.personManager.getPerson(wName);
       if (p) {
-        this.deterrenceValue += (p.leadership + p.art) * 0.5;
+        this.deterrenceValue += (p.leadership + p.art) * 0.05;
         this.army += 5;
 
         // Progress secret plan!
@@ -123,7 +123,7 @@ export class EarthCivilization extends Civilization {
 
           if (plan.progress >= 100) {
             game.addHistory(`【面壁计划】面壁者 ${wName} 的秘密计划「${plan.planName}」已完全部署就绪！威慑度显著上升！`);
-            this.deterrenceValue += 50;
+            this.deterrenceValue += 20;
             this.army += 100;
           }
         }
@@ -162,15 +162,27 @@ export class EarthCivilization extends Civilization {
     this.processFleets(game);
     this.processBuildings(game);
 
-    let deterrenceDecay = 1;
+    // 威慑度衰减：基础衰减 + 比例衰减（威慑度越高，维持难度越大）
+    let deterrenceDecay = 3 + Math.floor(this.deterrenceValue * 0.02);
+    
+    // 面壁者可以减缓衰减（每个活跃面壁者减少0.3衰减）
+    const activeWallfacersCount = Array.from(this.wallfacers).length;
+    deterrenceDecay -= activeWallfacersCount * 0.3;
+    
+    // 已完成的面壁计划进一步减缓衰减
     for (const plan of Object.values(this.wallfacerPlans)) {
       if (plan.progress >= 100) {
-        deterrenceDecay = 0;
-        break;
+        deterrenceDecay -= 1;
       }
     }
-    const activeWallfacersCount = Array.from(this.wallfacers).length;
-    deterrenceDecay = Math.max(0, deterrenceDecay - activeWallfacersCount * 0.2);
+    
+    // 执剑人存在时额外减缓衰减
+    if (this.swordholder) {
+      deterrenceDecay -= 0.5;
+    }
+    
+    // 最低衰减不少于1
+    deterrenceDecay = Math.max(1, deterrenceDecay);
     this.deterrenceValue = Math.max(0, this.deterrenceValue - deterrenceDecay);
 
     this.sanitizeResources(game);

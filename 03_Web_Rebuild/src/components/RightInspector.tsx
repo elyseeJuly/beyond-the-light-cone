@@ -49,6 +49,10 @@ export const RightInspector: React.FC = () => {
   const earth = game.earthCivi;
 
   const handleBuildStope = () => {
+    if (star.belongToCivi !== "地球") {
+      alert("该星球不属于地球文明，无法在此建造！");
+      return;
+    }
     if (!star.hasStope && !star.buildingProgress?.stope && earth.economy >= 30) {
       earth.economy -= 30;
       star.buildingProgress = star.buildingProgress || {};
@@ -63,6 +67,10 @@ export const RightInspector: React.FC = () => {
   };
 
   const handleBuildFactory = () => {
+    if (star.belongToCivi !== "地球") {
+      alert("该星球不属于地球文明，无法在此建造！");
+      return;
+    }
     if (!star.hasFactory && !star.buildingProgress?.factory && earth.economy >= 50) {
       earth.economy -= 50;
       star.buildingProgress = star.buildingProgress || {};
@@ -77,6 +85,10 @@ export const RightInspector: React.FC = () => {
   };
 
   const handleBuildCity = () => {
+    if (star.belongToCivi !== "地球") {
+      alert("该星球不属于地球文明，无法在此建造！");
+      return;
+    }
     if (!star.hasCity && !star.buildingProgress?.city && earth.economy >= 80) {
       earth.economy -= 80;
       star.buildingProgress = star.buildingProgress || {};

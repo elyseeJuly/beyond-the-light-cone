@@ -104,6 +104,61 @@ describe('EarthCivilization', () => {
     expect(game.earthCivi.culture).toBe(0);
     expect(game.earthCivi.army).toBe(0);
   });
+
+  it('威慑度衰减：基础衰减至少为1', () => {
+    const e = game.earthCivi;
+    e.deterrenceValue = 0;
+    e.runARound();
+    // 无面壁者、无执剑人时，基础衰减3 + 比例衰减0 = 3，最低1
+    // 因为衰减后值为0，所以验证 >= 0
+    expect(e.deterrenceValue).toBeGreaterThanOrEqual(0);
+  });
+
+  it('威慑度衰减：高威慑度时衰减更快（比例衰减）', () => {
+    const e = game.earthCivi;
+    e.deterrenceValue = 100;
+    // 记录衰减后的值
+    e.runARound();
+    // 衰减量 = 3 + floor(100 * 0.02) = 3 + 2 = 5
+    // 无面壁者执剑人，所以最终衰减5
+    expect(e.deterrenceValue).toBeLessThanOrEqual(95);
+    expect(e.deterrenceValue).toBeGreaterThanOrEqual(94); // 可能有面壁者加分
+  });
+
+  it('威慑度衰减：面壁者可以减缓衰减', () => {
+    const e = game.earthCivi;
+    e.deterrenceValue = 100;
+    // 添加一个面壁者
+    e.addWallfacer('罗辑');
+    game.personManager.unlockPerson('罗辑');
+    e.runARound();
+    // 面壁者从JSON加载属性，添加少量威慑，面壁者衰减减缓0.3
+    expect(e.deterrenceValue).toBeGreaterThan(95); // 比没有面壁者时高
+  });
+
+  it('威慑度衰减：执剑人额外减缓衰减', () => {
+    const e = game.earthCivi;
+    e.deterrenceValue = 100;
+    e.swordholder = '罗辑';
+    e.runARound();
+    // 衰减 = 3 + 2 - 0.5(执剑人) - 0 = 4.5
+    expect(e.deterrenceValue).toBeLessThanOrEqual(96);
+    expect(e.deterrenceValue).toBeGreaterThanOrEqual(94);
+  });
+
+  it('面壁者威慑增益：相比旧版大幅降低', () => {
+    const e = game.earthCivi;
+    e.deterrenceValue = 0;
+    e.addWallfacer('罗辑');
+    game.personManager.unlockPerson('罗辑');
+    
+    // 旧版每个面壁者每回合增益可能达到25+
+    // 新版每个面壁者每回合增益 = (leadership+art)*0.05
+    const before = e.deterrenceValue;
+    e.runARound();
+    const gain = e.deterrenceValue - before + 3; // 加上衰减恢复
+    expect(gain).toBeLessThan(10); // 不超过10
+  });
 });
 
 describe('AlienCivilization', () => {

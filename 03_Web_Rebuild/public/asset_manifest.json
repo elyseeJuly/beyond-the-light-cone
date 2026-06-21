@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "gameVersion": "1.0.0",
-  "generatedAt": 1782039971779,
+  "generatedAt": 1782044788465,
   "core": [
     {
       "id": "character_default",
@@ -226,9 +226,9 @@
           "cg",
           "unknown"
         ],
-        "size": 891791,
+        "size": 639618,
         "displayName": "black_domain_debate",
-        "hash": "2ac525d5",
+        "hash": "2e7fc5d3",
         "isDefault": false
       },
       {
@@ -324,9 +324,9 @@
           "broadcast_era"
         ],
         "era": "broadcast_era",
-        "size": 712485,
+        "size": 551976,
         "displayName": "dimensional_warning",
-        "hash": "28ee82e7",
+        "hash": "25bccdf5",
         "isDefault": false
       },
       {
@@ -394,9 +394,9 @@
           "broadcast_era"
         ],
         "era": "broadcast_era",
-        "size": 1020003,
+        "size": 623475,
         "displayName": "galaxy_exodus",
-        "hash": "7811753f",
+        "hash": "3e93da10",
         "isDefault": false
       },
       {
@@ -477,9 +477,9 @@
           "cg",
           "unknown"
         ],
-        "size": 922451,
+        "size": 786291,
         "displayName": "lightspeed_ship",
-        "hash": "30a931df",
+        "hash": "33bc8ba1",
         "isDefault": false
       },
       {
@@ -560,9 +560,9 @@
           "cg",
           "unknown"
         ],
-        "size": 1086629,
+        "size": 698176,
         "displayName": "sophon_blockade",
-        "hash": "2d7a4b7f",
+        "hash": "5d132ffc",
         "isDefault": false
       },
       {
@@ -601,9 +601,9 @@
           "cg",
           "unknown"
         ],
-        "size": 956075,
+        "size": 620472,
         "displayName": "teardrop_probe",
-        "hash": "602cd26c",
+        "hash": "5ae156d3",
         "isDefault": false
       },
       {
@@ -782,9 +782,9 @@
           "broadcast_era"
         ],
         "era": "broadcast_era",
-        "size": 1035648,
+        "size": 692201,
         "displayName": "zeroer_broadcast",
-        "hash": "14b96d4",
+        "hash": "4998c92f",
         "isDefault": false
       },
       {
@@ -850,6 +850,20 @@
         "size": 6636474,
         "displayName": "defeat_dimension_strike",
         "hash": "50839a0c",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_eto_dominion",
+        "path": "images/ending_defeat_eto_dominion.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 6398940,
+        "displayName": "defeat_eto_dominion",
+        "hash": "7b6c78b6",
         "isDefault": false
       },
       {
@@ -919,6 +933,33 @@
         "isDefault": false
       },
       {
+        "id": "ending_early_deterrence",
+        "path": "images/ending_early_deterrence.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 691146,
+        "displayName": "early_deterrence",
+        "hash": "78986851",
+        "isDefault": false
+      },
+      {
+        "id": "ending_galactic_citizen",
+        "path": "images/ending_galactic_citizen.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 6528475,
+        "displayName": "galactic_citizen",
+        "hash": "294ae9a9",
+        "isDefault": false
+      },
+      {
         "id": "ending_hidden",
         "path": "images/ending_hidden.png",
         "type": "ending",
@@ -929,6 +970,32 @@
         "size": 4597295,
         "displayName": "hidden",
         "hash": "7cfd838e",
+        "isDefault": false
+      },
+      {
+        "id": "ending_lightspeed_exile",
+        "path": "images/ending_lightspeed_exile.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 8277664,
+        "displayName": "lightspeed_exile",
+        "hash": "332e946",
+        "isDefault": false
+      },
+      {
+        "id": "ending_signal_silenced",
+        "path": "images/ending_signal_silenced.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 686841,
+        "displayName": "signal_silenced",
+        "hash": "19dfd882",
         "isDefault": false
       },
       {
@@ -1592,7 +1659,7 @@
         "name": "crisis era Pack",
         "description": "crisis era 资源包",
         "type": "era_pack",
-        "totalSize": 39833328,
+        "totalSize": 46232268,
         "assetIds": [
           "era_crisis",
           "ghost_in_the_quantum",
@@ -1609,6 +1676,7 @@
           "cg_thought_seal",
           "cg_trisolaris_reply",
           "cg_yewenjie_signal",
+          "ending_defeat_eto_dominion",
           "unified_beihai_1778921366897",
           "unified_yewenjie_1778921299091"
         ],
@@ -1619,7 +1687,7 @@
         "name": "deterrence era Pack",
         "description": "deterrence era 资源包",
         "type": "era_pack",
-        "totalSize": 69005519,
+        "totalSize": 69696665,
         "assetIds": [
           "era_bunker",
           "era_deterrence",
@@ -1636,6 +1704,7 @@
           "cg_tyler_breached",
           "cg_wade_executed",
           "ending_deterrence",
+          "ending_early_deterrence",
           "unified_reydiaz_1779691732536",
           "unified_tyler_1779691745991"
         ],
@@ -1646,7 +1715,7 @@
         "name": "broadcast era Pack",
         "description": "broadcast era 资源包",
         "type": "era_pack",
-        "totalSize": 71362469,
+        "totalSize": 70461985,
         "assetIds": [
           "era_broadcast",
           "era_galaxy",
@@ -1669,7 +1738,7 @@
         "name": "uncategorized Pack",
         "description": "uncategorized 资源包",
         "type": "era_pack",
-        "totalSize": 128260454,
+        "totalSize": 142641045,
         "assetIds": [
           "README",
           "death_of_the_light_cone",
@@ -1690,7 +1759,10 @@
           "ending_defeat_helium_flash",
           "ending_defeat_treachery",
           "ending_digital",
+          "ending_galactic_citizen",
           "ending_hidden",
+          "ending_lightspeed_exile",
+          "ending_signal_silenced",
           "ending_wandering",
           "npc_ai_terminal",
           "npc_civilian",
@@ -1759,7 +1831,7 @@
         "name": "cg Pack",
         "description": "全部cg资源",
         "type": "cg_pack",
-        "totalSize": 164699538,
+        "totalSize": 162686665,
         "assetIds": [
           "cg_australia_migration",
           "cg_beihai_assassination",

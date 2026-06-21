@@ -17,7 +17,13 @@ import type {
   AssetRecord,
 } from '../types/asset';
 
-const MANIFEST_URL = '/beyond-the-light-cone/asset_manifest.json';
+/** 获取动态 base URL（不带尾部斜杠） */
+function getBaseUrl(): string {
+  const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '/';
+  return base.endsWith('/') ? base.slice(0, -1) : base;
+}
+
+const MANIFEST_URL = () => `${getBaseUrl()}/asset_manifest.json`;
 
 /** IndexedDB 中资产管理的 Store 名 */
 const ASSET_DB_NAME = 'BeyondLightCone_Assets';
@@ -70,7 +76,8 @@ export class AssetLoader {
   getCoreAssetUrl(assetId: string): string | null {
     if (!this.manifest) return null;
     const asset = this.manifest.core.find(a => a.id === assetId);
-    return asset ? `/beyond-the-light-cone/${asset.path}` : null;
+    const base = getBaseUrl();
+    return asset ? `${base}/${asset.path}` : null;
   }
 
   // ==================== Layer 2: Expansion ====================
@@ -154,7 +161,7 @@ export class AssetLoader {
     const asset = this.manifest.expansion.assets.find(a => a.id === assetId);
     if (!asset) return null;
 
-    const base = '/beyond-the-light-cone';
+    const base = getBaseUrl();
     const url = `${base}/${asset.path}`;
 
     // 检查是否已缓存
@@ -300,7 +307,7 @@ export class AssetLoader {
   private async loadManifest(): Promise<AssetManifest> {
     if (this.manifestPromise) return this.manifestPromise;
 
-    this.manifestPromise = fetch(MANIFEST_URL)
+    this.manifestPromise = fetch(MANIFEST_URL())
       .then(res => {
         if (!res.ok) throw new Error(`Failed to load manifest: ${res.status}`);
         return res.json();
@@ -415,7 +422,8 @@ export class AssetLoader {
 
       try {
         // 下载资源（通过 fetch 触发缓存）
-        const url = `/beyond-the-light-cone/${asset.path}`;
+        const base = getBaseUrl();
+        const url = `${base}/${asset.path}`;
         const response = await fetch(url);
 
         if (!response.ok) {

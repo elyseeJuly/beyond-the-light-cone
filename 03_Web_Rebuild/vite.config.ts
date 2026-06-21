@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const basePath = process.env.CF_PAGES === '1' ? '/' : '/beyond-the-light-cone/';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -24,7 +26,7 @@ export default defineConfig({
         orientation: 'landscape',
         theme_color: '#0B1020',
         background_color: '#0B1020',
-        start_url: '/beyond-the-light-cone/',
+        start_url: basePath,
         icons: [
           {
             src: 'icons/icon-192x192.png',
@@ -147,7 +149,7 @@ export default defineConfig({
       }
     })
   ],
-  base: '/beyond-the-light-cone/',
+  base: basePath,
   test: {
     globals: true,
     environment: 'jsdom',

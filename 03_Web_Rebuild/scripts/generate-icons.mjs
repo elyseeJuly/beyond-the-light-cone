@@ -1,12 +1,14 @@
-// Generate simple PWA icons for development
+// Generate PWA icons
 // Run: node scripts/generate-icons.mjs
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { deflateSync } from 'zlib';
+import { execSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const iconsDir = resolve(__dirname, '../public/icons');
+const cover11Path = resolve(__dirname, '../public/images/cover_1_1.png');
 mkdirSync(iconsDir, { recursive: true });
 
 function createMinimalPNG(size) {
@@ -86,15 +88,37 @@ function crc32(buf) {
   return (crc ^ 0xFFFFFFFF) >>> 0;
 }
 
+function fallbackToMinimal() {
+  const icon192 = createMinimalPNG(192);
+  writeFileSync(resolve(iconsDir, 'icon-192x192.png'), icon192);
+  console.log('  ✓ icon-192x192.png (minimal fallback)');
+
+  const icon512 = createMinimalPNG(512);
+  writeFileSync(resolve(iconsDir, 'icon-512x512.png'), icon512);
+  console.log('  ✓ icon-512x512.png (minimal fallback)');
+  console.log('Done!');
+}
+
 // Generate icons
 console.log('Generating PWA icons...');
 
-const icon192 = createMinimalPNG(192);
-writeFileSync(resolve(iconsDir, 'icon-192x192.png'), icon192);
-console.log('  ✓ icon-192x192.png');
-
-const icon512 = createMinimalPNG(512);
-writeFileSync(resolve(iconsDir, 'icon-512x512.png'), icon512);
-console.log('  ✓ icon-512x512.png');
-
-console.log('Done!');
+if (existsSync(cover11Path)) {
+  console.log('Found cover_1_1.png, generating high-quality icons using sips...');
+  try {
+    const icon192Path = resolve(iconsDir, 'icon-192x192.png');
+    const icon512Path = resolve(iconsDir, 'icon-512x512.png');
+    
+    execSync(`sips -z 192 192 "${cover11Path}" --out "${icon192Path}"`, { stdio: 'inherit' });
+    console.log('  ✓ icon-192x192.png');
+    
+    execSync(`sips -z 512 512 "${cover11Path}" --out "${icon512Path}"`, { stdio: 'inherit' });
+    console.log('  ✓ icon-512x512.png');
+    
+    console.log('Done generating high-quality icons!');
+  } catch (error) {
+    console.error('Failed to resize using sips, falling back to minimal PNG generator:', error);
+    fallbackToMinimal();
+  }
+} else {
+  fallbackToMinimal();
+}

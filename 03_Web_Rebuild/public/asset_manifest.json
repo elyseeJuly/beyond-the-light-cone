@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "gameVersion": "1.0.0",
-  "generatedAt": 1782016841584,
+  "generatedAt": 1782036558527,
   "core": [
     {
       "id": "character_default",
@@ -691,6 +691,32 @@
         "size": 119323,
         "displayName": "yewenjie_signal",
         "hash": "32a41890",
+        "isDefault": false
+      },
+      {
+        "id": "cover",
+        "path": "images/cover.png",
+        "type": "ui",
+        "tags": [
+          "ui",
+          "unknown"
+        ],
+        "size": 1095152,
+        "displayName": "cover",
+        "hash": "6c046781",
+        "isDefault": false
+      },
+      {
+        "id": "cover_1_1",
+        "path": "images/cover_1_1.png",
+        "type": "ui",
+        "tags": [
+          "ui",
+          "unknown"
+        ],
+        "size": 1102386,
+        "displayName": "cover_1_1",
+        "hash": "362cee87",
         "isDefault": false
       },
       {
@@ -1546,7 +1572,7 @@
         "name": "uncategorized Pack",
         "description": "uncategorized 资源包",
         "type": "era_pack",
-        "totalSize": 122205970,
+        "totalSize": 124403508,
         "assetIds": [
           "README",
           "death_of_the_light_cone",
@@ -1554,6 +1580,8 @@
           "the_last_archive",
           "years_base",
           "cg_yangdong_suicide",
+          "cover",
+          "cover_1_1",
           "ending_conquest",
           "ending_dark_domain",
           "ending_defeat_dimension_strike",

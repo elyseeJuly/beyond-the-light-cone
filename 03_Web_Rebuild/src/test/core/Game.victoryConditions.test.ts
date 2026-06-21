@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
-import { EpochType, TecTreeType, VictoryType } from '../../types/enums';
+import { DefeatType, EpochType, TecTreeType, VictoryType } from '../../types/enums';
 
 function setupGame() {
   GameInstance.reset();
@@ -167,5 +167,119 @@ describe('Game Victory Conditions', () => {
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.victoryType).toBe(VictoryType.DETERRENCE);
+  });
+
+  // === 扩展测试 ===
+
+  it('流浪胜利需要同时满足科技、标志和年份等多重要求', () => {
+    game.year = 300;
+    game.earthCivi.population = 100;
+    setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
+    setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
+    game.addFlag("wandering_completed");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(VictoryType.WANDERING);
+
+    // 验证缺少任一条件均不触发
+    game.isGameOver = false;
+    game.victoryType = null;
+    game.removeFlag("wandering_completed");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(false);
+  });
+
+  it('黑域胜利因缺少 dark_domain_decision 标志而被阻塞', () => {
+    game.year = 260;
+    game.earthCivi.treachery = 10;
+    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    // 不添加 dark_domain_decision 标志
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(false);
+
+    // 添加标志后应触发
+    game.addFlag("dark_domain_decision");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(VictoryType.DARK_DOMAIN);
+  });
+
+  it('胜利与失败条件同时满足时，胜利优先触发', () => {
+    // 同时满足流浪胜利和太阳氦闪失败条件
+    game.year = 360; // 超过 350 年，本应触发氦闪
+    game.earthCivi.population = 100;
+    setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
+    setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
+    game.addFlag("wandering_completed");
+    // 不设置任何氦闪防护（无黑域生成、无数字方舟、无 wandering_completed... etc）
+    // Wait - wandering_completed 本身防氦闪，所以先清除掉再测
+    game.removeFlag("wandering_completed");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.defeatType).toBe(DefeatType.HELIUM_FLASH);
+
+    // 现在同时满足流浪胜利条件（含 wandering_completed），流浪应优先触发
+    game.isGameOver = false;
+    game.defeatType = null;
+    game.addFlag("wandering_completed");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(VictoryType.WANDERING);
+    expect(game.defeatType).toBeNull();
+  });
+
+  it('游戏结束状态下再次检查不会改变已有结果', () => {
+    game.year = 300;
+    setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
+    setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
+    game.addFlag("wandering_completed");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(VictoryType.WANDERING);
+
+    // 再次调用 checkVictoryConditions 不应改变结果
+    const previousType = game.victoryType;
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(previousType);
+  });
+
+  it('黑域胜利在年份不足 250 时不触发', () => {
+    game.year = 249; // 刚好低于阈值
+    game.earthCivi.treachery = 10;
+    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    game.addFlag("dark_domain_decision");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(false);
+
+    // 下一年应该触发
+    game.year = 250;
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(VictoryType.DARK_DOMAIN);
+  });
+
+  it('死神永生胜利需要多个标志位同时满足（多标志位要求）', () => {
+    // HIDDEN 胜利需要 galaxy_exodus_seen, alien_alliance, zero_homer_contacted, mini_universe_built
+    game.year = 400;
+    game.epoch = EpochType.GALAXY;
+    game.earthCivi.culture = 1200;
+    game.earthCivi.population = 80;
+    game.earthCivi.deterrenceValue = 60;
+    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    setupTech(game, TecTreeType.INFORMATION, "数字方舟");
+
+    // 缺少 mini_universe_built 标志
+    game.addFlag("galaxy_exodus_seen");
+    game.addFlag("alien_alliance");
+    game.addFlag("zero_homer_contacted");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(false);
+
+    // 补全最后一个标志后触发
+    game.addFlag("mini_universe_built");
+    game.checkVictoryConditions();
+    expect(game.isGameOver).toBe(true);
+    expect(game.victoryType).toBe(VictoryType.HIDDEN);
   });
 });

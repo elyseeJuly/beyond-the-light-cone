@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
+import { createFleet } from '../../core/Fleet';
+import { STAR_INDEX } from '../../config/starIndices';
 
 function setupGame() {
   GameInstance.reset();
@@ -190,5 +192,193 @@ describe('Cross-tree Technology Dependencies', () => {
     const engineNode = aerospaceTree?.getNode("行星发动机基础");
     expect(engineNode?.inResearch).toBeFalsy();
     expect(engineNode?.finished).toBeFalsy();
+  });
+});
+
+describe('Fleet & Colony System', () => {
+  let game: Game;
+
+  beforeEach(() => {
+    game = setupGame();
+  });
+
+  it('createFleet 创建不同航程的舰队', () => {
+    const fleet1 = createFleet('侦察舰队', '地球', 0, 0, 3, true);
+    expect(fleet1.name).toBe('侦察舰队');
+    expect(fleet1.eta).toBe(3);
+    expect(fleet1.totalEta).toBe(3);
+    expect(fleet1.weapons.length).toBeGreaterThan(0);
+    expect(fleet1.belongToCivi).toBe('地球');
+
+    const fleet2 = createFleet('主力舰队', '地球', 0, 0, 10, true);
+    expect(fleet2.eta).toBe(10);
+    expect(fleet2.totalEta).toBe(10);
+  });
+
+  it('派遣舰队到目标星系', () => {
+    const targetStar = game.starManager.getStar(5);
+    expect(targetStar).toBeDefined();
+
+    const fleet = createFleet('远征舰队', '地球', 3, 5, 5);
+    game.earthCivi.fleets.push(fleet);
+    expect(game.earthCivi.fleets.length).toBe(1);
+    expect(fleet.sourceStarIndex).toBe(3);
+    expect(fleet.targetStarIndex).toBe(5);
+  });
+
+  it('舰队抵达目标星系后ETA递减', () => {
+    const fleet = createFleet('打击舰队', '地球', 3, 5, 2);
+    game.earthCivi.fleets.push(fleet);
+
+    game.rng = () => 0.5;
+    (game.earthCivi as any).processFleets(game);
+    expect(fleet.eta).toBe(1);
+
+    (game.earthCivi as any).processFleets(game);
+    expect(fleet.eta).toBe(0);
+  });
+
+  it('舰队解散后从舰队数组中移除', () => {
+    const fleet1 = createFleet('舰队A', '地球', 0, 0, 3);
+    const fleet2 = createFleet('舰队B', '地球', 0, 0, 5);
+    game.earthCivi.fleets.push(fleet1, fleet2);
+    expect(game.earthCivi.fleets.length).toBe(2);
+
+    // Remove first fleet
+    game.earthCivi.fleets.splice(0, 1);
+    expect(game.earthCivi.fleets.length).toBe(1);
+    expect(game.earthCivi.fleets[0].name).toBe('舰队B');
+  });
+
+  it('创建殖民飞船', () => {
+    const colonyShip = createFleet('殖民飞船·方舟号', '地球', 3, 10, 8);
+    colonyShip.weapons = [];
+    game.earthCivi.fleets.push(colonyShip);
+    expect(game.earthCivi.fleets.length).toBe(1);
+    expect(game.earthCivi.fleets[0].weapons.length).toBe(0);
+    expect(colonyShip.name).toContain('殖民');
+    expect(colonyShip.targetStarIndex).toBe(10);
+  });
+
+  it('在恒星上建立殖民地', () => {
+    const star = game.starManager.getStar(5);
+    expect(star).toBeDefined();
+
+    game.earthCivi.starIndices.add(5);
+    star!.belongToCivi = '地球';
+    star!.populationLimit = 500;
+    star!.hasCity = true;
+
+    expect(game.earthCivi.starIndices.has(5)).toBe(true);
+    expect(star!.belongToCivi).toBe('地球');
+    expect(star!.hasCity).toBe(true);
+    expect(star!.populationLimit).toBe(500);
+  });
+
+  it('殖民地人口增长', () => {
+    const e = game.earthCivi;
+    const star = game.starManager.getStar(STAR_INDEX.EARTH)!;
+    star.populationLimit = 1000;
+    star.hasCity = true;
+
+    const beforePop = e.population;
+    game.rng = () => 0.5;
+    e.runARound();
+
+    expect(e.population).toBeGreaterThanOrEqual(beforePop);
+  });
+
+  it('殖民地资源贡献（采矿场）', () => {
+    const e = game.earthCivi;
+    const star = game.starManager.getStar(STAR_INDEX.EARTH)!;
+    star.hasStope = true;
+    star.currentResource = 500;
+    star.populationLimit = 1000;
+
+    const beforeResource = e.resource;
+    e.runARound();
+
+    // Mining should produce resources
+    expect(e.resource).toBeGreaterThanOrEqual(beforeResource);
+  });
+
+  it('多舰队在同一位置共存', () => {
+    const fleet1 = createFleet('舰队1', '地球', 3, 5, 3);
+    const fleet2 = createFleet('舰队2', '地球', 3, 5, 2);
+    game.earthCivi.fleets.push(fleet1, fleet2);
+
+    expect(game.earthCivi.fleets.length).toBe(2);
+    expect(fleet1.sourceStarIndex).toBe(fleet2.sourceStarIndex);
+    expect(fleet1.targetStarIndex).toBe(fleet2.targetStarIndex);
+  });
+
+  it('舰队在星系间的航行ETA缩减', () => {
+    const fleet = createFleet('星际舰队', '地球', 3, 10, 5);
+    game.earthCivi.fleets.push(fleet);
+
+    expect(fleet.eta).toBe(5);
+    game.rng = () => 0.5;
+    game.earthCivi.runARound();
+    expect(fleet.eta).toBe(4);
+  });
+
+  it('舰队携带指挥官', () => {
+    const fleet = createFleet('精英舰队', '地球', 3, 5, 3);
+    fleet.leaderName = '章北海';
+    game.earthCivi.fleets.push(fleet);
+
+    expect(fleet.leaderName).toBe('章北海');
+
+    // With a leader, processFleets should not error
+    game.rng = () => 0.5;
+    game.earthCivi.runARound();
+    expect(fleet.eta).toBe(2);
+  });
+
+  it('零战力舰队（无武器）抵达后不影响系统', () => {
+    const fleet = createFleet('民船', '地球', 3, 5, 0);
+    fleet.weapons = [];
+    game.earthCivi.fleets.push(fleet);
+
+    game.rng = () => 0.5;
+    expect(() => game.earthCivi.runARound()).not.toThrow();
+  });
+
+  it('大量舰队不影响系统运行', () => {
+    for (let i = 0; i < 20; i++) {
+      const fleet = createFleet(`舰队${i}`, '地球', 3, 5, 3 + i);
+      game.earthCivi.fleets.push(fleet);
+    }
+    expect(game.earthCivi.fleets.length).toBe(20);
+
+    game.rng = () => 0.5;
+    expect(() => game.earthCivi.runARound()).not.toThrow();
+    expect(game.earthCivi.fleets.length).toBe(20);
+  });
+
+  it('殖民地人口上限约束（maxPop = populationLimit * 3）', () => {
+    const e = game.earthCivi;
+    const star = game.starManager.getStar(STAR_INDEX.EARTH)!;
+    star.populationLimit = 100;
+
+    e.population = 500;
+    e.idlePopulation = 500;
+    e.idleWorkers = 500;
+    e.runARound();
+
+    // Population capped at 100 * 3 = 300
+    expect(e.population).toBeLessThanOrEqual(300);
+  });
+
+  it('舰队远征返回（source != target）', () => {
+    const fleet = createFleet('探索舰队', '地球', 10, 3, 3);
+    game.earthCivi.fleets.push(fleet);
+
+    expect(fleet.sourceStarIndex).toBe(10);
+    expect(fleet.targetStarIndex).toBe(3);
+
+    game.rng = () => 0.5;
+    game.earthCivi.runARound();
+    expect(fleet.eta).toBe(2);
   });
 });

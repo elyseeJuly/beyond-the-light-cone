@@ -36,9 +36,9 @@ diplomatic_crisis:    { name: "外交危机",       category: 'social',   isMile
 
 ## 二、项目问题检测与修复
 
-在测试通过后，通过 `tsc --noEmit` 对项目进行了完整的类型检查，发现 **6 个 TypeScript 错误**（均为未使用变量/导入），已全部修复。
+在两次测试完善轮次中，通过 `tsc --noEmit` 对项目进行了完整的类型检查，共发现并修复 **13 个 TypeScript 错误**（均为未使用变量/导入）。
 
-### 修复清单
+### 第一次修复清单 (2026-06-21 第一轮)
 
 | # | 文件 | 行号 | 错误类型 | 修复方式 |
 |---|------|------|----------|----------|
@@ -48,6 +48,18 @@ diplomatic_crisis:    { name: "外交危机",       category: 'social',   isMile
 | 4 | `src/test/core/RelationNetwork.test.ts` | 2 | `RelationType` imported but never used | 从 import 中移除 |
 | 5 | `src/test/core/TagManager.test.ts` | 176 | `key` declared but never read | 改用 `Object.values()` |
 | 6 | `src/types/narrative.ts` | 1 | `EpochType` imported but never used | 从 import 中移除 |
+
+### 第二次修复清单 (2026-06-21 第二轮)
+
+| # | 文件 | 行号 | 错误类型 | 修复方式 |
+|---|------|------|----------|----------|
+| 7 | `src/test/core/Civilization.test.ts` | 3 | `EpochType/TecTreeType/FriendshipType` imported but never used | 精简 import |
+| 8 | `src/test/integration/EventChain.test.ts` | 7 | `SliceNarrativeEngine` imported but never used | 移除未使用的导入 |
+| 9 | `src/test/integration/EventChain.test.ts` | 8 | `EventBus` imported but never used | 移除未使用的导入 |
+| 10 | `src/test/integration/EventChain.test.ts` | 258 | `afterEach` not imported | 添加 `afterEach` 到 vitest import |
+| 11 | `src/test/integration/EventChain.test.ts` | 328 | `chains1` declared but never read | 改用 `void` 调用表达式 |
+| 12 | `src/test/integration/EventChain.test.ts` | 333 | `chains2` declared but never read | 改用 `void` 调用表达式 |
+| 13 | `src/test/integration/EventChain.test.ts` | 409 | `ecoRestored` declared but never read | 移除变量绑定，直接调用 |
 
 ### 修复详情
 
@@ -112,12 +124,12 @@ import { EventEffect, EventLane, LoreDomain } from "./enums";
 
 | 检测项 | 结果 | 详情 |
 |--------|------|------|
-| **测试运行** | ✅ 全部通过 | 33 文件 / 514 测试 / 100% 通过率 |
+| **测试运行** | ✅ 全部通过 | 38 文件 / 810 测试 / 100% 通过率 |
 | **TypeScript 检查** | ✅ 零错误 | `tsc --noEmit` 通过 |
 | **生产构建** | ✅ 构建成功 | Vite build 完成，输出 dist/ |
 | **PWA 构建** | ✅ 正常 | Service Worker + Workbox 生成 |
 
 ## 四、结论
 
-- **测试对源代码的影响**: 极小。仅 TagManager.ts 新增了 2 个标签定义（+2 行），属于纯补充性改动，无副作用。
-- **项目质量问题**: 发现的 6 个问题均为未使用变量/导入，无逻辑性 Bug。修复后项目达到 **TypeScript 零错误**、**测试全通过**、**构建成功**的三重健康状态。
+- **测试对源代码的影响**: 极小。两轮完善仅 TagManager.ts 新增了 2 个标签定义（+2 行），属于纯补充性改动，无副作用。
+- **项目质量问题**: 两轮共发现并修复 13 个 TypeScript 错误，均为未使用变量/导入，无逻辑性 Bug。修复后项目达到 **TypeScript 零错误**、**测试全通过**、**构建成功**的三重健康状态。

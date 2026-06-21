@@ -1,4 +1,5 @@
 import { Civilization } from "./Civilization";
+import { StatisticsManager } from "./StatisticsManager";
 import { Department, createDepartment } from "./Department";
 import { DepartmentType, TecTreeType } from "../types/enums";
 import { GameInstance } from "./Game";
@@ -477,6 +478,7 @@ export class EarthCivilization extends Civilization {
             node.finished = true;
             node.inResearch = false;
             game.addHistory(`科技研发完成: ${node.name}`);
+            StatisticsManager.recordTechUnlock(node.name);
             game.eventBus.emitToWindow(GameEvents.TECH_COMPLETED, { techName: node.name, treeType });
           }
         }

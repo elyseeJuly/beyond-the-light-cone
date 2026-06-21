@@ -39,7 +39,7 @@ export const RightInspector: React.FC = () => {
 
   if (!star) {
     return (
-      <aside className="w-[320px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-l border-[#243245]/50 flex flex-col p-6 select-none shrink-0">
+      <aside className="sidebar-right w-[320px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-l border-[#243245]/50 flex flex-col p-6 select-none shrink-0">
         <p className="text-[var(--text-secondary)] text-sm font-mono">选择一颗星球以查看详情</p>
       </aside>
     );

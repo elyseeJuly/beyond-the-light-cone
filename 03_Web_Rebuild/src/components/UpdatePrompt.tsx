@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 interface UpdatePromptProps {
   // No props needed - reads from SW registration
@@ -12,47 +13,28 @@ interface UpdatePromptProps {
  * 符合 Update-1 规范：禁止强制刷新页面。
  */
 export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
-  const [showPrompt, setShowPrompt] = useState(false);
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+  const {
+    offlineReady: [, setOfflineReady],
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      console.log('[PWA] SW Registered', r);
+    },
+    onRegisterError(error) {
+      console.error('[PWA] SW registration error', error);
+    },
+  });
 
-  useEffect(() => {
-    // Listen for the 'sw-ready' custom event dispatched by the PWA plugin
-    const handleSWUpdate = (event: Event) => {
-      const detail = (event as CustomEvent).detail;
-      if (detail && detail.waiting) {
-        setWaitingWorker(detail.waiting);
-        setShowPrompt(true);
-      }
-    };
-
-    // Also hook into the standard service worker registration
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        // SW updated, reload to ensure everything is fresh
-        window.location.reload();
-      });
-    }
-
-    window.addEventListener('sw-ready', handleSWUpdate);
-
-    return () => {
-      window.removeEventListener('sw-ready', handleSWUpdate);
-    };
-  }, []);
-
-  const handleUpdate = () => {
-    if (waitingWorker) {
-      // Send skip waiting message to the waiting service worker
-      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
-    setShowPrompt(false);
+  const close = () => {
+    setOfflineReady(false);
+    setNeedRefresh(false);
   };
 
-  const handleDismiss = () => {
-    setShowPrompt(false);
-  };
+  // 离线就绪提示可以考虑做成 Toast，这里为了简单起见，我们主要关注更新提示
+  // 如果需要离线提示，也可以在这里实现
 
-  if (!showPrompt) return null;
+  if (!needRefresh) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-[10000] animate-fade-in">
@@ -70,13 +52,13 @@ export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
         </div>
         <div className="flex gap-2 mt-3 justify-end">
           <button
-            onClick={handleDismiss}
+            onClick={() => close()}
             className="px-3 py-1.5 text-xs text-[#8899BB] hover:text-[#DDEEFF] transition-colors rounded border border-[#1A3A6A]/30 hover:border-[#1A3A6A]"
           >
             稍后提醒
           </button>
           <button
-            onClick={handleUpdate}
+            onClick={() => updateServiceWorker(true)}
             className="px-3 py-1.5 text-xs text-white bg-[#1A3A6A] hover:bg-[#2A4A8A] transition-colors rounded font-medium"
           >
             立即更新

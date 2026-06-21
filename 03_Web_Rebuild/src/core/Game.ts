@@ -22,6 +22,7 @@ import { SliceNarrativeEngine } from "./SliceNarrativeEngine";
 import { EventBus } from "./EventBus";
 import { SaveManager, SaveDataCorruptedError } from "./SaveManager";
 import { AudioManager } from "./AudioManager";
+import { StatisticsManager } from "./StatisticsManager";
 
 export interface RngProvider {
   random(): number;
@@ -302,6 +303,11 @@ export class Game {
         }
         if (fullText.includes("归零者")) {
           this.addFlag("zeroers_contact");
+        }
+        
+        // Record event trigger in telemetry
+        if (evt.id || evt.name) {
+          StatisticsManager.recordEventTrigger(evt.id || evt.name);
         }
       });
 

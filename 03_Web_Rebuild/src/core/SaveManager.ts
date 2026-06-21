@@ -1,5 +1,6 @@
 import { VictoryType, DefeatType, EpochType } from "../types/enums";
 import { storage } from "./IndexedDBStorage";
+import { StatisticsManager } from "./StatisticsManager";
 
 /**
  * SaveManager - 独立存档管理器 (IndexedDB)
@@ -244,6 +245,9 @@ export class SaveManager {
     localStorage.setItem('LegendOfUni_EndingHistory', JSON.stringify(history));
     // Also store in IndexedDB asynchronously
     storage.setMeta('endingHistory', history).catch(() => {});
+    
+    // Sync to unified telemetry manager
+    StatisticsManager.recordEnding(record.victoryType, record.defeatType);
   }
 
   public static getEndingHistory(): EndingRecord[] {

@@ -8,11 +8,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      // Layer 1: 核心包 - 小体积 UI 图标（非 CG/立绘）包含在预缓存中
+      // 注意：CG/立绘/BGM 等扩展资源不在此处预缓存，
+      // 由 AssetLoader 在运行时按需下载（Layer 2）
       includeAssets: [
-        'images/*.png',
-        'audio/*.mp3',
-        'audio/*.ogg',
+        'icons/*.png',
       ],
       manifest: {
         name: '光锥之外：纪元往事',
@@ -47,37 +48,82 @@ export default defineConfig({
         // 核心资源：预缓存所有 JS/CSS/HTML/字体/UI图标
         globPatterns: ['**/*.{js,css,html,json,woff2,woff,ttf,eot,svg}'],
         // 扩展资源：图片和音频使用 StaleWhileRevalidate 策略（懒加载优先缓存）
+        // ==========================================================
+        // 三层缓存策略
+        // ==========================================================
+        //
+        // Layer 1 - 强缓存 (Core):
+        //   JS/CSS/HTML/字体/JSON → precache (永不删除)
+        //   由 globPatterns 处理
+        //
+        // Layer 2 - 可替换缓存 (Expansion):
+        //   图片 → CacheFirst (90天, 可替换)
+        //   音频 → StaleWhileRevalidate (90天, 可替换)
+        //   由运行时缓存处理
+        //
+        // Layer 3 - 临时缓存 (Patch):
+        //   资源清单 → NetworkFirst (总是验证最新)
+        //   热更补丁 → NetworkFirst (短生命周期)
+        // ==========================================================
+
         runtimeCaching: [
+          // Layer 2: CG/立绘/结局图 - CacheFirst 优先读缓存
           {
             urlPattern: /\/images\/.*\.(png|webp|jpg|jpeg|gif)/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'game-images',
+              cacheName: 'exp-images',
               expiration: {
                 maxEntries: 200,
                 maxAgeSeconds: 60 * 60 * 24 * 90 // 90天
               }
             }
           },
+          // Layer 2: BGM/音效 - StaleWhileRevalidate 保证播放不中断
           {
             urlPattern: /\/audio\/.*\.(mp3|ogg|wav)/i,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'game-audio',
+              cacheName: 'exp-audio',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90
+                maxAgeSeconds: 60 * 60 * 24 * 90 // 90天
               }
             }
           },
+          // Layer 2: 本地字体 - 长期缓存
           {
             urlPattern: /\/fonts\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'game-fonts',
+              cacheName: 'exp-fonts',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1年
+              }
+            }
+          },
+          // Layer 3: 资源清单 - NetworkFirst 确保清单总是最新
+          {
+            urlPattern: /\/asset_manifest\.json/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'patch-manifest',
+              expiration: {
+                maxEntries: 1,
+                maxAgeSeconds: 60 * 60 * 24 // 1天
+              }
+            }
+          },
+          // Layer 3: 补丁文件 - NetworkFirst 优先从网络获取
+          {
+            urlPattern: /\/patches\/.*\.json/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'patch-files',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 7天
               }
             }
           },
@@ -96,9 +142,6 @@ export default defineConfig({
         ],
         // 缓存版本控制：自动替换旧缓存
         cacheId: 'beyond-light-cone-v1.0.0',
-        // 跳过等待阶段，新 SW 安装后立即激活
-        skipWaiting: true,
-        clientsClaim: true,
         // 清理过期的缓存
         cleanupOutdatedCaches: true
       }

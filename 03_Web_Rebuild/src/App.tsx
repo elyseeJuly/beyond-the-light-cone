@@ -7,6 +7,7 @@ import { IntelligenceCenter } from './components/IntelligenceCenter';
 import { GovManagement } from './components/GovManagement';
 import { CivilizationArchive } from './components/CivilizationArchive';
 import { BottomEventBar } from './components/BottomEventBar';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { TecTreeView } from './ui/TecTreeView';
 import { TecTreeType } from './types/enums';
 import { StoryModal } from './components/StoryModal';
@@ -24,6 +25,7 @@ import { preloadCoreImages } from './utils/assetUrl';
 import { SettingsModal } from './components/SettingsModal';
 import { UpdatePrompt } from './components/UpdatePrompt';
 import { OrientationPrompt } from './components/OrientationPrompt';
+import { useBreakpoint } from './hooks/useBreakpoint';
 
 export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveViewType>('starmap');
@@ -36,8 +38,11 @@ export const App: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [unlockedTech, setUnlockedTech] = useState<{ name: string; treeType: string } | null>(null);
   const [currentEpoch, setCurrentEpoch] = useState(0);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   const atmosphereEngineRef = useRef<any>(null);
+  const bp = useBreakpoint();
+  const isMobile = bp.isMobile;
 
   useEffect(() => {
     preloadCoreImages();
@@ -58,7 +63,13 @@ export const App: React.FC = () => {
         setActiveView(view);
       }
     };
-    
+    const handleStarSelected = () => {
+      // On mobile, open the drawer when a star is selected
+      if (isMobile) {
+        setMobileDrawerOpen(true);
+      }
+    };
+
     window.addEventListener('open-tutorial', handleOpenTutorial);
     window.addEventListener('open-fleet-modal', handleOpenFleetModal);
     window.addEventListener('battle-triggered', handleBattleTriggered);
@@ -66,7 +77,8 @@ export const App: React.FC = () => {
     window.addEventListener('open-museum', handleOpenMuseum);
     window.addEventListener('game:tech:completed', handleTechCompleted);
     window.addEventListener('change-active-view', handleActiveViewChanged);
-    
+    window.addEventListener('star-selected', handleStarSelected);
+
     return () => {
       window.removeEventListener('open-tutorial', handleOpenTutorial);
       window.removeEventListener('open-fleet-modal', handleOpenFleetModal);
@@ -75,8 +87,9 @@ export const App: React.FC = () => {
       window.removeEventListener('open-museum', handleOpenMuseum);
       window.removeEventListener('game:tech:completed', handleTechCompleted);
       window.removeEventListener('change-active-view', handleActiveViewChanged);
+      window.removeEventListener('star-selected', handleStarSelected);
     };
-  }, []);
+  }, [isMobile]);
 
   // Listen for story events and game over
   useEffect(() => {
@@ -98,7 +111,7 @@ export const App: React.FC = () => {
     window.addEventListener('game-loaded', handleEvent);
     window.addEventListener('game-over', handleGameOver);
     window.addEventListener('observer-mode-activated', handleObserverMode);
-    
+
     // Auto-load on mount
     if (GameInstance.loadGame()) {
       console.log("Auto-loaded save data");
@@ -171,8 +184,8 @@ export const App: React.FC = () => {
   // Keyboard Shortcuts & Accessibility Controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (document.activeElement?.tagName === 'INPUT' || 
-          document.activeElement?.tagName === 'SELECT' || 
+      if (document.activeElement?.tagName === 'INPUT' ||
+          document.activeElement?.tagName === 'SELECT' ||
           document.activeElement?.tagName === 'TEXTAREA') {
         return;
       }
@@ -205,26 +218,11 @@ export const App: React.FC = () => {
       }
 
       // View switcher shortcuts
-      if (e.code === 'KeyM') {
-        e.preventDefault();
-        setActiveView('starmap');
-      }
-      if (e.code === 'KeyI') {
-        e.preventDefault();
-        setActiveView('intelligence');
-      }
-      if (e.code === 'KeyT') {
-        e.preventDefault();
-        setActiveView('techtree');
-      }
-      if (e.code === 'KeyG') {
-        e.preventDefault();
-        setActiveView('government');
-      }
-      if (e.code === 'KeyA') {
-        e.preventDefault();
-        setActiveView('archive');
-      }
+      if (e.code === 'KeyM') { e.preventDefault(); setActiveView('starmap'); }
+      if (e.code === 'KeyI') { e.preventDefault(); setActiveView('intelligence'); }
+      if (e.code === 'KeyT') { e.preventDefault(); setActiveView('techtree'); }
+      if (e.code === 'KeyG') { e.preventDefault(); setActiveView('government'); }
+      if (e.code === 'KeyA') { e.preventDefault(); setActiveView('archive'); }
 
       // Fleet center: F
       if (e.code === 'KeyF') {
@@ -232,17 +230,17 @@ export const App: React.FC = () => {
         window.dispatchEvent(new CustomEvent('open-fleet-modal'));
       }
 
-      // Escape key: Close modals
+      // Escape key: Close modals and mobile drawer
       if (e.code === 'Escape') {
         e.preventDefault();
+        if (isMobile && mobileDrawerOpen) {
+          setMobileDrawerOpen(false);
+          return;
+        }
         const fleetCloseBtn = document.querySelector('.fleet-modal-close-btn') as HTMLButtonElement | null;
-        if (fleetCloseBtn) {
-          fleetCloseBtn.click();
-        }
+        if (fleetCloseBtn) fleetCloseBtn.click();
         const tutorialCloseBtn = document.querySelector('.tutorial-modal-close-btn') as HTMLButtonElement | null;
-        if (tutorialCloseBtn) {
-          tutorialCloseBtn.click();
-        }
+        if (tutorialCloseBtn) tutorialCloseBtn.click();
         setUnlockedTech(null);
       }
 
@@ -256,13 +254,45 @@ export const App: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeView, isGameOver]);
+  }, [activeView, isGameOver, isMobile, mobileDrawerOpen]);
+
+  // Render the center viewport content based on active view
+  const renderCenterView = () => {
+    if (activeView === 'starmap') {
+      return (
+        <>
+          <StarMap />
+          <canvas id="star-canvas-react" className="absolute inset-0 w-full h-full pointer-events-none" />
+        </>
+      );
+    }
+    if (activeView === 'techtree') {
+      return (
+        <div className="h-full w-full overflow-y-auto">
+          <div className="p-4 sm:p-6 md:p-8">
+            <div className="max-w-6xl mx-auto">
+              <div className="mb-6 md:mb-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)]">科技研发中心</h1>
+                <p className="text-sm md:text-base text-[var(--text-secondary)] mt-2">基础物理已被锁定，重点转向应用技术与太空作战理论。</p>
+              </div>
+              <div id="tech-tree-container" className="min-h-[400px] md:min-h-[500px]">
+                {/* Tech tree content will be rendered here by legacy logic */}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (activeView === 'intelligence') return <IntelligenceCenter />;
+    if (activeView === 'government') return <GovManagement />;
+    return <CivilizationArchive />;
+  };
 
   return (
     <ErrorBoundary>
       <AtmosphereProvider engineRef={atmosphereEngineRef}>
         <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
-          
+
           {/* Story Modal - Rendered globally */}
           {currentEvent && (
             <StoryModal
@@ -275,78 +305,64 @@ export const App: React.FC = () => {
             />
           )}
 
-          {showTutorial && (
-            <Tutorial onComplete={() => setShowTutorial(false)} />
-          )}
-
-          {unlockedTech && (
-            <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />
-          )}
-
-          {showFleetModal && (
-            <FleetModal onClose={() => setShowFleetModal(false)} />
-          )}
-
-          {showBattleScreen && (
-            <BattleScreen onClose={() => setShowBattleScreen(false)} />
-          )}
-
+          {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
+          {unlockedTech && <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />}
+          {showFleetModal && <FleetModal onClose={() => setShowFleetModal(false)} />}
+          {showBattleScreen && <BattleScreen onClose={() => setShowBattleScreen(false)} />}
           {isGameOver && <EndGameScreen />}
-
-          {showMuseum && (
-            <MuseumGallery onClose={() => setShowMuseum(false)} />
-          )}
-
-          {showSettings && (
-            <SettingsModal onClose={() => setShowSettings(false)} />
-          )}
+          {showMuseum && <MuseumGallery onClose={() => setShowMuseum(false)} />}
+          {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
 
           {/* PWA Components */}
           <UpdatePrompt />
           <OrientationPrompt />
 
-          {/* Top HUD (72px height) */}
+          {/* Top HUD */}
           <TopHUD />
 
           {/* Main Layout Body */}
           <main className="flex-1 flex overflow-hidden">
-            {/* Left Hub (240px width) */}
-            <LeftHub activeView={activeView} setActiveView={setActiveView} />
+            {/* Left Sidebar — visible on tablet+, hidden on mobile (replaced by MobileBottomNav) */}
+            {!isMobile && (
+              <LeftHub activeView={activeView} setActiveView={setActiveView} />
+            )}
 
             {/* Dynamic Center Viewport */}
             <div className="flex-1 relative overflow-hidden bg-black/25">
-              {activeView === 'starmap' ? (
-                <>
-                  <StarMap />
-                  <canvas id="star-canvas-react" className="absolute inset-0 w-full h-full pointer-events-none" />
-                </>
-              ) : activeView === 'techtree' ? (
-                <div className="h-full w-full p-8 overflow-y-auto">
-                  <div className="max-w-6xl mx-auto">
-                    <div className="mb-8">
-                      <h1 className="text-3xl font-bold text-[var(--color-primary)]">科技研发中心</h1>
-                      <p className="text-[var(--text-secondary)] mt-2">基础物理已被锁定，重点转向应用技术与太空作战理论。</p>
-                    </div>
-                    <div id="tech-tree-container" className="min-h-[500px]">
-                      {/* Tech tree content will be rendered here by legacy logic */}
-                    </div>
-                  </div>
-                </div>
-              ) : activeView === 'intelligence' ? (
-                <IntelligenceCenter />
-              ) : activeView === 'government' ? (
-                <GovManagement />
-              ) : (
-                <CivilizationArchive />
-              )}
+              {renderCenterView()}
             </div>
 
-            {/* Right Contextual Inspector (320px width) */}
-            <RightInspector />
+            {/* Right Inspector — sidebar on tablet+, drawer on mobile */}
+            {!isMobile ? (
+              <RightInspector />
+            ) : (
+              <>
+                {/* Drawer overlay + panel for mobile */}
+                {mobileDrawerOpen && (
+                  <div className="drawer-overlay" onClick={() => setMobileDrawerOpen(false)} />
+                )}
+                <div className={`${mobileDrawerOpen ? 'drawer-panel' : 'hidden'}`}>
+                  <div className="flex justify-end p-3">
+                    <button
+                      onClick={() => setMobileDrawerOpen(false)}
+                      className="text-[var(--text-secondary)] hover:text-white text-sm px-3 py-1 rounded hover:bg-white/5 transition-colors cursor-pointer"
+                    >
+                      ✕ 关闭
+                    </button>
+                  </div>
+                  <RightInspector />
+                </div>
+              </>
+            )}
           </main>
 
-          {/* Bottom Event Bar (40px height) */}
+          {/* Bottom Event Bar */}
           <BottomEventBar />
+
+          {/* Mobile Bottom Navigation — only on mobile */}
+          {isMobile && (
+            <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
+          )}
 
           {/* Legacy Modal System Bridge */}
           <div id="modal-container" className="modal-overlay hidden">
@@ -361,7 +377,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Global Scanline Overlay (2s cycle from top to bottom, 3% opacity) */}
+          {/* Global Scanline Overlay */}
           <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
             <div className="absolute inset-x-0 h-[3px] bg-white/5 opacity-[0.03] animate-scan-line-global" />
           </div>

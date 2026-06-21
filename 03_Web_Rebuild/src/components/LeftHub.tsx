@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, Cpu, Landmark, Archive, Radio, AlertTriangle, Settings } from 'lucide-react';
+import { Map, Cpu, Landmark, Archive, Radio, AlertTriangle, Settings, MessageSquare } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { t } from '../utils/i18n';
 import { BgmPlayer } from './BgmPlayer';
@@ -73,7 +73,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
   }, []);
 
   return (
-    <aside className="w-[240px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-r border-[#243245]/50 flex flex-col justify-between select-none">
+    <aside className="sidebar-left w-[240px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-r border-[#243245]/50 flex flex-col justify-between select-none shrink-0">
       {/* Navigation Menu */}
       <div className="p-4 flex flex-col gap-1.5">
         <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3 px-3">
@@ -168,13 +168,22 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         <div className="flex items-center justify-between gap-1 border-t border-[#243245]/20 pt-3 mt-2 shrink-0">
           <BgmPlayer isGameOver={false} epoch={epoch} />
           
-          <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))} 
-            className="p-2 hover:bg-white/5 rounded text-[var(--text-secondary)] hover:text-white cursor-pointer transition-colors"
-            title="系统设置"
-          >
-            <Settings size={15} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button 
+              onClick={() => window.open('https://github.com/elyseeJuly/beyond-the-light-cone/issues', '_blank')} 
+              className="p-2 hover:bg-white/5 rounded text-[var(--text-secondary)] hover:text-[var(--color-primary)] cursor-pointer transition-colors"
+              title="反馈问题与建议"
+            >
+              <MessageSquare size={15} />
+            </button>
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))} 
+              className="p-2 hover:bg-white/5 rounded text-[var(--text-secondary)] hover:text-white cursor-pointer transition-colors"
+              title="系统设置"
+            >
+              <Settings size={15} />
+            </button>
+          </div>
         </div>
       </div>
     </aside>

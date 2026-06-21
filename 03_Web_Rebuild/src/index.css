@@ -66,6 +66,11 @@
     font-family: var(--font-base);
     @apply overflow-hidden h-screen w-screen;
     transition: background-color 0.5s ease, color 0.5s ease;
+    /* Safe area for iPhone notch and home indicator */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   h1, h2, h3, h4 {
@@ -221,6 +226,68 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-black/20 dark:bg-white/20;
+}
+
+/* ============== Responsive Layout Utilities ============== */
+
+/* Mobile bottom navigation bar */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background: rgba(7, 11, 20, 0.9);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(36, 50, 69, 0.5);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px 0;
+  padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+  height: 56px;
+}
+
+/* Drawer overlay for right inspector on mobile */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  animation: fade-in 0.2s ease-out;
+}
+
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 85vw;
+  max-width: 360px;
+  z-index: 951;
+  background: rgba(7, 11, 20, 0.97);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(36, 50, 69, 0.5);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.5);
+  animation: slide-in-right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Responsive: side panels use clamp for fluid width on tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar-left {
+    width: clamp(160px, 22vw, 200px) !important;
+  }
+  .sidebar-right {
+    width: clamp(240px, 30vw, 280px) !important;
+  }
 }
 
 /* ============== Modal System ============== */

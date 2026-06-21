@@ -1,11 +1,11 @@
 {
   "name": "legend-of-uni-web",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.9.0-beta",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run generate-manifest && tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -18,8 +18,9 @@
     "tauri:build": "tauri build",
     "tauri:build:win": "tauri build --target x86_64-pc-windows-msvc",
     "tauri:build:mac": "tauri build --target aarch64-apple-darwin",
-    "deploy": "npm run build && npx gh-pages -d dist -b gh-pages",
+    "deploy": "gh-pages -d dist",
     "generate-icons": "node scripts/generate-icons.mjs",
+    "generate-manifest": "node scripts/generate-manifest.mjs",
     "pwa:build": "npm run generate-icons && npm run build"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "^4.1.6",
     "autoprefixer": "^10.5.0",
+    "gh-pages": "^6.3.0",
     "jsdom": "^29.1.1",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0",

@@ -128,24 +128,24 @@ export const TopHUD: React.FC = () => {
   }, []);
 
   return (
-    <header className="h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-6 z-50 select-none relative">
+    <header className="h-[56px] sm:h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-3 sm:px-6 z-50 select-none relative">
       {/* Dynamic scanline overlay for Top HUD */}
       <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent" />
 
       {/* Left: Civilization Attributes */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-0 sm:gap-1.5">
         {/* Stability with click dropdown */}
         <div className="relative" ref={dropdownRef}>
           <TopHUDStatItem 
-            icon={<Landmark className="w-3.5 h-3.5 stroke-[1.5]" />}
+            icon={<Landmark className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />}
             label="稳定度"
             value={`${stats.stability}%`}
             colorClass={stabilityColor}
             onClick={() => setShowStabilityDropdown(!showStabilityDropdown)}
-            className={showStabilityDropdown ? "bg-white/5" : ""}
+            className={`${showStabilityDropdown ? "bg-white/5" : ""} px-2 sm:px-4`}
           />
           {showStabilityDropdown && (
-            <div className="absolute top-[52px] left-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
+            <div className="absolute top-[40px] sm:top-[52px] left-0 w-48 sm:w-52 bg-[#070B14]/95 border border-[#243245] rounded p-3 sm:p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
               <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-2 uppercase tracking-wider">
                 文明发展指标详情
               </div>
@@ -177,52 +177,57 @@ export const TopHUD: React.FC = () => {
         </div>
 
         <TopHUDStatItem 
-          icon={<Users className="w-3.5 h-3.5 stroke-[1.5]" />}
+          icon={<Users className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />}
           label="人口"
           value={`${stats.pop}M`}
+          className="px-2 sm:px-4 hidden sm:flex"
         />
 
         <TopHUDStatItem 
-          icon={<Gem className="w-3.5 h-3.5 stroke-[1.5]" />}
+          icon={<Gem className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />}
           label="资源"
           value={stats.res}
+          className="px-2 sm:px-4 hidden md:flex"
         />
 
         <TopHUDStatItem 
-          icon={<Swords className="w-3.5 h-3.5 stroke-[1.5]" />}
+          icon={<Swords className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />}
           label="军力"
           value={stats.army}
+          className="px-2 sm:px-4 hidden md:flex"
         />
 
         <TopHUDStatItem 
-          icon={<AlertTriangle className="w-3.5 h-3.5 stroke-[1.5]" />}
+          icon={<AlertTriangle className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />}
           label="威慑度"
           value={stats.deterrence}
           colorClass="text-red-400"
+          className="px-2 sm:px-4"
         />
       </div>
 
       {/* Center: Prominent Era and Year Display */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center font-title text-center">
-        <span className="text-[9px] font-bold text-[var(--color-primary)] tracking-[0.35em] uppercase opacity-90">
+      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center font-title text-center pointer-events-none">
+        <span className="text-[7px] sm:text-[9px] font-bold text-[var(--color-primary)] tracking-[0.2em] sm:tracking-[0.35em] uppercase opacity-90">
           {stats.epochNameEn}
         </span>
-        <span className="text-lg font-extrabold tracking-widest text-[var(--text-primary)] mt-0.5">
+        <span className="text-xs sm:text-lg font-extrabold tracking-wider sm:tracking-widest text-[var(--text-primary)] mt-0">
           {stats.epochName} · 第 {stats.year} 年
         </span>
       </div>
 
       {/* Right: Operations Block */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <button 
           onClick={handleNextTurn} 
           disabled={GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver}
-          className={`btn-next-turn flex items-center gap-2 ${(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver) ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}`}
+          className={`btn-next-turn flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-1 sm:py-2 text-[10px] sm:text-xs ${(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver) ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}`}
         >
-          <span className="text-xs font-title font-bold tracking-wider">
-            {(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0) ? "同步逻辑中" : "下一回合"}
+          <span className="font-title font-bold tracking-wider">
+            {(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0) ? "同步中" : "下一回合"}
           </span>
-          <SkipForward size={14} className="stroke-[2.5]" />
+          <SkipForward size={12} className="sm:hidden stroke-[2.5]" />
+          <SkipForward size={14} className="hidden sm:block stroke-[2.5]" />
         </button>
       </div>
     </header>

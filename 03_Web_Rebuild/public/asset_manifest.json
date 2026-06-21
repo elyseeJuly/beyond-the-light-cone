@@ -1,0 +1,1747 @@
+{
+  "version": "1.0.0",
+  "gameVersion": "1.0.0",
+  "generatedAt": 1782016841584,
+  "core": [
+    {
+      "id": "character_default",
+      "path": "images/character_default.png",
+      "type": "ui",
+      "size": 872447,
+      "hash": "56aac3d6"
+    }
+  ],
+  "expansion": {
+    "assets": [
+      {
+        "id": "README",
+        "path": "audio/README.md",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 62,
+        "displayName": "README",
+        "hash": "27f652d3",
+        "isDefault": false
+      },
+      {
+        "id": "death_of_the_light_cone",
+        "path": "audio/death_of_the_light_cone.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4343237,
+        "displayName": "death_of_the_light_cone",
+        "hash": "6d8479df",
+        "isDefault": false
+      },
+      {
+        "id": "era_broadcast",
+        "path": "audio/era_broadcast.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 3716925,
+        "displayName": "era_broadcast",
+        "hash": "7b7b3c7b",
+        "isDefault": false
+      },
+      {
+        "id": "era_bunker",
+        "path": "audio/era_bunker.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 4028514,
+        "displayName": "era_bunker",
+        "hash": "16b8ea74",
+        "isDefault": false
+      },
+      {
+        "id": "era_crisis",
+        "path": "audio/era_crisis.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 3953908,
+        "displayName": "era_crisis",
+        "hash": "7f3bc4ed",
+        "isDefault": false
+      },
+      {
+        "id": "era_deterrence",
+        "path": "audio/era_deterrence.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 4341983,
+        "displayName": "era_deterrence",
+        "hash": "7a92cee",
+        "isDefault": false
+      },
+      {
+        "id": "era_galaxy",
+        "path": "audio/era_galaxy.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 4362045,
+        "displayName": "era_galaxy",
+        "hash": "45bb7dd9",
+        "isDefault": false
+      },
+      {
+        "id": "era_stardust",
+        "path": "audio/era_stardust.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "stardust_era"
+        ],
+        "era": "stardust_era",
+        "size": 3688086,
+        "displayName": "era_stardust",
+        "hash": "6c1d7086",
+        "isDefault": false
+      },
+      {
+        "id": "fate_beyond_the_light_cone",
+        "path": "audio/fate_beyond_the_light_cone.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4284932,
+        "displayName": "fate_beyond_the_light_cone",
+        "hash": "434d885b",
+        "isDefault": false
+      },
+      {
+        "id": "ghost_in_the_quantum",
+        "path": "audio/ghost_in_the_quantum.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 4328191,
+        "displayName": "ghost_in_the_quantum",
+        "hash": "4d5a0df",
+        "isDefault": false
+      },
+      {
+        "id": "stardust Exodus",
+        "path": "audio/stardust Exodus.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "stardust_era"
+        ],
+        "era": "stardust_era",
+        "size": 4277409,
+        "displayName": "stardust Exodus",
+        "hash": "12878705",
+        "isDefault": false
+      },
+      {
+        "id": "the_last_archive",
+        "path": "audio/the_last_archive.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4362672,
+        "displayName": "the_last_archive",
+        "hash": "378a3f93",
+        "isDefault": false
+      },
+      {
+        "id": "years_base",
+        "path": "audio/years_base.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4235404,
+        "displayName": "years_base",
+        "hash": "533d57bc",
+        "isDefault": false
+      },
+      {
+        "id": "cg_australia_migration",
+        "path": "images/cg_australia_migration.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 7793352,
+        "displayName": "australia_migration",
+        "hash": "3a050a47",
+        "isDefault": false
+      },
+      {
+        "id": "cg_beihai_assassination",
+        "path": "images/cg_beihai_assassination.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 118005,
+        "displayName": "beihai_assassination",
+        "hash": "7e2dbeee",
+        "isDefault": false
+      },
+      {
+        "id": "cg_bunker_world",
+        "path": "images/cg_bunker_world.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 6732936,
+        "displayName": "bunker_world",
+        "hash": "2a5427ca",
+        "isDefault": false
+      },
+      {
+        "id": "cg_crisis_start",
+        "path": "images/cg_crisis_start.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 6918032,
+        "displayName": "crisis_start",
+        "hash": "29a29df7",
+        "isDefault": false
+      },
+      {
+        "id": "cg_dark_battle",
+        "path": "images/cg_dark_battle.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 112821,
+        "displayName": "dark_battle",
+        "hash": "6c160ee6",
+        "isDefault": false
+      },
+      {
+        "id": "cg_deterrence_broken",
+        "path": "images/cg_deterrence_broken.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 6985903,
+        "displayName": "deterrence_broken",
+        "hash": "7165df1b",
+        "isDefault": false
+      },
+      {
+        "id": "cg_deterrence_established",
+        "path": "images/cg_deterrence_established.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 7543470,
+        "displayName": "deterrence_established",
+        "hash": "469f0004",
+        "isDefault": false
+      },
+      {
+        "id": "cg_dimensional_strike",
+        "path": "images/cg_dimensional_strike.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 6636474,
+        "displayName": "dimensional_strike",
+        "hash": "7ac91bc8",
+        "isDefault": false
+      },
+      {
+        "id": "cg_doomsday_battle",
+        "path": "images/cg_doomsday_battle.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 155800,
+        "displayName": "doomsday_battle",
+        "hash": "8433b34",
+        "isDefault": false
+      },
+      {
+        "id": "cg_droplet_attack",
+        "path": "images/cg_droplet_attack.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 7556041,
+        "displayName": "droplet_attack",
+        "hash": "39e7f63",
+        "isDefault": false
+      },
+      {
+        "id": "cg_eto_founded",
+        "path": "images/cg_eto_founded.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 130940,
+        "displayName": "eto_founded",
+        "hash": "45fa3db7",
+        "isDefault": false
+      },
+      {
+        "id": "cg_galaxy_era",
+        "path": "images/cg_galaxy_era.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 7871025,
+        "displayName": "galaxy_era",
+        "hash": "34ba151d",
+        "isDefault": false
+      },
+      {
+        "id": "cg_ghost_countdown",
+        "path": "images/cg_ghost_countdown.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 92004,
+        "displayName": "ghost_countdown",
+        "hash": "20fce3a",
+        "isDefault": false
+      },
+      {
+        "id": "cg_gravitational_broadcast",
+        "path": "images/cg_gravitational_broadcast.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 8529179,
+        "displayName": "gravitational_broadcast",
+        "hash": "478ff4e8",
+        "isDefault": false
+      },
+      {
+        "id": "cg_great_ravine",
+        "path": "images/cg_great_ravine.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 136745,
+        "displayName": "great_ravine",
+        "hash": "6626361b",
+        "isDefault": false
+      },
+      {
+        "id": "cg_great_ravine_ended",
+        "path": "images/cg_great_ravine_ended.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 168883,
+        "displayName": "great_ravine_ended",
+        "hash": "540050dc",
+        "isDefault": false
+      },
+      {
+        "id": "cg_guzheng",
+        "path": "images/cg_guzheng.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 6462549,
+        "displayName": "guzheng",
+        "hash": "4fa7f6a2",
+        "isDefault": false
+      },
+      {
+        "id": "cg_moon_crisis",
+        "path": "images/cg_moon_crisis.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 7777282,
+        "displayName": "moon_crisis",
+        "hash": "5704e2d5",
+        "isDefault": false
+      },
+      {
+        "id": "cg_pluto_museum",
+        "path": "images/cg_pluto_museum.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 8166751,
+        "displayName": "pluto_museum",
+        "hash": "4ab7ba19",
+        "isDefault": false
+      },
+      {
+        "id": "cg_red_shore_base",
+        "path": "images/cg_red_shore_base.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 122498,
+        "displayName": "red_shore_base",
+        "hash": "2aac7c77",
+        "isDefault": false
+      },
+      {
+        "id": "cg_reydiaz_breached",
+        "path": "images/cg_reydiaz_breached.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 130697,
+        "displayName": "reydiaz_breached",
+        "hash": "772ef5d9",
+        "isDefault": false
+      },
+      {
+        "id": "cg_solar_system_flattened",
+        "path": "images/cg_solar_system_flattened.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 7167662,
+        "displayName": "solar_system_flattened",
+        "hash": "66196f30",
+        "isDefault": false
+      },
+      {
+        "id": "cg_stardust_era",
+        "path": "images/cg_stardust_era.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "stardust_era"
+        ],
+        "era": "stardust_era",
+        "size": 7453683,
+        "displayName": "stardust_era",
+        "hash": "4f63ad19",
+        "isDefault": false
+      },
+      {
+        "id": "cg_swordholder_handover",
+        "path": "images/cg_swordholder_handover.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 7154595,
+        "displayName": "swordholder_handover",
+        "hash": "4d5c2809",
+        "isDefault": false
+      },
+      {
+        "id": "cg_tech_exchange",
+        "path": "images/cg_tech_exchange.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 7939202,
+        "displayName": "tech_exchange",
+        "hash": "5f6fdd60",
+        "isDefault": false
+      },
+      {
+        "id": "cg_tech_explosion",
+        "path": "images/cg_tech_explosion.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 193175,
+        "displayName": "tech_explosion",
+        "hash": "277817fa",
+        "isDefault": false
+      },
+      {
+        "id": "cg_thought_seal",
+        "path": "images/cg_thought_seal.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 108570,
+        "displayName": "thought_seal",
+        "hash": "46b68b0e",
+        "isDefault": false
+      },
+      {
+        "id": "cg_trisolaris_destroyed",
+        "path": "images/cg_trisolaris_destroyed.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 7571307,
+        "displayName": "trisolaris_destroyed",
+        "hash": "33c2d6ae",
+        "isDefault": false
+      },
+      {
+        "id": "cg_trisolaris_fleet_escaped",
+        "path": "images/cg_trisolaris_fleet_escaped.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 7395059,
+        "displayName": "trisolaris_fleet_escaped",
+        "hash": "30eb59ad",
+        "isDefault": false
+      },
+      {
+        "id": "cg_trisolaris_reply",
+        "path": "images/cg_trisolaris_reply.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 131754,
+        "displayName": "trisolaris_reply",
+        "hash": "35933ae8",
+        "isDefault": false
+      },
+      {
+        "id": "cg_tyler_breached",
+        "path": "images/cg_tyler_breached.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 119496,
+        "displayName": "tyler_breached",
+        "hash": "15759369",
+        "isDefault": false
+      },
+      {
+        "id": "cg_wade_coup",
+        "path": "images/cg_wade_coup.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "stardust_era"
+        ],
+        "era": "stardust_era",
+        "size": 8384510,
+        "displayName": "wade_coup",
+        "hash": "79e9b5fe",
+        "isDefault": false
+      },
+      {
+        "id": "cg_wade_executed",
+        "path": "images/cg_wade_executed.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 6923280,
+        "displayName": "wade_executed",
+        "hash": "3cabf363",
+        "isDefault": false
+      },
+      {
+        "id": "cg_wandering_earth",
+        "path": "images/cg_wandering_earth.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "broadcast_era"
+        ],
+        "era": "broadcast_era",
+        "size": 7177906,
+        "displayName": "wandering_earth",
+        "hash": "18120a05",
+        "isDefault": false
+      },
+      {
+        "id": "cg_yangdong_suicide",
+        "path": "images/cg_yangdong_suicide.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "unknown"
+        ],
+        "size": 93547,
+        "displayName": "yangdong_suicide",
+        "hash": "15d94274",
+        "isDefault": false
+      },
+      {
+        "id": "cg_yewenjie_signal",
+        "path": "images/cg_yewenjie_signal.png",
+        "type": "cg",
+        "tags": [
+          "cg",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 119323,
+        "displayName": "yewenjie_signal",
+        "hash": "32a41890",
+        "isDefault": false
+      },
+      {
+        "id": "ending_conquest",
+        "path": "images/ending_conquest.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 7584026,
+        "displayName": "conquest",
+        "hash": "1a865979",
+        "isDefault": false
+      },
+      {
+        "id": "ending_dark_domain",
+        "path": "images/ending_dark_domain.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 6261365,
+        "displayName": "dark_domain",
+        "hash": "c25fcf5",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_dimension_strike",
+        "path": "images/ending_defeat_dimension_strike.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 6636474,
+        "displayName": "defeat_dimension_strike",
+        "hash": "50839a0c",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_extinction",
+        "path": "images/ending_defeat_extinction.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 7758429,
+        "displayName": "defeat_extinction",
+        "hash": "41165038",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_helium_flash",
+        "path": "images/ending_defeat_helium_flash.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 7083121,
+        "displayName": "defeat_helium_flash",
+        "hash": "71fb2cea",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_treachery",
+        "path": "images/ending_defeat_treachery.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 7570136,
+        "displayName": "defeat_treachery",
+        "hash": "6a9de7e9",
+        "isDefault": false
+      },
+      {
+        "id": "ending_deterrence",
+        "path": "images/ending_deterrence.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 6716171,
+        "displayName": "deterrence",
+        "hash": "7fb862ab",
+        "isDefault": false
+      },
+      {
+        "id": "ending_digital",
+        "path": "images/ending_digital.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 8424074,
+        "displayName": "digital",
+        "hash": "89e4d74",
+        "isDefault": false
+      },
+      {
+        "id": "ending_hidden",
+        "path": "images/ending_hidden.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 4597295,
+        "displayName": "hidden",
+        "hash": "7cfd838e",
+        "isDefault": false
+      },
+      {
+        "id": "ending_wandering",
+        "path": "images/ending_wandering.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 6522602,
+        "displayName": "wandering",
+        "hash": "7458a99f",
+        "isDefault": false
+      },
+      {
+        "id": "npc_ai_terminal",
+        "path": "images/npc_ai_terminal.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 1010925,
+        "displayName": "ai_terminal",
+        "hash": "76a0bc12",
+        "isDefault": false
+      },
+      {
+        "id": "npc_civilian",
+        "path": "images/npc_civilian.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 1093076,
+        "displayName": "civilian",
+        "hash": "3dd3619a",
+        "isDefault": false
+      },
+      {
+        "id": "npc_comms_officer",
+        "path": "images/npc_comms_officer.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 774572,
+        "displayName": "comms_officer",
+        "hash": "594e45f7",
+        "isDefault": false
+      },
+      {
+        "id": "npc_engineer",
+        "path": "images/npc_engineer.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 917568,
+        "displayName": "engineer",
+        "hash": "66112e00",
+        "isDefault": false
+      },
+      {
+        "id": "npc_medic",
+        "path": "images/npc_medic.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 982647,
+        "displayName": "medic",
+        "hash": "60c4aa97",
+        "isDefault": false
+      },
+      {
+        "id": "npc_merchant",
+        "path": "images/npc_merchant.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 943033,
+        "displayName": "merchant",
+        "hash": "17691c07",
+        "isDefault": false
+      },
+      {
+        "id": "npc_military_commander",
+        "path": "images/npc_military_commander.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 1032659,
+        "displayName": "military_commander",
+        "hash": "31853f1d",
+        "isDefault": false
+      },
+      {
+        "id": "npc_official",
+        "path": "images/npc_official.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 901786,
+        "displayName": "official",
+        "hash": "4a11b97f",
+        "isDefault": false
+      },
+      {
+        "id": "npc_police",
+        "path": "images/npc_police.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 1086245,
+        "displayName": "police",
+        "hash": "4234a1a1",
+        "isDefault": false
+      },
+      {
+        "id": "npc_politician",
+        "path": "images/npc_politician.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 937373,
+        "displayName": "politician",
+        "hash": "2c9f432f",
+        "isDefault": false
+      },
+      {
+        "id": "npc_rebel",
+        "path": "images/npc_rebel.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 884162,
+        "displayName": "rebel",
+        "hash": "60f1f374",
+        "isDefault": false
+      },
+      {
+        "id": "npc_refugee",
+        "path": "images/npc_refugee.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 986891,
+        "displayName": "refugee",
+        "hash": "175f665",
+        "isDefault": false
+      },
+      {
+        "id": "npc_scientist",
+        "path": "images/npc_scientist.png",
+        "type": "npc",
+        "tags": [
+          "npc",
+          "unknown"
+        ],
+        "size": 1137958,
+        "displayName": "scientist",
+        "hash": "3781b7d",
+        "isDefault": false
+      },
+      {
+        "id": "unified_aiaa_1779691888124",
+        "path": "images/unified_aiaa_1779691888124.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 861804,
+        "displayName": "aiaa_1779691888124",
+        "hash": "2445797b",
+        "isDefault": false
+      },
+      {
+        "id": "unified_baibing_1779713036549",
+        "path": "images/unified_baibing_1779713036549.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1052701,
+        "displayName": "baibing_1779713036549",
+        "hash": "2f8cdd95",
+        "isDefault": false
+      },
+      {
+        "id": "unified_beihai_1778921366897",
+        "path": "images/unified_beihai_1778921366897.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 915009,
+        "displayName": "beihai_1778921366897",
+        "hash": "19f384dd",
+        "isDefault": false
+      },
+      {
+        "id": "unified_changweisi_1779691759159",
+        "path": "images/unified_changweisi_1779691759159.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1003285,
+        "displayName": "changweisi_1779691759159",
+        "hash": "463d0908",
+        "isDefault": false
+      },
+      {
+        "id": "unified_chengxin_1778921400346",
+        "path": "images/unified_chengxin_1778921400346.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 797985,
+        "displayName": "chengxin_1778921400346",
+        "hash": "71d77b00",
+        "isDefault": false
+      },
+      {
+        "id": "unified_dashi_1778921331273",
+        "path": "images/unified_dashi_1778921331273.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1051369,
+        "displayName": "dashi_1778921331273",
+        "hash": "577f29c7",
+        "isDefault": false
+      },
+      {
+        "id": "unified_dingyi_1779691512032",
+        "path": "images/unified_dingyi_1779691512032.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 894379,
+        "displayName": "dingyi_1779691512032",
+        "hash": "ce8e78",
+        "isDefault": false
+      },
+      {
+        "id": "unified_dongfang_1779691773663",
+        "path": "images/unified_dongfang_1779691773663.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1010585,
+        "displayName": "dongfang_1779691773663",
+        "hash": "3b9e0b0d",
+        "isDefault": false
+      },
+      {
+        "id": "unified_evans_1779691557999",
+        "path": "images/unified_evans_1779691557999.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 985442,
+        "displayName": "evans_1779691557999",
+        "hash": "34daedb8",
+        "isDefault": false
+      },
+      {
+        "id": "unified_guanyifan_1779691901857",
+        "path": "images/unified_guanyifan_1779691901857.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 878902,
+        "displayName": "guanyifan_1779691901857",
+        "hash": "c3f81bf",
+        "isDefault": false
+      },
+      {
+        "id": "unified_hawking_1780649926625",
+        "path": "images/unified_hawking_1780649926625.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 954074,
+        "displayName": "hawking_1780649926625",
+        "hash": "5cbd1832",
+        "isDefault": false
+      },
+      {
+        "id": "unified_hines_1779691718751",
+        "path": "images/unified_hines_1779691718751.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 798689,
+        "displayName": "hines_1779691718751",
+        "hash": "7c38bce6",
+        "isDefault": false
+      },
+      {
+        "id": "unified_huahua_1780649946315",
+        "path": "images/unified_huahua_1780649946315.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 879347,
+        "displayName": "huahua_1780649946315",
+        "hash": "a8b4ac2",
+        "isDefault": false
+      },
+      {
+        "id": "unified_huatang_1779713110568",
+        "path": "images/unified_huatang_1779713110568.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 954696,
+        "displayName": "huatang_1779713110568",
+        "hash": "7b93601c",
+        "isDefault": false
+      },
+      {
+        "id": "unified_keiko_1779713141458",
+        "path": "images/unified_keiko_1779713141458.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 874306,
+        "displayName": "keiko_1779713141458",
+        "hash": "3a79e880",
+        "isDefault": false
+      },
+      {
+        "id": "unified_leizhicheng_1779713006589",
+        "path": "images/unified_leizhicheng_1779713006589.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 967493,
+        "displayName": "leizhicheng_1779713006589",
+        "hash": "c96d542",
+        "isDefault": false
+      },
+      {
+        "id": "unified_linyun_1779691542667",
+        "path": "images/unified_linyun_1779691542667.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 934572,
+        "displayName": "linyun_1779691542667",
+        "hash": "4104744a",
+        "isDefault": false
+      },
+      {
+        "id": "unified_liucixin_1779712937103",
+        "path": "images/unified_liucixin_1779712937103.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1026963,
+        "displayName": "liucixin_1779712937103",
+        "hash": "56fce1a4",
+        "isDefault": false
+      },
+      {
+        "id": "unified_luoji_1778921262534",
+        "path": "images/unified_luoji_1778921262534.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 815503,
+        "displayName": "luoji_1778921262534",
+        "hash": "78ea0ad7",
+        "isDefault": false
+      },
+      {
+        "id": "unified_miaofuquan_1779713095135",
+        "path": "images/unified_miaofuquan_1779713095135.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1011340,
+        "displayName": "miaofuquan_1779713095135",
+        "hash": "26c0c425",
+        "isDefault": false
+      },
+      {
+        "id": "unified_reydiaz_1779691732536",
+        "path": "images/unified_reydiaz_1779691732536.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 1130564,
+        "displayName": "reydiaz_1779691732536",
+        "hash": "44cb5bb",
+        "isDefault": false
+      },
+      {
+        "id": "unified_say_1780649885202",
+        "path": "images/unified_say_1780649885202.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1139747,
+        "displayName": "say_1780649885202",
+        "hash": "bfccc82",
+        "isDefault": false
+      },
+      {
+        "id": "unified_shenyuan_1779691919176",
+        "path": "images/unified_shenyuan_1779691919176.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 847009,
+        "displayName": "shenyuan_1779691919176",
+        "hash": "a91f3fd",
+        "isDefault": false
+      },
+      {
+        "id": "unified_shuiwa_1779712987486",
+        "path": "images/unified_shuiwa_1779712987486.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 971764,
+        "displayName": "shuiwa_1779712987486",
+        "hash": "58d0f888",
+        "isDefault": false
+      },
+      {
+        "id": "unified_sophon_1778921509458",
+        "path": "images/unified_sophon_1778921509458.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 901389,
+        "displayName": "sophon_1778921509458",
+        "hash": "23373060",
+        "isDefault": false
+      },
+      {
+        "id": "unified_tianming_1778921470963",
+        "path": "images/unified_tianming_1778921470963.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 779979,
+        "displayName": "tianming_1778921470963",
+        "hash": "5eff7d04",
+        "isDefault": false
+      },
+      {
+        "id": "unified_tyler_1779691745991",
+        "path": "images/unified_tyler_1779691745991.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 966553,
+        "displayName": "tyler_1779691745991",
+        "hash": "16c68364",
+        "isDefault": false
+      },
+      {
+        "id": "unified_wade_1778921437022",
+        "path": "images/unified_wade_1778921437022.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 848446,
+        "displayName": "wade_1778921437022",
+        "hash": "18d13b7",
+        "isDefault": false
+      },
+      {
+        "id": "unified_wangmiao_1779691527760",
+        "path": "images/unified_wangmiao_1779691527760.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 905129,
+        "displayName": "wangmiao_1779691527760",
+        "hash": "16a3cccd",
+        "isDefault": false
+      },
+      {
+        "id": "unified_yangdong_1779691583143",
+        "path": "images/unified_yangdong_1779691583143.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 814888,
+        "displayName": "yangdong_1779691583143",
+        "hash": "57a8ddaf",
+        "isDefault": false
+      },
+      {
+        "id": "unified_yangweining_1779713020653",
+        "path": "images/unified_yangweining_1779713020653.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 908978,
+        "displayName": "yangweining_1779713020653",
+        "hash": "25f8422d",
+        "isDefault": false
+      },
+      {
+        "id": "unified_yanjing_1780649978771",
+        "path": "images/unified_yanjing_1780649978771.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 969653,
+        "displayName": "yanjing_1780649978771",
+        "hash": "5df01ae7",
+        "isDefault": false
+      },
+      {
+        "id": "unified_yewenjie_1778921299091",
+        "path": "images/unified_yewenjie_1778921299091.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 830601,
+        "displayName": "yewenjie_1778921299091",
+        "hash": "17610d84",
+        "isDefault": false
+      },
+      {
+        "id": "unified_yiyi_1780649999542",
+        "path": "images/unified_yiyi_1780649999542.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 1121778,
+        "displayName": "yiyi_1780649999542",
+        "hash": "4e13c719",
+        "isDefault": false
+      },
+      {
+        "id": "unified_zhuangyan_1779712921189",
+        "path": "images/unified_zhuangyan_1779712921189.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 821103,
+        "displayName": "zhuangyan_1779712921189",
+        "hash": "13a8ecc9",
+        "isDefault": false
+      },
+      {
+        "id": "unified_zhuhanyang_1779713125007",
+        "path": "images/unified_zhuhanyang_1779713125007.png",
+        "type": "character",
+        "tags": [
+          "character",
+          "unknown"
+        ],
+        "size": 976401,
+        "displayName": "zhuhanyang_1779713125007",
+        "hash": "1ddc4a57",
+        "isDefault": false
+      }
+    ],
+    "packs": [
+      {
+        "packId": "pack_crisis_era",
+        "name": "crisis era Pack",
+        "description": "crisis era 资源包",
+        "type": "era_pack",
+        "totalSize": 39833328,
+        "assetIds": [
+          "era_crisis",
+          "ghost_in_the_quantum",
+          "cg_beihai_assassination",
+          "cg_crisis_start",
+          "cg_dark_battle",
+          "cg_doomsday_battle",
+          "cg_droplet_attack",
+          "cg_eto_founded",
+          "cg_ghost_countdown",
+          "cg_guzheng",
+          "cg_moon_crisis",
+          "cg_red_shore_base",
+          "cg_thought_seal",
+          "cg_trisolaris_reply",
+          "cg_yewenjie_signal",
+          "unified_beihai_1778921366897",
+          "unified_yewenjie_1778921299091"
+        ],
+        "priority": 1
+      },
+      {
+        "packId": "pack_deterrence_era",
+        "name": "deterrence era Pack",
+        "description": "deterrence era 资源包",
+        "type": "era_pack",
+        "totalSize": 69005519,
+        "assetIds": [
+          "era_bunker",
+          "era_deterrence",
+          "cg_australia_migration",
+          "cg_bunker_world",
+          "cg_deterrence_broken",
+          "cg_deterrence_established",
+          "cg_great_ravine",
+          "cg_great_ravine_ended",
+          "cg_reydiaz_breached",
+          "cg_swordholder_handover",
+          "cg_tech_exchange",
+          "cg_tech_explosion",
+          "cg_tyler_breached",
+          "cg_wade_executed",
+          "ending_deterrence",
+          "unified_reydiaz_1779691732536",
+          "unified_tyler_1779691745991"
+        ],
+        "priority": 2
+      },
+      {
+        "packId": "pack_broadcast_era",
+        "name": "broadcast era Pack",
+        "description": "broadcast era 资源包",
+        "type": "era_pack",
+        "totalSize": 68594333,
+        "assetIds": [
+          "era_broadcast",
+          "era_galaxy",
+          "cg_dimensional_strike",
+          "cg_galaxy_era",
+          "cg_gravitational_broadcast",
+          "cg_pluto_museum",
+          "cg_solar_system_flattened",
+          "cg_trisolaris_destroyed",
+          "cg_trisolaris_fleet_escaped",
+          "cg_wandering_earth"
+        ],
+        "priority": 3
+      },
+      {
+        "packId": "pack_uncategorized",
+        "name": "uncategorized Pack",
+        "description": "uncategorized 资源包",
+        "type": "era_pack",
+        "totalSize": 122205970,
+        "assetIds": [
+          "README",
+          "death_of_the_light_cone",
+          "fate_beyond_the_light_cone",
+          "the_last_archive",
+          "years_base",
+          "cg_yangdong_suicide",
+          "ending_conquest",
+          "ending_dark_domain",
+          "ending_defeat_dimension_strike",
+          "ending_defeat_extinction",
+          "ending_defeat_helium_flash",
+          "ending_defeat_treachery",
+          "ending_digital",
+          "ending_hidden",
+          "ending_wandering",
+          "npc_ai_terminal",
+          "npc_civilian",
+          "npc_comms_officer",
+          "npc_engineer",
+          "npc_medic",
+          "npc_merchant",
+          "npc_military_commander",
+          "npc_official",
+          "npc_police",
+          "npc_politician",
+          "npc_rebel",
+          "npc_refugee",
+          "npc_scientist",
+          "unified_aiaa_1779691888124",
+          "unified_baibing_1779713036549",
+          "unified_changweisi_1779691759159",
+          "unified_chengxin_1778921400346",
+          "unified_dashi_1778921331273",
+          "unified_dingyi_1779691512032",
+          "unified_dongfang_1779691773663",
+          "unified_evans_1779691557999",
+          "unified_guanyifan_1779691901857",
+          "unified_hawking_1780649926625",
+          "unified_hines_1779691718751",
+          "unified_huahua_1780649946315",
+          "unified_huatang_1779713110568",
+          "unified_keiko_1779713141458",
+          "unified_leizhicheng_1779713006589",
+          "unified_linyun_1779691542667",
+          "unified_liucixin_1779712937103",
+          "unified_luoji_1778921262534",
+          "unified_miaofuquan_1779713095135",
+          "unified_say_1780649885202",
+          "unified_shenyuan_1779691919176",
+          "unified_shuiwa_1779712987486",
+          "unified_sophon_1778921509458",
+          "unified_tianming_1778921470963",
+          "unified_wade_1778921437022",
+          "unified_wangmiao_1779691527760",
+          "unified_yangdong_1779691583143",
+          "unified_yangweining_1779713020653",
+          "unified_yanjing_1780649978771",
+          "unified_yiyi_1780649999542",
+          "unified_zhuangyan_1779712921189",
+          "unified_zhuhanyang_1779713125007"
+        ],
+        "priority": 4
+      },
+      {
+        "packId": "pack_stardust_era",
+        "name": "stardust era Pack",
+        "description": "stardust era 资源包",
+        "type": "era_pack",
+        "totalSize": 23803688,
+        "assetIds": [
+          "era_stardust",
+          "stardust Exodus",
+          "cg_stardust_era",
+          "cg_wade_coup"
+        ],
+        "priority": 4
+      },
+      {
+        "packId": "pack_cg",
+        "name": "cg Pack",
+        "description": "全部cg资源",
+        "type": "cg_pack",
+        "totalSize": 158074456,
+        "assetIds": [
+          "cg_australia_migration",
+          "cg_beihai_assassination",
+          "cg_bunker_world",
+          "cg_crisis_start",
+          "cg_dark_battle",
+          "cg_deterrence_broken",
+          "cg_deterrence_established",
+          "cg_dimensional_strike",
+          "cg_doomsday_battle",
+          "cg_droplet_attack",
+          "cg_eto_founded",
+          "cg_galaxy_era",
+          "cg_ghost_countdown",
+          "cg_gravitational_broadcast",
+          "cg_great_ravine",
+          "cg_great_ravine_ended",
+          "cg_guzheng",
+          "cg_moon_crisis",
+          "cg_pluto_museum",
+          "cg_red_shore_base",
+          "cg_reydiaz_breached",
+          "cg_solar_system_flattened",
+          "cg_stardust_era",
+          "cg_swordholder_handover",
+          "cg_tech_exchange",
+          "cg_tech_explosion",
+          "cg_thought_seal",
+          "cg_trisolaris_destroyed",
+          "cg_trisolaris_fleet_escaped",
+          "cg_trisolaris_reply",
+          "cg_tyler_breached",
+          "cg_wade_coup",
+          "cg_wade_executed",
+          "cg_wandering_earth",
+          "cg_yangdong_suicide",
+          "cg_yewenjie_signal"
+        ],
+        "priority": 10
+      },
+      {
+        "packId": "pack_music",
+        "name": "music Pack",
+        "description": "全部music资源",
+        "type": "music_pack",
+        "totalSize": 49923368,
+        "assetIds": [
+          "README",
+          "death_of_the_light_cone",
+          "era_broadcast",
+          "era_bunker",
+          "era_crisis",
+          "era_deterrence",
+          "era_galaxy",
+          "era_stardust",
+          "fate_beyond_the_light_cone",
+          "ghost_in_the_quantum",
+          "stardust Exodus",
+          "the_last_archive",
+          "years_base"
+        ],
+        "priority": 10
+      },
+      {
+        "packId": "pack_character",
+        "name": "character Pack",
+        "description": "全部character资源",
+        "type": "character_pack",
+        "totalSize": 33602426,
+        "assetIds": [
+          "unified_aiaa_1779691888124",
+          "unified_baibing_1779713036549",
+          "unified_beihai_1778921366897",
+          "unified_changweisi_1779691759159",
+          "unified_chengxin_1778921400346",
+          "unified_dashi_1778921331273",
+          "unified_dingyi_1779691512032",
+          "unified_dongfang_1779691773663",
+          "unified_evans_1779691557999",
+          "unified_guanyifan_1779691901857",
+          "unified_hawking_1780649926625",
+          "unified_hines_1779691718751",
+          "unified_huahua_1780649946315",
+          "unified_huatang_1779713110568",
+          "unified_keiko_1779713141458",
+          "unified_leizhicheng_1779713006589",
+          "unified_linyun_1779691542667",
+          "unified_liucixin_1779712937103",
+          "unified_luoji_1778921262534",
+          "unified_miaofuquan_1779713095135",
+          "unified_reydiaz_1779691732536",
+          "unified_say_1780649885202",
+          "unified_shenyuan_1779691919176",
+          "unified_shuiwa_1779712987486",
+          "unified_sophon_1778921509458",
+          "unified_tianming_1778921470963",
+          "unified_tyler_1779691745991",
+          "unified_wade_1778921437022",
+          "unified_wangmiao_1779691527760",
+          "unified_yangdong_1779691583143",
+          "unified_yangweining_1779713020653",
+          "unified_yanjing_1780649978771",
+          "unified_yewenjie_1778921299091",
+          "unified_yiyi_1780649999542",
+          "unified_zhuangyan_1779712921189",
+          "unified_zhuhanyang_1779713125007"
+        ],
+        "priority": 10
+      }
+    ]
+  },
+  "patches": [],
+  "latestPatch": null
+}

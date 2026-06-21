@@ -1,1 +1,0 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/beyond-the-light-cone/sw.js', { scope: '/beyond-the-light-cone/' })})}

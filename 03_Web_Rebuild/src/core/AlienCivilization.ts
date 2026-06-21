@@ -1,11 +1,10 @@
 import { Civilization } from "./Civilization";
 import { AiPersonality, EpochType, FriendshipType } from "../types/enums";
-import { GameInstance } from "./Game";
 import { createFleet } from "./Fleet";
 import { CombatEngine } from "./CombatEngine";
 import { createBarback } from "./Barback";
 import aliensData from "../data/aliens.json";
-import type { RngProvider } from "./Game";
+import type { Game, RngProvider } from "./Game";
 import diplomacyData from "../data/diplomacy.json";
 
 export class AlienCivilization extends Civilization {
@@ -22,6 +21,8 @@ export class AlienCivilization extends Civilization {
   public dimensionStrikeWarningTurns: number = 0;
 
   private _rngProvider: RngProvider | null = null;
+  /** 注入的 Game 实例，使用私有字段避免被序列化导致循环引用 */
+  #game: Game | null = null;
 
   constructor(name: string, typeIndex: number, personality: AiPersonality, starsys: number = 1) {
     super(name);
@@ -38,13 +39,25 @@ export class AlienCivilization extends Civilization {
     this._rngProvider = provider;
   }
 
+  public setGame(game: Game): void {
+    this.#game = game;
+  }
+
+  private game(): Game {
+    const game = this.#game;
+    if (!game) {
+      throw new Error(`[AlienCivilization:${this.name}] Game instance not injected`);
+    }
+    return game;
+  }
+
   private rng(): number {
     return this._rngProvider ? this._rngProvider.random() : Math.random();
   }
 
   public runARound(): void {
     if (this.isDieOut()) return;
-    const game = GameInstance.get();
+    const game = this.game();
 
     // Handover crisis check
     if (this.name === "三体" && game.earthCivi.swordholderHandoverTurn) {
@@ -318,9 +331,18 @@ export class AlienCivilization extends Civilization {
 
 export class AlienCiviManager {
   public aliens: Map<string, AlienCivilization> = new Map();
+  /** 注入的 Game 实例，使用私有字段避免被序列化导致循环引用 */
+  #game: Game | null = null;
 
   constructor() {
     this.init();
+  }
+
+  public setGame(game: Game): void {
+    this.#game = game;
+    for (const alien of this.aliens.values()) {
+      alien.setGame(game);
+    }
   }
 
   public init(): void {
@@ -342,6 +364,9 @@ export class AlienCiviManager {
       alien.starIndices.add(homeStarIndex);
       alien.population = data.res || 500;
       alien.resource = data.res || 1000;
+      if (this.#game) {
+        alien.setGame(this.#game);
+      }
       this.aliens.set(alien.name, alien);
     });
   }
@@ -359,9 +384,8 @@ export class AlienCiviManager {
     const alien = this.aliens.get(civiName);
     if (alien) {
       alien.starIndices.delete(starIndex);
-      const game = GameInstance.get();
-      if (alien.isDieOut() && game) {
-        game.addHistory(`【胜利】外星文明 ${civiName} 被彻底消灭！`);
+      if (alien.isDieOut() && this.#game) {
+        this.#game.addHistory(`【胜利】外星文明 ${civiName} 被彻底消灭！`);
       }
     }
   }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Game, GameInstance, RngProvider } from '../../core/Game';
+import { Game, RngProvider } from '../../core/Game';
 import { EpochType, DefeatType, VictoryType } from '../../types/enums';
 
 function setupGame(): Game {

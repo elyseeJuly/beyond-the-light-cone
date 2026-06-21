@@ -118,6 +118,7 @@ export class Game {
     // 注入 game 引用以消除子系统对 GameInstance 单例的强依赖
     this.earthCivi.setGame(this);
     this.eventManager.setGame(this);
+    this.alienCiviManager.setGame(this);
   }
 
   public setRngProvider(provider: RngProvider): void {

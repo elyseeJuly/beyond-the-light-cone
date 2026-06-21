@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Game, GameInstance } from '../../core/Game';
+import { Game } from '../../core/Game';
 import { EpochType, EventEffect, FriendshipType, TecTreeType } from '../../types/enums';
 
 function setupGame() {
-  GameInstance.reset();
-  return GameInstance.get();
+  return new Game();
 }
 
 describe('Game Core Extended', () => {
@@ -605,6 +604,11 @@ describe('Game Core Extended', () => {
 
       const sanTi = game.alienCiviManager.aliens.get('三体')!;
       sanTi.setRngProvider({ random: () => 0.5 }); // Mock rng < 0.75
+
+      // 清空事件避免交互事件阻塞回合推进
+      game.eventManager.events = [];
+      game.eventManager.filteredEvents = [];
+      game.eventManager.randomEvents = [];
 
       const beforeFleets = sanTi.fleets.length;
       game.runARound();

@@ -77,6 +77,12 @@ export enum DefeatType {
   DIMENSION_STRIKE = 3,
 }
 
+export enum NeutralType {
+  ETERNAL_EXILE = 0,
+  COSMIC_SILENCE = 1,
+  COUNT = 2
+}
+
 export enum WeaponType {
   UNIT = 0,
   EXPENDABLE = 1,

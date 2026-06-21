@@ -6,7 +6,7 @@
  * 主题曲路径预留为 public/audio/theme_song.mp3
  */
 
-import { VictoryType, DefeatType } from '../types/enums';
+import { VictoryType, DefeatType, NeutralType } from '../types/enums';
 import { getImageUrl } from '../utils/assetUrl';
 
 export type EndingKey =
@@ -19,7 +19,9 @@ export type EndingKey =
   | 'DEFEAT_TREACHERY'
   | 'DEFEAT_EXTINCTION'
   | 'DEFEAT_HELIUM_FLASH'
-  | 'DEFEAT_DIMENSION_STRIKE';
+  | 'DEFEAT_DIMENSION_STRIKE'
+  | 'NEUTRAL_ETERNAL_EXILE'
+  | 'NEUTRAL_COSMIC_SILENCE';
 
 export interface EndingConfig {
   key: EndingKey;
@@ -67,6 +69,8 @@ export const ENDING_BGM_PATHS = {
   DEFEAT_EXTINCTION: '/audio/ending_defeat_extinction.mp3',
   DEFEAT_HELIUM_FLASH: '/audio/ending_defeat_helium_flash.mp3',
   DEFEAT_DIMENSION_STRIKE: '/audio/ending_defeat_dimension_strike.mp3',
+  NEUTRAL_ETERNAL_EXILE: '/audio/ending_neutral_eternal_exile.mp3',
+  NEUTRAL_COSMIC_SILENCE: '/audio/ending_neutral_cosmic_silence.mp3',
 };
 
 /** Credits 制作人员名单 */
@@ -232,6 +236,36 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
     iconSymbol: 'Layers',
     isVictory: false,
   },
+  NEUTRAL_ETERNAL_EXILE: {
+    key: 'NEUTRAL_ETERNAL_EXILE',
+    title: '永恒的流亡',
+    subtitle: '星舰文明 · 无尽漂流',
+    declaration: '地球已被遗弃，部分人类乘坐星舰逃离。没有明确的目的地，只能在黑暗的宇宙中无尽地流浪，成为永远的星际游牧民族。',
+    epilogue: '这是一场没有终点的远征。失去故乡的文明在星海中如浮萍般漂泊，他们将带着人类最后的基因与记忆，消失在宇宙深处。',
+    gradientFrom: '#0A1128',
+    gradientTo: '#1C2E4A',
+    accentColor: '#4A90E2',
+    particleColor: '#6AB0FF',
+    particleEffect: 'thrust',
+    sceneImage: getImageUrl('ending_neutral_eternal_exile.png'),
+    iconSymbol: 'Rocket',
+    isVictory: false,
+  },
+  NEUTRAL_COSMIC_SILENCE: {
+    key: 'NEUTRAL_COSMIC_SILENCE',
+    title: '宇宙静默',
+    subtitle: '文明归零 · 绝对静止',
+    declaration: '战争与扩张失去了意义，文明选择了向内探索或进入深度休眠。我们不再发出任何声音，彻底融入了宇宙的背景辐射之中。',
+    epilogue: '这不是毁灭，而是终极的宁静。星空中少了一个喧闹的种族，多了一块沉默的墓碑。我们还在，但对于宇宙而言，我们已经消失。',
+    gradientFrom: '#000000',
+    gradientTo: '#0F172A',
+    accentColor: '#64748B',
+    particleColor: '#94A3B8',
+    particleEffect: 'ember',
+    sceneImage: getImageUrl('ending_neutral_cosmic_silence.png'),
+    iconSymbol: 'Moon',
+    isVictory: false,
+  },
 };
 
 /**
@@ -240,6 +274,7 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
 export function resolveEndingKey(
   victoryType: VictoryType | null,
   defeatType: DefeatType | null,
+  neutralType: NeutralType | null = null,
 ): EndingKey {
   if (victoryType !== null) {
     const map: Record<number, EndingKey> = {
@@ -261,6 +296,14 @@ export function resolveEndingKey(
       [DefeatType.DIMENSION_STRIKE]: 'DEFEAT_DIMENSION_STRIKE',
     };
     return map[defeatType] || 'DEFEAT_EXTINCTION';
+  }
+
+  if (neutralType !== null) {
+    const map: Record<number, EndingKey> = {
+      [NeutralType.ETERNAL_EXILE]: 'NEUTRAL_ETERNAL_EXILE',
+      [NeutralType.COSMIC_SILENCE]: 'NEUTRAL_COSMIC_SILENCE',
+    };
+    return map[neutralType] || 'DEFEAT_EXTINCTION';
   }
 
   return 'DEFEAT_EXTINCTION';

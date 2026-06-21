@@ -50,6 +50,8 @@ export const STANDARD_TAGS: Record<string, {
   /** 社会状态 */
   civil_unrest:         { name: "民心不稳",       category: 'social',   isMilestone: false, description: "社会动荡加剧" },
   eto_remnant:          { name: "ETO 残余",       category: 'social',   isMilestone: false, description: "地球三体组织残余活动" },
+  diplomatic_warming:   { name: "外交缓和",       category: 'social',   isMilestone: false, description: "文明间外交关系趋于缓和" },
+  diplomatic_crisis:    { name: "外交危机",       category: 'social',   isMilestone: false, description: "文明间外交关系趋于紧张" },
   new_apostle:          { name: "新降临派",       category: 'social',   isMilestone: false, description: "新降临派思潮蔓延" },
   exile_sentiment:      { name: "逃亡主义蔓延",   category: 'social',   isMilestone: false, description: "逃亡主义成为主流思潮" },
   social_split:         { name: "社会分裂",       category: 'social',   isMilestone: false, description: "社会已分裂为多个派系" },

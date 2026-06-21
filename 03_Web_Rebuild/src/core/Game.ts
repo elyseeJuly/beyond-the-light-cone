@@ -27,6 +27,21 @@ export interface RngProvider {
   random(): number;
 }
 
+/**
+ * Game JSON replacer - handles Map/Set serialization for saves
+ */
+function gameReplacer(_key: string, value: any) {
+  if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory') {
+    return undefined;
+  }
+  if (value instanceof Map) {
+    return { dataType: 'Map', value: Array.from(value.entries()) };
+  } else if (value instanceof Set) {
+    return { dataType: 'Set', value: Array.from(value) };
+  }
+  return value;
+}
+
 export class Game {
   public year: number = 0;
   public epoch: EpochType = EpochType.CRISIS;
@@ -466,7 +481,11 @@ export class Game {
         // 2. 黑暗森林遗迹事件（检测跨周目数据）
         if (this.year === 50 && !this.flags.has("ruins_checked")) {
           this.flags.add("ruins_checked");
-          const ruins = SaveManager.getRuinHistory();
+          let ruins: Array<{ year: number; culture: number; techCount: number; timestamp: number }> = [];
+          try {
+            const raw = localStorage.getItem('LegendOfUni_RuinHistory');
+            ruins = raw ? JSON.parse(raw) : [];
+          } catch {}
           if (ruins.length > 0) {
             const latestRuin = ruins[ruins.length - 1];
             const ruinsEvent: GameEventPayload = {
@@ -509,6 +528,9 @@ export class Game {
       this.addHistory("系统已尝试紧急回滚状态锁，请尝试再次点击或重新开始。");
     } finally {
       this.isProcessing = false;
+      // 自动存档：回合结束
+      const self = this;
+      SaveManager.autoSave(() => JSON.stringify(self, gameReplacer));
     }
   }
 
@@ -603,6 +625,9 @@ export class Game {
         window.dispatchEvent(new CustomEvent('epoch-changed'));
         window.dispatchEvent(new CustomEvent('play-game-sound', { detail: { type: 'milestone' } }));
       }
+
+      // 自动存档：纪元切换
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
     }
   }
 
@@ -655,6 +680,8 @@ export class Game {
         
         this.tagManager.applyWorldTag('ending_completed', 100, 'game:ending', this.year);
       }
+      // 结局前自动存档
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
@@ -784,6 +811,8 @@ export class Game {
         this.tagManager.applyWorldTag(`victory_${cond.type.toLowerCase()}`, 100, 'game:ending', this.year);
         this.tagManager.applyWorldTag('ending_completed', 100, 'game:ending', this.year);
 
+        // 结局前自动存档
+        SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
         window.dispatchEvent(new CustomEvent('game-over'));
         return;
       }
@@ -798,6 +827,8 @@ export class Game {
         victoryType: null, defeatType: this.defeatType, label: "逃亡主义崩溃",
         year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
       });
+      // 结局前自动存档
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
@@ -827,7 +858,8 @@ export class Game {
         culture: this.earthCivi?.culture || 0,
         techCount: finishedTechs
       });
-      
+      // 结局前自动存档
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
@@ -871,7 +903,8 @@ export class Game {
         culture: this.earthCivi?.culture || 0,
         techCount: finishedTechs
       });
-      
+      // 结局前自动存档
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
       window.dispatchEvent(new CustomEvent('game-over'));
       return;
     }
@@ -1297,7 +1330,7 @@ export class GameInstance {
     const endingHistory = SaveManager.getEndingHistory();
     const unlocked = SaveManager.getEndingUnlocks();
 
-    localStorage.removeItem("LegendOfUni_Save");
+    SaveManager.deleteSave();
     localStorage.removeItem("game-tutorial-seen");
     this.instance = new Game();
 
@@ -1347,7 +1380,7 @@ export class GameInstance {
       this.instance.historyGenerator.prune(500);
     }
     this.instance.addHistory("游戏已保存到本地存储。");
-    SaveManager.save(() => JSON.stringify(this.instance, this.replacer));
+    SaveManager.save(() => JSON.stringify(this.instance, gameReplacer));
   }
 
   public static loadGame(): boolean {
@@ -1481,25 +1514,12 @@ export class GameInstance {
     }
   }
 
-  private static validateSaveIntegrity(): boolean {
+  static validateSaveIntegrity(): boolean {
     const inst = this.instance!;
     if (!inst.earthCivi || typeof inst.earthCivi.population !== 'number') return false;
     if (!inst.starManager || !inst.starManager.stars) return false;
     if (!inst.personManager) return false;
     return true;
-  }
-
-  private static replacer(_key: string, value: any) {
-    if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory') {
-      return undefined;
-    }
-
-    if (value instanceof Map) {
-      return { dataType: 'Map', value: Array.from(value.entries()) };
-    } else if (value instanceof Set) {
-      return { dataType: 'Set', value: Array.from(value) };
-    }
-    return value;
   }
 
   private static reviver(_key: string, value: any) {

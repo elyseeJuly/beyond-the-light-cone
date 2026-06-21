@@ -22,6 +22,8 @@ import { TechUnlockModal } from './components/TechUnlockModal';
 import { MuseumGallery } from './components/MuseumGallery';
 import { preloadCoreImages } from './utils/assetUrl';
 import { SettingsModal } from './components/SettingsModal';
+import { UpdatePrompt } from './components/UpdatePrompt';
+import { OrientationPrompt } from './components/OrientationPrompt';
 
 export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveViewType>('starmap');
@@ -298,6 +300,10 @@ export const App: React.FC = () => {
           {showSettings && (
             <SettingsModal onClose={() => setShowSettings(false)} />
           )}
+
+          {/* PWA Components */}
+          <UpdatePrompt />
+          <OrientationPrompt />
 
           {/* Top HUD (72px height) */}
           <TopHUD />

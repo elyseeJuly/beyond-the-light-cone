@@ -76,7 +76,8 @@
 - **代码映射**: `Civilization.culture`
 - **规范定义**: 用于推动文明在猜疑链中生存及纪元晋升的核心点数。
 - **首次出现**: `README.md`
-- **同义词黑名单**: 🚫 `Science`, 🚫 `Knowledge`, 🚫 `CivPoint`
+- **同义词黑名单**: 🚫 `Knowledge`, 🚫 `CivPoint`
+- **注意**: 严禁将文化值误译为 `Science`。在代码体系中，`science`（科研能力）专属于人物角色（`Person`）的属性字段，与文明层级的文化资源（`Culture`）在概念与数值上完全独立。
 
 ### 经济 / 经济点 (Economy)
 - **代码映射**: `Civilization.economy`

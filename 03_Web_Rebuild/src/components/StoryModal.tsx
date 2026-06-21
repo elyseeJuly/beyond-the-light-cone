@@ -13,6 +13,8 @@ interface StoryModalProps {
 function getCharacterAvatar(speakerName: string | undefined): string {
   if (!speakerName) return getImageUrl("character_default.png");
   const name = speakerName.toLowerCase();
+
+  // 36 Major Unified Characters
   if (name.includes("丁仪")) return getImageUrl("unified_dingyi_1779691512032.png");
   if (name.includes("智子")) return getImageUrl("unified_sophon_1778921509458.png");
   if (name.includes("艾aa") || name.includes("aa")) return getImageUrl("unified_aiaa_1779691888124.png");
@@ -32,14 +34,37 @@ function getCharacterAvatar(speakerName: string | undefined): string {
   if (name.includes("杨冬")) return getImageUrl("unified_yangdong_1779691583143.png");
   if (name.includes("常伟思")) return getImageUrl("unified_changweisi_1779691759159.png");
   if (name.includes("关一帆")) return getImageUrl("unified_guanyifan_1779691901857.png");
+  if (name.includes("林云")) return getImageUrl("unified_linyun_1779691542667.png");
+  if (name.includes("伊文斯")) return getImageUrl("unified_evans_1779691557999.png");
+  if (name.includes("东方延绪")) return getImageUrl("unified_dongfang_1779691773663.png");
+  if (name.includes("沈渊")) return getImageUrl("unified_shenyuan_1779691919176.png");
+  if (name.includes("华华")) return getImageUrl("unified_huahua_1780649946315.png");
+  if (name.includes("伊依")) return getImageUrl("unified_yiyi_1780649999542.png");
+  if (name.includes("霍金")) return getImageUrl("unified_hawking_1780649926625.png");
+  if (name.includes("水娃")) return getImageUrl("unified_shuiwa_1779712987486.png");
+  if (name.includes("雷志成")) return getImageUrl("unified_leizhicheng_1779713006589.png");
+  if (name.includes("杨卫宁")) return getImageUrl("unified_yangweining_1779713020653.png");
+  if (name.includes("严井")) return getImageUrl("unified_yanjing_1780649978771.png");
+  if (name.includes("白冰")) return getImageUrl("unified_baibing_1779713036549.png");
+  if (name.includes("苗福全")) return getImageUrl("unified_miaofuquan_1779713095135.png");
+  if (name.includes("滑膛") || name.includes("华堂")) return getImageUrl("unified_huatang_1779713110568.png");
+  if (name.includes("朱汉扬")) return getImageUrl("unified_zhuhanyang_1779713125007.png");
+  if (name.includes("刘慈欣")) return getImageUrl("unified_liucixin_1779712937103.png");
+  if (name.includes("山杉惠子")) return getImageUrl("unified_keiko_1779713141458.png");
 
-  // NPC Fallbacks
-  if (name.includes("科学家") || name.includes("研究员") || name.includes("学者")) return getImageUrl("npc_scientist.png");
-  if (name.includes("军官") || name.includes("将军") || name.includes("参谋") || name.includes("警卫")) return getImageUrl("npc_military_commander.png");
-  if (name.includes("秘书长") || name.includes("代表") || name.includes("发言人") || name.includes("执政")) return getImageUrl("npc_politician.png");
-  if (name.includes("警官") || name.includes("探员")) return getImageUrl("npc_police.png");
-  if (name.includes("反叛") || name.includes("反对")) return getImageUrl("npc_rebel.png");
-  if (name.includes("市民") || name.includes("难民") || name.includes("民众")) return getImageUrl("npc_refugee.png");
+  // NPC Fallbacks (12 NPC Types)
+  if (name.includes("科学家") || name.includes("研究员") || name.includes("学者") || name.includes("分析")) return getImageUrl("npc_scientist.png");
+  if (name.includes("军官") || name.includes("将军") || name.includes("参谋") || name.includes("司令")) return getImageUrl("npc_military_commander.png");
+  if (name.includes("秘书长") || name.includes("代表") || name.includes("发言人") || name.includes("执政") || name.includes("总统") || name.includes("总理") || name.includes("主席") || name.includes("部长") || name.includes("局长") || name.includes("官员")) return getImageUrl("npc_politician.png");
+  if (name.includes("警官") || name.includes("探员") || name.includes("警察") || name.includes("巡逻")) return getImageUrl("npc_police.png");
+  if (name.includes("反叛") || name.includes("反对") || name.includes("叛军") || name.includes("eto") || name.includes("降临派") || name.includes("拯救派")) return getImageUrl("npc_rebel.png");
+  if (name.includes("市民") || name.includes("民众") || name.includes("平民") || name.includes("工人") || name.includes("群众") || name.includes("百姓")) return getImageUrl("npc_civilian.png");
+  if (name.includes("难民") || name.includes("流民") || name.includes("灾民")) return getImageUrl("npc_refugee.png");
+  if (name.includes("工程") || name.includes("技术") || name.includes("维修") || name.includes("建造") || name.includes("机电") || name.includes("矿工")) return getImageUrl("npc_engineer.png");
+  if (name.includes("医") || name.includes("护") || name.includes("卫生") || name.includes("心理")) return getImageUrl("npc_medic.png");
+  if (name.includes("ai") || name.includes("系统") || name.includes("终端") || name.includes("警报")) return getImageUrl("npc_ai_terminal.png");
+  if (name.includes("监听") || name.includes("通讯") || name.includes("信号") || name.includes("信息员")) return getImageUrl("npc_comms_officer.png");
+  if (name.includes("商") || name.includes("走私") || name.includes("黑市") || name.includes("老板") || name.includes("贩")) return getImageUrl("npc_merchant.png");
 
   return getImageUrl("character_default.png");
 }

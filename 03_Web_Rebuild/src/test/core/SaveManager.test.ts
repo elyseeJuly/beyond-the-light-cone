@@ -4,6 +4,7 @@ import { SaveManager, SaveDataCorruptedError } from '../../core/SaveManager';
 describe('SaveManager', () => {
   beforeEach(() => {
     localStorage.clear();
+    SaveManager.resetCache();
   });
 
   it('hasSave 无存档时返回 false', () => {
@@ -31,7 +32,7 @@ describe('SaveManager', () => {
   });
 
   it('load 损坏数据抛出 SaveDataCorruptedError', () => {
-    localStorage.setItem('LegendOfUni_Save', JSON.stringify({
+    localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify({
       version: 3,
       timestamp: Date.now(),
       signature: 0,
@@ -44,10 +45,10 @@ describe('SaveManager', () => {
   it('load 版本不匹配抛出 SaveDataCorruptedError', () => {
     const gameData = { year: 10 };
     SaveManager.save(() => JSON.stringify(gameData));
-    const raw = localStorage.getItem('LegendOfUni_Save')!;
+    const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
     const parsed = JSON.parse(raw);
     parsed.version = 2;
-    localStorage.setItem('LegendOfUni_Save', JSON.stringify(parsed));
+    localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify(parsed));
     expect(() => SaveManager.load()).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.load()).toThrow('存档版本不兼容');
   });
@@ -74,7 +75,7 @@ describe('SaveManager', () => {
   });
 
   it('getMeta 损坏数据返回 null', () => {
-    localStorage.setItem('LegendOfUni_Save', 'invalid json');
+    localStorage.setItem('LegendOfUni_Save_autosave', 'invalid json');
     expect(SaveManager.getMeta()).toBeNull();
   });
 
@@ -91,7 +92,7 @@ describe('SaveManager', () => {
   });
 
   it('load 无效 JSON 抛出 SaveDataCorruptedError', () => {
-    localStorage.setItem('LegendOfUni_Save', 'not even json');
+    localStorage.setItem('LegendOfUni_Save_autosave', 'not even json');
     expect(() => SaveManager.load()).toThrow(SaveDataCorruptedError);
   });
 
@@ -104,7 +105,7 @@ describe('SaveManager', () => {
   });
 
   it('load 空数据抛出 SaveDataCorruptedError', () => {
-    localStorage.setItem('LegendOfUni_Save', JSON.stringify({
+    localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify({
       version: 3,
       timestamp: Date.now(),
       signature: 12345,
@@ -115,10 +116,10 @@ describe('SaveManager', () => {
 
   it('load 验证签名防止篡改', () => {
     SaveManager.save(() => JSON.stringify({ year: 10 }));
-    const raw = localStorage.getItem('LegendOfUni_Save')!;
+    const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
     const parsed = JSON.parse(raw);
     parsed.data = JSON.stringify({ year: 999 });
-    localStorage.setItem('LegendOfUni_Save', JSON.stringify(parsed));
+    localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify(parsed));
     expect(() => SaveManager.load()).toThrow('哈希校验失败');
   });
 

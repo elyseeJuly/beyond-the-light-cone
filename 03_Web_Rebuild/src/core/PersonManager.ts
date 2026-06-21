@@ -11,15 +11,15 @@ export class PersonManager {
 
   public init(): void {
     personsData.forEach((data: any) => {
-      const p = createEmptyPerson(data.name || data.Name);
-      p.faceFile = data.faceFile || data.FaceFile || "";
-      p.treachery = data.treachery ?? data.Treachery ?? 0;
-      p.science = data.science ?? data.Science ?? 0;
-      p.art = data.art ?? data.Art ?? 0;
-      p.economy = data.economy ?? data.Economy ?? 0;
-      p.army = data.army ?? data.Army ?? 0;
-      p.leadership = data.leadership ?? data.Leadership ?? 0;
-      p.social = data.social ?? data.Social ?? 0;
+      const p = createEmptyPerson(data.name);
+      p.faceFile = data.faceFile || "";
+      p.treachery = data.treachery ?? 0;
+      p.science = data.science ?? 0;
+      p.art = data.art ?? 0;
+      p.economy = data.economy ?? 0;
+      p.army = data.army ?? 0;
+      p.leadership = data.leadership ?? 0;
+      p.social = data.social ?? 0;
       
       const initialWhitelist = ["丁仪", "汪淼", "常伟思", "大史", "雷志成", "杨卫宁", "叶文洁"];
       this.persons.set(p.name, p);

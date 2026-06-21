@@ -2,8 +2,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { GameInstance } from "./core/Game";
+import { storage } from "./core/IndexedDBStorage";
 
 console.log('Legend of Uni Web (React) started');
+
+// Initialize IndexedDB for save storage (PWA requirement)
+storage.init().catch(err => {
+  console.warn('IndexedDB init failed, falling back to localStorage:', err);
+}).finally(() => {
+  // Register PWA service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/beyond-the-light-cone/sw.js').catch(err => {
+      console.warn('SW registration failed (non-critical):', err);
+    });
+  }
+});
 
 try {
   console.log("Initializing Game Engine...");

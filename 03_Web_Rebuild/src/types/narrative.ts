@@ -1,4 +1,5 @@
-import { EventEffect, EpochType, EventLane, LoreDomain } from "./enums";
+import { EventEffect, EventLane, LoreDomain } from "./enums";
+import type { EpochQuery } from "../core/GameEvent";
 
 export interface EventCadenceMeta {
   lane: EventLane;
@@ -45,7 +46,7 @@ export interface GameEventPayload {
 export interface FilteredEventCondition {
   minYear?: number;
   maxYear?: number;
-  epoch?: EpochType | string;
+  epoch?: EpochQuery;
   reqTech?: string;
   reqFlag?: string;
   reqNotFlag?: string;

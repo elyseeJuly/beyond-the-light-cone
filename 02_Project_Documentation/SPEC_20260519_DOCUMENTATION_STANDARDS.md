@@ -64,6 +64,7 @@ Documents defining features, architectures, and design directives.
 *   [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) — *Comprehensive architecture refactoring specification blueprints*
 *   [SPEC_20260615_EPOCH_CHRONICLES_OST.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260615_EPOCH_CHRONICLES_OST.md) — *Beyond the Light Cone: Epoch Chronicles OST specifications planning book*
 *   [SPEC_20260616_OST_LYRICS_MANIFEST.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260616_OST_LYRICS_MANIFEST.md) — *OST Vocal Lyrics & AI Music Scripts Manifest*
+*   [SPEC_20260621_PWA_UPGRADE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_PWA_UPGRADE.md) — *PWA upgrade design and PWA compliance specifications*
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.
@@ -151,6 +152,8 @@ Active development logs, blueprints, and task runners.
 *   [EXEC_20260616_STARSEA_PHONOGRAPH_PLAN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_PLAN.md) — *Starsea Phonograph music gallery & custom BGM selection execution plan*
 *   [EXEC_20260616_STARSEA_PHONOGRAPH_TASK.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_TASK.md) — *Starsea Phonograph music gallery & custom BGM selection active checklist*
 *   [EXEC_20260616_STARSEA_PHONOGRAPH_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_WALKTHROUGH.md) — *Starsea Phonograph music gallery & custom BGM selection walkthrough*
+*   [EXEC_20260621_PWA_UPGRADE_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_PWA_UPGRADE_WALKTHROUGH.md) — *PWA upgrade walkthrough and validation report*
+*   [EXEC_20260621_ART_ASSETS_REAUDIT_AND_REMEDIATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_ART_ASSETS_REAUDIT_AND_REMEDIATION.md) — *Execution report on re-auditing local art assets, generating missing NPC portraits, and remapping dialogue CGs*
 
 ---
 

@@ -7,8 +7,10 @@ export interface GameEventChoice {
   action?: () => void;
 }
 
+export type EpochQuery = string | EpochType;
+
 export interface TriggerCondition {
-  epoch?: string | EpochType;
+  epoch?: EpochQuery;
   probability?: number;
   reqTech?: string | null;
   lane?: string;

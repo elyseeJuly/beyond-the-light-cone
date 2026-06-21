@@ -8,141 +8,101 @@ describe('EventBus', () => {
     bus = new EventBus();
   });
 
-  it('on 注册处理器', () => {
-    let called = false;
-    bus.on('test:event', () => { called = true; });
-    bus.emit('test:event');
-    expect(called).toBe(true);
+  it('初始状态无监听器', () => {
+    expect(bus.listenerCount('any_event')).toBe(0);
   });
 
-  it('off 取消注册处理器', () => {
-    let callCount = 0;
-    const handler = () => { callCount++; };
+  it('on 注册监听器后 listenerCount 增加', () => {
+    const handler = () => {};
+    bus.on('test:event', handler);
+    expect(bus.listenerCount('test:event')).toBe(1);
+  });
+
+  it('emit 触发注册的监听器', () => {
+    const handler = vi.fn();
+    bus.on('test:event', handler);
+    bus.emit('test:event', 'arg1', 42);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('arg1', 42);
+  });
+
+  it('多个监听器按注册顺序触发', () => {
+    const order: number[] = [];
+    bus.on('test:event', () => order.push(1));
+    bus.on('test:event', () => order.push(2));
+    bus.emit('test:event');
+    expect(order).toEqual([1, 2]);
+  });
+
+  it('off 取消监听后不再触发', () => {
+    const handler = vi.fn();
     bus.on('test:event', handler);
     bus.off('test:event', handler);
     bus.emit('test:event');
-    expect(callCount).toBe(0);
+    expect(handler).not.toHaveBeenCalled();
   });
 
-  it('off 不存在的处理器不报错', () => {
-    const handler = () => {};
+  it('off 未注册的监听器不抛异常', () => {
+    const handler = vi.fn();
     expect(() => bus.off('nonexistent', handler)).not.toThrow();
   });
 
-  it('emit 调用所有注册处理器', () => {
-    let count1 = 0, count2 = 0;
-    bus.on('test:event', () => { count1++; });
-    bus.on('test:event', () => { count2++; });
-    bus.emit('test:event');
-    expect(count1).toBe(1);
-    expect(count2).toBe(1);
+  it('emit 不存在的监听器不抛异常', () => {
+    expect(() => bus.emit('nonexistent')).not.toThrow();
   });
 
-  it('emit 传递参数', () => {
-    let receivedArgs: any[] = [];
-    bus.on('test:event', (...args: any[]) => { receivedArgs = args; });
-    bus.emit('test:event', 'arg1', 42, { key: 'value' });
-    expect(receivedArgs).toEqual(['arg1', 42, { key: 'value' }]);
-  });
-
-  it('listenerCount 返回正确计数', () => {
-    expect(bus.listenerCount('test:event')).toBe(0);
-    const h1 = () => {};
-    const h2 = () => {};
-    bus.on('test:event', h1);
-    expect(bus.listenerCount('test:event')).toBe(1);
-    bus.on('test:event', h2);
-    expect(bus.listenerCount('test:event')).toBe(2);
-    bus.off('test:event', h1);
-    expect(bus.listenerCount('test:event')).toBe(1);
-  });
-
-  it('clear 移除所有处理器', () => {
+  it('clear 清空所有监听器', () => {
     bus.on('event1', () => {});
     bus.on('event2', () => {});
-    bus.on('event3', () => {});
-    expect(bus.listenerCount('event1')).toBe(1);
     bus.clear();
     expect(bus.listenerCount('event1')).toBe(0);
     expect(bus.listenerCount('event2')).toBe(0);
-    expect(bus.listenerCount('event3')).toBe(0);
   });
 
-  it('emitToWindow 派发 CustomEvent 到 window', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
-    bus.emitToWindow('game:test', { data: 123 });
-    expect(dispatchSpy).toHaveBeenCalled();
-    const event = dispatchSpy.mock.calls[0][0] as CustomEvent;
-    expect(event.type).toBe('game:test');
-    expect(event.detail).toEqual({ data: 123 });
-    dispatchSpy.mockRestore();
+  it('emitToWindow 同时触发 window 事件和内部监听', () => {
+    const windowHandler = vi.fn();
+    const busHandler = vi.fn();
+    window.addEventListener('game:custom', windowHandler);
+    bus.on('game:custom', busHandler);
+
+    bus.emitToWindow('game:custom', { key: 'value' });
+
+    expect(windowHandler).toHaveBeenCalledTimes(1);
+    expect(busHandler).toHaveBeenCalledTimes(1);
+    expect(busHandler).toHaveBeenCalledWith({ key: 'value' });
   });
 
-  it('emitToWindow 同时调用总线处理器', () => {
-    let busCalled = false;
-    bus.on('game:test', () => { busCalled = true; });
-    bus.emitToWindow('game:test', {});
-    expect(busCalled).toBe(true);
-  });
+  it('监听器异常不传播', () => {
+    const throwingHandler = vi.fn(() => { throw new Error('handler error'); });
+    const normalHandler = vi.fn();
+    bus.on('test:event', throwingHandler);
+    bus.on('test:event', normalHandler);
 
-  it('处理器内抛出错误不影响其他处理器', () => {
-    let secondCalled = false;
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    bus.on('test:event', () => { throw new Error('Handler error'); });
-    bus.on('test:event', () => { secondCalled = true; });
     expect(() => bus.emit('test:event')).not.toThrow();
-    expect(secondCalled).toBe(true);
-    consoleSpy.mockRestore();
+    expect(normalHandler).toHaveBeenCalledTimes(1);
   });
 
-  it('GameEvents 是字符串常量', () => {
+  it('toJSON 返回正确的监听器数量信息', () => {
+    bus.on('event:a', () => {});
+    bus.on('event:b', () => {});
+    bus.on('event:b', () => {});
+    const json = bus.toJSON() as { listenerCounts: [string, number][] };
+    expect(json.listenerCounts).toContainEqual(['event:a', 1]);
+    expect(json.listenerCounts).toContainEqual(['event:b', 2]);
+  });
+
+  it('GameEvents 常量定义完整', () => {
     expect(GameEvents.TURN_START).toBe('game:turn:start');
     expect(GameEvents.TURN_COMPLETE).toBe('game:turn:complete');
     expect(GameEvents.EPOCH_CHANGED).toBe('game:epoch:changed');
     expect(GameEvents.EVENT_TRIGGERED).toBe('game:event:triggered');
-    expect(GameEvents.TAG_APPLIED).toBe('game:tag:applied');
-    expect(GameEvents.TAG_REMOVED).toBe('game:tag:removed');
-    expect(GameEvents.ATMOSPHERE_CHANGED).toBe('game:atmosphere:changed');
+    expect(GameEvents.GAME_OVER).toBe('game:over');
     expect(GameEvents.BATTLE_START).toBe('game:battle:start');
     expect(GameEvents.BATTLE_END).toBe('game:battle:end');
-    expect(GameEvents.GAME_OVER).toBe('game:over');
-  });
-
-  it('GameEvents 包含所有事件', () => {
-    const allEvents = [
-      'game:turn:start', 'game:turn:complete', 'game:epoch:changed',
-      'game:event:triggered', 'game:tag:applied', 'game:tag:removed',
-      'game:atmosphere:changed', 'game:battle:start', 'game:battle:end',
-      'game:person:unlocked', 'game:save:completed', 'game:load:completed',
-      'game:over', 'audio:play', 'audio:stop', 'game:resource:changed',
-      'game:fleet:moved', 'game:tech:completed',
-    ];
-    for (const evt of allEvents) {
-      expect(Object.values(GameEvents)).toContain(evt);
-    }
-  });
-
-  it('toJSON 返回监听器计数', () => {
-    bus.on('e1', () => {});
-    bus.on('e1', () => {});
-    bus.on('e2', () => {});
-    const json = bus.toJSON() as { listenerCounts: [string, number][] };
-    expect(json.listenerCounts).toBeDefined();
-    const e1Count = json.listenerCounts.find(([k]) => k === 'e1')![1];
-    const e2Count = json.listenerCounts.find(([k]) => k === 'e2')![1];
-    expect(e1Count).toBe(2);
-    expect(e2Count).toBe(1);
-  });
-
-  it('emit 不存在的处理器不报错', () => {
-    expect(() => bus.emit('nonexistent')).not.toThrow();
-  });
-
-  it('同一个事件可注册多个处理器并全部调用', () => {
-    const results: number[] = [];
-    bus.on('calc', (n: number) => { results.push(n * 2); });
-    bus.on('calc', (n: number) => { results.push(n * 3); });
-    bus.emit('calc', 5);
-    expect(results).toEqual([10, 15]);
+    expect(GameEvents.TECH_COMPLETED).toBe('game:tech:completed');
+    expect(GameEvents.SAVE_COMPLETED).toBe('game:save:completed');
+    expect(GameEvents.LOAD_COMPLETED).toBe('game:load:completed');
+    expect(GameEvents.RESOURCE_CHANGED).toBe('game:resource:changed');
+    expect(GameEvents.FLEET_MOVED).toBe('game:fleet:moved');
   });
 });

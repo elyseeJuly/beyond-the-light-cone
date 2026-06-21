@@ -21,6 +21,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 03_Web_Rebuild/package-lock.json
 
+      - name: Generate PWA Icons
+        run: |
+          cd 03_Web_Rebuild
+          node scripts/generate-icons.mjs
+
       - name: Install and Build
         run: |
           cd 03_Web_Rebuild

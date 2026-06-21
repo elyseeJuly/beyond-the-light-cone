@@ -39,7 +39,9 @@ export class GameEventManager {
         if (name.startsWith("event_moon_crisis")) return getImageUrl("cg_moon_crisis.png");
         if (name.startsWith("event_wandering_earth")) return getImageUrl("cg_wandering_earth.png");
         if (name.startsWith("event_dimensional_strike") || name === "dimensional_threat_alert") return getImageUrl("cg_dimensional_strike.png");
-        if (name.startsWith("event_droplet_attack")) return getImageUrl("cg_doomsday_battle.png");
+        if (name.startsWith("event_droplet_attack")) return getImageUrl("cg_droplet_attack.png");
+        if (name.startsWith("event_tyler_breached")) return getImageUrl("cg_tyler_breached.png");
+        if (name.startsWith("event_reydiaz_breached")) return getImageUrl("cg_reydiaz_breached.png");
         if (name.startsWith("event_deterrence_established")) return getImageUrl("cg_deterrence_established.png");
         if (name.startsWith("event_deterrence_broken")) return getImageUrl("cg_deterrence_broken.png");
         if (name.startsWith("event_gravitational_broadcast")) return getImageUrl("cg_gravitational_broadcast.png");
@@ -195,6 +197,8 @@ export class GameEventManager {
     if (name.startsWith("event_wandering_earth")) return getImageUrl("cg_wandering_earth.png");
     if (name.startsWith("event_dimensional_strike") || name === "dimensional_threat_alert") return getImageUrl("cg_dimensional_strike.png");
     if (name.startsWith("event_droplet_attack")) return getImageUrl("cg_droplet_attack.png");
+    if (name.startsWith("event_tyler_breached")) return getImageUrl("cg_tyler_breached.png");
+    if (name.startsWith("event_reydiaz_breached")) return getImageUrl("cg_reydiaz_breached.png");
     if (name.startsWith("event_deterrence_established")) return getImageUrl("cg_deterrence_established.png");
     if (name.startsWith("event_deterrence_broken")) return getImageUrl("cg_deterrence_broken.png");
     if (name.startsWith("event_gravitational_broadcast")) return getImageUrl("cg_gravitational_broadcast.png");

@@ -17,6 +17,7 @@ describe('GameEventManager', () => {
   beforeEach(() => {
     game = setupGame();
     em = new GameEventManager();
+    em.setGame(game);
   });
 
   it('初始化加载事件列表', () => {

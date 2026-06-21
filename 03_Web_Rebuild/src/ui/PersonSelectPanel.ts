@@ -60,7 +60,7 @@ export class PersonSelectPanel {
       return;
     }
 
-    const availablePersons = availableNames.map(name => game.personManager.getPerson(name)).filter(p => p !== undefined);
+    const availablePersons = availableNames.map(name => game.personManager.getPerson(name)).filter(p => p !== undefined && p.isAlive);
 
     availablePersons.sort((a: any, b: any) => {
       let scoreA = 0;

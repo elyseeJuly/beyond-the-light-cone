@@ -4,6 +4,7 @@ import { TagManager } from '../../core/TagManager';
 import { AtmosphereEngine } from '../../core/AtmosphereEngine';
 import { EcologyChain } from '../../core/EcologyChain';
 import { HistoryGenerator } from '../../core/HistoryGenerator';
+import { EpochType } from '../../types/enums';
 
 // ======================================================================
 // 事件链集成测试：覆盖 Event → Flag / Tag / Resource / Ecology / 全流程
@@ -193,6 +194,8 @@ describe('EventChain', () => {
     });
 
     it('Event 提升 culture 触发纪元更替', () => {
+      // 显式初始化为 GOLDEN 纪元
+      game.epoch = EpochType.GOLDEN;
       // 设置 culture 为负值确保进入黄金岁月（epoch 0）
       game.earthCivi.culture = -10;
       game.updateEpoch();

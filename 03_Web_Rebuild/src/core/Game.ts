@@ -114,6 +114,10 @@ export class Game {
 
     this.earthCivi = new EarthCivilization();
     this.alienCiviManager = new AlienCiviManager();
+
+    // 注入 game 引用以消除子系统对 GameInstance 单例的强依赖
+    this.earthCivi.setGame(this);
+    this.eventManager.setGame(this);
   }
 
   public setRngProvider(provider: RngProvider): void {
@@ -275,7 +279,19 @@ export class Game {
           effects: c.effects,
           action: () => {
             if (c.effects) this.applyNewEffects(c.effects);
-            if (c.flags) c.flags.forEach((f: string) => this.addFlag(f));
+            if ((c as any).flags) (c as any).flags.forEach((f: string) => this.addFlag(f));
+            
+            // H2 Bugfix: Force swordholder appointment on specific deterrence event
+            if (c.effects && c.effects.some((eff: any) => eff.target === "swordholder_appointed")) {
+              const luoji = this.personManager.getPerson("罗辑");
+              if (luoji && luoji.isAlive) {
+                this.earthCivi.swordholder = "罗辑";
+              } else {
+                // Fallback to first available person if Luoji is dead
+                const alivePerson = this.personManager.getAllPersons().find(p => p.isAlive && this.personManager.availablePersons.has(p.name));
+                if (alivePerson) this.earthCivi.swordholder = alivePerson.name;
+              }
+            }
           }
         }));
         triggeredEvents.push(fevGameEvent);
@@ -519,6 +535,26 @@ export class Game {
           }
         }
 
+        // 3. 角色生命状态检查与卸任
+        for (const p of this.personManager.getAllPersons()) {
+          if (!p.isAlive) {
+            // 解除执剑人
+            if (this.earthCivi.swordholder === p.name) {
+              this.earthCivi.swordholder = null;
+            }
+            // 解除面壁者
+            if (this.earthCivi.wallfacers.has(p.name)) {
+              this.earthCivi.wallfacers.delete(p.name);
+            }
+            // 发布讣告
+            if (p.deathYear === 0 || p.deathYear === this.year) {
+              if (p.deathYear === 0) p.deathYear = this.year;
+              this.addHistory(`【讣告】${p.name} 结束了波澜壮阔的一生，于 ${this.year} 年逝世。`);
+              this.tickerMessages.push(`讣告：${p.name} 逝世。`);
+            }
+          }
+        }
+
         this.year++;
         this.updateEpoch();
         this.checkVictoryConditions();
@@ -545,11 +581,26 @@ export class Game {
     const culture = this.earthCivi?.culture || 0;
 
     const matched = epochsData.find(e => culture >= e.minCulture && culture <= e.maxCulture);
-    if (matched !== undefined) {
-      this.epoch = matched.epoch;
+    if (matched !== undefined && matched.epoch > this.epoch) {
+      let allowed = true;
+      if (matched.epoch === EpochType.DETERRENCE && !this.flags.has('deterrence_established')) allowed = false;
+      if (matched.epoch === EpochType.BROADCAST && !this.flags.has('coordinates_broadcasted')) allowed = false;
+      if (matched.epoch === EpochType.BUNKER && !this.flags.has('bunker_world_completed')) allowed = false;
+      if (matched.epoch === EpochType.GALAXY && (!this.flags.has('galaxy_exodus_seen') && !this.flags.has('dimensional_strike'))) allowed = false;
+      
+      if (allowed) {
+        this.epoch = matched.epoch;
+      } else {
+        // 如果文化达标但关键事件未触发，可给予一些提示或轻微停滞惩罚
+        if (!this.flags.has('epoch_stalled')) {
+          this.addHistory("【文明停滞】人类的文化底蕴已经足以进入下一个时代，但缺少关键的历史契机或技术突破，时代演进被阻滞了。");
+          this.flags.add('epoch_stalled');
+        }
+      }
     }
 
     if (prevEpoch !== this.epoch) {
+      this.flags.delete('epoch_stalled');
       const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
       this.addHistory(`【纪元更替】进入${epochNames[this.epoch]}！`);
       this.playerTimeline.push({ year: this.year, event: `【纪元更替】人类正式进入${epochNames[this.epoch]}` });
@@ -584,21 +635,23 @@ export class Game {
 
       // 自动弹窗 Epoch CG Event
       const epochCGMap: Record<number, string> = {
-        0: 'event_crisis_start',
-        1: 'event_deterrence_established',
-        2: 'event_gravitational_broadcast',
-        3: 'event_bunker_world',
-        4: 'event_galaxy_era',
-        5: 'event_stardust_era',
+        0: 'event_red_shore_base',
+        1: 'event_crisis_start',
+        2: 'event_deterrence_established',
+        3: 'event_gravitational_broadcast',
+        4: 'event_bunker_world',
+        5: 'event_galaxy_era',
+        6: 'event_stardust_era',
       };
 
       const epochContents: Record<number, string> = {
-        0: "人类发现了三体舰队，全世界进入危机纪元。行星防御理事会正式启动面壁计划，基础物理已被智子封锁，人类必须寻找在围剿下存活的手段！",
-        1: "威慑平衡正式建立，人类世界进入威慑纪元。在执剑人的威慑威压下，三体文明被迫停止了向太阳系的扩张，进入脆弱而短暂的和平冷战期。",
-        2: "威慑宣告中止，万有引力号启动了坐标广播，人类正式步入广播纪元。两个世界的坐标已暴露在黑暗森林法则的枪口之下，毁灭倒计时开始。",
-        3: "太阳系黑暗森林打击临近，掩体世界群宣告落成，人类迈进掩体纪元。数十座宏伟太空城散布在气态行星背面，人类试图借此躲过光粒打击。",
-        4: "太阳系终遭降维打击，大批光速飞船破空而去，逃亡银河系，开启银河纪元。地球不再是人类唯一的家园，人类火种从此散布在浩瀚星海。",
-        5: "大宇宙的结构在战争中进一步降维碎裂。太阳系乃至银河系的核心都已退化崩缩，人类分散在各个漂浮的碎星和微型星云间挣扎求生。这是一个万物归尘、同时也是最后的星屑纪元。"
+        0: "那是上个世纪的往事。人类尚未意识到宇宙的险恶，在懵懂中向星空发出了第一声呼唤，黄金岁月还在继续。",
+        1: "人类发现了三体舰队，全世界进入危机纪元。行星防御理事会正式启动面壁计划，基础物理已被智子封锁，人类必须寻找在围剿下存活的手段！",
+        2: "威慑平衡正式建立，人类世界进入威慑纪元。在执剑人的威慑威压下，三体文明被迫停止了向太阳系的扩张，进入脆弱而短暂的和平冷战期。",
+        3: "威慑宣告中止，万有引力号启动了坐标广播，人类正式步入广播纪元。两个世界的坐标已暴露在黑暗森林法则的枪口之下，毁灭倒计时开始。",
+        4: "太阳系黑暗森林打击临近，掩体世界群宣告落成，人类迈进掩体纪元。数十座宏伟太空城散布在气态行星背面，人类试图借此躲过光粒打击。",
+        5: "太阳系终遭降维打击，大批光速飞船破空而去，逃亡银河系，开启银河纪元。地球不再是人类唯一的家园，人类火种从此散布在浩瀚星海。",
+        6: "大宇宙的结构在战争中进一步降维碎裂。太阳系乃至银河系的核心都已退化崩缩，人类分散在各个漂浮的碎星和微型星云间挣扎求生。这是一个万物归尘、同时也是最后的星屑纪元。"
       };
 
       const epochCG = epochCGMap[this.epoch] || 'event_crisis_start';
@@ -638,6 +691,11 @@ export class Game {
   }
 
   public checkVictoryConditions(): void {
+    // 自动根据星际状态打上关键隐藏结局的标志位（仅限运行时判定，不含科技树）
+    if (this.alienCiviManager && this.alienCiviManager.isAllCiviConquered && this.alienCiviManager.isAllCiviConquered()) {
+      this.addFlag("conquest_declared");
+    }
+
     // 0. 坐标广播处理
     if (this.broadcastTriggered) {
       this.isGameOver = true;
@@ -697,6 +755,7 @@ export class Game {
         type: "HIDDEN",
         label: "死神永生 · 小宇宙",
         description: "归零者的讯息抵达，人类选择将小宇宙的质量归还大宇宙，文明化为永恒的生态球",
+        allowedEras: [EpochType.GALAXY, EpochType.STARDUST],
         check: () => {
           if (this.year < 350 || this.epoch < EpochType.GALAXY) return false;
           if (this.earthCivi.culture < 1000) return false;
@@ -714,6 +773,7 @@ export class Game {
         type: "WANDERING",
         label: "流浪胜利",
         description: "完成行星发动机Ⅲ型与新家园选址，带领地球踏上星辰大海",
+        allowedEras: [EpochType.BUNKER, EpochType.GALAXY, EpochType.STARDUST],
         check: () => {
           const tm = this.earthCivi.tecTreeManager;
           return this.year >= 250 &&
@@ -732,6 +792,7 @@ export class Game {
         type: "DIGITAL",
         label: "数字永生胜利",
         description: "完成数字方舟，将人类意识上传至虚拟世界",
+        allowedEras: [EpochType.BUNKER, EpochType.GALAXY, EpochType.STARDUST],
         check: () => {
           return this.year >= 200 &&
                  this.earthCivi.population > 50 &&
@@ -748,6 +809,7 @@ export class Game {
         type: "DETERRENCE",
         label: "威慑胜利",
         description: "在威慑纪元中拥有执剑人，维持威慑平衡",
+        allowedEras: [EpochType.DETERRENCE],
         check: () => {
           return this.epoch >= EpochType.DETERRENCE &&
                  this.earthCivi.swordholder !== null &&
@@ -766,6 +828,7 @@ export class Game {
         type: "CONQUEST",
         label: "征服胜利",
         description: "消灭所有异星文明或使其臣服",
+        allowedEras: [EpochType.BROADCAST, EpochType.BUNKER, EpochType.GALAXY, EpochType.STARDUST],
         check: () => {
           return this.year >= 200 &&
                  this.earthCivi.population > 10 &&
@@ -783,6 +846,7 @@ export class Game {
         type: "DARK_DOMAIN",
         label: "黑域胜利",
         description: "完成黑域生成技术，发布宇宙安全声明",
+        allowedEras: [EpochType.BUNKER, EpochType.GALAXY, EpochType.STARDUST],
         check: () => {
           return this.year >= 250 &&
                  this.earthCivi.population > 0 &&
@@ -799,6 +863,10 @@ export class Game {
     ];
 
     for (const cond of conditions) {
+      // 纪元窗口期验证：若结局指定了允许的纪元，则必须处于其中
+      if (cond.allowedEras && !cond.allowedEras.includes(this.epoch)) {
+        continue;
+      }
       if (cond.check()) {
         this.isGameOver = true;
         this.gameOverReason = `${cond.label}: ${cond.description}`;
@@ -1235,6 +1303,42 @@ export class Game {
       if (condition) {
         zeroers.unlocked = true;
         this.addHistory(`【探索信道解锁】检测到全宇宙广播的终极归零重置宣言，成功接入神级文明通信信道：「归零者」！`);
+      }
+    }
+
+    const carbon = this.alienCiviManager.aliens.get("碳基联邦");
+    if (carbon && !carbon.unlocked) {
+      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150;
+      if (condition) {
+        carbon.unlocked = true;
+        this.addHistory(`【探索信道解锁】银河系远镜捕捉到了古老的硅碳大战残余遗迹波段，成功接入「碳基联邦」通信信道！`);
+      }
+    }
+
+    const silicon = this.alienCiviManager.aliens.get("硅基帝国");
+    if (silicon && !silicon.unlocked) {
+      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150;
+      if (condition) {
+        silicon.unlocked = true;
+        this.addHistory(`【探索信道解锁】银河系远镜捕捉到了高强度无机计算矩阵波动，成功接入「硅基帝国」通信信道！`);
+      }
+    }
+
+    const god = this.alienCiviManager.aliens.get("上帝文明");
+    if (god && !god.unlocked) {
+      const condition = this.epoch >= EpochType.GALAXY && this.year >= 250;
+      if (condition) {
+        god.unlocked = true;
+        this.addHistory(`【探索信道解锁】深空舰队遭遇了正在衰亡的古老文明秋林，成功接入「上帝文明」通信信道！`);
+      }
+    }
+
+    const quantum = this.alienCiviManager.aliens.get("量子态文明");
+    if (quantum && !quantum.unlocked) {
+      const condition = this.epoch >= EpochType.GALAXY && this.year >= 250;
+      if (condition) {
+        quantum.unlocked = true;
+        this.addHistory(`【探索信道解锁】物理学家观测到了呈现文明特征的宏观量子涨落，成功接入「量子态文明」通信信道！`);
       }
     }
   }

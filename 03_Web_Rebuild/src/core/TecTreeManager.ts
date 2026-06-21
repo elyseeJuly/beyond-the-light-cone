@@ -42,7 +42,6 @@ export class TecTreeManager {
     tree.addNode("维度物理", "曲率驱动理论", false, 350, 300, "光速飞船前置理论。");
     tree.addNode("曲率驱动理论", "光速飞船原型", false, 500, 400, "建造第一艘光速飞船。");
     tree.addNode("维度物理", "二向箔防御学", false, 400, 350, "防御降维打击。");
-    tree.addNode("二向箔防御学", "黑域生成", false, 500, 500, "发布宇宙安全声明，达成黑域胜利。");
 
     this.trees.set(TecTreeType.PHYSICS, tree);
   }

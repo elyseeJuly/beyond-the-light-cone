@@ -7,6 +7,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { EndingConfig } from '../../config/endingConfig';
+import { 
+  Swords, ShieldAlert, EyeOff, Globe, Dna, Sparkles, Flame, Skull, Sun, Layers 
+} from 'lucide-react';
 
 interface Props {
   config: EndingConfig;
@@ -43,6 +46,24 @@ export const EndingDeclaration: React.FC<Props> = ({ config, onComplete }) => {
     return () => clearInterval(timer);
   }, [phase, config.declaration, onComplete]);
 
+  const IconComponent = () => {
+    const iconMap: Record<string, React.ComponentType<any>> = {
+      Swords,
+      ShieldAlert,
+      EyeOff,
+      Globe,
+      Dna,
+      Sparkles,
+      Flame,
+      Skull,
+      Sun,
+      Layers
+    };
+    const Icon = iconMap[config.iconSymbol];
+    if (!Icon) return null;
+    return <Icon size={96} style={{ color: config.accentColor }} />;
+  };
+
   return (
     <div
       className="fixed inset-0 z-[300] flex flex-col items-center justify-center overflow-hidden transition-all duration-1000"
@@ -63,11 +84,11 @@ export const EndingDeclaration: React.FC<Props> = ({ config, onComplete }) => {
 
       {/* Icon */}
       <div
-        className={`text-8xl mb-8 transition-all duration-1000 ${
+        className={`mb-8 transition-all duration-1000 ${
           phase === 'icon' ? 'opacity-100 scale-100' : 'opacity-60 scale-75'
         }`}
       >
-        {config.iconSymbol}
+        <IconComponent />
       </div>
 
       {/* Title */}

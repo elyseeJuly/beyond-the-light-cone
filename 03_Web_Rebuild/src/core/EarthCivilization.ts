@@ -2,10 +2,9 @@ import { Civilization } from "./Civilization";
 import { StatisticsManager } from "./StatisticsManager";
 import { Department, createDepartment } from "./Department";
 import { DepartmentType, TecTreeType } from "../types/enums";
-import { GameInstance } from "./Game";
 import { CombatEngine } from "./CombatEngine";
 import { createBarback } from "./Barback";
-import type { RngProvider } from "./Game";
+import type { Game, RngProvider } from "./Game";
 import { STAR_INDEX } from "../config/starIndices";
 import wallfacersData from "../data/wallfacers.json";
 import { GameEvents } from "./EventBus";
@@ -22,6 +21,12 @@ export class EarthCivilization extends Civilization {
   public swordholder: string | null = null;
   public swordholderHandoverTurn: boolean = false;
   public departments: Map<DepartmentType, Department> = new Map();
+  /** 注入的 Game 实例，使用私有字段避免被序列化导致循环引用 */
+  #game: Game | null = null;
+
+  public setGame(game: Game): void {
+    this.#game = game;
+  }
 
   public techResearchQueue: Map<TecTreeType, string> = new Map();
   public setResearchTarget(treeType: TecTreeType, nodeName: string): void {
@@ -91,7 +96,11 @@ export class EarthCivilization extends Civilization {
   }
 
   public runARound(): void {
-    const game = GameInstance.get();
+    const game = this.#game;
+    if (!game) {
+      console.warn('[EarthCivilization] runARound called before game injection');
+      return;
+    }
 
     this.allocateWorkers();
 
@@ -142,7 +151,7 @@ export class EarthCivilization extends Civilization {
           plan.isBroken = true;
           this.wallfacers.delete(targetWallfacer);
           this.deterrenceValue = Math.max(0, this.deterrenceValue - wallfacersData.breakDeterrencePenalty);
-          
+
           game.addHistory(`【破壁人降临】三体智子与破壁人正式识破了面壁者 ${targetWallfacer} 的「${plan.planName}」计划！该计划宣告破产，${targetWallfacer} 承受巨大心理打击退场。`);
           game.tickerMessages.push(`👥 [战略公报] 面壁者 ${targetWallfacer} 被破壁！其秘密计划「${plan.planName}」已被识破并宣告失败。`);
           window.dispatchEvent(new CustomEvent('ticker-message-added'));
@@ -165,23 +174,23 @@ export class EarthCivilization extends Civilization {
 
     // 威慑度衰减：基础衰减 + 比例衰减（威慑度越高，维持难度越大）
     let deterrenceDecay = 3 + Math.floor(this.deterrenceValue * 0.02);
-    
+
     // 面壁者可以减缓衰减（每个活跃面壁者减少0.3衰减）
     const activeWallfacersCount = Array.from(this.wallfacers).length;
     deterrenceDecay -= activeWallfacersCount * 0.3;
-    
+
     // 已完成的面壁计划进一步减缓衰减
     for (const plan of Object.values(this.wallfacerPlans)) {
       if (plan.progress >= 100) {
         deterrenceDecay -= 1;
       }
     }
-    
+
     // 执剑人存在时额外减缓衰减
     if (this.swordholder) {
       deterrenceDecay -= 0.5;
     }
-    
+
     // 最低衰减不少于1
     deterrenceDecay = Math.max(1, deterrenceDecay);
     this.deterrenceValue = Math.max(0, this.deterrenceValue - deterrenceDecay);

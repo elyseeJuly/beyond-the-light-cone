@@ -137,6 +137,38 @@ export class AudioManager {
 
   // ===== 音量控制 =====
 
+  /** 渐出所有音频通道 */
+  async fadeOutAll(durationMs: number = 2000): Promise<void> {
+    if (!this.isInitialized || !this.audioContext || !this.bgmGain || !this.sfxGain) return;
+    const now = this.audioContext.currentTime;
+    const fadeTime = durationMs / 1000;
+    
+    this.bgmGain.gain.cancelScheduledValues(now);
+    this.sfxGain.gain.cancelScheduledValues(now);
+    
+    this.bgmGain.gain.setValueAtTime(this.bgmGain.gain.value, now);
+    this.sfxGain.gain.setValueAtTime(this.sfxGain.gain.value, now);
+    
+    this.bgmGain.gain.linearRampToValueAtTime(0, now + fadeTime);
+    this.sfxGain.gain.linearRampToValueAtTime(0, now + fadeTime);
+    
+    return new Promise(resolve => setTimeout(resolve, durationMs));
+  }
+
+  /** 恢复音频通道音量 */
+  restoreVolumes(): void {
+    if (!this.isInitialized || !this.audioContext) return;
+    const now = this.audioContext.currentTime;
+    if (this.bgmGain) {
+      this.bgmGain.gain.cancelScheduledValues(now);
+      this.bgmGain.gain.setValueAtTime(this.bgmEnabled ? this.bgmVolume : 0, now);
+    }
+    if (this.sfxGain) {
+      this.sfxGain.gain.cancelScheduledValues(now);
+      this.sfxGain.gain.setValueAtTime(this.sfxEnabled ? this.sfxVolume : 0, now);
+    }
+  }
+
   setBgmVolume(volume: number): void {
     this.bgmVolume = Math.max(0, Math.min(1, volume));
     if (this.bgmGain) this.bgmGain.gain.value = this.bgmVolume;

@@ -8,7 +8,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { EndingConfig, CREDITS_LIST } from '../../config/endingConfig';
-import { RefreshCw, RotateCcw, Eye } from 'lucide-react';
+import { 
+  RefreshCw, RotateCcw, Eye,
+  Swords, ShieldAlert, EyeOff, Globe, Dna, Sparkles, Flame, Skull, Sun, Layers 
+} from 'lucide-react';
 import { KeyDecisionRetrospective } from './KeyDecisionRetrospective';
 import { GameInstance } from '../../core/Game';
 
@@ -37,6 +40,24 @@ export const CreditsRoll: React.FC<Props> = ({
     const t = setTimeout(() => setShowButtons(true), 25000); // Show after 25s
     return () => clearTimeout(t);
   }, []);
+
+  const IconComponent = () => {
+    const iconMap: Record<string, React.ComponentType<any>> = {
+      Swords,
+      ShieldAlert,
+      EyeOff,
+      Globe,
+      Dna,
+      Sparkles,
+      Flame,
+      Skull,
+      Sun,
+      Layers
+    };
+    const Icon = iconMap[config.iconSymbol];
+    if (!Icon) return null;
+    return <Icon className="inline-block mr-2 align-text-bottom" size={24} style={{ color: config.accentColor }} />;
+  };
 
   return (
     <div
@@ -108,10 +129,10 @@ export const CreditsRoll: React.FC<Props> = ({
           <div className="text-center mb-20 animate-pulse">
             <p className="text-white/30 text-xs tracking-[0.4em] uppercase mb-3">You Achieved</p>
             <p
-              className="text-2xl font-bold tracking-wider"
+              className="text-2xl font-bold tracking-wider flex items-center justify-center gap-1"
               style={{ color: config.accentColor }}
             >
-              {config.iconSymbol} {config.title}
+              <IconComponent /> {config.title}
             </p>
             <p className="text-white/30 mt-2 italic">{config.subtitle}</p>
           </div>

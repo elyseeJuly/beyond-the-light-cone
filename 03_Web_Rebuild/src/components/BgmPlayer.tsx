@@ -138,6 +138,18 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
     return () => window.removeEventListener('pause-main-bgm', handlePauseMain);
   }, []);
 
+  // Listen to ending started event to explicitly pause BGM
+  useEffect(() => {
+    const handleEndingStarted = () => {
+      setIsPlaying(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+    window.addEventListener('game:ending:started', handleEndingStarted);
+    return () => window.removeEventListener('game:ending:started', handleEndingStarted);
+  }, []);
+
   // Listen to custom alert sound events
   useEffect(() => {
     const handleAlertSound = (e: Event) => {

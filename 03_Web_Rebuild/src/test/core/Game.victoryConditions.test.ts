@@ -30,6 +30,7 @@ describe('Game Victory Conditions', () => {
 
   it('WANDERING 流浪胜利：正常触发', () => {
     game.year = 300;
+    game.epoch = EpochType.BUNKER;
     setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
     game.addFlag("wandering_completed");
@@ -40,6 +41,7 @@ describe('Game Victory Conditions', () => {
 
   it('WANDERING 流浪胜利：年份不足不应触发', () => {
     game.year = 200;
+    game.epoch = EpochType.BUNKER;
     setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
     game.addFlag("wandering_completed");
@@ -49,6 +51,7 @@ describe('Game Victory Conditions', () => {
 
   it('WANDERING 流浪胜利：与数字飞升互斥，若有数字飞升标志则不触发', () => {
     game.year = 300;
+    game.epoch = EpochType.BUNKER;
     setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
     game.addFlag("wandering_completed");
@@ -59,6 +62,7 @@ describe('Game Victory Conditions', () => {
 
   it('DIGITAL 数字永生：正常触发', () => {
     game.year = 250;
+    game.epoch = EpochType.BUNKER;
     setupTech(game, TecTreeType.INFORMATION, "数字方舟");
     game.addFlag("digital_ark_upgrade");
     game.earthCivi.population = 80;
@@ -69,6 +73,7 @@ describe('Game Victory Conditions', () => {
 
   it('DIGITAL 数字永生：人口不足不应触发', () => {
     game.year = 250;
+    game.epoch = EpochType.BUNKER;
     setupTech(game, TecTreeType.INFORMATION, "数字方舟");
     game.addFlag("digital_ark_upgrade");
     game.earthCivi.population = 30; // 小于 50
@@ -99,7 +104,8 @@ describe('Game Victory Conditions', () => {
 
   it('DARK_DOMAIN 黑域胜利：正常触发', () => {
     game.year = 260;
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    game.epoch = EpochType.BUNKER;
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     game.addFlag("dark_domain_decision");
     game.earthCivi.treachery = 20;
     game.checkVictoryConditions();
@@ -109,7 +115,8 @@ describe('Game Victory Conditions', () => {
 
   it('DARK_DOMAIN 黑域胜利：逃亡度过高时不应触发', () => {
     game.year = 260;
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    game.epoch = EpochType.BUNKER;
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     game.addFlag("dark_domain_decision");
     game.earthCivi.treachery = 90; // 大于 80
     game.checkVictoryConditions();
@@ -126,7 +133,7 @@ describe('Game Victory Conditions', () => {
     game.addFlag("alien_alliance");
     game.addFlag("zero_homer_contacted");
     game.addFlag("mini_universe_built");
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     setupTech(game, TecTreeType.INFORMATION, "数字方舟");
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
@@ -150,18 +157,22 @@ describe('Game Victory Conditions', () => {
     game.addFlag("conquest_declared");
 
     // 1. 如果同时拥有 swordholder_appointed 和 conquest_declared，两者均不应触发（互斥）
+    // DETERRENCE 被 conquest_declared 互斥，CONQUEST 不在 DETERRENCE 纪元窗口期
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(false);
 
-    // 2. 清除 swordholder_appointed 标志，征服胜利可以触发
+    // 2. 切换到 BROADCAST 纪元，清除 swordholder_appointed 标志，征服胜利可以触发
+    game.epoch = EpochType.BROADCAST;
     game.removeFlag("swordholder_appointed");
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.victoryType).toBe(VictoryType.CONQUEST);
 
-    // 重置并验证威慑
+    // 重置并验证威慑（DETERRENCE 纪元）
     game.isGameOver = false;
     game.victoryType = null;
+    game.epoch = EpochType.DETERRENCE;
+    game.alienCiviManager.isAllCiviConquered = () => false; // 防止自动标志位重新赋值
     game.addFlag("swordholder_appointed");
     game.removeFlag("conquest_declared");
     game.checkVictoryConditions();
@@ -173,6 +184,7 @@ describe('Game Victory Conditions', () => {
 
   it('流浪胜利需要同时满足科技、标志和年份等多重要求', () => {
     game.year = 300;
+    game.epoch = EpochType.BUNKER;
     game.earthCivi.population = 100;
     setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
@@ -191,8 +203,9 @@ describe('Game Victory Conditions', () => {
 
   it('黑域胜利因缺少 dark_domain_decision 标志而被阻塞', () => {
     game.year = 260;
+    game.epoch = EpochType.BUNKER;
     game.earthCivi.treachery = 10;
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     // 不添加 dark_domain_decision 标志
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(false);
@@ -207,6 +220,7 @@ describe('Game Victory Conditions', () => {
   it('胜利与失败条件同时满足时，胜利优先触发', () => {
     // 同时满足流浪胜利和太阳氦闪失败条件
     game.year = 360; // 超过 350 年，本应触发氦闪
+    game.epoch = EpochType.BUNKER;
     game.earthCivi.population = 100;
     setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
@@ -230,6 +244,7 @@ describe('Game Victory Conditions', () => {
 
   it('游戏结束状态下再次检查不会改变已有结果', () => {
     game.year = 300;
+    game.epoch = EpochType.BUNKER;
     setupTech(game, TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     setupTech(game, TecTreeType.INTERSTELLAR, "新家园选址");
     game.addFlag("wandering_completed");
@@ -246,8 +261,9 @@ describe('Game Victory Conditions', () => {
 
   it('黑域胜利在年份不足 250 时不触发', () => {
     game.year = 249; // 刚好低于阈值
+    game.epoch = EpochType.BUNKER;
     game.earthCivi.treachery = 10;
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     game.addFlag("dark_domain_decision");
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(false);
@@ -266,7 +282,7 @@ describe('Game Victory Conditions', () => {
     game.earthCivi.culture = 1200;
     game.earthCivi.population = 80;
     game.earthCivi.deterrenceValue = 60;
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     setupTech(game, TecTreeType.INFORMATION, "数字方舟");
 
     // 缺少 mini_universe_built 标志

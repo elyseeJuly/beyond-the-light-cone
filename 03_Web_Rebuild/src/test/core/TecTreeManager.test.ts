@@ -57,7 +57,6 @@ describe('TecTreeManager', () => {
     expect(tree.getNode('维度物理')).toBeDefined();
     expect(tree.getNode('曲率驱动理论')).toBeDefined();
     expect(tree.getNode('光速飞船原型')).toBeDefined();
-    expect(tree.getNode('黑域生成')).toBeDefined();
     expect(tree.getNode('智子工程')).toBeDefined();
   });
 
@@ -178,7 +177,7 @@ describe('TecTreeManager', () => {
 
   it('科技消耗（cost）数值正确', () => {
     expect(tm.trees.get(TecTreeType.PHYSICS)!.getNode('天文观测')!.cost).toBe(10);
-    expect(tm.trees.get(TecTreeType.PHYSICS)!.getNode('黑域生成')!.cost).toBe(500);
+    expect(tm.trees.get(TecTreeType.INTERSTELLAR)!.getNode('黑域生成')!.cost).toBe(500);
     expect(tm.trees.get(TecTreeType.INFORMATION)!.getNode('数字方舟')!.cost).toBe(350);
     expect(tm.trees.get(TecTreeType.AEROSPACE)!.getNode('行星发动机Ⅲ型')!.cost).toBe(300);
     expect(tm.trees.get(TecTreeType.MILITARY)!.getNode('二向箔武器化')!.cost).toBe(500);
@@ -186,14 +185,7 @@ describe('TecTreeManager', () => {
   });
 
   it('isTecFinishedAnywhere 跨树验证 - 同名科技（黑域生成）', () => {
-    // 黑域生成 同时存在于 PHYSICS 和 INTERSTELLAR
-    expect(tm.isTecFinishedAnywhere('黑域生成')).toBe(false);
-
-    // 完成 PHYSICS 树中的 黑域生成
-    const physicsNode = tm.trees.get(TecTreeType.PHYSICS)!.getNode('黑域生成')!;
-    physicsNode.finished = true;
-    expect(tm.isTecFinishedAnywhere('黑域生成')).toBe(true);
-    physicsNode.finished = false;
+    // 黑域生成 存在于 INTERSTELLAR 树
     expect(tm.isTecFinishedAnywhere('黑域生成')).toBe(false);
 
     // 完成 INTERSTELLAR 树中的 黑域生成
@@ -205,7 +197,7 @@ describe('TecTreeManager', () => {
   });
 
   it('科技描述（tip）和工作量信息完整', () => {
-    const node = tm.trees.get(TecTreeType.PHYSICS)!.getNode('黑域生成')!;
+    const node = tm.trees.get(TecTreeType.INTERSTELLAR)!.getNode('黑域生成')!;
     expect(node.tip).toContain('宇宙安全声明');
     expect(node.totalWorkload).toBe(500);
     expect(node.currentWorkload).toBe(0);

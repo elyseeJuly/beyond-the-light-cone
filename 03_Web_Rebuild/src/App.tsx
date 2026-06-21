@@ -26,6 +26,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { UpdatePrompt } from './components/UpdatePrompt';
 import { OrientationPrompt } from './components/OrientationPrompt';
 import { useBreakpoint } from './hooks/useBreakpoint';
+import { Toast } from './components/common/Toast';
 
 export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveViewType>('starmap');
@@ -156,6 +157,30 @@ export const App: React.FC = () => {
       window.removeEventListener('game-turn-complete', updateEpoch);
     };
   }, []);
+
+  // Listen for turn completion to show Toast alerts on mobile
+  useEffect(() => {
+    const handleTurnCompleteToast = () => {
+      if (!isMobile) return;
+      const game = GameInstance.get();
+      if (game.tickerMessages && game.tickerMessages.length > 0) {
+        const latestMsg = game.tickerMessages[game.tickerMessages.length - 1];
+        window.dispatchEvent(new CustomEvent('game:toast:message', {
+          detail: {
+            text: latestMsg,
+            category: '【星区日志更新】',
+            onClick: () => {
+              setMobileDrawerOpen(true);
+              setActiveView('archive');
+            }
+          }
+        }));
+      }
+    };
+
+    window.addEventListener('game-turn-complete', handleTurnCompleteToast);
+    return () => window.removeEventListener('game-turn-complete', handleTurnCompleteToast);
+  }, [isMobile]);
 
   useEffect(() => {
     const eraThemes = ['theme-crisis', 'theme-expansion', 'theme-golden', 'theme-decline', 'theme-end'];
@@ -316,6 +341,7 @@ export const App: React.FC = () => {
           {/* PWA Components */}
           <UpdatePrompt />
           <OrientationPrompt />
+          <Toast />
 
           {/* Top HUD */}
           <TopHUD />
@@ -328,7 +354,7 @@ export const App: React.FC = () => {
             )}
 
             {/* Dynamic Center Viewport */}
-            <div className="flex-1 relative overflow-hidden bg-black/25">
+            <div data-tutorial-id="starmap-viewport" className="flex-1 relative overflow-hidden bg-black/25">
               {renderCenterView()}
             </div>
 

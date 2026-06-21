@@ -1,16 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { GameInstance } from '../core/Game';
-import { Volume2, Globe, Monitor, Zap, Save, HelpCircle, Users, X } from 'lucide-react';
+import { Volume2, Globe, Monitor, Zap, Save, HelpCircle, Users, X, Database, MessageSquare } from 'lucide-react';
 import { setLanguage, getLanguage } from '../utils/i18n';
+import { assetLoader } from '../core/AssetLoader';
 
 interface SettingsModalProps {
   onClose: () => void;
 }
 
-type SettingsTab = 'audio' | 'lang' | 'display' | 'perf' | 'save' | 'help' | 'credits';
+type SettingsTab = 'audio' | 'lang' | 'display' | 'perf' | 'save' | 'help' | 'credits' | 'storage';
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('audio');
+  
+  // Storage states
+  const [assetStats, setAssetStats] = useState(() => assetLoader.getStats());
+  const [downloadingPack, setDownloadingPack] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+
+  const handleDownload = async (packId: string) => {
+    setDownloadingPack(packId);
+    setDownloadProgress(0);
+    try {
+      await assetLoader.downloadPack(packId, (p) => {
+        setDownloadProgress(Math.round(p.progress * 100));
+        if (p.state === 'complete') {
+          setDownloadingPack(null);
+          setAssetStats(assetLoader.getStats());
+        } else if (p.state === 'error') {
+          alert(`下载失败: ${p.error}`);
+          setDownloadingPack(null);
+        }
+      });
+    } catch (err) {
+      alert(`启动下载失败: ${err}`);
+      setDownloadingPack(null);
+    }
+  };
   
   // Audio state
   const [bgmMuted, setBgmMuted] = useState(() => localStorage.getItem('game-bgm-muted') === 'true');
@@ -173,6 +199,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('credits')}`}
             >
               <Users size={14} /> 制作人员
+            </button>
+
+            <button
+              onClick={() => setActiveTab('storage')}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('storage')}`}
+            >
+              <Database size={14} /> 存储与资源
             </button>
           </div>
 
@@ -356,6 +389,72 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                   <p className="text-[9px] text-[var(--text-secondary)] mt-6">
                     © 2026 EMBEROIS GAME STUDIO. ALL RIGHTS RESERVED.
                   </p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'storage' && (
+              <div className="space-y-4 flex flex-col justify-between h-full">
+                <div className="space-y-3">
+                  <div className="text-xs font-bold text-white uppercase tracking-wider border-b border-[#243245]/30 pb-2 flex justify-between items-center">
+                    <span>系统离线存储与资源分层状态</span>
+                    <span className="text-[10px] text-[var(--color-primary)]">Layer 1 & Layer 2</span>
+                  </div>
+                  
+                  {/* Progress Indicator */}
+                  <div className="bg-[#070B14]/60 p-3 border border-[#243245]/20 rounded space-y-2 flex-shrink-0">
+                    <div className="flex justify-between text-[10px]">
+                      <span>离线缓存数据总量:</span>
+                      <span className="text-white font-bold">
+                        {(assetStats.loadedSize / 1024 / 1024).toFixed(1)} MB / {(assetStats.totalSize / 1024 / 1024).toFixed(1)} MB
+                      </span>
+                    </div>
+                    <div className="w-full bg-[#1b2a3d] h-2 rounded overflow-hidden relative">
+                      <div 
+                        className="bg-gradient-to-r from-cyan-500 to-[var(--color-primary)] h-full transition-all duration-500"
+                        style={{ width: `${(assetStats.loadedSize / (assetStats.totalSize || 1)) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Asset Packs List */}
+                  <div className="space-y-1.5 overflow-y-auto max-h-[160px] pr-1">
+                    {assetStats.packsDetail.map((pack: any) => (
+                      <div key={pack.packId} className="flex justify-between items-center bg-black/35 px-2.5 py-1.5 rounded border border-[#243245]/15 text-[10px]">
+                        <div className="flex flex-col">
+                          <span className="text-white font-bold">{pack.name}</span>
+                          <span className="text-[9px] text-[var(--text-secondary)]/60">{pack.description}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] text-[var(--text-secondary)]">{(pack.totalSize / 1024 / 1024).toFixed(1)} MB</span>
+                          {pack.state === 'complete' ? (
+                            <span className="text-emerald-400 font-bold">已缓存</span>
+                          ) : downloadingPack === pack.packId ? (
+                            <span className="text-amber-400 font-bold animate-pulse">下载中 {downloadProgress}%</span>
+                          ) : (
+                            <button
+                              onClick={() => handleDownload(pack.packId)}
+                              disabled={downloadingPack !== null}
+                              className="px-2 py-0.5 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 rounded cursor-pointer disabled:opacity-40"
+                            >
+                              下载
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Feedback Entry at bottom */}
+                <div className="border-t border-[#243245]/30 pt-3 flex justify-between items-center mt-auto shrink-0">
+                  <span className="text-[9px] text-[var(--text-secondary)]/50">发现异常或平衡性问题？</span>
+                  <button
+                    onClick={() => window.open('https://github.com/elyseeJuly/beyond-the-light-cone/issues', '_blank')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.25)] text-white text-[10px] font-bold cursor-pointer transition-all"
+                  >
+                    <MessageSquare size={12} className="text-[var(--color-primary)]" /> 反馈问题与建议 (GitHub Issues)
+                  </button>
                 </div>
               </div>
             )}

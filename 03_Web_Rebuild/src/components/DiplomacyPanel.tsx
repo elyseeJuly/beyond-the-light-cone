@@ -94,19 +94,17 @@ export const DiplomacyPanel: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Civilization list selector */}
         <div className="md:col-span-1 border-r border-cyan-500/10 pr-2 space-y-2.5 max-h-72 overflow-y-auto">
-          {aliens.map((alien) => {
-            const isLocked = !alien.unlocked;
+          {aliens.filter(a => a.unlocked).map((alien) => {
             return (
               <button
                 key={alien.name}
-                disabled={alien.isDead || isLocked}
+                disabled={alien.isDead}
                 onClick={() => {
                   setSelectedAlien(alien.name);
                   setFeedback('');
                 }}
                 className={`w-full text-left p-2.5 rounded border transition-all flex flex-col gap-1.5 ${
                   alien.isDead ? 'border-slate-800 bg-slate-950/20 opacity-30 cursor-not-allowed' :
-                  isLocked ? 'border-slate-800/40 bg-slate-950/10 text-slate-600 cursor-not-allowed opacity-60' :
                   selectedAlien === alien.name 
                     ? 'border-cyan-500/50 bg-cyan-950/20 text-cyan-200 shadow-[0_0_8px_rgba(6,182,212,0.15)] cursor-pointer' 
                     : 'border-cyan-500/10 bg-slate-950/30 text-slate-400 hover:border-cyan-500/30 hover:bg-slate-900/40 cursor-pointer'
@@ -114,23 +112,14 @@ export const DiplomacyPanel: React.FC = () => {
               >
                 <div className="flex items-center justify-between w-full">
                   <span className="font-bold text-xs">
-                    {isLocked 
-                      ? `【未知信道: ${
-                          alien.name === '三体' ? '三体' : 
-                          alien.name === '歌者' ? '探测01' : 
-                          alien.name === '魔戒' ? '遗迹02' : 
-                          alien.name === '边缘世界' ? '波动03' : '高维波段'
-                        }】` 
-                      : alien.name}
+                    {alien.name}
                   </span>
                   {alien.isBund && <Handshake className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
                 </div>
                 <div className={`text-[10px] px-1.5 py-0.5 rounded border inline-block max-w-max font-bold ${
-                  isLocked 
-                    ? 'text-slate-600 border-slate-800 bg-slate-950/5' 
-                    : getFriendshipLabel(alien.friendship).color
+                  getFriendshipLabel(alien.friendship).color
                 }`}>
-                  {alien.isDead ? "文明已灭绝" : isLocked ? "未建立通信信道" : getFriendshipLabel(alien.friendship).text}
+                  {alien.isDead ? "文明已灭绝" : getFriendshipLabel(alien.friendship).text}
                 </div>
               </button>
             );

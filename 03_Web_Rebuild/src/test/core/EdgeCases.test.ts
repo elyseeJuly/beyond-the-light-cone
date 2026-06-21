@@ -3,8 +3,7 @@ import { Game, GameInstance, RngProvider } from '../../core/Game';
 import { EpochType, DefeatType, VictoryType } from '../../types/enums';
 
 function setupGame(): Game {
-  GameInstance.reset();
-  return GameInstance.get();
+  return new Game();
 }
 
 /**
@@ -333,6 +332,7 @@ describe('Edge Cases', () => {
       // Clear events to prevent interactive events from blocking year advancement
       game.eventManager.events = [];
       game.eventManager.filteredEvents = [];
+      game.eventManager.randomEvents = [];
       game.runARound();
       expect(game.year).toBeGreaterThanOrEqual(1);
     });
@@ -342,9 +342,13 @@ describe('Edge Cases', () => {
       game.year = 10000;
       game.earthCivi.culture = 9999;
 
+      // 避免 year > 350 且无逃逸手段时触发太阳氦闪失败，从而阻止年份推进
+      game.addFlag("wandering_completed");
+
       // Clear events to prevent epoch transition events from blocking year advancement
       game.eventManager.events = [];
       game.eventManager.filteredEvents = [];
+      game.eventManager.randomEvents = [];
 
       // Should not crash
       expect(() => game.runARound()).not.toThrow();
@@ -366,26 +370,28 @@ describe('Edge Cases', () => {
     });
 
     it('should handle epoch transitions at exact boundary culture values', () => {
-      // Test all epoch boundary values (based on epochs.json)
-      const boundaries: Array<{ culture: number; expectedEpoch: EpochType }> = [
-        { culture: -100, expectedEpoch: EpochType.GOLDEN },
-        { culture: -1, expectedEpoch: EpochType.GOLDEN },
-        { culture: 0, expectedEpoch: EpochType.CRISIS },
-        { culture: 70, expectedEpoch: EpochType.CRISIS },
-        { culture: 199, expectedEpoch: EpochType.CRISIS },
-        { culture: 200, expectedEpoch: EpochType.DETERRENCE },
-        { culture: 499, expectedEpoch: EpochType.DETERRENCE },
-        { culture: 500, expectedEpoch: EpochType.BROADCAST },
-        { culture: 799, expectedEpoch: EpochType.BROADCAST },
-        { culture: 800, expectedEpoch: EpochType.BUNKER },
-        { culture: 1199, expectedEpoch: EpochType.BUNKER },
-        { culture: 1200, expectedEpoch: EpochType.GALAXY },
-        { culture: 2500, expectedEpoch: EpochType.STARDUST },
+      // 纪元切换是单向前进且需要关键事件标志位的；测试从各前序纪元推进到下一纪元的边界值
+      const boundaries: Array<{ startEpoch: EpochType; culture: number; flag: string | null; expectedEpoch: EpochType }> = [
+        { startEpoch: EpochType.GOLDEN, culture: -100, flag: null, expectedEpoch: EpochType.GOLDEN },
+        { startEpoch: EpochType.GOLDEN, culture: -1, flag: null, expectedEpoch: EpochType.GOLDEN },
+        { startEpoch: EpochType.GOLDEN, culture: 0, flag: null, expectedEpoch: EpochType.CRISIS },
+        { startEpoch: EpochType.GOLDEN, culture: 70, flag: null, expectedEpoch: EpochType.CRISIS },
+        { startEpoch: EpochType.GOLDEN, culture: 199, flag: null, expectedEpoch: EpochType.CRISIS },
+        { startEpoch: EpochType.CRISIS, culture: 200, flag: 'deterrence_established', expectedEpoch: EpochType.DETERRENCE },
+        { startEpoch: EpochType.CRISIS, culture: 499, flag: 'deterrence_established', expectedEpoch: EpochType.DETERRENCE },
+        { startEpoch: EpochType.DETERRENCE, culture: 500, flag: 'coordinates_broadcasted', expectedEpoch: EpochType.BROADCAST },
+        { startEpoch: EpochType.DETERRENCE, culture: 799, flag: 'coordinates_broadcasted', expectedEpoch: EpochType.BROADCAST },
+        { startEpoch: EpochType.BROADCAST, culture: 800, flag: 'bunker_world_completed', expectedEpoch: EpochType.BUNKER },
+        { startEpoch: EpochType.BROADCAST, culture: 1199, flag: 'bunker_world_completed', expectedEpoch: EpochType.BUNKER },
+        { startEpoch: EpochType.BUNKER, culture: 1200, flag: 'galaxy_exodus_seen', expectedEpoch: EpochType.GALAXY },
+        { startEpoch: EpochType.GALAXY, culture: 2500, flag: null, expectedEpoch: EpochType.STARDUST },
       ];
 
-      for (const { culture, expectedEpoch } of boundaries) {
+      for (const { startEpoch, culture, flag, expectedEpoch } of boundaries) {
         game = setupGame();
+        game.epoch = startEpoch;
         game.earthCivi.culture = culture;
+        if (flag) game.addFlag(flag);
         game.updateEpoch();
         expect(game.epoch).toBe(expectedEpoch);
       }

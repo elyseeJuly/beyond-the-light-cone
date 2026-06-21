@@ -1,4 +1,4 @@
-import { EventEffect, EventLane, LoreDomain } from "./enums";
+import { EventEffect, EventLane, EpochType, LoreDomain } from "./enums";
 import type { EpochQuery } from "../core/GameEvent";
 
 export interface EventCadenceMeta {
@@ -51,10 +51,17 @@ export interface FilteredEventCondition {
   reqFlag?: string;
   reqNotFlag?: string;
   minEconomy?: number;
+  maxEconomy?: number;
   minPopulation?: number;
+  maxPopulation?: number;
   minCulture?: number;
+  maxCulture?: number;
   minDeterrence?: number;
+  maxDeterrence?: number;
+  minTreachery?: number;
   maxTreachery?: number;
+  minMilitary?: number;
+  maxMilitary?: number;
   friendshipReq?: { alienName: string; minLevel: number; };
   probability?: number;
   loreDomain?: LoreDomain;
@@ -79,5 +86,10 @@ export interface VictoryCondition {
   type: string;
   label: string;
   description: string;
+  /** 允许触发的纪元窗口期（为空则不限纪元） */
+  allowedEras?: EpochType[];
+  /** 允许触发的年份窗口期 */
+  minYear?: number;
+  maxYear?: number;
   check: () => boolean;
 }

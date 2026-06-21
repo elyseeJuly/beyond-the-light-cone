@@ -182,6 +182,59 @@ export class AssetLoader {
     return completed;
   }
 
+  /** 获取资源缓存及下载状态的统计数据 */
+  getStats() {
+    if (!this.manifest) {
+      return {
+        loadedSize: 0,
+        totalSize: 0,
+        downloadedPacks: [] as string[],
+        pendingPacks: [] as string[],
+        packsDetail: [] as any[],
+      };
+    }
+
+    const completedPacks = this.getCompletedPacks();
+    const downloadStatus = this.getDownloadStatus();
+    
+    // Calculate total size of all expansion packages + core package
+    const coreSize = this.manifest.core.reduce((sum, a) => sum + (a.size || 0), 0);
+    const expansionSize = this.manifest.expansion.assets.reduce((sum, a) => sum + (a.size || 0), 0);
+    const totalSize = coreSize + expansionSize;
+
+    // Calculate loaded size (core is always loaded + completed expansion assets)
+    let loadedSize = coreSize;
+    this.manifest.expansion.assets.forEach(asset => {
+      if (this.assetRecords.get(asset.id)?.state === 'complete') {
+        loadedSize += (asset.size || 0);
+      }
+    });
+
+    const packsDetail = this.manifest.expansion.packs.map(pack => {
+      const state = downloadStatus[pack.packId] ?? 'none';
+      return {
+        packId: pack.packId,
+        name: pack.name,
+        description: pack.description,
+        totalSize: pack.totalSize,
+        type: pack.type,
+        state,
+      };
+    });
+
+    const pendingPacks = this.manifest.expansion.packs
+      .filter(p => !completedPacks.includes(p.packId))
+      .map(p => p.packId);
+
+    return {
+      loadedSize,
+      totalSize,
+      downloadedPacks: completedPacks,
+      pendingPacks,
+      packsDetail,
+    };
+  }
+
   /** 检查某资源是否已离线可用 */
   isAssetAvailable(assetId: string): boolean {
     return this.assetRecords.get(assetId)?.state === 'complete';

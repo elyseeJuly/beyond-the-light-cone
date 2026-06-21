@@ -59,7 +59,7 @@ describe('Game Defeat Conditions', () => {
 
   it('HELIUM_FLASH 太阳氦闪：若有黑域生成科技，不应触发失败', () => {
     game.year = 360;
-    setupTech(game, TecTreeType.PHYSICS, "黑域生成");
+    setupTech(game, TecTreeType.INTERSTELLAR, "黑域生成");
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(false);
   });

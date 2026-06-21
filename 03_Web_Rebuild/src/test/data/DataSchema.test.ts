@@ -184,7 +184,10 @@ describe('JSON Data Completeness', () => {
 describe('Data Referential Integrity', () => {
   const personNames = new Set((personsData as any[]).map((p: any) => p.name));
   // 已知的非人物对话者（组织/舰船/抽象实体）
-  const nonPersonTalkers = new Set(['联合政府', '三体监听员', '最高统帅部', '万有引力号']);
+  const nonPersonTalkers = new Set([
+    '联合政府', '三体监听员', '最高统帅部', '万有引力号',
+    '联邦政府', '星环集团科学家', '太阳系预警系统', '星环号舰长', '归零者播报'
+  ]);
 
   it('events.json 引用的对话者存在于 persons.json 中（排除组织实体）', () => {
     const talkers = new Set<string>();

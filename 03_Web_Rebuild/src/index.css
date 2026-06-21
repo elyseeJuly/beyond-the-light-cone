@@ -531,3 +531,22 @@ body.high-contrast .h-1 > div {
 body.high-contrast canvas {
   filter: contrast(200%) brightness(120%) !important;
 }
+
+/* ============== Mobile Notification Animations ============== */
+@keyframes badge-breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.7; }
+}
+
+@keyframes toast-slide-in {
+  from { transform: translate(-50%, -100%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.animate-badge-breathe {
+  animation: badge-breathe 2s ease-in-out infinite;
+}
+
+.animate-toast-slide-in {
+  animation: toast-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

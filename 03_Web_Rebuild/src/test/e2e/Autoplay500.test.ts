@@ -152,7 +152,8 @@ describe('E2E 自动回合模拟', () => {
     expect(game.epoch).toBe(EpochType.CRISIS);
 
     // Set culture high enough to cross into DETERRENCE era (threshold: 200)
-    game.earthCivi.culture = 500;
+    game.earthCivi.culture = 300;
+    game.addFlag('deterrence_established');
 
     // Run a single turn - this triggers updateEpoch which reads culture
     runSingleTurn(game);
@@ -164,12 +165,14 @@ describe('E2E 自动回合模拟', () => {
     expect(game.epoch).toBeLessThanOrEqual(EpochType.STARDUST);
 
     // Set culture even higher to reach broadcast era
-    game.earthCivi.culture = 800;
+    game.earthCivi.culture = 600;
+    game.addFlag('coordinates_broadcasted');
     runSingleTurn(game);
     expect(game.epoch).toBeGreaterThanOrEqual(EpochType.BROADCAST);
 
     // And higher for galaxy era
-    game.earthCivi.culture = 1200;
+    game.earthCivi.culture = 1300;
+    game.addFlag('galaxy_exodus_seen');
     runSingleTurn(game);
     expect(game.epoch).toBeGreaterThanOrEqual(EpochType.GALAXY);
   });

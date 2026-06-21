@@ -2,7 +2,7 @@ import { GameEvent, createGameEvent } from "./GameEvent";
 import eventsData from "../data/events.json";
 import randomEventsData from "../data/randomevents.json";
 import { DialogNode, FilteredEventPayload } from "../types/narrative";
-import { GameInstance } from "./Game";
+import type { Game } from "./Game";
 import { getImageUrl } from "../utils/assetUrl";
 import { normalizeEventMeta, pickWeightedEvent, isEventEligible } from "./EventCadence";
 import { EventLane } from "../types/enums";
@@ -18,8 +18,15 @@ export class GameEventManager {
   public randomEventTriggerCounts: Map<string, number> = new Map();
   public lastTagTriggeredYear: Map<string, number> = new Map();
 
+  /** 注入的 Game 实例，替代全局 GameInstance.get() 单例；私有字段避免序列化循环引用 */
+  #game: Game | null = null;
+
   constructor() {
     this.init();
+  }
+
+  public setGame(game: Game): void {
+    this.#game = game;
   }
 
   public formatAvatarUrl(bmpName: string, speakerName?: string): string {
@@ -69,6 +76,13 @@ export class GameEventManager {
         if (name.startsWith("event_pluto_museum")) return getImageUrl("cg_pluto_museum.png");
         if (name.startsWith("event_solar_system_flattened")) return getImageUrl("cg_solar_system_flattened.png");
         if (name.startsWith("event_swordholder_handover")) return getImageUrl("cg_swordholder_handover.png");
+        if (name.startsWith("event_sophon_blockade")) return getImageUrl("cg_sophon_blockade.png");
+        if (name.startsWith("event_teardrop_probe")) return getImageUrl("cg_teardrop_probe.png");
+        if (name.startsWith("event_black_domain")) return getImageUrl("cg_black_domain_debate.png");
+        if (name.startsWith("event_lightspeed_ship")) return getImageUrl("cg_lightspeed_ship.png");
+        if (name.startsWith("event_dimensional_warning")) return getImageUrl("cg_dimensional_warning.png");
+        if (name.startsWith("event_galaxy_exodus")) return getImageUrl("cg_galaxy_exodus.png");
+        if (name.startsWith("event_zeroer_broadcast")) return getImageUrl("cg_zeroer_broadcast.png");
 
         const fileName = bmpName.replace(/^\/?images\//, "");
         return getImageUrl(fileName);
@@ -602,11 +616,115 @@ export class GameEventManager {
           { label: "尝试建立联系", effects: [{ type: "flag", target: "great_filter_contact", value: 1 }, { type: "resource", target: "prestige", value: -30 }] }
         ]
       },
+
+      // === Part 4 迭代修复：补全结局Flag赋值来源 ===
+
+      {
+        id: "digital_ark_upgrade_event",
+        title: "意识上传公投",
+        tip: "数字方舟的容量已趋于饱和，人类需要决定是否将数字方舟升级为文明级意识容器。",
+        dialogQueue: [
+          { speakerName: "科学执政官", content: "数字方舟已经可以承载超过50亿份意识数据。我们是否将全人类的意识上传至虚拟世界？", avatarUrl: this.mapAvatar("default", "科学执政官") },
+          { speakerName: "反对派", content: "这是对碳基生命的背叛！我们不应该放弃肉体。", avatarUrl: this.mapAvatar("default", "反对派") }
+        ],
+        condition: { minYear: 200, epoch: "BUNKER", reqTech: "数字方舟", minPopulation: 50, minCulture: 60 },
+        choices: [
+          { label: "启动意识上传工程", effects: [{ type: "flag", target: "digital_ark_upgrade", value: 1 }, { type: "resource", target: "culture", value: 80 }, { type: "resource", target: "economy", value: -50 }] },
+          { label: "暂缓上传，保留肉体文明", effects: [{ type: "resource", target: "prestige", value: 20 }, { type: "resource", target: "treachery", value: 5 }] }
+        ]
+      },
+      {
+        id: "dark_domain_decision_event",
+        title: "黑域宣言",
+        tip: "黑域生成技术已经完善，人类可以发布'宇宙安全声明'，将太阳系变为一个光速为零的绝对安全区。",
+        dialogQueue: [
+          { speakerName: "科学执政官", content: "一旦启动黑域生成，太阳系的光速将降至零。我们永远无法离开，但黑暗森林的猎手也无法伤害我们。", avatarUrl: this.mapAvatar("default", "科学执政官") },
+          { speakerName: "罗辑", content: "这是终极的宇宙安全声明——我们自愿放弃星际扩张，换取永恒的安宁。", avatarUrl: this.mapAvatar("luoji") }
+        ],
+        condition: { minYear: 250, epoch: "BUNKER", reqTech: "黑域生成", reqNotFlag: "dark_domain_decision", minCulture: 50 },
+        choices: [
+          { label: "启动黑域生成，发布安全声明", effects: [{ type: "flag", target: "dark_domain_decision", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -80 }] },
+          { label: "拒绝自我封印，继续探索星空", effects: [{ type: "resource", target: "culture", value: 30 }, { type: "resource", target: "treachery", value: 10 }] }
+        ]
+      },
+      {
+        id: "conquest_declaration_event",
+        title: "星际扩张宣言",
+        tip: "人类舰队已经具备了征服一切异星文明的实力。统帅部收到了一份大胆的提案：向全宇宙发布征服宣言。",
+        dialogQueue: [
+          { speakerName: "维德", content: "前进！不择手段地前进！人类的命运不是躲避，而是征服。", avatarUrl: this.mapAvatar("wade") },
+          { speakerName: "章北海", content: "父亲说过，要多想。但在这个宇宙中，不想被毁灭，就要先毁灭别人。", avatarUrl: this.mapAvatar("beihai") }
+        ],
+        condition: { minYear: 200, epoch: "BROADCAST", reqNotFlag: "conquest_declared", minMilitary: 30, minDeterrence: 60 },
+        choices: [
+          { label: "发布星际征服宣言", effects: [{ type: "flag", target: "conquest_declared", value: 1 }, { type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "treachery", value: 15 }] },
+          { label: "保持克制，维持防御姿态", effects: [{ type: "resource", target: "prestige", value: 20 }, { type: "resource", target: "culture", value: 15 }] }
+        ]
+      },
+      {
+        id: "zero_homer_contact_event",
+        title: "归零者接触",
+        tip: "一股来自宇宙深处的超维广播穿透了所有物理屏障——归零者向全宇宙发出了最后的讯息。",
+        dialogQueue: [
+          { speakerName: "关一帆", content: "这不是自然信号...这是来自宇宙诞生之初的文明。他们自称'归零者'。", avatarUrl: this.mapAvatar("guanyifan") },
+          { speakerName: "云天明", content: "他们想要重启宇宙，让一切重归奇点。我们有机会参与其中。", avatarUrl: this.mapAvatar("tianming") }
+        ],
+        condition: { minYear: 300, epoch: "GALAXY", reqNotFlag: "zero_homer_contacted", minCulture: 80, minDeterrence: 50 },
+        choices: [
+          { label: "回应归零者的召唤", effects: [{ type: "flag", target: "zero_homer_contacted", value: 1 }, { type: "resource", target: "culture", value: 100 }, { type: "resource", target: "prestige", value: 50 }] },
+          { label: "保持沉默，暗中观察", effects: [{ type: "resource", target: "military", value: 10 }, { type: "resource", target: "prestige", value: 10 }] }
+        ]
+      },
+      {
+        id: "mini_universe_build_event",
+        title: "小宇宙之门",
+        tip: "归零者向人类提供了建造小宇宙的终极技术。一个独立于大宇宙的微型时空泡即将诞生。",
+        dialogQueue: [
+          { speakerName: "程心", content: "我们可以在小宇宙中保存人类文明的火种，等待新宇宙的诞生。", avatarUrl: this.mapAvatar("chengxin") },
+          { speakerName: "云天明", content: "这是归零者送给我们的最后礼物——一个可以逃离大宇宙末日的小型生态球。", avatarUrl: this.mapAvatar("tianming") }
+        ],
+        condition: { minYear: 350, epoch: "GALAXY", reqFlag: "zero_homer_contacted", reqNotFlag: "mini_universe_built", reqTech: "宇宙重启理论", minCulture: 90 },
+        choices: [
+          { label: "建造小宇宙，保存人类火种", effects: [{ type: "flag", target: "mini_universe_built", value: 1 }, { type: "resource", target: "culture", value: 150 }, { type: "resource", target: "economy", value: -100 }] },
+          { label: "拒绝建造，将质量归还大宇宙", effects: [{ type: "resource", target: "prestige", value: 200 }, { type: "resource", target: "culture", value: 50 }] }
+        ]
+      },
+      {
+        id: "dimensional_defense_research_event",
+        title: "维度防御研究",
+        tip: "面对二向箔的威胁，人类科学家提出了维度防御理论——通过制造局部空间曲率屏障来抵御降维打击。",
+        dialogQueue: [
+          { speakerName: "丁仪", content: "如果我们能在目标区域制造一个反向空间曲率场，二向箔的降维效应将被中和。", avatarUrl: this.mapAvatar("dingyi") },
+          { speakerName: "林云", content: "这需要巨大的能量，但至少我们有了对抗降维打击的可能性。", avatarUrl: this.mapAvatar("linyun") }
+        ],
+        condition: { minYear: 200, epoch: "BUNKER", reqNotFlag: "dimensional_defense", reqTech: "空间曲率理论", minCulture: 60 },
+        choices: [
+          { label: "全力资助维度防御研究", effects: [{ type: "flag", target: "dimensional_defense", value: 1 }, { type: "resource", target: "economy", value: -60 }, { type: "resource", target: "prestige", value: 30 }] },
+          { label: "优先发展逃亡科技", effects: [{ type: "resource", target: "culture", value: 20 }, { type: "resource", target: "treachery", value: 10 }] }
+        ]
+      },
+      {
+        id: "dimensional_defense_completed_event",
+        title: "维度防御屏障完工",
+        tip: "维度防御系统正式建成，人类终于拥有了防御二向箔降维打击的能力。",
+        dialogQueue: [
+          { speakerName: "科学执政官", content: "空间曲率屏障已经部署完毕。任何试图穿透这道屏障的降维打击都将被反向中和。", avatarUrl: this.mapAvatar("default", "科学执政官") },
+          { speakerName: "关一帆", content: "我们证明了一件事：宇宙中的物理法则不是绝对的，它们可以被智谋和勇气改变。", avatarUrl: this.mapAvatar("guanyifan") }
+        ],
+        condition: { minYear: 250, epoch: "BUNKER", reqFlag: "dimensional_defense", reqNotFlag: "dimensional_defense_completed", minCulture: 70 },
+        choices: [
+          { label: "启动维度防御屏障", effects: [{ type: "flag", target: "dimensional_defense_completed", value: 1 }, { type: "resource", target: "prestige", value: 150 }, { type: "resource", target: "economy", value: -40 }] }
+        ]
+      },
     ];
   }
 
   public getFilteredEventsForTurn(): FilteredEventPayload[] {
-    const game = GameInstance.get();
+    const game = this.#game;
+    if (!game) {
+      console.warn('[GameEventManager] getFilteredEventsForTurn called before game injection');
+      return [];
+    }
     const result: FilteredEventPayload[] = [];
 
     for (const fev of this.filteredEvents) {
@@ -646,7 +764,8 @@ export class GameEventManager {
   }
 
   private checkFilterConditions(cond: any): boolean {
-    const game = GameInstance.get();
+    const game = this.#game;
+    if (!game) return false;
     const e = game.earthCivi;
     const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
     const currentEpoch = epochNames[game.epoch];
@@ -676,7 +795,8 @@ export class GameEventManager {
   }
 
   private isTecFinishedInAnyTree(name: string): boolean {
-    const game = GameInstance.get();
+    const game = this.#game;
+    if (!game) return false;
     return game.earthCivi.tecTreeManager.isTecFinishedAnywhere(name);
   }
 
@@ -746,7 +866,7 @@ export class GameEventManager {
   }
 
   public checkEvents(currentYear: number): GameEvent[] {
-    const game = GameInstance.get();
+    const game = this.#game;
     const triggered: GameEvent[] = [];
     this.events.forEach(e => {
       if (!e.hasTriggered && currentYear >= e.inYear) {
@@ -791,7 +911,7 @@ export class GameEventManager {
   }
 
   private isEventCharactersUnlocked(e: GameEvent): boolean {
-    const game = GameInstance.get();
+    const game = this.#game;
     if (!game) return true;
 
     const available = game.personManager.availablePersons;
@@ -832,7 +952,11 @@ export class GameEventManager {
   }
 
   public checkRandomEvents(): GameEvent | null {
-    const game = GameInstance.get();
+    const game = this.#game;
+    if (!game) {
+      console.warn('[GameEventManager] checkRandomEvents called before game injection');
+      return null;
+    }
     const eligible: GameEvent[] = [];
 
     for (const e of this.randomEvents) {
@@ -907,7 +1031,7 @@ export class GameEventManager {
 if (import.meta.hot) {
   import.meta.hot.accept('../data/events.json', (newModule) => {
     console.log('[HMR] events.json updated');
-    const game = GameInstance.get();
+    const game = (typeof window !== 'undefined' ? (window as any).game : null) as Game | null;
     if (game && game.eventManager) {
       game.eventManager.events = game.eventManager.parseEventData(newModule ? newModule.default : null);
       game.eventManager.events = game.eventManager.events.map(e => normalizeEventMeta(e));
@@ -917,7 +1041,7 @@ if (import.meta.hot) {
 
   import.meta.hot.accept('../data/randomevents.json', (newModule) => {
     console.log('[HMR] randomevents.json updated');
-    const game = GameInstance.get();
+    const game = (typeof window !== 'undefined' ? (window as any).game : null) as Game | null;
     if (game && game.eventManager) {
       game.eventManager.randomEvents = game.eventManager.parseEventData(newModule ? newModule.default : null);
       game.eventManager.randomEvents = game.eventManager.randomEvents.map(e => normalizeEventMeta(e));

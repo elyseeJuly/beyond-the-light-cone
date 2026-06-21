@@ -35,6 +35,17 @@ export const EndGameScreen: React.FC = () => {
 
   // Play ending theme music starting from Phase 1
   useEffect(() => {
+    // Dispatch custom event to notify BgmPlayer to pause
+    window.dispatchEvent(new CustomEvent('game:ending:started'));
+
+    // Fade out current game audio
+    if (game && game.audioManager) {
+      game.audioManager.init();
+      game.audioManager.fadeOutAll(1500).catch(err => {
+        console.warn('[EndGameScreen] AudioManager fadeOutAll failed:', err);
+      });
+    }
+
     const savedMuted = localStorage.getItem('game-bgm-muted') === 'true';
     const savedVolume = parseFloat(localStorage.getItem('game-bgm-volume') || '0.4');
 
@@ -81,6 +92,9 @@ export const EndGameScreen: React.FC = () => {
       audio.removeEventListener('error', handleError);
       audio.pause();
       audio.src = '';
+      if (game && game.audioManager) {
+        game.audioManager.restoreVolumes();
+      }
     };
   }, [endingKey]);
 

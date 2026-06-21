@@ -128,7 +128,7 @@ export const TopHUD: React.FC = () => {
   }, []);
 
   return (
-    <header className="h-[56px] sm:h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-3 sm:px-6 z-50 select-none relative">
+    <header data-tutorial-id="top-hud" className="h-[56px] sm:h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-3 sm:px-6 z-50 select-none relative">
       {/* Dynamic scanline overlay for Top HUD */}
       <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent" />
 

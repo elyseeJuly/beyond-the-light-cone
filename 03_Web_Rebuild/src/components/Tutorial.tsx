@@ -14,6 +14,7 @@ interface TutorialStep {
   category: string;
   tips?: string[];
   highlightArea?: 'top' | 'left' | 'center' | 'right' | 'none';
+  highlightTarget?: string;
   activeView: ActiveViewType;
 }
 
@@ -120,8 +121,61 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const [exiting, setExiting] = useState(false);
   const [, setSlideDir] = useState<'left' | 'right'>('right');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [highlightRect, setHighlightRect] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  } | null>(null);
 
   const current = TUTORIAL_STEPS[step];
+  
+  // Calculate dynamic highlight coordinates
+  useEffect(() => {
+    if (!current) return;
+    const targetId = current.highlightTarget || (
+      current.highlightArea === 'top' ? 'top-hud' :
+      current.highlightArea === 'left' ? 'left-hub' :
+      current.highlightArea === 'right' ? 'right-inspector' :
+      current.highlightArea === 'center' ? 'starmap-viewport' :
+      null
+    );
+
+    if (!targetId || targetId === 'none') {
+      setHighlightRect(null);
+      return;
+    }
+
+    const updateRect = () => {
+      let element = document.querySelector(`[data-tutorial-id="${targetId}"]`);
+      
+      // Fallback for mobile if left sidebar is hidden
+      if (!element && targetId === 'left-hub') {
+        element = document.querySelector('[data-tutorial-id="mobile-bottom-nav"]');
+      }
+
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        setHighlightRect({
+          top: Math.max(0, rect.top - 4),
+          left: Math.max(0, rect.left - 4),
+          width: rect.width + 8,
+          height: rect.height + 8,
+        });
+      } else {
+        setHighlightRect(null);
+      }
+    };
+
+    updateRect();
+    window.addEventListener('resize', updateRect);
+    const t = setTimeout(updateRect, 300);
+
+    return () => {
+      window.removeEventListener('resize', updateRect);
+      clearTimeout(t);
+    };
+  }, [step, current]);
   const progress = ((step + 1) / TUTORIAL_STEPS.length) * 100;
 
 
@@ -193,26 +247,40 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     return acc;
   }, []);
 
-  // Highlight overlay
-  const highlightStyle = current.highlightArea && current.highlightArea !== 'none' ? {
-    top: current.highlightArea === 'top' ? 'inset-x-0 top-0 h-[72px]' : undefined,
-    left: current.highlightArea === 'left' ? 'left-0 top-[72px] bottom-0 w-[240px]' : undefined,
-    center: current.highlightArea === 'center' ? 'left-[240px] top-[72px] bottom-0 right-[320px]' : undefined,
-    right: current.highlightArea === 'right' ? 'right-0 top-[72px] bottom-0 w-[320px]' : undefined,
-  } : null;
-  const activeHighlight = highlightStyle ? highlightStyle[current.highlightArea as keyof typeof highlightStyle] : null;
+  const showHighlight = highlightRect !== null;
 
   return (
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
       {/* Darkened background with highlight cutout */}
-      {!activeHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />}
+      {!showHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />}
       
       {/* Highlight glow */}
-      {activeHighlight && (
+      {showHighlight && highlightRect && (
         <div 
-          className={`absolute ${activeHighlight} border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-all duration-500`}
+          className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-all duration-300 rounded"
           style={{
-            boxShadow: '0 0 0 9999px rgba(0,0,0,0.85), 0 0 30px rgba(0,229,255,0.3), inset 0 0 30px rgba(0,229,255,0.1)',
+            top: `${highlightRect.top}px`,
+            left: `${highlightRect.left}px`,
+            width: `${highlightRect.width}px`,
+            height: `${highlightRect.height}px`,
+            boxShadow: '0 0 0 9999px rgba(0,0,0,0.8), 0 0 20px rgba(0,229,255,0.4), inset 0 0 20px rgba(0,229,255,0.15)',
+          }}
+        />
+      )}
+
+      {/* Pointer Arrow */}
+      {showHighlight && highlightRect && (
+        <div 
+          className="absolute z-[1002] pointer-events-none transition-all duration-300 animate-bounce"
+          style={{
+            top: `${highlightRect.top - 20}px`,
+            left: `${highlightRect.left + highlightRect.width / 2 - 10}px`,
+            width: 0,
+            height: 0,
+            borderLeft: '10px solid transparent',
+            borderRight: '10px solid transparent',
+            borderTop: '10px solid var(--color-primary)',
+            filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
           }}
         />
       )}

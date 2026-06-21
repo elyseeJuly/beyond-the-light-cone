@@ -78,30 +78,35 @@ describe('Game Core Extended', () => {
 
     it('culture 200-499 威慑纪元', () => {
       game.earthCivi.culture = 200;
+      game.addFlag('deterrence_established');
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.DETERRENCE);
     });
 
     it('culture 500-799 广播纪元', () => {
       game.earthCivi.culture = 500;
+      game.addFlag('coordinates_broadcasted');
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.BROADCAST);
     });
 
     it('culture 800-1199 掩体纪元', () => {
       game.earthCivi.culture = 800;
+      game.addFlag('bunker_world_completed');
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.BUNKER);
     });
 
     it('culture 1200+ 银河纪元', () => {
       game.earthCivi.culture = 1200;
+      game.addFlag('galaxy_exodus_seen');
       game.updateEpoch();
       expect(game.epoch).toBe(EpochType.GALAXY);
     });
 
     it('纪元变更时记录历史', () => {
       game.earthCivi.culture = 200;
+      game.addFlag('deterrence_established');
       game.updateEpoch();
       const hasEpochChange = game.historyLogs.some(log => log.includes('纪元更替'));
       expect(hasEpochChange).toBe(true);
@@ -435,12 +440,11 @@ describe('Game Core Extended', () => {
 
     it('征服胜利 所有异星被征服', () => {
       game.year = 250;
+      game.epoch = EpochType.BROADCAST;
       game.earthCivi.population = 100;
       game.earthCivi.treachery = 0;
       game.addFlag("conquest_declared");
-      for (const alien of game.alienCiviManager.aliens.values()) {
-        alien.isBund = true;
-      }
+      game.alienCiviManager.isAllCiviConquered = () => true;
       game.checkGameOverConditions();
       expect(game.isGameOver).toBe(true);
     });

@@ -103,7 +103,7 @@ export const RightInspector: React.FC = () => {
   };
 
   return (
-    <aside className="w-[320px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-l border-[#243245]/50 flex flex-col p-5 animate-in slide-in-from-right duration-300 select-none shrink-0">
+    <aside data-tutorial-id="right-inspector" className="w-[320px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-l border-[#243245]/50 flex flex-col p-5 animate-in slide-in-from-right duration-300 select-none shrink-0">
       {/* Target Title Block */}
       <div className="flex flex-col gap-1 mb-4 shrink-0">
         <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-[0.2em]">

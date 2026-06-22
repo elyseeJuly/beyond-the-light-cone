@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "gameVersion": "1.0.0",
-  "generatedAt": 1782112107094,
+  "generatedAt": 1782114829272,
   "core": [
     {
       "id": "character_default",
@@ -821,9 +821,9 @@
           "ui",
           "unknown"
         ],
-        "size": 1095152,
+        "size": 1093858,
         "displayName": "cover",
-        "hash": "6c046781",
+        "hash": "6c039910",
         "isDefault": false
       },
       {
@@ -834,9 +834,9 @@
           "ui",
           "unknown"
         ],
-        "size": 1102386,
+        "size": 1500620,
         "displayName": "cover_1_1",
-        "hash": "362cee87",
+        "hash": "2f5a6a46",
         "isDefault": false
       },
       {
@@ -1790,7 +1790,7 @@
         "name": "uncategorized Pack",
         "description": "uncategorized 资源包",
         "type": "era_pack",
-        "totalSize": 150232818,
+        "totalSize": 150629758,
         "assetIds": [
           "README",
           "ending_death_of_the_light_cone",

@@ -120,47 +120,47 @@ export const CivilizationArchive: React.FC = () => {
       </div>
 
       {/* Panels */}
-      <div className="flex-1 flex gap-6 overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 overflow-hidden">
         {/* Left Archive Tabs */}
-        <div className="w-48 flex flex-col gap-1.5 shrink-0">
+        <div className="w-full md:w-48 flex flex-row md:flex-col gap-1.5 shrink-0 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
           <button
             onClick={() => setActiveTab('timeline')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('timeline')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('timeline')}`}
           >
             <Clock size={14} /> 文明时间线
           </button>
           
           <button
             onClick={() => setActiveTab('major_events')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('major_events')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('major_events')}`}
           >
             <Flag size={14} /> 重大事件
           </button>
           
           <button
             onClick={() => setActiveTab('unlocked_techs')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('unlocked_techs')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('unlocked_techs')}`}
           >
             <Cpu size={14} /> 已解锁科技
           </button>
           
           <button
             onClick={() => setActiveTab('discovered_civs')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('discovered_civs')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('discovered_civs')}`}
           >
             <Globe size={14} /> 已发现文明
           </button>
           
           <button
             onClick={() => setActiveTab('endings')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('endings')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('endings')}`}
           >
             <AlertCircle size={14} /> 结局预测
           </button>
           
           <button
             onClick={() => setActiveTab('achievements')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('achievements')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('achievements')}`}
           >
             <Award size={14} /> 成就馆
           </button>
@@ -171,13 +171,13 @@ export const CivilizationArchive: React.FC = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] opacity-10 pointer-events-none" />
 
           {activeTab === 'timeline' && (
-            <div className="flex-1 flex gap-4 overflow-hidden">
+            <div className="flex-1 flex flex-col md:flex-row gap-4 overflow-y-auto md:overflow-hidden">
               {/* Official Era */}
-              <div className="flex-1 border-r border-[#243245]/30 pr-4 flex flex-col overflow-hidden">
+              <div className="flex-1 border-b md:border-b-0 md:border-r border-[#243245]/30 pb-4 md:pb-0 md:pr-4 flex flex-col shrink-0 md:shrink md:overflow-hidden">
                 <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-3 shrink-0">
                   官方原著纪元进程
                 </div>
-                <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                <div className="flex-1 overflow-y-visible md:overflow-y-auto space-y-3 pr-1">
                   {timelineData.map((epoch, idx) => {
                     const isActive = currentYear >= epoch.gameYearRange[0] && currentYear <= epoch.gameYearRange[1];
                     const isPassed = currentYear > epoch.gameYearRange[1];
@@ -195,11 +195,11 @@ export const CivilizationArchive: React.FC = () => {
               </div>
               
               {/* Player Log */}
-              <div className="flex-1 pl-2 flex flex-col overflow-hidden">
+              <div className="flex-1 md:pl-2 pt-2 md:pt-0 flex flex-col shrink-0 md:shrink md:overflow-hidden">
                 <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-3 shrink-0">
                   本局发展履历 (已运行 {currentYear} 年)
                 </div>
-                <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 font-mono text-xs">
+                <div className="flex-1 overflow-y-visible md:overflow-y-auto space-y-2.5 pr-1 font-mono text-xs">
                   {playerTimeline.length === 0 ? (
                     <div className="text-center py-10 text-[var(--text-secondary)] italic">无重大档案建立...</div>
                   ) : (
@@ -244,7 +244,7 @@ export const CivilizationArchive: React.FC = () => {
                 {finishedTechs.length === 0 ? (
                   <div className="text-center py-12 text-xs text-[var(--text-secondary)] italic">基础物理被锁死中，尚无已解锁的高级科技。</div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {finishedTechs.map((tech, idx) => (
                       <div key={idx} className="p-3 bg-[#070B14]/60 border border-[#243245]/30 rounded">
                         <div className="text-xs font-bold text-white flex items-center gap-1.5">
@@ -304,7 +304,7 @@ export const CivilizationArchive: React.FC = () => {
                 执政官纪元功勋馆 (文明印记)
               </div>
               <div className="flex-1 overflow-y-auto space-y-3 pr-1">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {achievements.map((ach) => (
                     <div 
                       key={ach.id} 

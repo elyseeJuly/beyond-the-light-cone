@@ -60,13 +60,13 @@ export const GovManagement: React.FC = () => {
       </div>
 
       {/* Government Panels */}
-      <div className="flex-1 flex gap-6 overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 overflow-hidden">
         {/* Left Side Cabinets */}
-        <div data-tutorial-id="gov-cabinets-sidebar" className="w-48 flex flex-col gap-1.5 shrink-0">
+        <div data-tutorial-id="gov-cabinets-sidebar" className="w-full md:w-48 flex flex-row md:flex-col gap-1.5 shrink-0 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
           <button
             onClick={() => setActiveTab('finance')}
             data-tutorial-id="gov-tab-finance"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('finance')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('finance')}`}
           >
             <DollarSign size={14} /> 财政部
           </button>
@@ -74,7 +74,7 @@ export const GovManagement: React.FC = () => {
           <button
             onClick={() => setActiveTab('military')}
             data-tutorial-id="gov-tab-military"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('military')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('military')}`}
           >
             <Shield size={14} /> 军事部
           </button>
@@ -82,7 +82,7 @@ export const GovManagement: React.FC = () => {
           <button
             onClick={() => setActiveTab('tech')}
             data-tutorial-id="gov-tab-tech"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('tech')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('tech')}`}
           >
             <Cpu size={14} /> 科技部
           </button>
@@ -90,7 +90,7 @@ export const GovManagement: React.FC = () => {
           <button
             onClick={() => setActiveTab('social')}
             data-tutorial-id="gov-tab-social"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('social')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('social')}`}
           >
             <Heart size={14} /> 社会部
           </button>
@@ -98,7 +98,7 @@ export const GovManagement: React.FC = () => {
           <button
             onClick={() => setActiveTab('security')}
             data-tutorial-id="gov-tab-security"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('security')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('security')}`}
           >
             <AlertOctagon size={14} /> 安全部
           </button>
@@ -106,24 +106,24 @@ export const GovManagement: React.FC = () => {
           <button
             onClick={() => setActiveTab('diplomacy')}
             data-tutorial-id="gov-tab-diplomacy"
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('diplomacy')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('diplomacy')}`}
           >
             <Globe size={14} /> 外交委员会
           </button>
         </div>
 
         {/* Right side display card */}
-        <div className="flex-1 bg-[#070B14]/40 border border-[#243245]/30 rounded p-5 flex flex-col overflow-hidden relative">
+        <div className="flex-1 bg-[#070B14]/40 border border-[#243245]/30 rounded p-5 flex flex-col overflow-y-auto relative">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_4px] opacity-10 pointer-events-none" />
 
           {activeTab === 'finance' && (
-            <div className="h-full flex flex-col justify-between">
+            <div className="min-h-full flex flex-col justify-between gap-4">
               <div className="space-y-4">
                 <div className="text-sm font-bold text-white border-b border-[#243245]/20 pb-2 flex justify-between items-center">
                   <span>财政及宏观经济总览</span>
                   <span className="text-xs text-[var(--color-primary)] font-mono">CODE: FIN-DEPT</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="p-3 bg-[#070B14]/60 border border-[#243245]/20 rounded font-mono">
                     <div className="text-[10px] text-[var(--text-secondary)]">当前总产值 / 经济</div>
                     <div className="text-lg font-bold text-white mt-1">{Math.floor(earth.economy)} 点</div>
@@ -149,13 +149,13 @@ export const GovManagement: React.FC = () => {
           )}
 
           {activeTab === 'military' && (
-            <div className="h-full flex flex-col justify-between">
+            <div className="min-h-full flex flex-col justify-between gap-4">
               <div className="space-y-4">
                 <div className="text-sm font-bold text-white border-b border-[#243245]/20 pb-2 flex justify-between items-center">
                   <span>战略司令部与军事投射力量</span>
                   <span className="text-xs text-orange-400 font-mono">CODE: MIL-DEPT</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="p-3 bg-[#070B14]/60 border border-[#243245]/20 rounded font-mono">
                     <div className="text-[10px] text-[var(--text-secondary)]">地球常备兵力</div>
                     <div className="text-lg font-bold text-white mt-1">{earth.army} 指数</div>
@@ -181,7 +181,7 @@ export const GovManagement: React.FC = () => {
           )}
 
           {activeTab === 'tech' && (
-            <div className="h-full flex flex-col justify-between">
+            <div className="min-h-full flex flex-col justify-between gap-4">
               <div className="space-y-4">
                 <div className="text-sm font-bold text-white border-b border-[#243245]/20 pb-2 flex justify-between items-center">
                   <span>科研项目与核心技术监控</span>
@@ -203,13 +203,13 @@ export const GovManagement: React.FC = () => {
           )}
 
           {activeTab === 'social' && (
-            <div className="h-full flex flex-col justify-between">
+            <div className="min-h-full flex flex-col justify-between gap-4">
               <div className="space-y-4">
                 <div className="text-sm font-bold text-white border-b border-[#243245]/20 pb-2 flex justify-between items-center">
                   <span>社会部与文明文化发展</span>
                   <span className="text-xs text-purple-400 font-mono">CODE: SOC-DEPT</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="p-3 bg-[#070B14]/60 border border-[#243245]/20 rounded font-mono">
                     <div className="text-[10px] text-[var(--text-secondary)]">文化产出总量</div>
                     <div className="text-lg font-bold text-white mt-1">{Math.floor(earth.culture)}</div>
@@ -235,7 +235,7 @@ export const GovManagement: React.FC = () => {
           )}
 
           {activeTab === 'security' && (
-            <div className="h-full flex flex-col justify-between">
+            <div className="min-h-full flex flex-col justify-between gap-4">
               <div className="space-y-4">
                 <div className="text-sm font-bold text-white border-b border-[#243245]/20 pb-2 flex justify-between items-center">
                   <span>战略特勤安全与面壁计划</span>

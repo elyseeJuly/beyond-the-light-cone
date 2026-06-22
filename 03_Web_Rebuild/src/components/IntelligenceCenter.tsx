@@ -90,12 +90,12 @@ export const IntelligenceCenter: React.FC = () => {
       </div>
 
       {/* Main content grid */}
-      <div className="flex-1 flex gap-6 overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 overflow-hidden">
         {/* Left tabs selector */}
-        <div data-tutorial-id="intel-sidebar" className="w-48 flex flex-col gap-1.5 shrink-0">
+        <div data-tutorial-id="intel-sidebar" className="w-full md:w-48 flex flex-row md:flex-col gap-1.5 shrink-0 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
           <button
             onClick={() => setActiveTab('crisis')}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('crisis')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('crisis')}`}
           >
             <span className="flex items-center gap-2">
               <AlertTriangle size={14} /> 危机报告
@@ -105,7 +105,7 @@ export const IntelligenceCenter: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('diplomacy')}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('diplomacy')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('diplomacy')}`}
           >
             <span className="flex items-center gap-2">
               <Globe size={14} /> 外交互动
@@ -115,7 +115,7 @@ export const IntelligenceCenter: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('research')}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('research')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('research')}`}
           >
             <span className="flex items-center gap-2">
               <Cpu size={14} /> 科研观测
@@ -125,7 +125,7 @@ export const IntelligenceCenter: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('military')}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('military')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('military')}`}
           >
             <span className="flex items-center gap-2">
               <Shield size={14} /> 军事调配
@@ -135,7 +135,7 @@ export const IntelligenceCenter: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('livelihood')}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('livelihood')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('livelihood')}`}
           >
             <span className="flex items-center gap-2">
               <Users size={14} /> 民生物资
@@ -143,11 +143,11 @@ export const IntelligenceCenter: React.FC = () => {
             <span className="font-data bg-yellow-950/30 px-1.5 py-0.5 rounded text-[10px]">{counts.livelihood}</span>
           </button>
           
-          <div className="h-px bg-[#243245]/20 my-2" />
+          <div className="hidden md:block h-px bg-[#243245]/20 my-2" />
           
           <button
             onClick={() => setActiveTab('history')}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('history')}`}
+            className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('history')}`}
           >
             <span className="flex items-center gap-2">
               <BookOpen size={14} /> 历史全卷

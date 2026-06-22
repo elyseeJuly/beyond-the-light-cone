@@ -408,7 +408,7 @@ export const App: React.FC = () => {
           </main>
 
           {/* Bottom Event Bar */}
-          <BottomEventBar />
+          {!isMobile && <BottomEventBar />}
 
           {/* Mobile Bottom Navigation — only on mobile */}
           {isMobile && (

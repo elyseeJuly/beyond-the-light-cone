@@ -176,7 +176,8 @@
     ],
     "triggerCondition": {
       "epoch": "CRISIS",
-      "minYear": 1
+      "minYear": 1,
+      "reqFlag": "sophon_blockade_confirmed"
     }
   },
   {
@@ -200,7 +201,8 @@
     ],
     "triggerCondition": {
       "epoch": "CRISIS",
-      "minYear": 2
+      "minYear": 2,
+      "reqFlag": "eto_founded"
     }
   },
   {
@@ -626,7 +628,8 @@
     ],
     "triggerCondition": {
       "epoch": "CRISIS",
-      "minYear": 200
+      "minYear": 200,
+      "reqFlag": "teardrop_arrived"
     }
   },
   {
@@ -897,7 +900,8 @@
     ],
     "triggerCondition": {
       "epoch": "BROADCAST",
-      "minYear": 230
+      "minYear": 230,
+      "reqFlag": "australia_migration"
     }
   },
   {
@@ -1107,7 +1111,8 @@
     ],
     "triggerCondition": {
       "epoch": "BUNKER",
-      "minYear": 300
+      "minYear": 300,
+      "reqFlag": "lightspeed_ship_tested"
     }
   },
   {
@@ -1341,6 +1346,83 @@
     "triggerCondition": {
       "epoch": "GALAXY",
       "minYear": 400
+    }
+  },
+  {
+    "name": 225,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_black_domain_debate_placeholder.png",
+    "talk0_talker": "联合政府",
+    "talk0_content": "【掩体与黑域辩论】面壁者与科学家之间爆发了一场大辩论。一方主张建造木星、土星背面的掩体太空城来躲避光粒打击；另一方则主张通过制造低光速黑域来发布宇宙安全声明。执政官，请选择人类的未来方向。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "black_domain_debate_started"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 20
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BROADCAST",
+      "minYear": 225
+    }
+  },
+  {
+    "name": 370,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_galaxy_era_placeholder.png",
+    "talk0_talker": "星环号舰长",
+    "talk0_content": "【银河纪元】我们已经在银河系中航行了5年。星环号的曲率引擎稳定运转，人类文明的火种在深空中持续燃烧。前方是无尽的星辰大海，后方是已经二维化的太阳系。一个新的纪元开始了。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "galaxy_era_seen"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GALAXY",
+      "minYear": 370,
+      "reqFlag": "galaxy_exodus_seen"
+    }
+  },
+  {
+    "name": 420,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_stardust_era_placeholder.png",
+    "talk0_talker": "关一帆",
+    "talk0_content": "【星屑纪元】五十年了。我们在银河系的旋臂之间穿梭，像一粒尘埃般渺小。人类文明已经演变为星屑聚落——我们不再有国家，不再有城市，只有分散在数艘星舰上的生命火种。但只要我们还在，文明就没有终结。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "stardust_era_seen"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 100
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GALAXY",
+      "minYear": 420,
+      "reqFlag": "galaxy_exodus_seen"
     }
   }
 ]

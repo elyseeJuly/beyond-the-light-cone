@@ -776,8 +776,27 @@ export class GameEventManager {
     if (cond.maxYear !== undefined && game.year > cond.maxYear) return false;
     if (cond.epoch && !this.isEpochMatch(cond.epoch, currentEpoch)) return false;
     if (cond.reqTech && !this.isTecFinishedInAnyTree(cond.reqTech)) return false;
-    if (cond.reqFlag && !game.hasFlag(cond.reqFlag)) return false;
-    if (cond.reqNotFlag && game.hasFlag(cond.reqNotFlag)) return false;
+    // === Flag alias mapping (bridge audit doc flag names to implementation) ===
+    const FLAG_ALIAS_MAP: Record<string, string> = {
+      'sophon_lockade_active': 'sophon_blockade_confirmed',
+      'yangdong_dead': 'yangdong_suicide',
+      'beihai_assassination_done': 'zhang_beihai_assassination',
+      'thought_seal_active': 'thought_seal_created',
+      'tyler_defeated': 'tyler_breached',
+      'reydiaz_defeated': 'reydiaz_breached',
+      'great_ravine_active': 'great_ravine_started',
+      'dark_battle_concluded': 'dark_battle',
+      'australia_migration_started': 'australia_migration',
+      'bunker_cities_ready': 'bunker_world_completed',
+      'lightspeed_travel_possible': 'lightspeed_ship_tested',
+      'dimensional_strike_imminent': 'dimensional_alert_seen',
+      'human_heritage_archived': 'pluto_museum',
+      'galaxy_exodus_successful': 'galaxy_exodus_seen',
+      'tech_explosion_active': 'technological_explosion',
+    };
+    const mapFlag = (f: string) => FLAG_ALIAS_MAP[f] || f;
+    if (cond.reqFlag && !game.hasFlag(mapFlag(cond.reqFlag))) return false;
+    if (cond.reqNotFlag && game.hasFlag(mapFlag(cond.reqNotFlag))) return false;
     if (cond.minEconomy !== undefined && e.economy < cond.minEconomy) return false;
     if (cond.maxEconomy !== undefined && e.economy > cond.maxEconomy) return false;
     if (cond.minPopulation !== undefined && e.population < cond.minPopulation) return false;
@@ -788,6 +807,15 @@ export class GameEventManager {
     if (cond.maxDeterrence !== undefined && e.deterrenceValue > cond.maxDeterrence) return false;
     if (cond.minTreachery !== undefined && e.treachery < cond.minTreachery) return false;
     if (cond.maxTreachery !== undefined && e.treachery > cond.maxTreachery) return false;
+
+    // === TagManager integration ===
+    const gameForTags = this.#game;
+    if (gameForTags) {
+      const tagManager = gameForTags.tagManager;
+      if (cond.reqTag && !tagManager.hasTag(cond.reqTag)) return false;
+      if (cond.reqNotTag && tagManager.hasTag(cond.reqNotTag)) return false;
+      if (cond.minTagIntensity !== undefined && tagManager.getTagIntensity(cond.reqTag) < cond.minTagIntensity) return false;
+    }
 
     if (cond.probability && game.rng() > cond.probability) return false;
 

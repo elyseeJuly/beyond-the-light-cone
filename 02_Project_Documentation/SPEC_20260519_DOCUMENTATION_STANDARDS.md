@@ -95,6 +95,7 @@ Diagnostic reviews and balance reports.
 *   [AUDIT_20260608_EVENT_TIMELINE_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260608_EVENT_TIMELINE_AUDIT.md) — *Narrative pacing, event structure, dynamic triggers, and character lifetimes audit*
 *   [AUDIT_20260621_COMPREHENSIVE_NARRATIVE_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_COMPREHENSIVE_NARRATIVE_AUDIT.md) — *Comprehensive narrative pacing and balance audit*
 *   [AUDIT_20260621_TERMINOLOGY_MISMATCH_REPORT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_TERMINOLOGY_MISMATCH_REPORT.md) — *Terminology mismatch analysis report*
+*   [AUDIT_20260622_PART1_4_VERIFICATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_PART1_4_VERIFICATION.md) — *Verification report for Iteration Part 1-4*
 *   [AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md) — *Causal game progress loop analysis of the 43 CG events*
 
 ### 4.3 Testing Standards & Coverage (`TEST_`)

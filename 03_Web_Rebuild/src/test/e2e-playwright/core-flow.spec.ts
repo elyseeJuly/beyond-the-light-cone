@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { disableTutorial, skipTutorial, waitForMainUI, clickNextTurn, switchView } from './helpers';
+import { disableTutorial, skipTutorial, waitForMainUI, dismissOrientationPrompt, clickNextTurn, switchView } from './helpers';
 
 test.describe('Core User Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -7,6 +7,7 @@ test.describe('Core User Flow', () => {
     await page.goto('/');
     await skipTutorial(page);
     await waitForMainUI(page);
+    await dismissOrientationPrompt(page);
   });
 
   test('新游戏 → 跳过教程 → 主星图可见', async ({ page }) => {

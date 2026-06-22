@@ -32,6 +32,18 @@ export async function waitForMainUI(page: Page): Promise<void> {
   await expect(page.locator('canvas#star-canvas-react')).toBeAttached();
 }
 
+/** 关闭移动端横屏提示弹窗 */
+export async function dismissOrientationPrompt(page: Page): Promise<void> {
+  const okBtn = page.locator('button:has-text("我知道了")');
+  try {
+    await expect(okBtn).toBeVisible({ timeout: 3000 });
+    await okBtn.click();
+    await expect(okBtn).not.toBeVisible();
+  } catch {
+    // 弹窗未出现（桌面端或已被关闭）
+  }
+}
+
 /** 点击下一回合（优先使用键盘空格，兼容按钮点击） */
 export async function clickNextTurn(page: Page): Promise<void> {
   await page.keyboard.press('Space');

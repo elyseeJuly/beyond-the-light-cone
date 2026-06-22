@@ -1,81 +1,158 @@
-# 《光锥之外：纪元往事》 Beyond the Light Cone: Epoch Chronicles
-### （原名：Legend of Uni Rebuild | 宇宙群英传重构计划）
+# 🌌 《光锥之外：纪元往事》
+## Beyond the Light Cone: Epoch Chronicles
 
-[![Web Version](https://img.shields.io/badge/Web_Version-Alpha_2.5-orange.svg)](#-web-reconstruction-web重构版)
+> （原名：*Legend of Uni Rebuild · 宇宙群英传重构计划*）
+>
+> *「失去人性，失去很多；失去兽性，失去一切。」*
+>
+> —基于《三体》宇宙观的硬核回合制 **4X 太空策略模拟游戏**
+
+---
+
+<div align="center">
+
+[![Web Version](https://img.shields.io/badge/Web_Version-Alpha_2.5-orange.svg)](#-web-重构版)
 [![Play Online](https://img.shields.io/badge/Play_Online-GitHub_Pages-success.svg)](https://elyseejuly.github.io/beyond-the-light-cone/)
-[![Stack](https://img.shields.io/badge/Stack-React_19_|_Vite_8_|_TS_5-61dafb.svg)](#)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](#-开源协议-license)
+[![Stack](https://img.shields.io/badge/Stack-React_19_|_Vite_8_|_TS_5-61dafb.svg)](#-技术栈)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](#-开源协议--license)
 [![Build](https://img.shields.io/badge/TypeScript-零错误零警告-success.svg)](#)
+[![Platform](https://img.shields.io/badge/Platform-Web_|_PWA_|_Desktop_(Tauri)-blueviolet.svg)](#-本地运行)
+
+<br>
 
 👉 **[在线游玩 Web 网页重构版](https://elyseejuly.github.io/beyond-the-light-cone/)** 👈
 
-> *「失去人性，失去很多；失去兽性，失去一切。」—— 基于《三体》宇宙观的硬核回合制 4X 太空策略模拟游戏*
+</div>
 
 ---
 
-## 🌌 游戏简介
+## 🌠 项目简介
 
-《光锥之外：纪元往事》是基于经典**《宇宙群英传》**核心策略框架的现代化 Web 重写与系统架构重构项目（**“宇宙群英传重构计划 / Legend of Uni Rebuild”**）。
+《光锥之外：纪元往事》是基于经典 **《宇宙群英传》(Legend of Uni)** 核心策略框架的现代化 Web 重写与系统架构重构项目。
 
-你将在 2009 年的危机纪元中临危受命，担任联合政府最高执政官。面对三体舰队迫近的末日危机，你需要在面壁计划、执剑人威慑、掩体城防御以及光速飞船逃亡中进行抉择，在多文明竞逐的黑暗森林宇宙中为人类文明搏得一线生机。
+你将在 **2009 年的危机纪元** 中临危受命，担任联合政府最高执政官。面对三体舰队迫近的末日危机，你需要在：
 
----
+- 🧘‍♂️ **面壁计划** & **执剑人威慑**
+- 🏰 **掩体城防御**
+- 🚀 **曲率 / 光速飞船逃亡**
+- 🧠 **数字永生 / 意识上传**
 
-## 🎮 核心游戏系统
-
-### ⏳ 六大文明纪元演进与更替
-游戏随人类文化与历史演进，动态切换 6 个截然不同的文明纪元。**每进入一个纪元，都会触发一段极具史诗感的高精度全屏电影级 CG 纪元宣言弹窗提醒**：
-
-1. **危机纪元 (CRISIS)**：三体危机爆发，全世界进入战时体制。PDC 面壁计划启动，基础科学被锁死，人类开始寻找破局手段。
-2. **威慑纪元 (DETERRENCE)**：罗辑成功建立黑暗森林威慑。在执剑人的高威慑值下，两界达成冷战式和平。
-3. **广播纪元 (BROADCAST)**：坐标暴露，威慑破裂。万有引力号启动引力波广播，黑暗森林的枪口对准太阳系，毁灭开始倒计时。
-4. **掩体纪元 (BUNKER)**：太阳系黑暗森林打击临近。宏伟的太空城市群在巨型气态行星的背面落成，人类试图躲避光粒打击。
-5. **银河纪元 (GALAXY)**：太阳系遭到降维打击毁灭。人类火种乘坐曲率驱动飞船逃往银河系深空，地球文明化为浩瀚星海中的散沙。
-6. **星屑纪元 (STARDUST) `[WEB重构版新增]`**：进入终期宇宙阶段，大宇宙的结构在规律战争中碎裂降维，人类分散在废墟尘埃群落间，以“星屑遗泽”获取文化与属性重燃古老火种。
+之间做出抉择，在多文明竞逐的 **黑暗森林** 宇宙中，为人类文明搏得一线生机。
 
 ---
 
-### 🏭 经济与资源生产链
-游戏采用完整的四维资源生产系统，与原著世界观深度耦合：
+## ✨ 核心特色
 
-| 生产部门 | 核心运行机制 | 三体原著设定关联 |
-| :--- | :--- | :--- |
-| **采矿系统** | 工人分配至星系采矿场开采星矿资源，受重核聚变等科技和部长效率加成。 | 逃亡主义倾斜会削弱产出，对应原著中悲观逃亡情绪对社会秩序的破坏。 |
-| **加工工厂** | 资源转化为经济 (2:1)，在行星发动机建成后产能效率提升 5 倍。 | 质能转化科技研发完成后可免除资源消耗，致敬强相互作用材料等技术革命。 |
-| **文化推广** | 产出文化值，推动文明纪元晋升。思想钢印科技可提供额外权重。 | 文化值用于推动文明在猜疑链中生存，钢印可选用“唯实路线”或“纯粹路线”。 |
-| **人口繁衍** | 太空城市群提供人口增长上限，殖民城和生命维持科技可加速增长率。 | 人力资源管理与面壁者/执剑人任命直接挂钩，高福利延缓崩溃。 |
-
----
-
-### 🔬 科技树（85 节点 × 5 大分支）
-系统性复刻了原版《宇宙群英传》的全部科技路线，涵盖以下五大方向：
-* **基础物理学 (23 节点)**：天文望远镜观测 $\rightarrow$ 强相互作用对撞 $\rightarrow$ 智子工程 $\rightarrow$ 维度物理 $\rightarrow$ 曲率驱动。**最终解锁：黑域生成（黑域胜利）**。
-* **航天工程 (37 节点)**：化学推进 $\rightarrow$ 工质核聚变 $\rightarrow$ 行星发动机Ⅰ→Ⅲ型 $\rightarrow$ 太空城生命维持。**最终解锁：流浪地球逃逸（流浪胜利）**。
-* **军事武器 (13 节点)**：恒星级氢弹 $\rightarrow$ 宏原子聚变 $\rightarrow$ 引力波广播 $\rightarrow$ 矢量打击。**最终解锁：二向箔武器化**。
-* **信息技术 (14 节点)**：思想钢印Ⅰ→Ⅲ型 $\rightarrow$ 550系列量子计算机 $\rightarrow$ 意识上传。**最终解锁：数字方舟（数字永生胜利）**。
-* **星际文明 (12 节点)**：宇宙社会学 $\rightarrow$ 猜疑链研判 $\rightarrow$ 技术爆炸预测 $\rightarrow$ 归零重置。**最终解锁：银河共同体 / 宇宙重启**。
+| 系统 | 说明 |
+| :--- | :--- |
+| ⏳ **六大文明纪元演进** | 危机 → 威慑 → 广播 → 掩体 → 银河 → 星屑，每切换纪元触发史诗级全屏 CG 宣言 |
+| 🏭 **四维资源生产链** | 采矿 / 加工 / 文化 / 人口，与三体原著世界观深度耦合 |
+| 🔬 **85 节点科技树** | 5 大研发分支：基础物理、航天工程、军事武器、信息技术、星际文明 |
+| 🏛️ **跨周目遗迹 NG+** | 失败文明的科技 / 文化持久化至 `LocalStorage`，新周目可逆向研究继承遗产 |
+| ⏪ **命运分歧点回溯** | 每回合自动快照，失误暴毙可一键回溯至 **5 回合前** 重新决策 |
+| 👁️ **宇宙观察者模式** | 文明消亡后退出决策角色，静观外星 AI 竞逐与宇宙演化 |
+| 🎨 **极简巨物原画风 CG** | Craig Mullins 风格 21:9 电影级美术；7 大历史节点 CG + 5 大新增结局 CG 全量补全 |
+| 🎵 **OST 配乐系统** | 纪元主题音乐 + 结局专属曲目，动态氛围引擎 `AtmosphereEngine` 驱动 |
+| 📱 **PWA 响应式** | 移动端适配，桌面端 Tauri 构建；支持离线缓存、安装至主屏 |
+| ✅ **全量测试覆盖** | Vitest 单元测试 + Playwright E2E + 500 回合 Headless 自动推演 |
 
 ---
 
-### 🏛️ 跨周目遗迹持久化与 Metagame 系统
-1. **黑暗森林遗迹 (NG+ 机制)**：当玩家遭遇失败（如氦闪、降维坍缩）时，过往失败文明的科技积累和文化历史会被序列化并持久化至浏览器 `LocalStorage` 中。新游戏进行至第 50 回合时，深空探测器有几率在其坐标发现“平行时间线人类飞船遗迹”，允许逆向研究或继承遗产以获得大量文化与资源增益。
-2. **命运分歧点回溯**：系统自动在每回合记录最近 10 回合的状态快照。玩家因失误暴毙或氦闪时，可立刻点击“时间回溯”按钮退回到 5 回合前的关键决策点重新布局。
-3. **宇宙观察者模式**：文明消亡后，玩家可开启“观察者模式”退出决策角色，作为冷酷的星空看客静观余下外星 AI 之间的战争与宇宙演化。
-4. **岁月史书永久画廊**：独立的主菜单画廊，点亮玩家已达成的结局卡片，展示通关纪元时间线，并展示多周目解锁的永久加成效果（NG+ 永久 Buff）。
+## 🎮 快速开始 · 本地运行
 
-### 🎨 极简巨物原画风 CG 与结局视觉补全 `[2026.06.21 新增]`
-为完美契合《三体》原著的宏大宇宙尺度，Web 重构版对所有核心剧情与结局视觉资产进行了全面重置：
-1. **统一美术规范**：全量使用 **Craig Mullins style**（21:9 画幅、极简构图、宏大尺度对比、大块面色彩、富有表现力的数字笔触与冷色调电影级光影）。
-2. **7 大历史节点 CG 重绘**：对危机纪元开启（智子展开）、水滴抵近、黑域辩论、星环号光速试航、维度打击警报、银河大逃亡以及归零者广播等核心事件的 CG 进行艺术级重绘，完全解决前序版本图片画风不统一的问题。
-3. **5 大新增结局 CG 补全**：配合结局系统的重构，全新补全了信号静默（胜利）、提前威慑（胜利）、光速流亡（胜利）、银河公民（胜利）及 ETO 接管（失败）的 21:9 专属结局图像。
+### 环境要求
+
+- **Node.js ≥ 20**
+- **npm ≥ 10**
+- （桌面端可选）**Rust + Tauri** 环境
+
+### 启动 Web 版本
+
+```bash
+# 1. 进入工程目录
+cd 03_Web_Rebuild
+
+# 2. 安装依赖
+npm install
+
+# 3. 启动开发服务器
+npm run dev
+# → 默认打开 http://localhost:5173
+```
+
+### 构建生产版本 / 部署
+
+```bash
+# 构建（含资产清单生成 + TS 类型检查 + Vite 打包）
+npm run build
+
+# 本地预览构建产物
+npm run preview
+
+# 部署到 GitHub Pages
+npm run deploy
+
+# 或部署到 Cloudflare Pages
+npm run deploy:cf
+```
+
+### 桌面端（Tauri）
+
+```bash
+cd 03_Web_Rebuild
+npm run tauri:dev        # 开发模式
+npm run tauri:build      # 打包当前系统版本
+npm run tauri:build:win  # Windows 版 (x86_64-pc-windows-msvc)
+npm run tauri:build:mac  # macOS 版 (aarch64-apple-darwin)
+```
+
+### 测试命令
+
+```bash
+npm run test             # 运行单元测试 (Vitest)
+npm run test:coverage    # 运行覆盖率报告
+npm run test:e2e         # 运行 Playwright E2E
+npm run typecheck        # TypeScript 零错误验证
+npm run lint             # ESLint 校验
+```
 
 ---
 
-## ⚡ 性能与加载深度优化
+## 🧭 玩法指引 · 五分钟上手
 
-重构版在视觉表现增强的同时，针对低配置设备与 GitHub Pages 托管延迟进行了两项底层性能重构：
-- **高精素材预加载**：实装了 `preloadCoreImages` 缓存机制，在游戏启动时异步预载全部 21:9 电影级 CG 和 36 位主要角色的立绘，彻底解决了弹窗后图片闪白和加载延迟问题，实现 **CG 实时瞬间呈现**。
-- **GPU 硬件加速背景**：用 Canvas Pattern 填充（GPU 渲染）替代了消耗巨大的逐像素 CPU 噪点绘制。在低端机型 (`tier === 'low'`) 下，系统会自动检测并**完全关闭 `requestAnimationFrame` 动态循环**，只在缩放时更新一次背景，消除一切发热与卡顿。
+1. **第 1–10 回合 · 生存**：在危机纪元下分配工人至采矿/加工部门，优先研发「化学推进」与「恒星级氢弹」。任命一位面壁者。
+2. **第 10–50 回合 · 威慑**：建立罗辑威慑体系，同时推进「行星发动机 / 工质核聚变」与「思想钢印」。警惕三体舰队的水滴突袭。
+3. **第 50–200 回合 · 突破**：开启引力波广播（若威慑破裂），向掩体 / 曲率驱动 / 数字永生三条路线倾斜资源。
+4. **第 200 回合+ · 终局**：
+   - ✅ **黑域胜利**：解锁「曲率驱动」→「黑域生成」
+   - ✅ **流浪胜利**：建成「行星发动机Ⅲ型」
+   - ✅ **数字永生胜利**：完成「意识上传」
+   - ✅ **银河公民 / 宇宙重启**：走完星际文明分支
+   - ❌ **氦闪 / 降维 / ETO 接管**：失败但会触发 NG+ 遗迹，下周目继承文化值
+
+---
+
+## 🛠 技术栈
+
+| 层级 | 技术 |
+| :--- | :--- |
+| **前端框架** | React 19 · TypeScript 5 · Vite 8 |
+| **样式方案** | Tailwind CSS 4 · Framer Motion · Canvas Pattern（GPU 背景） |
+| **UI 图标** | Lucide React |
+| **数据验证** | Zod |
+| **PWA / 打包** | vite-plugin-pwa · gh-pages · Cloudflare Pages |
+| **桌面端** | Tauri |
+| **测试体系** | Vitest · Playwright |
+| **CI / CD** | GitHub Actions（`.github/workflows/`） |
+
+---
+
+## ⚡ 性能与加载优化亮点
+
+- **高精素材预加载**：`preloadCoreImages` 在启动时异步预载全部 21:9 电影级 CG 与 36 位主要角色立绘，消除弹窗闪白，实现 **CG 实时瞬间呈现**。
+- **GPU 硬件加速背景**：使用 Canvas Pattern（GPU 渲染）替代逐像素 CPU 噪点绘制。低端机型 (`tier === 'low'`) 自动关闭 `requestAnimationFrame` 循环，只在缩放时更新一次背景，消除发热与卡顿。
+- **切片化叙事引擎 `SliceNarrativeEngine`**：事件、对白、因果链分层加载，避免首屏阻塞。
+- **PWA 离线缓存**：`service-worker` + `asset_manifest.json` 资源清单，断网可继续游戏。
 
 ---
 
@@ -83,28 +160,112 @@
 
 ```
 beyond-the-light-cone/
-├── 01_Windows_Source/            # 原始 MFC C++ 源码（重构修复版 - 宇宙群英传原版）
+├── 01_Windows_Source/            # 原始 MFC C++ 源码（重构修复版·宇宙群英传原版）
 │   ├── 3DPrelude/                # 3D 预渲染片头
 │   └── LengendOfUni/             # 核心游戏逻辑
 │
-├── 02_Project_Documentation/     # 项目文档及历史审计报告
-│   ├── SPEC_20260616_ART_PROMPTS_GUIDE.md              # 美术资源提示词规范
-│   ├── SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md  # 结局触发路径重设计规格书
-│   ├── EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md    # 美术重绘与结局CG补全执行报告
-│   ├── SPEC_20260615_ENDING_CONDITIONS_REDESIGN.md     # 结局判定重设计规范
-│   ├── EXEC_20260615_ENDING_SYSTEM_REFACTOR_WALKTHROUGH.md  # 结局重构执行报告
-│   └── ...（更多技术与美术文档）
+├── 02_Project_Documentation/     # 项目文档 · 审计报告 · 规格说明
+│   ├── SPEC_*.md                 # 规格 / 规范（美术 / 结局 / 事件 / 架构）
+│   ├── EXEC_*.md                 # 执行计划 / Walkthrough
+│   ├── AUDIT_*.md                # 代码 / 叙事 / 时间轴审计
+│   ├── TEST_*.md                 # 测试规划与报告
+│   └── HIST_*.md                 # 开发日志与历史
 │
-└── 03_Web_Rebuild/               # 本次重构计划的 Web 网页版工程（Vite + React）
-    ├── src/
-    │   ├── core/                 # 游戏核心逻辑（Game.ts, EarthCivilization.ts 等）
-    │   ├── components/           # UI 面板及画廊组件（MuseumGallery.tsx 等）
-    │   └── test/                 # 结局、防绕过及遗迹持久化的专项单元测试集
-    └── vite.config.ts            # Vite 配置文件（已适配 beyond-the-light-cone 路由）
+├── 03_Web_Rebuild/               # 本次重构计划的 Web 网页版工程（Vite + React）
+│   ├── src/
+│   │   ├── core/                 # 游戏核心逻辑（Game / EarthCivilization / TecTree 等）
+│   │   ├── components/           # UI 面板 · 结局过场 · 画廊
+│   │   ├── data/                 # JSON 数据：人物 / 事件 / 武器 / 外星文明 / 纪元
+│   │   ├── config/               # 配置（结局、星图索引）
+│   │   ├── test/                 # Vitest + Playwright 测试集
+│   │   ├── hooks/                # 自定义 React Hooks
+│   │   └── utils/                # 工具函数（资源 URL / i18n / 随机）
+│   ├── public/                   # 静态资源（CG / 音乐 / 图标 / PWA 清单）
+│   ├── vite.config.ts            # Vite 配置（适配路由 base）
+│   └── package.json              # 完整 npm 脚本清单
+│
+└── README.md
 ```
+
+### 核心代码导读
+
+- [Game.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/Game.ts) — 游戏主循环与状态机
+- [EarthCivilization.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/EarthCivilization.ts) — 人类文明核心数据模型
+- [TecTreeManager.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/TecTreeManager.ts) — 85 节点科技树调度
+- [SliceNarrativeEngine.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/SliceNarrativeEngine.ts) — 切片化叙事引擎
+- [endingConfig.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/config/endingConfig.ts) — 结局触发判定
+- [MuseumGallery.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/MuseumGallery.tsx) — 岁月史书永久画廊
+
+---
+
+## 🖼 游戏截图
+
+| 主星空地图 | 科技树面板 |
+| :---: | :---: |
+| ![主界面](02_Project_Documentation/assets/main_star_map_ui_1778467960198.png) | ![科技树](02_Project_Documentation/assets/light_theme_ui_1778468416048.png) |
+
+| 罗辑角色立绘 |
+| :---: |
+| ![罗辑](02_Project_Documentation/assets/character_luoji_1778467974903.png) |
+
+---
+
+## 🧪 测试体系
+
+本项目配备三层自动化测试保障：
+
+1. **单元测试（Vitest）**：覆盖核心数据模型、科技树、经济系统、结局判定、防绕过逻辑 — `src/test/core/`
+2. **集成测试**：事件因果链 `EventChain`、存档读档 `SaveLoad`、标签事件互作 `TagEventIntegration`、通用事件引擎 `UEE_FullFlow`
+3. **E2E 测试（Playwright）**：烟雾测试、核心流程、响应式布局 — `src/test/e2e-playwright/`
+4. **Headless 自动推演**：`Autoplay500` 自动模拟 500 回合，验证长期数值稳定性
+
+运行方式：[快速开始](#-快速开始--本地运行) 一节的「测试命令」。
 
 ---
 
 ## 📜 开源协议 (License)
 
-本项目代码部分采用 **MIT License** 开源。项目中的美术立绘、文字文案以及与《三体》相关的世界观设定版权归原作者及版权方所有，仅供学习、交流与非商业性试玩体验使用。
+- **代码部分**：采用 **MIT License** 开源 —欢迎学习、Fork、二次开发。
+- **美术资源 · 文字文案 · 《三体》世界观设定**：版权归原作者及版权方（刘慈欣 / 《三体》版权方）所有，**仅限学习、交流与非商业性试玩体验使用**，请勿用于商业用途。
+
+---
+
+## 🤝 贡献指南（Welcome Contributors）
+
+欢迎提交 **Issue / Pull Request**！请遵循以下流程：
+
+1. **Fork 本仓库** → 在你的分支上进行改动。
+2. 代码提交前请运行：
+   ```bash
+   cd 03_Web_Rebuild
+   npm run typecheck   # 必须零错误零警告
+   npm run lint        # 代码风格检查
+   npm run test        # 单元测试全通过
+   ```
+3. 新增功能 / 修复 Bug 时，建议**同步补充对应 Vitest 用例**，并在 commit message 中简短说明。
+4. 美术资源（CG / 立绘 / 音乐）请参考 `02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md` 的统一视觉规范。
+5. 提交 PR 后，GitHub Actions CI 会自动运行测试与构建，通过后会有维护者 Review。
+
+---
+
+## 📖 延伸阅读
+
+项目在 `02_Project_Documentation/` 下有完整的开发与设计文档库，推荐从以下几篇开始：
+
+| 文档 | 内容 |
+| :--- | :--- |
+| [AUDIT_20260621_ARCHITECTURE_REBUILD.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_ARCHITECTURE_REBUILD.md) | 完整架构重构审计 |
+| [SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md) | 结局触发路径重设计 |
+| [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) | 美术资源提示词规范 |
+| [EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md) | CG 重绘与结局视觉补全执行报告 |
+| [AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md) | 事件因果链分析 |
+
+---
+
+## 🌟 Star History
+
+如果这个项目让你对《三体》与太空策略游戏产生了兴趣，欢迎 **Star ⭐ / Fork 🍴**，让更多人看到它！
+
+> *「宇宙就是一座黑暗森林，每个文明都是带枪的猎人……他必须小心，因为林中到处都有与他一样潜行的猎人。」*
+>
+> ——罗辑，《黑暗森林》

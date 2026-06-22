@@ -27,6 +27,7 @@ export default defineConfig({
         theme_color: '#0B1020',
         background_color: '#0B1020',
         start_url: basePath,
+        scope: basePath,
         icons: [
           {
             src: 'icons/icon-192x192.png',

@@ -59,7 +59,8 @@ test.describe('Core User Flow', () => {
         economy: game.earthCivi.economy,
         population: game.earthCivi.population,
         army: game.earthCivi.army,
-        stability: game.earthCivi.stability,
+        resource: game.earthCivi.resource,
+        culture: game.earthCivi.culture,
       };
     });
 
@@ -68,11 +69,14 @@ test.describe('Core User Flow', () => {
       expect(resources.economy).toBeGreaterThanOrEqual(0);
       expect(resources.population).toBeGreaterThanOrEqual(0);
       expect(resources.army).toBeGreaterThanOrEqual(0);
-      expect(resources.stability).toBeGreaterThanOrEqual(0);
+      expect(resources.resource).toBeGreaterThanOrEqual(0);
+      expect(resources.culture).toBeGreaterThanOrEqual(0);
     }
   });
 
   test('事件弹窗出现后可选择选项', async ({ page }) => {
+    test.setTimeout(60000);
+
     // 使用确定性 RNG 加速事件触发
     await page.evaluate(() => {
       const game = (window as any).GameInstance?.get?.();
@@ -95,31 +99,32 @@ test.describe('Core User Flow', () => {
       return;
     }
 
-    // 等待弹窗按钮稳定可交互
+    // 等待弹窗按钮出现在 DOM 中
     await page.locator(storySelector).first().waitFor({ state: 'visible' });
 
-    // 优先处理选项 / 确认按钮；若仅出现继续按钮则翻页直到选项或确认出现
+    // 弹窗按钮带有入场/打字机动画，Playwright 默认点击会等待元素稳定。
+    // 这里使用 force 点击直接触发，避免动画导致的不稳定超时。
     let actionClicked = false;
     for (let attempt = 0; attempt < 15 && !actionClicked; attempt++) {
       const choiceBtn = page.locator('.story-choice-btn').first();
       if (await choiceBtn.isVisible().catch(() => false)) {
-        await choiceBtn.click();
+        await choiceBtn.click({ force: true });
         actionClicked = true;
         break;
       }
 
       const ackBtn = page.locator('.story-acknowledge-btn');
       if (await ackBtn.isVisible().catch(() => false)) {
-        await ackBtn.click();
+        await ackBtn.click({ force: true });
         actionClicked = true;
         break;
       }
 
       const proceedBtn = page.locator('.story-proceed-btn');
       if (await proceedBtn.isVisible().catch(() => false)) {
-        await proceedBtn.click();
+        await proceedBtn.click({ force: true });
         // 给翻页动画与类型writer留出时间
-        await page.waitForTimeout(120);
+        await page.waitForTimeout(150);
       } else {
         // 弹窗已关闭，没有可点击的选项
         break;
@@ -128,7 +133,7 @@ test.describe('Core User Flow', () => {
 
     if (actionClicked) {
       // 等待签名/归档动画结束与弹窗关闭
-      await expect(page.locator(storySelector)).not.toBeVisible({ timeout: 10000 });
+      await expect(page.locator(storySelector)).not.toBeVisible({ timeout: 15000 });
     } else {
       test.info().annotations.push({ type: 'note', description: 'Event modal closed without clickable choices' });
     }

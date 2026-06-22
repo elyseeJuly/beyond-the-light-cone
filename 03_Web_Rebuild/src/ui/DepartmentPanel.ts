@@ -82,7 +82,7 @@ export class DepartmentPanel {
       `;
     }
 
-    let html = `
+    const html = `
       <div style="margin-bottom: 20px;">
         <h3 style="color: var(--color-primary); border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
           部门概况

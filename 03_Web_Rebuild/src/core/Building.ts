@@ -13,7 +13,7 @@ export interface Building {
 
 export function createBuilding(type: BuildingType): Building {
   let totalBuild = 100;
-  let buildPerRound = 10;
+  const buildPerRound = 10;
   
   if (type === BuildingType.FACTORY) {
     totalBuild = 200;

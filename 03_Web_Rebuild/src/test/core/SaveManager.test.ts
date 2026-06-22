@@ -48,7 +48,7 @@ describe('SaveManager', () => {
     SaveManager.save(() => JSON.stringify(gameData));
     const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
     const parsed = JSON.parse(raw);
-    parsed.version = 2;
+    parsed.version = 4;
     localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify(parsed));
     expect(() => SaveManager.load()).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.load()).toThrow('存档版本不兼容');
@@ -210,7 +210,7 @@ describe('Version Compatibility', () => {
     SaveManager.saveToSlot('slot1', () => JSON.stringify(data));
     const raw = localStorage.getItem('LegendOfUni_Save_slot1')!;
     const parsed = JSON.parse(raw);
-    parsed.version = 2;
+    parsed.version = 4;
     localStorage.setItem('LegendOfUni_Save_slot1', JSON.stringify(parsed));
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow('存档版本不兼容');

@@ -257,7 +257,7 @@ export class AlienCivilization extends Civilization {
           game.addHistory(`【警报】${fleet.name} 抵达太阳系！`);
           const earthTarget = game.starManager.getStar(fleet.targetStarIndex);
           if (earthTarget && earthTarget.belongToCivi === "地球") {
-            let defBarback = createBarback("earth_def", 0);
+            const defBarback = createBarback("earth_def", 0);
             defBarback.soldierCount = 500 + game.earthCivi.army;
             const win = CombatEngine.resolveFleetVsBarback(fleet, defBarback);
             if (win) {

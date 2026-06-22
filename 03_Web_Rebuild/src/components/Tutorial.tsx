@@ -16,6 +16,9 @@ interface TutorialStep {
   highlightArea?: 'top' | 'left' | 'center' | 'right' | 'none';
   highlightTarget?: string;
   activeView: ActiveViewType;
+  inspectorTab?: 'overview' | 'build' | 'fleet' | 'history';
+  govTab?: 'finance' | 'military' | 'tech' | 'social' | 'security' | 'diplomacy';
+  cardPosition?: 'left' | 'right' | 'top' | 'bottom' | 'center';
 }
 
 const TUTORIAL_STEPS: TutorialStep[] = [
@@ -25,17 +28,19 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: '档案访问授权确认',
     category: '序章',
     description: '权限验证通过。欢迎您，文明执政官。\n\n公元 2XXX 年，三体文明发现了地球的存在。作为地球防卫理事会最高指挥官，你将在黑暗森林法则的阴影下，带领人类文明穿越六大纪元。\n在这座银河文明档案馆中，你的每一个决策都将书写人类文明的历史。',
-    highlightArea: 'none',
+    highlightTarget: 'none',
     activeView: 'starmap',
+    cardPosition: 'center',
   },
   {
     icon: <Clock size={32} />,
     title: '历史纪元演进',
     category: '序章',
     description: '文明档案记录了六个宏大纪元，每个纪元都有独特的挑战与危机：\n\n• 危机纪元（第1-200年）— 面临智子封锁与生存危机\n• 威慑纪元（第201-260年）— 执剑人建立黑暗森林威慑\n• 广播纪元（第261-300年）— 坐标暴露，应对黑暗森林打击\n• 掩体纪元（第301-350年）— 太阳系最后的防御建设窗口\n• 银河纪元（第351年起）— 逃亡星海，成为星舰文明\n• 星屑纪元（尾声）— 宇宙降维崩塌中的最后火种',
-    highlightArea: 'top',
+    highlightTarget: 'top-hud-epoch',
     activeView: 'starmap',
     tips: ['纪元会随文明发展进度与年份自动推进', '不同纪元会解锁不同的事件与科技路线'],
+    cardPosition: 'bottom',
   },
 
   // ===== 第二章：战略星图与基础操作 =====
@@ -44,18 +49,31 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: '战略星图观测仪',
     category: '战略指挥',
     description: '欢迎进入高维星图全息投影。这里展示了人类的势力范围与深空星天：\n\n• 🟡 发光天体 = 恒星（如太阳）\n• 🔵 蓝色光环 = 人类控制区/己方势力\n• 🔴 红色光环 = 异星文明占领区（如三体）\n• ⚪ 灰色光环 = 无主星系，可派遣舰队开发\n\n操作方式：使用鼠标滚轮缩放星图，长按左键拖拽调整视角。',
-    highlightArea: 'center',
+    highlightTarget: 'starmap-viewport',
     activeView: 'starmap',
     tips: ['研究航天学相关科技可以扩大观测视野', '被占领星系的脉冲环颜色代表归属权'],
+    cardPosition: 'left',
+  },
+  {
+    icon: <Star size={32} />,
+    title: '行星观测与选择',
+    category: '战略指挥',
+    description: '【手把手指令 ①】：\n现在，请点击星图中央的「地球」星球。\n\n这将激活右侧的行星指令开发终端，以便进行具体的建设与资源调配。',
+    highlightTarget: 'earth-star',
+    activeView: 'starmap',
+    tips: ['双击星球可以快速聚焦视角', '必须先选中行星，右侧才会出现具体的开发面板'],
+    cardPosition: 'left',
   },
   {
     icon: <TrendingUp size={32} />,
-    title: '行星指令开发终端',
+    title: '行星开发建设',
     category: '战略指挥',
-    description: '【手把手指令 ①】：\n现在，请跟随指引点击星图中央的「地球」星球。\n\n右侧的战略开发面板将立即开启：\n• 查看资源储量、人口规模与设施\n• 下达具体的建设授权指令\n\n⚠️ 开局至关重要的一步：点击右侧的「采矿场」进行建设！有了矿产资源，后续才能建造工厂、积累经济。',
-    highlightArea: 'right',
+    description: '【手把手指令 ②】：\n系统已为您自动选择「地球」并打开右侧开发面板（在移动端已自动拉起抽屉）。\n\n⚠️ 开局至关重要的一步：点击右侧开发面板中的「采矿场」进行建设！有了矿产资源，每回合才能产出基础矿物。',
+    highlightTarget: 'btn-build-stope',
     activeView: 'starmap',
-    tips: ['必须先点击星图中的某个恒星/行星，右侧才会出现开发面板', '右下角的「下一回合」按钮是推进年份的唯一方式'],
+    inspectorTab: 'build',
+    tips: ['有了采矿场后，建造加工厂可以进一步加工矿产为经济收入', '右下角的「下一回合」按钮是推进年份的唯一方式'],
+    cardPosition: 'left',
   },
 
   // ===== 第三章：内政管理与科学技术 =====
@@ -63,64 +81,72 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Landmark size={32} />,
     title: '内阁政府管理中枢',
     category: '内政管理',
-    description: '【手把手指令 ②】：\n系统已为您自动打开「政府」管理界面。\n\n在这里，您可以行使最高统帅权：\n• 任命科学、国防、文化、社会部长以获取各种产出加成\n• 指派面壁者秘密策划，应对三体危机\n\n⚠️ 开局提示：在第一回合迅速指派各部门官员，可以让您的产出速度提升一倍以上！',
-    highlightArea: 'center',
+    description: '【手把手指令 ③】：\n系统已为您自动打开「政府」管理界面。\n\n在这里，您可以行使最高统帅权：\n• 任命科学、国防、文化、社会部长以获取各种产出加成\n• 指派面壁者秘密策划，应对三体危机\n\n⚠️ 开局提示：点击右侧的「进入中央计划局」任命各部门官员，可以让您的产出速度提升一倍以上！',
+    highlightTarget: 'btn-gov-finance-dept',
     activeView: 'government',
+    govTab: 'finance',
     tips: ['官员拥有不同的属性，Science 影响研发，Leadership 影响威慑与军事', '任命官员不会消耗本回合时间'],
+    cardPosition: 'left',
   },
   {
     icon: <Cpu size={32} />,
     title: '科学技术解码中心',
     category: '内政管理',
-    description: '【手把手指令 ③】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！我们需要率先研发“550W量子计算机”等关键技术，降低智子的研究封锁惩罚。',
-    highlightArea: 'center',
+    description: '【手把手指令 ④】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！我们需要率先研发“550W量子计算机”等关键技术，降低智子的研究封锁惩罚。',
+    highlightTarget: 'tech-node-天文观测',
     activeView: 'techtree',
     tips: ['未任命科学部长时，科研效率将极其低下', '研发高级科技需要对应的前置物理学突破'],
+    cardPosition: 'right',
   },
   {
     icon: <Shield size={32} />,
     title: '黑暗森林防备体系',
     category: '外御备战',
-    description: '【手把手指令 ④】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明的入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！',
-    highlightArea: 'center',
+    description: '【手把手指令 ⑤】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明的入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！',
+    highlightTarget: 'btn-open-wallfacer-hearings',
     activeView: 'government',
+    govTab: 'security',
     tips: ['威慑纪元来临时，必须慎重选择接任的执剑人', '一旦进入威慑，失去兽性将失去一切'],
+    cardPosition: 'left',
   },
   {
     icon: <Crosshair size={32} />,
     title: '深空外交监测网络',
     category: '外御备战',
-    description: '【手把手指令 ⑤】：\n系统已为您连接到「情报中心」的外星电波信道。\n\n在这里，宇宙的冷酷与利益交织展现：\n• 监测三体文明、歌者、归零者等宇宙文明的动态\n• 展开跨星际沟通：谈判（提升关系）、贸易（互换资源）或共同缔结结盟\n\n🎯 谈判技巧：当与其他文明的关系达到“亲密”时，可以尝试申请结盟。将全部存活文明消亡或全数纳为盟友，将达成伟大的“征服大同”胜利。',
-    highlightArea: 'center',
+    description: '【手把手指令 ⑥】：\n系统已为您连接到「情报中心」的外星电波信道。\n\n在这里，宇宙的冷酷与利益交织展现：\n• 监测三体文明、歌者、归零者等宇宙文明的动态\n• 展开跨星际沟通：谈判（提升关系）、贸易（互换资源）或共同缔结结盟\n\n🎯 谈判技巧：当与其他文明的关系达到“亲密”时，可以尝试申请结盟。将全部存活文明消亡或全数纳为盟友，将达成伟大的“征服大同”胜利。',
+    highlightTarget: 'intel-sidebar',
     activeView: 'intelligence',
     tips: ['关系过于恶劣的外星文明将拒绝接受任何贸易提案', '在实力薄弱时，依靠结盟外交是求生的不二法门'],
+    cardPosition: 'right',
   },
   {
     icon: <Building2 size={32} />,
     title: '文明稳定维系法则',
     category: '生存危机',
     description: '系统已将您的视角还原到主星图。请将视线移到顶部 HUD 指标区。\n\n🏛 文明稳定度是您执政的生命线：\n• 它由您的 经济能力、军事规模、科技研发度 以及 文化产出 四大维度加权决定\n• 🚨 惩罚因子：当文明内部积攒了过高的「逃亡倾向」时，社会秩序失控，稳定度会遭到沉重处罚！\n\n稳定度一旦降为 0%，您的本局游戏将立即宣告失败。请通过社会保障和文化建设，随时抚平社会的恐慌。',
-    highlightArea: 'top',
+    highlightTarget: 'top-hud-stability',
     activeView: 'starmap',
-    tips: ['经济崩溃或军事大败会直接腰斩文明稳定度', '社会与文化部长的 Art 属性可以用来平复逃亡倾向'],
+    tips: ['经济崩溃或军事大败会直接腰斩文明稳定度', '社会 & 文化部长的 Art 属性可以用来平复逃亡倾向'],
+    cardPosition: 'bottom',
   },
   {
     icon: <Rocket size={32} />,
     title: '授权通过：执政官生存法则',
     category: '最终指示',
-    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「采矿场」积累原始矿产\n② 建设「工厂」将矿产转化为经济收入\n③ 在政府中任命四个部门的执掌官员\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力的执剑人建立威慑盾牌\n⑥ 研发航天技术，向火星建立第二采矿基地\n⑦ 不要在无前置矿场时连续建造工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的官员疏导逃亡主义\n⑨ 太阳系打击降临时，依靠“掩体太空城”疏散人口\n⑩ 合理利用情报中心与异星斡旋。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
-    highlightArea: 'none',
+    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「采矿场」积累原始矿产\n② 建设「工厂」将矿产转化为经济收入\n③ 在政府中任命四个部门 of 执掌官员\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力的执剑人建立威慑盾牌\n⑥ 研发航天技术，向火星建立第二采矿基地\n⑦ 不条在无前置矿场时连续建造工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的官员疏导逃亡主义\n⑨ 太阳系打击降临时，依靠“掩体太空城”疏散人口\n⑩ 合理利用情报中心与异星斡旋。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
+    highlightTarget: 'btn-next-turn',
     activeView: 'starmap',
+    cardPosition: 'left',
   },
 ];
-
-
 
 export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [step, setStep] = useState(0);
   const [exiting, setExiting] = useState(false);
   const [, setSlideDir] = useState<'left' | 'right'>('right');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [highlightRect, setHighlightRect] = useState<{
     top: number;
     left: number;
@@ -129,8 +155,18 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   } | null>(null);
 
   const current = TUTORIAL_STEPS[step];
-  
-  // Calculate dynamic highlight coordinates
+
+  // Track window resizing for responsive layouts
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate dynamic highlight coordinates with requestAnimationFrame loop for tracking animations/transitions
   useEffect(() => {
     if (!current) return;
     const targetId = current.highlightTarget || (
@@ -146,39 +182,93 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       return;
     }
 
+    let active = true;
+    const stepStartTime = Date.now();
+
     const updateRect = () => {
+      if (!active) return;
+
+      // Handle Earth star special target coordinate tracking from the active StarMapRenderer
+      if (targetId === 'earth-star') {
+        const renderer = (window as any).activeStarMapRenderer;
+        if (renderer) {
+          const coords = renderer.getStarScreenCoords(3); // Earth's index is 3
+          if (coords) {
+            setHighlightRect({
+              top: coords.y - 20,
+              left: coords.x - 20,
+              width: 40,
+              height: 40,
+            });
+            return;
+          }
+        }
+        setHighlightRect(null);
+        return;
+      }
+
       let element = document.querySelector(`[data-tutorial-id="${targetId}"]`);
       
       // Fallback for mobile if left sidebar is hidden
       if (!element && targetId === 'left-hub') {
         element = document.querySelector('[data-tutorial-id="mobile-bottom-nav"]');
       }
+      // Fallback for mobile tabs in LeftHub
+      if (!element && targetId.startsWith('nav-')) {
+        const viewName = targetId.replace('nav-', '');
+        element = document.querySelector(`[data-tutorial-id="mobile-nav-${viewName}"]`);
+      }
 
       if (element) {
+        // Scroll into view continuously for the first 1000ms of a new step
+        // to handle slide-in drawer or tab transitions/animations
+        if (Date.now() - stepStartTime < 1000) {
+          element.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+        }
+
         const rect = element.getBoundingClientRect();
-        setHighlightRect({
-          top: Math.max(0, rect.top - 4),
-          left: Math.max(0, rect.left - 4),
-          width: rect.width + 8,
-          height: rect.height + 8,
-        });
+        // If element is hidden or has 0 size, hide the highlight box
+        if (rect.width === 0 || rect.height === 0) {
+          setHighlightRect(null);
+        } else {
+          setHighlightRect({
+            top: Math.max(0, rect.top - 4),
+            left: Math.max(0, rect.left - 4),
+            width: rect.width + 8,
+            height: rect.height + 8,
+          });
+        }
       } else {
         setHighlightRect(null);
       }
     };
 
-    updateRect();
+    // Use requestAnimationFrame loop to continuously recalculate coordinates
+    // during layout transitions (like inspector drawer sliding or government tab changes)
+    const renderLoop = () => {
+      updateRect();
+      if (active) {
+        requestAnimationFrame(renderLoop);
+      }
+    };
+
+    requestAnimationFrame(renderLoop);
+
     window.addEventListener('resize', updateRect);
-    const t = setTimeout(updateRect, 300);
+    window.addEventListener('change-active-view', updateRect);
+    window.addEventListener('tutorial:set-tab', updateRect);
+    window.addEventListener('tutorial:set-gov-tab', updateRect);
 
     return () => {
+      active = false;
       window.removeEventListener('resize', updateRect);
-      clearTimeout(t);
+      window.removeEventListener('change-active-view', updateRect);
+      window.removeEventListener('tutorial:set-tab', updateRect);
+      window.removeEventListener('tutorial:set-gov-tab', updateRect);
     };
   }, [step, current]);
+
   const progress = ((step + 1) / TUTORIAL_STEPS.length) * 100;
-
-
 
   const animateTransition = useCallback((dir: 'left' | 'right', cb: () => void) => {
     if (isAnimating) return;
@@ -214,10 +304,20 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     setTimeout(onComplete, 400);
   }, [onComplete]);
 
-  // Synchronize dynamic view switching with tutorial step
+  // Synchronize dynamic view and tab switching with tutorial step
   useEffect(() => {
-    if (current && current.activeView) {
-      window.dispatchEvent(new CustomEvent('change-active-view', { detail: current.activeView }));
+    if (current) {
+      if (current.activeView) {
+        window.dispatchEvent(new CustomEvent('change-active-view', { detail: current.activeView }));
+      }
+      if (current.inspectorTab) {
+        window.dispatchEvent(new CustomEvent('tutorial:set-tab', { detail: current.inspectorTab }));
+      } else {
+        window.dispatchEvent(new CustomEvent('tutorial:close-drawer'));
+      }
+      if (current.govTab) {
+        window.dispatchEvent(new CustomEvent('tutorial:set-gov-tab', { detail: current.govTab }));
+      }
     }
   }, [current]);
 
@@ -237,7 +337,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     animateTransition(index > step ? 'right' : 'left', () => setStep(index));
   }, [step, animateTransition]);
 
-  // Group steps by category for the chapter nav
   const categories = TUTORIAL_STEPS.reduce<{name: string; startIdx: number; count: number}[]>((acc, s, i) => {
     if (acc.length === 0 || acc[acc.length - 1].name !== s.category) {
       acc.push({ name: s.category, startIdx: i, count: 1 });
@@ -249,45 +348,133 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
   const showHighlight = highlightRect !== null;
 
+  // Calculate dynamic card styling to avoid blocking the highlighted element
+  const getCardStyle = (): React.CSSProperties => {
+    if (!current || !showHighlight || !highlightRect) {
+      return {
+        position: 'relative',
+        maxWidth: '640px',
+      };
+    }
+
+    // Adapt layout for mobile/tablet screens (< 768px) to prevent blocking the highlighted button
+    if (windowWidth < 768) {
+      const highlightCenterY = highlightRect.top + highlightRect.height / 2;
+      const isUpperHalf = highlightCenterY < windowHeight / 2;
+
+      return {
+        position: 'absolute',
+        left: '12px',
+        right: '12px',
+        width: 'calc(100% - 24px)',
+        margin: 0,
+        maxWidth: 'none',
+        // Place the card on the opposite half of the highlighted area to avoid overlap
+        ...(isUpperHalf 
+          ? { bottom: '12px', top: 'auto', transform: 'none' } 
+          : { top: '12px', bottom: 'auto', transform: 'none' }
+        )
+      };
+    }
+
+    const pos = current.cardPosition || 'center';
+
+    if (pos === 'left') {
+      return {
+        position: 'absolute',
+        left: '40px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        margin: 0,
+        maxWidth: '540px',
+      };
+    }
+    if (pos === 'right') {
+      return {
+        position: 'absolute',
+        right: '40px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        margin: 0,
+        maxWidth: '540px',
+      };
+    }
+    if (pos === 'bottom') {
+      return {
+        position: 'absolute',
+        bottom: '40px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        margin: 0,
+        maxWidth: '640px',
+      };
+    }
+    if (pos === 'top') {
+      return {
+        position: 'absolute',
+        top: '40px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        margin: 0,
+        maxWidth: '640px',
+      };
+    }
+
+    return {
+      position: 'relative',
+      maxWidth: '640px',
+    };
+  };
+
   return (
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
       {/* Darkened background with highlight cutout */}
       {!showHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />}
       
-      {/* Highlight glow */}
+      {/* Highlight glow - transition removed from coordinates to prevent lag during tracking */}
       {showHighlight && highlightRect && (
         <div 
-          className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-all duration-300 rounded"
+          className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-opacity duration-300 rounded"
           style={{
             top: `${highlightRect.top}px`,
             left: `${highlightRect.left}px`,
             width: `${highlightRect.width}px`,
             height: `${highlightRect.height}px`,
-            boxShadow: '0 0 0 9999px rgba(0,0,0,0.8), 0 0 20px rgba(0,229,255,0.4), inset 0 0 20px rgba(0,229,255,0.15)',
+            boxShadow: '0 0 0 9999px rgba(0,0,0,0.85), 0 0 20px rgba(0,229,255,0.4), inset 0 0 20px rgba(0,229,255,0.15)',
           }}
         />
       )}
 
-      {/* Pointer Arrow */}
-      {showHighlight && highlightRect && (
-        <div 
-          className="absolute z-[1002] pointer-events-none transition-all duration-300 animate-bounce"
-          style={{
-            top: `${highlightRect.top - 20}px`,
-            left: `${highlightRect.left + highlightRect.width / 2 - 10}px`,
-            width: 0,
-            height: 0,
-            borderLeft: '10px solid transparent',
-            borderRight: '10px solid transparent',
-            borderTop: '10px solid var(--color-primary)',
-            filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
-          }}
-        />
-      )}
+      {/* Pointer Arrow - points from below (pointing up) if the target is close to the top of the viewport */}
+      {showHighlight && highlightRect && (() => {
+        const pointFromBelow = highlightRect.top <= 60;
+        return (
+          <div 
+            className="absolute z-[1002] pointer-events-none transition-opacity duration-300 animate-bounce"
+            style={{
+              top: pointFromBelow 
+                ? `${highlightRect.top + highlightRect.height + 4}px` 
+                : `${highlightRect.top - 20}px`,
+              left: `${highlightRect.left + highlightRect.width / 2 - 10}px`,
+              width: 0,
+              height: 0,
+              borderLeft: '10px solid transparent',
+              borderRight: '10px solid transparent',
+              ...(pointFromBelow 
+                ? { borderBottom: '10px solid var(--color-primary)' } 
+                : { borderTop: '10px solid var(--color-primary)' }
+              ),
+              filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
+            }}
+          />
+        );
+      })()}
 
       {/* Main tutorial card */}
-      <div className={`relative z-[1002] w-full max-w-2xl mx-4 flex flex-col transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
-        
+      <div 
+        style={getCardStyle()} 
+        className={`relative z-[1002] w-full mx-auto flex flex-col transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
+      >
         {/* Progress bar */}
         <div className="w-full h-1 bg-[#243245]/40 rounded-t overflow-hidden">
           <div 
@@ -297,8 +484,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         </div>
 
         {/* Content card */}
-        <div className="relative bg-[#070B14]/90 backdrop-blur-md border border-[var(--color-primary)]/30 rounded-b p-8 flex flex-col gap-6 overflow-hidden shadow-[0_0_40px_rgba(0,184,255,0.15)]">
-          
+        <div className="relative bg-[#070B14]/90 backdrop-blur-md border border-[var(--color-primary)]/30 rounded-b p-5 sm:p-8 flex flex-col gap-4 sm:gap-6 overflow-hidden shadow-[0_0_40px_rgba(0,184,255,0.15)]">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-[var(--color-primary)]/10 border-x border-b border-[var(--color-primary)]/30 px-4 py-0.5 rounded-b text-[10px] text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase shadow-[0_0_10px_rgba(0,184,255,0.2)]">
             光锥之外·纪元往事
           </div>
@@ -360,16 +546,16 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           </div>
 
           {/* Description */}
-          <div className={`transition-all duration-300 delay-75 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} font-sans text-sm bg-black/20 p-5 border-l-2 border-[var(--color-primary)]/40`}>
-            <p className="text-[var(--text-secondary)] leading-[1.8] whitespace-pre-line">
+          <div className={`transition-all duration-300 delay-75 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} font-sans text-xs sm:text-sm bg-black/20 p-4 sm:p-5 border-l-2 border-[var(--color-primary)]/40`}>
+            <p className="text-[var(--text-secondary)] leading-[1.6] sm:leading-[1.8] whitespace-pre-line">
               {current.description}
             </p>
           </div>
 
           {/* Tips */}
           {current.tips && current.tips.length > 0 && (
-            <div className={`bg-[#070B14]/60 border border-amber-500/20 p-4 transition-all duration-300 delay-150 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
-              <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-2.5">
+            <div className={`bg-[#070B14]/60 border border-amber-500/20 p-3 sm:p-4 transition-all duration-300 delay-150 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+              <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-2">
                 <Lightbulb size={12} className="shrink-0" />
                 系统提示分析
               </div>

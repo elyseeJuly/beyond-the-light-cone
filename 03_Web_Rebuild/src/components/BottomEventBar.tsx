@@ -64,7 +64,8 @@ export const BottomEventBar: React.FC = () => {
   };
 
   const cleanMessage = (text: string) => {
-    return text.replace(/[👥📢🚀⚠️◇⚔⬢◎▤]/g, '').trim();
+    const icons = ['👥', '📢', '🚀', '⚠️', '◇', '⚔', '⬢', '◎', '▤'];
+    return icons.reduce((t, icon) => t.split(icon).join(''), text).trim();
   };
 
   return (

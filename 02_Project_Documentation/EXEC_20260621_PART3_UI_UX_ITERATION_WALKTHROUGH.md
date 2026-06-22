@@ -10,18 +10,19 @@
 
 ## 一、修复内容与实现方案
 
-### Bug 1: 新手教程全方位高亮引导
+### Bug 1: 新手教程全方位高亮引导 (精准组件指向与标签页联动)
 - **方案实现**：
-  - 更新了 [Tutorial.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/Tutorial.tsx)，弃用了先前硬编码的屏幕坐标遮罩。
-  - 使用 `getBoundingClientRect()` 动态获取高亮目标 DOM 元素（使用 `data-tutorial-id` 标记）的位置与大小。
-  - 动态计算并渲染带圆角裁切的高亮定位遮罩（Cut-out Overlay），并添加了指引箭头与 Tooltip，实现了精确的“区域指向 + 操作说明”组合。
-  - 增加了移动端/折叠状态下的防御性适配逻辑：若高亮区域（如左侧 `LeftHub`）在小屏下被隐藏，则将焦点重定向至可见的替代区域（如底部导航栏）。
+  - **精准节点绑定**：重构了 [Tutorial.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/Tutorial.tsx) 的指引机制，将先前大范围的粗放高亮（如整个 `RightInspector`、`LeftHub`）升级为对具体子元素/功能按钮的精准聚焦。
+  - **自动切换标签页/子视图**：增加了在进入新教程步骤时自动下发 `tutorial:set-tab` 和 `tutorial:set-gov-tab` 事件的联动逻辑。现在当步骤进行到行星建设时，右侧面板会自动切换至“建设”栏并精准高亮“行星采矿场建设按钮” (`btn-build-stope`)；当进行到国防任命时，内政界面会自动同步至“安全部”并精准高亮“面壁计划听证会按钮” (`btn-open-wallfacer-hearings`)。
+  - **动态避让防遮挡**：实现了基于 `cardPosition` (`left` | `right` | `top` | `bottom` | `center`) 的遮罩提示框动态布局。当高亮目标位于屏幕右侧时，教程主卡片会自动避让至左侧渲染；当高亮目标位于顶部 HUD 时，卡片向下偏移，彻底解决了大型说明卡片叠置阻挡高亮区域的视觉死锁。
+  - **微小组件微调**：高亮聚焦遮罩的 bounding box 增设了适量内边距 padding，并增加了监听侧边栏折叠/标签切换的实时重绘机制，保证在不同尺寸屏幕或折叠状态下的渲染对齐。
 - **标记组件**：
-  - [TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx) (`top-hud`)
-  - [LeftHub.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/LeftHub.tsx) (`left-hub`)
-  - [RightInspector.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/RightInspector.tsx) (`right-inspector`)
-  - [MobileBottomNav.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/MobileBottomNav.tsx) (`mobile-bottom-nav`)
-  - [App.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/App.tsx) (`starmap-viewport`)
+  - [TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx) (`top-hud-epoch` 纪元年份, `top-hud-stability` 稳定度指标, `btn-next-turn` 下一回合按钮)
+  - [LeftHub.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/LeftHub.tsx) (`nav-starmap` 菜单, `nav-intelligence` 菜单, `nav-techtree` 科技菜单, `nav-government` 政府菜单, `nav-archive` 档案菜单)
+  - [RightInspector.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/RightInspector.tsx) (`inspector-tab-build` 建设选项卡, `btn-build-stope` 采矿场按钮)
+  - [GovManagement.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/GovManagement.tsx) (`gov-cabinets-sidebar` 内阁侧栏, `btn-open-wallfacer-hearings` 听证会按钮)
+  - [IntelligenceCenter.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/IntelligenceCenter.tsx) (`intel-sidebar` 情报菜单)
+  - [MobileBottomNav.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/MobileBottomNav.tsx) (`mobile-nav-starmap` 底部星图等)
 
 ### Bug 4: 音频通道独占机制 (Ending Audio Mutex)
 - **方案实现**：

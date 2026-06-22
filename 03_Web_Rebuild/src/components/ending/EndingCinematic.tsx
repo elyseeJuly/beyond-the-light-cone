@@ -88,7 +88,7 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
             life: 0,
             maxLife: 120 + Math.random() * 120,
           };
-        case 'ripple':
+        case 'ripple': {
           const cx = canvas.width / 2;
           const cy = canvas.height / 2;
           const angle = Math.random() * Math.PI * 2;
@@ -100,8 +100,9 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
             size: Math.random() * 2 + 1,
             alpha: 1,
             life: 0,
-            maxLife: 200,
+            maxLife: 120 + Math.random() * 120,
           };
+        }
         case 'thrust':
           return {
             x: canvas.width / 2 + (Math.random() - 0.5) * 100,
@@ -157,7 +158,7 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
             life: 0,
             maxLife: 60,
           };
-        case 'kaleidoscope':
+        case 'kaleidoscope': {
           const ka = Math.random() * Math.PI * 2;
           const kr = Math.random() * 200;
           return {
@@ -170,6 +171,7 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
             life: 0,
             maxLife: 200,
           };
+        }
         default: // collapse
           return {
             x: Math.random() * canvas.width,

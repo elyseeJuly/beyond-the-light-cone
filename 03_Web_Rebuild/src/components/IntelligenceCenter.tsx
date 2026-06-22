@@ -92,7 +92,7 @@ export const IntelligenceCenter: React.FC = () => {
       {/* Main content grid */}
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left tabs selector */}
-        <div className="w-48 flex flex-col gap-1.5 shrink-0">
+        <div data-tutorial-id="intel-sidebar" className="w-48 flex flex-col gap-1.5 shrink-0">
           <button
             onClick={() => setActiveTab('crisis')}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('crisis')}`}

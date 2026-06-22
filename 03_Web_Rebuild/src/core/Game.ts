@@ -23,6 +23,10 @@ import { EventBus } from "./EventBus";
 import { SaveManager, SaveDataCorruptedError } from "./SaveManager";
 import { AudioManager } from "./AudioManager";
 import { StatisticsManager } from "./StatisticsManager";
+import { AppContainer, ServiceKeys } from "./DIContainer";
+import { EventSystem } from "./subsystems/EventSystem";
+import { EconomySystem } from "./subsystems/EconomySystem";
+import { PopulationSystem } from "./subsystems/PopulationSystem";
 
 export interface RngProvider {
   random(): number;
@@ -32,7 +36,8 @@ export interface RngProvider {
  * Game JSON replacer - handles Map/Set serialization for saves
  */
 function gameReplacer(_key: string, value: any) {
-  if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory') {
+  if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory' ||
+      _key === 'eventSystem' || _key === 'economySystem' || _key === 'populationSystem' || _key === 'game') {
     return undefined;
   }
   if (value instanceof Map) {
@@ -69,6 +74,11 @@ export class Game {
 
   public earthCivi: EarthCivilization;
   public alienCiviManager: AlienCiviManager;
+
+  // 子系统（通过依赖注入解耦）
+  public eventSystem: EventSystem;
+  public economySystem: EconomySystem;
+  public populationSystem: PopulationSystem;
 
   public currentEvent: GameEventPayload | null = null;
   public eventQueue: GameEventPayload[] = [];
@@ -119,6 +129,16 @@ export class Game {
     this.earthCivi.setGame(this);
     this.eventManager.setGame(this);
     this.alienCiviManager.setGame(this);
+
+    // 初始化并注册子系统到 DI 容器
+    this.eventSystem = new EventSystem(this);
+    this.economySystem = new EconomySystem(this);
+    this.populationSystem = new PopulationSystem(this);
+
+    AppContainer.register(ServiceKeys.GAME, this);
+    AppContainer.register(ServiceKeys.EVENT_SYSTEM, this.eventSystem);
+    AppContainer.register(ServiceKeys.ECONOMY_SYSTEM, this.economySystem);
+    AppContainer.register(ServiceKeys.POPULATION_SYSTEM, this.populationSystem);
   }
 
   public setRngProvider(provider: RngProvider): void {
@@ -189,7 +209,8 @@ export class Game {
     // 录入当前回合的存档快照，用于命运分歧点回溯
     if (!this.turnHistory) this.turnHistory = [];
     this.turnHistory.push(JSON.stringify(this, (key, val) => {
-      if (key === 'currentEvent' || key === 'eventQueue' || key === 'isProcessing' || key === '_rngProvider' || key === 'turnHistory') {
+      if (key === 'currentEvent' || key === 'eventQueue' || key === 'isProcessing' || key === '_rngProvider' || key === 'turnHistory' ||
+          key === 'eventSystem' || key === 'economySystem' || key === 'populationSystem' || key === 'game') {
         return undefined;
       }
       if (val instanceof Map) {
@@ -508,7 +529,7 @@ export class Game {
           try {
             const raw = localStorage.getItem('LegendOfUni_RuinHistory');
             ruins = raw ? JSON.parse(raw) : [];
-          } catch {}
+          } catch { /* ignore */ }
           if (ruins.length > 0) {
             const latestRuin = ruins[ruins.length - 1];
             const ruinsEvent: GameEventPayload = {
@@ -572,8 +593,7 @@ export class Game {
     } finally {
       this.isProcessing = false;
       // 自动存档：回合结束
-      const self = this;
-      SaveManager.autoSave(() => JSON.stringify(self, gameReplacer));
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
     }
   }
 
@@ -990,170 +1010,15 @@ export class Game {
   }
 
   public processNextEvent(): void {
-    if (this.eventQueue.length > 0 && !this.currentEvent) {
-      this.currentEvent = this.eventQueue.shift() || null;
-      window.dispatchEvent(new CustomEvent('game-event-triggered'));
-    }
+    this.eventSystem.processNextEvent();
   }
 
   public applyEventEffect(effect: EventEffect, isInteractive: boolean = true): void {
-    switch (effect) {
-      case EventEffect.ADDECONEMY: this.earthCivi.economy = Math.max(0, this.earthCivi.economy + 50); break;
-      case EventEffect.ADDCULTURE: this.earthCivi.culture = Math.max(0, this.earthCivi.culture + 30); break;
-      case EventEffect.ADDPOP: this.earthCivi.population = Math.max(0, this.earthCivi.population + 20); break;
-      case EventEffect.REDUCE_TREACHERY: this.earthCivi.treachery = Math.max(0, this.earthCivi.treachery - 15); break;
-      case EventEffect.WAR:
-        const sanTi = this.alienCiviManager.aliens.get("三体");
-        if (sanTi && !sanTi.isDieOut()) {
-          sanTi.friendshipType = FriendshipType.VERYANGRY;
-          this.addHistory("【战争】与三体文明进入战争状态！");
-        }
-        break;
-      case EventEffect.MOON_CRISIS:
-        if (this.earthCivi.resource >= 500) {
-          this.earthCivi.resource -= 500;
-          this.addHistory("月球坠落危机被成功化解！消耗了500资源。");
-        } else {
-          this.earthCivi.population = Math.floor(this.earthCivi.population / 2);
-          this.addHistory("月球坠入地球，人口减半！");
-        }
-        break;
-      case EventEffect.WANDERING_EARTH:
-        if (this.earthCivi.tecTreeManager.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型")) {
-          this.addHistory("流浪地球计划启动！");
-        } else {
-          this.addHistory("缺少行星发动机技术，无法启动流浪地球计划！");
-        }
-        break;
-    }
-    this.currentEvent = null;
-    if (isInteractive) {
-      window.dispatchEvent(new CustomEvent('game-event-triggered'));
-      this.processNextEvent();
-      if (this.eventQueue.length === 0 && !this.currentEvent) {
-        this.year++;
-        this.updateEpoch();
-        this.checkVictoryConditions();
-        this.addHistory(`回合推进完成：${this.year - 1} -> ${this.year} (存活异星文明: ${this.alienCiviManager.aliens.size}, 待处理事件: ${this.eventQueue.length})`);
-        window.dispatchEvent(new CustomEvent('game-turn-complete'));
-      }
-    }
-  }
-
-  /** 效果别名字典：将非规范别名映射为 Civilization 规范属性名 */
-  private static readonly EFFECT_TARGET_ALIAS: Record<string, string> = {
-    'prestige': 'deterrenceValue',
-    'military': 'army',
-  };
-
-  private clampEffectValue(target: string, rawValue: number): number {
-    const e = this.earthCivi;
-    if (!e) return rawValue;
-
-    // 规范化别名
-    const canonical = Game.EFFECT_TARGET_ALIAS[target] || target;
-
-    if (canonical === 'population') {
-      const maxAbsChange = Math.max(10, e.population * 0.3);
-      const absVal = Math.min(maxAbsChange, Math.abs(rawValue));
-      return rawValue >= 0 ? absVal : -absVal;
-    }
-
-    if (['economy', 'culture', 'deterrenceValue', 'resource', 'army'].includes(canonical)) {
-      let current = 0;
-      if (canonical === 'deterrenceValue') current = e.deterrenceValue || 0;
-      else if (canonical === 'army') current = e.army || 0;
-      else current = (e as any)[canonical] || 0;
-
-      const maxAbsChange = Math.max(50, current * 0.5);
-      const absVal = Math.min(maxAbsChange, Math.abs(rawValue));
-      return rawValue >= 0 ? absVal : -absVal;
-    }
-    return rawValue;
+    this.eventSystem.applyEventEffect(effect, isInteractive);
   }
 
   public applyNewEffects(effects: any[]): void {
-    if (!effects) return;
-    effects.forEach(eff => {
-      if (eff.type === 'resource') {
-        // 规范化别名后再处理
-        const canonicalTarget = Game.EFFECT_TARGET_ALIAS[eff.target] || eff.target;
-        const val = this.clampEffectValue(canonicalTarget, Number(eff.value));
-        if (val < 0) {
-          switch (canonicalTarget) {
-            case 'army': this.earthCivi.army -= Math.min(this.earthCivi.army * 0.5, Math.abs(val)); break;
-            case 'economy': this.earthCivi.economy -= Math.min(this.earthCivi.economy * 0.5, Math.abs(val)); break;
-            case 'population': this.earthCivi.population -= Math.min(this.earthCivi.population * 0.5, Math.abs(val)); break;
-            case 'culture': this.earthCivi.culture -= Math.min(this.earthCivi.culture * 0.5, Math.abs(val)); break;
-            case 'deterrenceValue': this.earthCivi.deterrenceValue -= Math.min(this.earthCivi.deterrenceValue * 0.5, Math.abs(val)); break;
-            case 'treachery': this.earthCivi.treachery = Math.max(0, this.earthCivi.treachery - Math.abs(val)); break;
-            case 'resource': this.earthCivi.resource -= Math.min(this.earthCivi.resource * 0.5, Math.abs(val)); break;
-          }
-        } else {
-          switch (canonicalTarget) {
-            case 'army': this.earthCivi.army += val; break;
-            case 'economy': this.earthCivi.economy += val; break;
-            case 'population': this.earthCivi.population += val; break;
-            case 'culture': this.earthCivi.culture += val; break;
-            case 'deterrenceValue': this.earthCivi.deterrenceValue += val; break;
-            case 'treachery': this.earthCivi.treachery = Math.min(100, this.earthCivi.treachery + val); break;
-            case 'resource': this.earthCivi.resource += val; break;
-          }
-        }
-      } else if (eff.type === 'flag') {
-        this.addFlag(eff.target);
-        this.addHistory(`[因果标记] 已激活: ${eff.target}`);
-      } else if (eff.type === 'unlock_person') {
-        this.personManager.unlockPerson(eff.target);
-        this.addHistory(`【人员加入】${eff.target} 加入了您的阵营！`);
-        this.playerTimeline.push({ year: this.year, event: `重要历史人物 ${eff.target} 正式登场` });
-        
-        const introData: Record<string, { role: string; content: string }> = {
-          "伊文斯": { role: "降临派领袖", content: "建造审判日号，与三体文明建立深海直接联系。" },
-          "林云": { role: "天才武器科学家", content: "对球状闪电和宏原子武器具有执着的研究。" },
-          "罗辑": { role: "第四位面壁者", content: "人类唯一的破壁人，宇宙黑暗森林法则的悟道者。" },
-          "泰勒": { role: "第一位面壁者", content: "筹备量子化舰队，试图以死去的幽灵抵抗侵略。" },
-          "雷迪亚兹": { role: "第二位面壁者", content: "筹划水星核爆，拟用与太阳系同归于尽的方式实施威慑。" },
-          "希恩斯": { role: "第三位面壁者", content: "脑科学家，暗中打下思想钢印，开启逃亡计划。" },
-          "章北海": { role: "太空军政委", content: "增援未来实施者，谋划百年逃亡，自然选择号逆天启航。" },
-          "庄颜": { role: "画中人", content: "罗辑的挚爱，面壁计划中最温柔的人性火种与背景图景。" },
-          "程心": { role: "第二代执剑人", content: "爱的圣母，在冷酷宇宙博弈中让地球错失两次生存良机。" },
-          "维德": { role: "PIA首任局长", content: "终身践行“前进！前进！不择手段地前进”的冷酷钢铁人物。" },
-          "艾AA": { role: "星空企业家", content: "活泼聪颖的商业天才，在世界末日中维系人类生的希望。" },
-          "云天明": { role: "大脑流浪者", content: "被三体捕获重构，以三个童话故事破译并传递最后的宇宙生路。" },
-          "智子": { role: "三体文明代言人", content: "优雅日本女性形态，美丽之下操控超维计算，宣判人类流放。" },
-          "关一帆": { role: "星舰探索员", content: "深空探索先驱，于宇宙二维化的宏大边缘守望最后的余晖。" }
-        };
-        const intro = introData[eff.target];
-        const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-        const epName = epochNames[this.epoch] || "未知纪元";
-        if (intro) {
-          this.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.year} 年 - 【重要人物正式入列】${eff.target} (${intro.role})。“${intro.content}”`);
-        } else {
-          this.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.year} 年 - 【人员加入】重要人物 ${eff.target} 正式加入统帅部。`);
-        }
-        
-        // Auto-assign wallfacers to the Wallfacer Project when they are unlocked
-        if (["罗辑", "泰勒", "雷迪亚兹", "希恩斯"].includes(eff.target)) {
-          this.earthCivi.wallfacers.add(eff.target);
-          this.addHistory(`【系统提醒】面壁者 ${eff.target} 已自动列入宇宙社会学-面壁计划执行名单。`);
-        }
-        
-        window.dispatchEvent(new CustomEvent('ticker-message-added'));
-      } else if (eff.type === 'event_effect') {
-        this.applyEventEffect(eff.value as EventEffect, false);
-      } else if (eff.type === 'diplomacy') {
-        const alien = this.alienCiviManager.aliens.get(eff.target);
-        if (alien) {
-          const newFt = Math.min(FriendshipType.VERYFRIEND, Math.max(FriendshipType.VERYANGRY, alien.friendshipType + eff.value));
-          alien.friendshipType = newFt;
-          if (newFt >= FriendshipType.VERYFRIEND) {
-            alien.isBund = true;
-            this.addHistory(`【外交】与${eff.target}结成同盟！`);
-          }
-        }
-      }
-    });
+    this.eventSystem.applyNewEffects(effects);
   }
 
   public conductDiplomacy(alienName: string, actionType: string): string {
@@ -1191,8 +1056,7 @@ export class Game {
     if (!alien || alien.isDieOut()) return `无法与已灭亡的文明 ${alienName} 进行外交。`;
     if (alien.diplomacyCooldown > 0) return `外交冷却中，还需等待 ${alien.diplomacyCooldown} 回合。`;
 
-    const game = this;
-    const e = game.earthCivi;
+    const e = this.earthCivi;
 
     alien.diplomacyCooldown = 3;
 
@@ -1345,21 +1209,7 @@ export class Game {
   }
 
   public updateCiviLevel(oldCulture: number): void {
-    const c = this.earthCivi.culture;
-    this.earthCivi.civiLevel =
-      c >= 1000 ? 4 :
-      c >= 500 ? 3 :
-      c >= 200 ? 2 :
-      c >= 70 ? 1 : 0;
-
-    if (this.earthCivi.civiLevel > 0 && oldCulture < this.getLevelThreshold(this.earthCivi.civiLevel)) {
-      this.addHistory(`【文明升级】人类文明达到「${this.earthCivi.getCiviLevelLabel()}」等级！军队战斗力获得强化。`);
-      this.earthCivi.army += 20;
-    }
-  }
-
-  private getLevelThreshold(level: number): number {
-    return [0, 70, 200, 500, 1000][level] || 0;
+    this.economySystem.updateCiviLevel(oldCulture);
   }
 
   public getEndingForecast(): Array<{ name: string; progress: number; isThreat: boolean }> {
@@ -1429,6 +1279,9 @@ export class Game {
 // 全局单例管理器
 export class GameInstance {
   private static instance: Game | null = null;
+
+  /** 供测试使用的序列化 replacer，自动排除循环引用与 transient 字段 */
+  public static replacer = gameReplacer;
 
   public static get(): Game {
     if (!this.instance) {

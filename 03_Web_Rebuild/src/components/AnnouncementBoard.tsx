@@ -53,7 +53,8 @@ export const AnnouncementBoard: React.FC = () => {
 
   const getCleanText = (text: string) => {
     // Remove the emojis since we render a beautiful icon
-    return text.replace(/[👥📢🚀⚠️]/g, '').trim();
+    const icons = ['👥', '📢', '🚀', '⚠️'];
+    return icons.reduce((t, icon) => t.split(icon).join(''), text).trim();
   };
 
   return (

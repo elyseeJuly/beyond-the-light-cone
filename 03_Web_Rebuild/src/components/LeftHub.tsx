@@ -9,12 +9,14 @@ interface NavItemProps {
   label: string;
   active?: boolean;
   onClick?: () => void;
+  tutorialId?: string;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => (
+const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick, tutorialId }) => (
   <div 
     className={`nav-item ${active ? 'active' : ''}`}
     onClick={onClick}
+    data-tutorial-id={tutorialId}
   >
     {icon}
     <span className="text-sm tracking-wide font-medium">{label}</span>
@@ -85,6 +87,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="战略星图" 
           active={activeView === 'starmap'} 
           onClick={() => setActiveView('starmap')}
+          tutorialId="nav-starmap"
         />
         
         <NavItem 
@@ -92,6 +95,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="情报中心" 
           active={activeView === 'intelligence'} 
           onClick={() => setActiveView('intelligence')}
+          tutorialId="nav-intelligence"
         />
         
         <NavItem 
@@ -99,6 +103,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="科技研发" 
           active={activeView === 'techtree'} 
           onClick={() => setActiveView('techtree')}
+          tutorialId="nav-techtree"
         />
         
         <NavItem 
@@ -106,6 +111,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="政府管理" 
           active={activeView === 'government'} 
           onClick={() => setActiveView('government')}
+          tutorialId="nav-government"
         />
         
         <NavItem 
@@ -113,6 +119,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           label="文明档案" 
           active={activeView === 'archive'} 
           onClick={() => setActiveView('archive')}
+          tutorialId="nav-archive"
         />
 
         <div className="h-px bg-white/5 my-2 mx-4" />

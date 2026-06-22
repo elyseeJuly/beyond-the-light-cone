@@ -1,4 +1,4 @@
-import { VictoryType, DefeatType } from "../types/enums";
+import { VictoryType, DefeatType, NeutralType } from "../types/enums";
 
 export interface GameStatistics {
   playTimeSeconds: number;
@@ -89,10 +89,20 @@ export class StatisticsManager {
     }
   }
 
-  public static recordEnding(victoryType: VictoryType | null, defeatType: DefeatType | null): void {
+  public static recordEnding(
+    victoryType: VictoryType | null,
+    defeatType: DefeatType | null,
+    neutralType: NeutralType | null = null
+  ): void {
     if (!this.stats) this.loadStats();
     
-    const key = victoryType !== null ? `victory_${victoryType}` : (defeatType !== null ? `defeat_${defeatType}` : 'unknown');
+    const key = victoryType !== null 
+      ? `victory_${victoryType}` 
+      : (defeatType !== null 
+        ? `defeat_${defeatType}` 
+        : (neutralType !== null 
+          ? `neutral_${neutralType}` 
+          : 'unknown'));
     this.stats!.endings[key] = (this.stats!.endings[key] || 0) + 1;
     this.saveStats();
     this.uploadStats(); // Trigger upload on major milestones

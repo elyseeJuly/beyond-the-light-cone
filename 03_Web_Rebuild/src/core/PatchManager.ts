@@ -109,7 +109,7 @@ export class PatchManager {
       return versionInRange && p.type !== 'system'; // system patches handled separately
     });
 
-    let result = { ...baseData };
+    const result = { ...baseData };
 
     for (const patch of relevantPatches) {
       for (const change of patch.changes) {

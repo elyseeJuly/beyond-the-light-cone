@@ -19,11 +19,20 @@ export const GovManagement: React.FC = () => {
 
   useEffect(() => {
     const handleRefresh = () => forceUpdate(n => n + 1);
+    const handleSetGovTab = (e: Event) => {
+      const customEvent = e as CustomEvent<GovTab>;
+      if (customEvent.detail) {
+        setActiveTab(customEvent.detail);
+      }
+    };
+
     window.addEventListener('game-turn-complete', handleRefresh);
     window.addEventListener('game-loaded', handleRefresh);
+    window.addEventListener('tutorial:set-gov-tab', handleSetGovTab);
     return () => {
       window.removeEventListener('game-turn-complete', handleRefresh);
       window.removeEventListener('game-loaded', handleRefresh);
+      window.removeEventListener('tutorial:set-gov-tab', handleSetGovTab);
     };
   }, []);
 
@@ -53,9 +62,10 @@ export const GovManagement: React.FC = () => {
       {/* Government Panels */}
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Side Cabinets */}
-        <div className="w-48 flex flex-col gap-1.5 shrink-0">
+        <div data-tutorial-id="gov-cabinets-sidebar" className="w-48 flex flex-col gap-1.5 shrink-0">
           <button
             onClick={() => setActiveTab('finance')}
+            data-tutorial-id="gov-tab-finance"
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('finance')}`}
           >
             <DollarSign size={14} /> 财政部
@@ -63,6 +73,7 @@ export const GovManagement: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('military')}
+            data-tutorial-id="gov-tab-military"
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('military')}`}
           >
             <Shield size={14} /> 军事部
@@ -70,6 +81,7 @@ export const GovManagement: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('tech')}
+            data-tutorial-id="gov-tab-tech"
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('tech')}`}
           >
             <Cpu size={14} /> 科技部
@@ -77,6 +89,7 @@ export const GovManagement: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('social')}
+            data-tutorial-id="gov-tab-social"
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('social')}`}
           >
             <Heart size={14} /> 社会部
@@ -84,6 +97,7 @@ export const GovManagement: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('security')}
+            data-tutorial-id="gov-tab-security"
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('security')}`}
           >
             <AlertOctagon size={14} /> 安全部
@@ -91,6 +105,7 @@ export const GovManagement: React.FC = () => {
           
           <button
             onClick={() => setActiveTab('diplomacy')}
+            data-tutorial-id="gov-tab-diplomacy"
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('diplomacy')}`}
           >
             <Globe size={14} /> 外交委员会
@@ -125,6 +140,7 @@ export const GovManagement: React.FC = () => {
               
               <button 
                 onClick={() => openLegacyDept(DepartmentType.ECONOMY, "经济部")}
+                data-tutorial-id="btn-gov-finance-dept"
                 className="w-full py-2.5 rounded border border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] text-[var(--color-primary)] text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
                 进入中央计划局 (分配与扩产)
@@ -156,6 +172,7 @@ export const GovManagement: React.FC = () => {
               
               <button 
                 onClick={() => openLegacyDept(DepartmentType.ARMY, "军事部")}
+                data-tutorial-id="btn-gov-military-dept"
                 className="w-full py-2.5 rounded border border-orange-500 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
                 进入联合作战值班室
@@ -177,6 +194,7 @@ export const GovManagement: React.FC = () => {
               
               <button 
                 onClick={() => openLegacyDept(DepartmentType.ASTROPHYSICS, "前沿研究所")}
+                data-tutorial-id="btn-gov-tech-dept"
                 className="w-full py-2.5 rounded border border-blue-500 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
                 对接前沿高能物理研究所
@@ -208,6 +226,7 @@ export const GovManagement: React.FC = () => {
               
               <button 
                 onClick={() => openLegacyDept(DepartmentType.CULTURE, "文化部")}
+                data-tutorial-id="btn-gov-social-dept"
                 className="w-full py-2.5 rounded border border-purple-500 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
                 查阅社会心理与舆论监控制度
@@ -243,6 +262,7 @@ export const GovManagement: React.FC = () => {
               
               <button 
                 onClick={() => wallfacerPanel.open()}
+                data-tutorial-id="btn-open-wallfacer-hearings"
                 className="w-full py-2.5 rounded border border-red-500 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
                 召开面壁计划战略听证会

@@ -64,7 +64,14 @@ Documents defining features, architectures, and design directives.
 *   [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) — *Comprehensive architecture refactoring specification blueprints*
 *   [SPEC_20260615_EPOCH_CHRONICLES_OST.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260615_EPOCH_CHRONICLES_OST.md) — *Beyond the Light Cone: Epoch Chronicles OST specifications planning book*
 *   [SPEC_20260616_OST_LYRICS_MANIFEST.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260616_OST_LYRICS_MANIFEST.md) — *OST Vocal Lyrics & AI Music Scripts Manifest*
+*   [SPEC_20260616_TIMELINE_CG_PROMPTS_SPEC.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260616_TIMELINE_CG_PROMPTS_SPEC.md) — *Timeline CG prompts and resource specifications*
+*   [SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md) — *Ending trigger paths redesign specifications*
+*   [SPEC_20260621_EVENT_TAG_SYSTEM_REDESIGN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_EVENT_TAG_SYSTEM_REDESIGN.md) — *Event tag system redesign specifications*
+*   [SPEC_20260621_NEW_ENDINGS_MUSIC.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_NEW_ENDINGS_MUSIC.md) — *New neutral endings music specifications*
 *   [SPEC_20260621_PWA_UPGRADE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_PWA_UPGRADE.md) — *PWA upgrade design and PWA compliance specifications*
+*   [SPEC_20260621_RESOURCE_LAYERING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_RESOURCE_LAYERING.md) — *Resource layering and packaging specifications*
+*   [SPEC_20260621_RESPONSIVE_LAYOUT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_RESPONSIVE_LAYOUT.md) — *Responsive layout and UI design specifications*
+*   [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) — *Master Art Generation Prompts Guide V2.0 (Consolidated 43 event CGs & 17 endings)*
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.
@@ -85,6 +92,9 @@ Diagnostic reviews and balance reports.
 *   [AUDIT_20260605_CG_LOSS_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260605_CG_LOSS_ANALYSIS.md) — *CG graphic loss and name mismatch core root cause analysis report*
 *   [AUDIT_20260605_REVISED_ITERATION_STATUS.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260605_REVISED_ITERATION_STATUS.md) — *Implementation progress audit of the new iteration plan*
 *   [AUDIT_20260608_EVENT_TIMELINE_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260608_EVENT_TIMELINE_AUDIT.md) — *Narrative pacing, event structure, dynamic triggers, and character lifetimes audit*
+*   [AUDIT_20260621_COMPREHENSIVE_NARRATIVE_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_COMPREHENSIVE_NARRATIVE_AUDIT.md) — *Comprehensive narrative pacing and balance audit*
+*   [AUDIT_20260621_TERMINOLOGY_MISMATCH_REPORT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_TERMINOLOGY_MISMATCH_REPORT.md) — *Terminology mismatch analysis report*
+*   [AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md) — *Causal game progress loop analysis of the 43 CG events*
 
 ### 4.3 Testing Standards & Coverage (`TEST_`)
 Standards and definitions of tests.

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { TopHUD } from './components/TopHUD';
 import { LeftHub, ActiveViewType } from './components/LeftHub';
 import { RightInspector } from './components/RightInspector';
@@ -10,23 +10,29 @@ import { BottomEventBar } from './components/BottomEventBar';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { TecTreeView } from './ui/TecTreeView';
 import { TecTreeType } from './types/enums';
-import { StoryModal } from './components/StoryModal';
-import { Tutorial } from './components/Tutorial';
 import { GameInstance } from './core/Game';
 import { GameEventPayload } from './types/narrative';
-import { EndGameScreen } from './components/EndGameScreen';
-import { FleetModal } from './components/FleetModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
-import { BattleScreen } from './components/BattleScreen';
 import { AtmosphereProvider } from './components/AtmosphereProvider';
-import { TechUnlockModal } from './components/TechUnlockModal';
-import { MuseumGallery } from './components/MuseumGallery';
 import { preloadCoreImages } from './utils/assetUrl';
-import { SettingsModal } from './components/SettingsModal';
 import { UpdatePrompt } from './components/UpdatePrompt';
-import { OrientationPrompt } from './components/OrientationPrompt';
 import { useBreakpoint } from './hooks/useBreakpoint';
 import { Toast } from './components/common/Toast';
+
+// 重型模态组件按路由/交互懒加载，降低首屏 index chunk 体积
+const StoryModal = lazy(() => import('./components/StoryModal').then(m => ({ default: m.StoryModal })));
+const Tutorial = lazy(() => import('./components/Tutorial').then(m => ({ default: m.Tutorial })));
+const EndGameScreen = lazy(() => import('./components/EndGameScreen').then(m => ({ default: m.EndGameScreen })));
+const FleetModal = lazy(() => import('./components/FleetModal').then(m => ({ default: m.FleetModal })));
+const BattleScreen = lazy(() => import('./components/BattleScreen').then(m => ({ default: m.BattleScreen })));
+const TechUnlockModal = lazy(() => import('./components/TechUnlockModal').then(m => ({ default: m.TechUnlockModal })));
+const MuseumGallery = lazy(() => import('./components/MuseumGallery').then(m => ({ default: m.MuseumGallery })));
+const SettingsModal = lazy(() => import('./components/SettingsModal').then(m => ({ default: m.SettingsModal })));
+const OrientationPrompt = lazy(() => import('./components/OrientationPrompt').then(m => ({ default: m.OrientationPrompt })));
+
+const LazyFallback: React.FC = () => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#070B14]/80" />
+);
 
 export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveViewType>('starmap');
@@ -70,6 +76,18 @@ export const App: React.FC = () => {
         setMobileDrawerOpen(true);
       }
     };
+    const handleTutorialSetTab = () => {
+      // On mobile, open the drawer when tutorial shifts to inspector tabs
+      if (isMobile) {
+        setMobileDrawerOpen(true);
+      }
+    };
+    const handleTutorialCloseDrawer = () => {
+      // On mobile, close the drawer when tutorial shifts away from inspector tabs
+      if (isMobile) {
+        setMobileDrawerOpen(false);
+      }
+    };
 
     window.addEventListener('open-tutorial', handleOpenTutorial);
     window.addEventListener('open-fleet-modal', handleOpenFleetModal);
@@ -79,6 +97,8 @@ export const App: React.FC = () => {
     window.addEventListener('game:tech:completed', handleTechCompleted);
     window.addEventListener('change-active-view', handleActiveViewChanged);
     window.addEventListener('star-selected', handleStarSelected);
+    window.addEventListener('tutorial:set-tab', handleTutorialSetTab);
+    window.addEventListener('tutorial:close-drawer', handleTutorialCloseDrawer);
 
     return () => {
       window.removeEventListener('open-tutorial', handleOpenTutorial);
@@ -89,6 +109,8 @@ export const App: React.FC = () => {
       window.removeEventListener('game:tech:completed', handleTechCompleted);
       window.removeEventListener('change-active-view', handleActiveViewChanged);
       window.removeEventListener('star-selected', handleStarSelected);
+      window.removeEventListener('tutorial:set-tab', handleTutorialSetTab);
+      window.removeEventListener('tutorial:close-drawer', handleTutorialCloseDrawer);
     };
   }, [isMobile]);
 
@@ -145,7 +167,7 @@ export const App: React.FC = () => {
       try {
         const game = GameInstance.get();
         setCurrentEpoch(game.epoch);
-      } catch {}
+      } catch { /* ignore */ }
     };
 
     updateEpoch();
@@ -319,24 +341,25 @@ export const App: React.FC = () => {
         <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
 
           {/* Story Modal - Rendered globally */}
-          {currentEvent && (
-            <StoryModal
-              event={currentEvent}
-              onClose={() => {
-                GameInstance.get().currentEvent = null;
-                GameInstance.get().processNextEvent();
-                window.dispatchEvent(new CustomEvent('game-turn-complete'));
-              }}
-            />
-          )}
-
-          {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
-          {unlockedTech && <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />}
-          {showFleetModal && <FleetModal onClose={() => setShowFleetModal(false)} />}
-          {showBattleScreen && <BattleScreen onClose={() => setShowBattleScreen(false)} />}
-          {isGameOver && <EndGameScreen />}
-          {showMuseum && <MuseumGallery onClose={() => setShowMuseum(false)} />}
-          {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+          <Suspense fallback={<LazyFallback />}>
+            {currentEvent && (
+              <StoryModal
+                event={currentEvent}
+                onClose={() => {
+                  GameInstance.get().currentEvent = null;
+                  GameInstance.get().processNextEvent();
+                  window.dispatchEvent(new CustomEvent('game-turn-complete'));
+                }}
+              />
+            )}
+            {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
+            {unlockedTech && <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />}
+            {showFleetModal && <FleetModal onClose={() => setShowFleetModal(false)} />}
+            {showBattleScreen && <BattleScreen onClose={() => setShowBattleScreen(false)} />}
+            {isGameOver && <EndGameScreen />}
+            {showMuseum && <MuseumGallery onClose={() => setShowMuseum(false)} />}
+            {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+          </Suspense>
 
           {/* PWA Components */}
           <UpdatePrompt />
@@ -368,7 +391,7 @@ export const App: React.FC = () => {
                   <div className="drawer-overlay" onClick={() => setMobileDrawerOpen(false)} />
                 )}
                 <div className={`${mobileDrawerOpen ? 'drawer-panel' : 'hidden'}`}>
-                  <div className="flex justify-end p-3">
+                  <div className="flex justify-end p-3 shrink-0">
                     <button
                       onClick={() => setMobileDrawerOpen(false)}
                       className="text-[var(--text-secondary)] hover:text-white text-sm px-3 py-1 rounded hover:bg-white/5 transition-colors cursor-pointer"
@@ -376,7 +399,9 @@ export const App: React.FC = () => {
                       ✕ 关闭
                     </button>
                   </div>
-                  <RightInspector />
+                  <div className="flex-1 min-h-0">
+                    <RightInspector />
+                  </div>
                 </div>
               </>
             )}

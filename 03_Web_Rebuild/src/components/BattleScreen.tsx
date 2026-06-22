@@ -80,7 +80,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
             osc.start();
             osc.stop(audioCtx.currentTime + 0.15);
           }
-        } catch (err) {
+        } catch {
           // Fallback if audio context is blocked
         }
       }

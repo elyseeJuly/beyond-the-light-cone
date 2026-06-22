@@ -20,14 +20,22 @@ export const RightInspector: React.FC = () => {
     };
     const handleTurnComplete = () => forceUpdate(n => n + 1);
     const handleLangChange = () => forceUpdate(n => n + 1);
+    const handleSetTab = (e: Event) => {
+      const customEvent = e as CustomEvent<TabType>;
+      if (customEvent.detail) {
+        setActiveTab(customEvent.detail);
+      }
+    };
 
     window.addEventListener('star-selected', handleStarSelect);
     window.addEventListener('game-turn-complete', handleTurnComplete);
     window.addEventListener('game-language-changed', handleLangChange);
+    window.addEventListener('tutorial:set-tab', handleSetTab);
     return () => {
       window.removeEventListener('star-selected', handleStarSelect);
       window.removeEventListener('game-turn-complete', handleTurnComplete);
       window.removeEventListener('game-language-changed', handleLangChange);
+      window.removeEventListener('tutorial:set-tab', handleSetTab);
     };
   }, []);
 
@@ -122,6 +130,7 @@ export const RightInspector: React.FC = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
+            data-tutorial-id={`inspector-tab-${tab}`}
             className={`flex-1 text-center py-2 text-[11px] font-title font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === tab 
                 ? 'border-[var(--color-primary)] text-white' 
@@ -269,7 +278,7 @@ export const RightInspector: React.FC = () => {
               轨道基础设施计划
             </div>
             
-            <button onClick={handleBuildStope} className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
+            <button onClick={handleBuildStope} data-tutorial-id="btn-build-stope" className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-3">
                   <Pickaxe className={star.hasStope ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={16} />
@@ -290,7 +299,7 @@ export const RightInspector: React.FC = () => {
               )}
             </button>
 
-            <button onClick={handleBuildFactory} className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
+            <button onClick={handleBuildFactory} data-tutorial-id="btn-build-factory" className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-3">
                   <Factory className={star.hasFactory ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={16} />
@@ -311,7 +320,7 @@ export const RightInspector: React.FC = () => {
               )}
             </button>
 
-            <button onClick={handleBuildCity} className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
+            <button onClick={handleBuildCity} data-tutorial-id="btn-build-city" className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-3">
                   <Building className={star.hasCity ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={16} />

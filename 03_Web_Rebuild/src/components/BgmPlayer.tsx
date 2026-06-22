@@ -13,7 +13,7 @@ import { GAMEPLAY_BGM_PATH, ERA_BGM_PATHS } from '../config/endingConfig';
 import { getAssetUrl } from '../utils/assetUrl';
 
 const SONG_NAME_MAP: Record<string, string> = {
-  '/audio/years_base.mp3': '岁月底座',
+  '/audio/era_years_base.mp3': '岁月底座',
   '/audio/era_crisis.mp3': '危机之潮',
   '/audio/era_deterrence.mp3': '执剑低吟',
   '/audio/era_broadcast.mp3': '广播回响',
@@ -201,7 +201,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
             osc.stop(audioCtx.currentTime + i * 0.08 + 0.5);
           });
         }
-      } catch (err) {
+      } catch {
         // Fallback
       }
     };

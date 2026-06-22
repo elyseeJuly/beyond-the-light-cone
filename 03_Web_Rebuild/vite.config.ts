@@ -150,6 +150,55 @@ export default defineConfig({
     })
   ],
   base: basePath,
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        // 代码分割策略：将大型依赖与游戏核心拆分为独立 chunk，降低首屏 index chunk 体积
+        manualChunks(id: string) {
+          // React 生态 vendor
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) {
+            return 'vendor-react';
+          }
+          // 动画库
+          if (/node_modules\/(framer-motion|@emotion)\//.test(id)) {
+            return 'vendor-motion';
+          }
+          // 图标库
+          if (/node_modules\/lucide-react\//.test(id)) {
+            return 'vendor-icons';
+          }
+          // 游戏核心引擎（独立于 UI 的 heavy logic）
+          if (id.includes('/src/core/') && !id.includes('/src/core/subsystems/')) {
+            return 'game-core';
+          }
+          // 子系统层
+          if (id.includes('/src/core/subsystems/')) {
+            return 'game-subsystems';
+          }
+          // 重型 UI 模态组件（与 React.lazy 配合使用）
+          if (
+            id.includes('/src/components/MuseumGallery') ||
+            id.includes('/src/components/EndingCollectionGrid') ||
+            id.includes('/src/components/StoryModal') ||
+            id.includes('/src/components/EndGameScreen') ||
+            id.includes('/src/components/BattleScreen') ||
+            id.includes('/src/components/FleetModal') ||
+            id.includes('/src/components/SettingsModal') ||
+            id.includes('/src/components/Tutorial') ||
+            id.includes('/src/components/TechUnlockModal')
+          ) {
+            return 'ui-modals';
+          }
+          // 结局相关子组件
+          if (id.includes('/src/components/ending/')) {
+            return 'ui-endings';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 500,
+  },
   test: {
     globals: true,
     environment: 'jsdom',

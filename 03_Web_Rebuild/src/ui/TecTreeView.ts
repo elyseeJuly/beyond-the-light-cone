@@ -29,7 +29,7 @@ export class TecTreeView {
       const progress = node.finished ? 100 : (node.currentWorkload / node.totalWorkload) * 100;
 
       html += `
-        <div class="tech-node ${statusClass}" data-tech="${name}">
+        <div class="tech-node ${statusClass}" data-tech="${name}" data-tutorial-id="tech-node-${name}">
           <h4>${name}</h4>
           <p>前置: ${node.parentName || '无'}</p>
           <p>花费: ${node.cost} | 总量: ${node.totalWorkload}</p>

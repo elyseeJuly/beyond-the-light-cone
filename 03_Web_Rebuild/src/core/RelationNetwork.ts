@@ -59,7 +59,7 @@ export class RelationNetwork {
 
   /** 修改关系强度别名 */
   modifyRelation(personA: string, personB: string, delta: number): void {
-    let rel = this.getRelation(personA, personB);
+    const rel = this.getRelation(personA, personB);
     if (!rel) {
       const type: RelationType = delta > 0 ? 'ALLY' : 'RIVAL';
       this.establishRelation(personA, personB, type, 0, 'diplomacy', 50 + delta);

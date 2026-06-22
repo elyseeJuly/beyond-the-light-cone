@@ -40,14 +40,14 @@ export interface EndingConfig {
 }
 
 /** 正常游戏背景音乐："岁月底座" */
-export const GAMEPLAY_BGM_PATH = '/audio/years_base.mp3';
+export const GAMEPLAY_BGM_PATH = '/audio/era_years_base.mp3';
 
 /** 大结局主题曲："Stardust Exodus" */
-export const FINALE_THEME_PATH = '/audio/stardust Exodus.mp3';
+export const FINALE_THEME_PATH = '/audio/ending_stardust_exodus.mp3';
 
 /** 纪元动态 BGM 预留音乐位 */
 export const ERA_BGM_PATHS = {
-  GOLDEN: '/audio/years_base.mp3',           // 黄金岁月
+  GOLDEN: '/audio/era_years_base.mp3',           // 黄金岁月
   CRISIS: '/audio/era_crisis.mp3',           // 危机纪元
   DETERRENCE: '/audio/era_deterrence.mp3',   // 威慑纪元
   BROADCAST: '/audio/era_broadcast.mp3',     // 广播纪元
@@ -60,11 +60,11 @@ export const ERA_BGM_PATHS = {
 export const ENDING_BGM_PATHS = {
   CONQUEST: '/audio/ending_conquest.mp3',               // 征服胜利
   DETERRENCE: '/audio/ending_deterrence.mp3',           // 威慑胜利
-  DARK_DOMAIN: '/audio/death_of_the_light_cone.mp3',   // 黑域结局：《Death of the Light Cone》
+  DARK_DOMAIN: '/audio/ending_death_of_the_light_cone.mp3',   // 黑域结局：《Death of the Light Cone》
   WANDERING: '/audio/ending_wandering.mp3',             // 流浪胜利
-  DIGITAL: '/audio/ghost_in_the_quantum.mp3',          // 数字永生：《Ghost in the Quantum》
-  HIDDEN: '/audio/the_last_archive.mp3',               // 隐藏结局：《The Last Archive》
-  CREDITS_PLATINUM: '/audio/fate_beyond_the_light_cone.mp3', // Fate Beyond the Light Cone：《A Past Within the Light Cone》
+  DIGITAL: '/audio/ending_ghost_in_the_quantum.mp3',          // 数字永生：《Ghost in the Quantum》
+  HIDDEN: '/audio/ending_the_last_archive.mp3',               // 隐藏结局：《The Last Archive》
+  CREDITS_PLATINUM: '/audio/ending_fate_beyond_the_light_cone.mp3', // Fate Beyond the Light Cone：《A Past Within the Light Cone》
   DEFEAT_TREACHERY: '/audio/ending_defeat_treachery.mp3',
   DEFEAT_EXTINCTION: '/audio/ending_defeat_extinction.mp3',
   DEFEAT_HELIUM_FLASH: '/audio/ending_defeat_helium_flash.mp3',

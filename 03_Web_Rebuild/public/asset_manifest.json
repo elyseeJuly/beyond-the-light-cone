@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "gameVersion": "1.0.0",
-  "generatedAt": 1782039971779,
+  "generatedAt": 1782097653488,
   "core": [
     {
       "id": "character_default",
@@ -27,8 +27,8 @@
         "isDefault": false
       },
       {
-        "id": "death_of_the_light_cone",
-        "path": "audio/death_of_the_light_cone.mp3",
+        "id": "ending_death_of_the_light_cone",
+        "path": "audio/ending_death_of_the_light_cone.mp3",
         "type": "music",
         "tags": [
           "music",
@@ -36,7 +36,87 @@
         ],
         "size": 4343237,
         "displayName": "death_of_the_light_cone",
-        "hash": "6d8479df",
+        "hash": "28d17bf7",
+        "isDefault": false
+      },
+      {
+        "id": "ending_fate_beyond_the_light_cone",
+        "path": "audio/ending_fate_beyond_the_light_cone.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4284932,
+        "displayName": "fate_beyond_the_light_cone",
+        "hash": "23391e8d",
+        "isDefault": false
+      },
+      {
+        "id": "ending_ghost_in_the_quantum",
+        "path": "audio/ending_ghost_in_the_quantum.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 4328191,
+        "displayName": "ghost_in_the_quantum",
+        "hash": "1c826a39",
+        "isDefault": false
+      },
+      {
+        "id": "ending_neutral_cosmic_silence",
+        "path": "audio/ending_neutral_cosmic_silence.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4348254,
+        "displayName": "neutral_cosmic_silence",
+        "hash": "2f1a7da6",
+        "isDefault": false
+      },
+      {
+        "id": "ending_neutral_eternal_exile",
+        "path": "audio/ending_neutral_eternal_exile.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4062996,
+        "displayName": "neutral_eternal_exile",
+        "hash": "69b611bf",
+        "isDefault": false
+      },
+      {
+        "id": "ending_stardust_exodus",
+        "path": "audio/ending_stardust_exodus.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "stardust_era"
+        ],
+        "era": "stardust_era",
+        "size": 4277409,
+        "displayName": "stardust_exodus",
+        "hash": "1748872c",
+        "isDefault": false
+      },
+      {
+        "id": "ending_the_last_archive",
+        "path": "audio/ending_the_last_archive.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "unknown"
+        ],
+        "size": 4362672,
+        "displayName": "the_last_archive",
+        "hash": "5ec6955",
         "isDefault": false
       },
       {
@@ -124,70 +204,16 @@
         "isDefault": false
       },
       {
-        "id": "fate_beyond_the_light_cone",
-        "path": "audio/fate_beyond_the_light_cone.mp3",
-        "type": "music",
-        "tags": [
-          "music",
-          "unknown"
-        ],
-        "size": 4284932,
-        "displayName": "fate_beyond_the_light_cone",
-        "hash": "434d885b",
-        "isDefault": false
-      },
-      {
-        "id": "ghost_in_the_quantum",
-        "path": "audio/ghost_in_the_quantum.mp3",
-        "type": "music",
-        "tags": [
-          "music",
-          "crisis_era"
-        ],
-        "era": "crisis_era",
-        "size": 4328191,
-        "displayName": "ghost_in_the_quantum",
-        "hash": "4d5a0df",
-        "isDefault": false
-      },
-      {
-        "id": "stardust Exodus",
-        "path": "audio/stardust Exodus.mp3",
-        "type": "music",
-        "tags": [
-          "music",
-          "stardust_era"
-        ],
-        "era": "stardust_era",
-        "size": 4277409,
-        "displayName": "stardust Exodus",
-        "hash": "12878705",
-        "isDefault": false
-      },
-      {
-        "id": "the_last_archive",
-        "path": "audio/the_last_archive.mp3",
-        "type": "music",
-        "tags": [
-          "music",
-          "unknown"
-        ],
-        "size": 4362672,
-        "displayName": "the_last_archive",
-        "hash": "378a3f93",
-        "isDefault": false
-      },
-      {
-        "id": "years_base",
-        "path": "audio/years_base.mp3",
+        "id": "era_years_base",
+        "path": "audio/era_years_base.mp3",
         "type": "music",
         "tags": [
           "music",
           "unknown"
         ],
         "size": 4235404,
-        "displayName": "years_base",
-        "hash": "533d57bc",
+        "displayName": "era_years_base",
+        "hash": "449754ef",
         "isDefault": false
       },
       {
@@ -226,9 +252,9 @@
           "cg",
           "unknown"
         ],
-        "size": 891791,
+        "size": 79817,
         "displayName": "black_domain_debate",
-        "hash": "2ac525d5",
+        "hash": "175700d0",
         "isDefault": false
       },
       {
@@ -324,9 +350,9 @@
           "broadcast_era"
         ],
         "era": "broadcast_era",
-        "size": 712485,
+        "size": 62684,
         "displayName": "dimensional_warning",
-        "hash": "28ee82e7",
+        "hash": "51503498",
         "isDefault": false
       },
       {
@@ -394,9 +420,9 @@
           "broadcast_era"
         ],
         "era": "broadcast_era",
-        "size": 1020003,
+        "size": 96635,
         "displayName": "galaxy_exodus",
-        "hash": "7811753f",
+        "hash": "60e7de1a",
         "isDefault": false
       },
       {
@@ -477,9 +503,9 @@
           "cg",
           "unknown"
         ],
-        "size": 922451,
+        "size": 129978,
         "displayName": "lightspeed_ship",
-        "hash": "30a931df",
+        "hash": "3e4cb534",
         "isDefault": false
       },
       {
@@ -560,9 +586,9 @@
           "cg",
           "unknown"
         ],
-        "size": 1086629,
+        "size": 99068,
         "displayName": "sophon_blockade",
-        "hash": "2d7a4b7f",
+        "hash": "13aee891",
         "isDefault": false
       },
       {
@@ -601,9 +627,9 @@
           "cg",
           "unknown"
         ],
-        "size": 956075,
+        "size": 63749,
         "displayName": "teardrop_probe",
-        "hash": "602cd26c",
+        "hash": "2c395fe7",
         "isDefault": false
       },
       {
@@ -782,9 +808,9 @@
           "broadcast_era"
         ],
         "era": "broadcast_era",
-        "size": 1035648,
+        "size": 118429,
         "displayName": "zeroer_broadcast",
-        "hash": "14b96d4",
+        "hash": "528efe50",
         "isDefault": false
       },
       {
@@ -850,6 +876,20 @@
         "size": 6636474,
         "displayName": "defeat_dimension_strike",
         "hash": "50839a0c",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_eto_dominion",
+        "path": "images/ending_defeat_eto_dominion.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "crisis_era"
+        ],
+        "era": "crisis_era",
+        "size": 6398940,
+        "displayName": "defeat_eto_dominion",
+        "hash": "7b6c78b6",
         "isDefault": false
       },
       {
@@ -919,6 +959,33 @@
         "isDefault": false
       },
       {
+        "id": "ending_early_deterrence",
+        "path": "images/ending_early_deterrence.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "deterrence_era"
+        ],
+        "era": "deterrence_era",
+        "size": 691146,
+        "displayName": "early_deterrence",
+        "hash": "78986851",
+        "isDefault": false
+      },
+      {
+        "id": "ending_galactic_citizen",
+        "path": "images/ending_galactic_citizen.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 6528475,
+        "displayName": "galactic_citizen",
+        "hash": "294ae9a9",
+        "isDefault": false
+      },
+      {
         "id": "ending_hidden",
         "path": "images/ending_hidden.png",
         "type": "ending",
@@ -929,6 +996,58 @@
         "size": 4597295,
         "displayName": "hidden",
         "hash": "7cfd838e",
+        "isDefault": false
+      },
+      {
+        "id": "ending_lightspeed_exile",
+        "path": "images/ending_lightspeed_exile.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 8277664,
+        "displayName": "lightspeed_exile",
+        "hash": "332e946",
+        "isDefault": false
+      },
+      {
+        "id": "ending_neutral_cosmic_silence",
+        "path": "images/ending_neutral_cosmic_silence.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 814139,
+        "displayName": "neutral_cosmic_silence",
+        "hash": "7f74b6e9",
+        "isDefault": false
+      },
+      {
+        "id": "ending_neutral_eternal_exile",
+        "path": "images/ending_neutral_eternal_exile.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 738329,
+        "displayName": "neutral_eternal_exile",
+        "hash": "3afa2e2a",
+        "isDefault": false
+      },
+      {
+        "id": "ending_signal_silenced",
+        "path": "images/ending_signal_silenced.png",
+        "type": "ending",
+        "tags": [
+          "ending",
+          "unknown"
+        ],
+        "size": 686841,
+        "displayName": "signal_silenced",
+        "hash": "19dfd882",
         "isDefault": false
       },
       {
@@ -1592,10 +1711,10 @@
         "name": "crisis era Pack",
         "description": "crisis era 资源包",
         "type": "era_pack",
-        "totalSize": 39833328,
+        "totalSize": 46232268,
         "assetIds": [
+          "ending_ghost_in_the_quantum",
           "era_crisis",
-          "ghost_in_the_quantum",
           "cg_beihai_assassination",
           "cg_crisis_start",
           "cg_dark_battle",
@@ -1609,6 +1728,7 @@
           "cg_thought_seal",
           "cg_trisolaris_reply",
           "cg_yewenjie_signal",
+          "ending_defeat_eto_dominion",
           "unified_beihai_1778921366897",
           "unified_yewenjie_1778921299091"
         ],
@@ -1619,7 +1739,7 @@
         "name": "deterrence era Pack",
         "description": "deterrence era 资源包",
         "type": "era_pack",
-        "totalSize": 69005519,
+        "totalSize": 69696665,
         "assetIds": [
           "era_bunker",
           "era_deterrence",
@@ -1636,6 +1756,7 @@
           "cg_tyler_breached",
           "cg_wade_executed",
           "ending_deterrence",
+          "ending_early_deterrence",
           "unified_reydiaz_1779691732536",
           "unified_tyler_1779691745991"
         ],
@@ -1646,7 +1767,7 @@
         "name": "broadcast era Pack",
         "description": "broadcast era 资源包",
         "type": "era_pack",
-        "totalSize": 71362469,
+        "totalSize": 68872081,
         "assetIds": [
           "era_broadcast",
           "era_galaxy",
@@ -1669,13 +1790,15 @@
         "name": "uncategorized Pack",
         "description": "uncategorized 资源包",
         "type": "era_pack",
-        "totalSize": 128260454,
+        "totalSize": 150232818,
         "assetIds": [
           "README",
-          "death_of_the_light_cone",
-          "fate_beyond_the_light_cone",
-          "the_last_archive",
-          "years_base",
+          "ending_death_of_the_light_cone",
+          "ending_fate_beyond_the_light_cone",
+          "ending_neutral_cosmic_silence",
+          "ending_neutral_eternal_exile",
+          "ending_the_last_archive",
+          "era_years_base",
           "cg_black_domain_debate",
           "cg_lightspeed_ship",
           "cg_sophon_blockade",
@@ -1690,7 +1813,12 @@
           "ending_defeat_helium_flash",
           "ending_defeat_treachery",
           "ending_digital",
+          "ending_galactic_citizen",
           "ending_hidden",
+          "ending_lightspeed_exile",
+          "ending_neutral_cosmic_silence",
+          "ending_neutral_eternal_exile",
+          "ending_signal_silenced",
           "ending_wandering",
           "npc_ai_terminal",
           "npc_civilian",
@@ -1747,8 +1875,8 @@
         "type": "era_pack",
         "totalSize": 23803688,
         "assetIds": [
+          "ending_stardust_exodus",
           "era_stardust",
-          "stardust Exodus",
           "cg_stardust_era",
           "cg_wade_coup"
         ],
@@ -1759,7 +1887,7 @@
         "name": "cg Pack",
         "description": "全部cg资源",
         "type": "cg_pack",
-        "totalSize": 164699538,
+        "totalSize": 158724816,
         "assetIds": [
           "cg_australia_migration",
           "cg_beihai_assassination",
@@ -1812,21 +1940,23 @@
         "name": "music Pack",
         "description": "全部music资源",
         "type": "music_pack",
-        "totalSize": 49923368,
+        "totalSize": 58334618,
         "assetIds": [
           "README",
-          "death_of_the_light_cone",
+          "ending_death_of_the_light_cone",
+          "ending_fate_beyond_the_light_cone",
+          "ending_ghost_in_the_quantum",
+          "ending_neutral_cosmic_silence",
+          "ending_neutral_eternal_exile",
+          "ending_stardust_exodus",
+          "ending_the_last_archive",
           "era_broadcast",
           "era_bunker",
           "era_crisis",
           "era_deterrence",
           "era_galaxy",
           "era_stardust",
-          "fate_beyond_the_light_cone",
-          "ghost_in_the_quantum",
-          "stardust Exodus",
-          "the_last_archive",
-          "years_base"
+          "era_years_base"
         ],
         "priority": 10
       },

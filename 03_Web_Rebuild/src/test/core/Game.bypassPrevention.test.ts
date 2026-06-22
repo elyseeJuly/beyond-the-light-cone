@@ -25,7 +25,7 @@ describe('Game Bypass Prevention & Rollback Tests', () => {
 
   it('防绕过：sanitizeResources 不直接触发 game-over，但后续 checkVictoryConditions 能捕获灭绝', () => {
     game.earthCivi.population = 0;
-    // @ts-ignore
+    // @ts-expect-error accessing private method for test
     game.earthCivi.sanitizeResources(game);
     expect(game.isGameOver).toBe(false); // 不应直接为真
 
@@ -40,7 +40,7 @@ describe('Game Bypass Prevention & Rollback Tests', () => {
 
     if (alien) {
       alien.dimensionStrikeWarningTurns = 1;
-      // @ts-ignore
+      // @ts-expect-error accessing private method for test
       alien.processDimensionStrike(game);
 
       expect(game.isGameOver).toBe(false); // 不应直接为真

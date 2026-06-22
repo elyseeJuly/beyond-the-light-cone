@@ -1,6 +1,6 @@
 import React from 'react';
 import { SaveManager } from '../../core/SaveManager';
-import { ENDING_CONFIGS, EndingKey, NG_PLUS_BONUSES } from '../../config/endingConfig';
+import { ENDING_CONFIGS, EndingKey, NG_PLUS_BONUSES, resolveEndingKey } from '../../config/endingConfig';
 import { Lock, Award, Sparkles } from 'lucide-react';
 
 export const EndingCollectionGrid: React.FC = () => {
@@ -14,6 +14,8 @@ export const EndingCollectionGrid: React.FC = () => {
     'DETERRENCE',
     'CONQUEST',
     'DARK_DOMAIN',
+    'NEUTRAL_ETERNAL_EXILE',
+    'NEUTRAL_COSMIC_SILENCE',
     'DEFEAT_TREACHERY',
     'DEFEAT_EXTINCTION',
     'DEFEAT_HELIUM_FLASH',
@@ -56,11 +58,8 @@ export const EndingCollectionGrid: React.FC = () => {
         {allKeys.map(key => {
           const config = ENDING_CONFIGS[key];
           const isUnlocked = history.some(record => {
-            if (config.isVictory) {
-              return record.victoryType !== null && `unlocked_victory_${record.victoryType}` === `unlocked_victory_${config.key}`;
-            } else {
-              return record.defeatType !== null && `DEFEAT_${record.defeatType}` === config.key;
-            }
+            const recordKey = resolveEndingKey(record.victoryType, record.defeatType, record.neutralType ?? null);
+            return recordKey === config.key;
           });
 
           const bonusKey = `unlocked_victory_${config.key}`;

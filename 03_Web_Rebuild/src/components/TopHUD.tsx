@@ -135,7 +135,7 @@ export const TopHUD: React.FC = () => {
       {/* Left: Civilization Attributes */}
       <div className="flex items-center gap-0 sm:gap-1.5">
         {/* Stability with click dropdown */}
-        <div className="relative" ref={dropdownRef}>
+        <div data-tutorial-id="top-hud-stability" className="relative" ref={dropdownRef}>
           <TopHUDStatItem 
             icon={<Landmark className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />}
             label="稳定度"
@@ -207,7 +207,7 @@ export const TopHUD: React.FC = () => {
       </div>
 
       {/* Center: Prominent Era and Year Display */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center font-title text-center pointer-events-none">
+      <div data-tutorial-id="top-hud-epoch" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center font-title text-center pointer-events-none">
         <span className="text-[7px] sm:text-[9px] font-bold text-[var(--color-primary)] tracking-[0.2em] sm:tracking-[0.35em] uppercase opacity-90">
           {stats.epochNameEn}
         </span>
@@ -221,6 +221,7 @@ export const TopHUD: React.FC = () => {
         <button 
           onClick={handleNextTurn} 
           disabled={GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver}
+          data-tutorial-id="btn-next-turn"
           className={`btn-next-turn flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-1 sm:py-2 text-[10px] sm:text-xs ${(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver) ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}`}
         >
           <span className="font-title font-bold tracking-wider">

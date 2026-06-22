@@ -17,7 +17,7 @@ describe('AlienCivilization and Manager tests', () => {
 
   it('AI Behaviors under different personalities', () => {
     // Set up a mock RNG that returns specific values to trigger code paths
-    let rngVal = 0.01;
+    const rngVal = 0.01;
     const mockRng = {
       random: () => rngVal
     };
@@ -206,7 +206,7 @@ describe('AlienCivilization and Manager tests', () => {
 
   describe('AI Personality Edge Cases', () => {
     it('HUNTER: attack cooldown behavior and countdown', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const hunter = new AlienCivilization('猎手AI-Edge', 0, AiPersonality.HUNTER);
@@ -232,7 +232,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('HUNTER: does not attack when deterrence >= 90', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const hunter = new AlienCivilization('猎手AI-HighDet', 0, AiPersonality.HUNTER);
@@ -246,7 +246,7 @@ describe('AlienCivilization and Manager tests', () => {
 
     it('HUNTER: deterrence/broadcast epoch may block attack via epochDeterrenceChance', () => {
       // Use rng low enough to pass initial attack chance check (0.18) but caught by epoch check (0.3)
-      let rngVal = 0.15;
+      const rngVal = 0.15;
       const mockRng = { random: () => rngVal };
 
       const hunter = new AlienCivilization('猎手AI-Epoch', 0, AiPersonality.HUNTER);
@@ -267,7 +267,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('HUNTER: earth isDieOut prevents attack', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const hunter = new AlienCivilization('猎手AI-DieOut', 0, AiPersonality.HUNTER);
@@ -283,7 +283,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('CLEANER: standard attack flow', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const cleaner = new AlienCivilization('清理者AI-Edge', 0, AiPersonality.CLEANER);
@@ -299,7 +299,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('CLEANER: does not attack when deterrence >= 70', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const cleaner = new AlienCivilization('清理者AI-HighDet', 0, AiPersonality.CLEANER);
@@ -311,7 +311,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('CLEANER: earth isDieOut prevents attack', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const cleaner = new AlienCivilization('清理者AI-DieOut', 0, AiPersonality.CLEANER);
@@ -325,7 +325,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('EXPANSIONIST: expands to unowned star', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const expansionist = new AlienCivilization('扩张者AI-Edge', 0, AiPersonality.EXPANSIONIST);
@@ -345,7 +345,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('EXPANSIONIST: does not expand when no unowned stars', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const expansionist = new AlienCivilization('扩张者AI-NoStars', 0, AiPersonality.EXPANSIONIST);
@@ -364,7 +364,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('EXPANSIONIST: does not expand when deterrence >= 80', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const expansionist = new AlienCivilization('扩张者AI-HighDet', 0, AiPersonality.EXPANSIONIST);
@@ -384,7 +384,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('DEFENSIVE: builds army each turn', () => {
-      let rngVal = 0.5;
+      const rngVal = 0.5;
       const mockRng = { random: () => rngVal };
 
       const defensive = new AlienCivilization('防御者AI-Edge', 0, AiPersonality.DEFENSIVE);
@@ -396,7 +396,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('OPPORTUNIST: attacks when deterrence < 50', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const opportunist = new AlienCivilization('机会AI-Attack', 0, AiPersonality.OPPORTUNIST);
@@ -408,7 +408,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('OPPORTUNIST: does not attack when deterrence >= 50', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const opportunist = new AlienCivilization('机会AI-HighDet', 0, AiPersonality.OPPORTUNIST);
@@ -420,7 +420,7 @@ describe('AlienCivilization and Manager tests', () => {
     });
 
     it('OPPORTUNIST: as friend requests economic aid', () => {
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
 
       const opportunist = new AlienCivilization('机会AI-Friend', 0, AiPersonality.OPPORTUNIST);
@@ -836,7 +836,7 @@ describe('AlienCivilization and Manager tests', () => {
       alien.starIndices.clear();
       expect(alien.isDieOut()).toBe(true);
 
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
       alien.setRngProvider(mockRng);
 
@@ -893,7 +893,7 @@ describe('AlienCivilization and Manager tests', () => {
       const origGetPerson = game.personManager.getPerson;
       game.personManager.getPerson = (name: string) => name === 'weak_swordholder' ? mockPerson as any : origGetPerson.call(game.personManager, name);
 
-      let rngVal = 0.01;
+      const rngVal = 0.01;
       const mockRng = { random: () => rngVal };
       trisolaris.setRngProvider(mockRng);
 

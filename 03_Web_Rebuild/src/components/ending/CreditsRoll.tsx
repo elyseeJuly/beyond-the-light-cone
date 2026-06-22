@@ -90,7 +90,7 @@ export const CreditsRoll: React.FC<Props> = ({
       {!musicAvailable && (
         <div className="absolute top-6 right-6 z-20">
           <p className="text-white/15 text-[10px] tracking-widest uppercase">
-            🎵 主题曲：《Stardust Exodus》 待添加 → public/audio/stardust Exodus.mp3
+            🎵 主题曲：《Stardust Exodus》 待添加 → public/audio/ending_stardust_exodus.mp3
           </p>
         </div>
       )}

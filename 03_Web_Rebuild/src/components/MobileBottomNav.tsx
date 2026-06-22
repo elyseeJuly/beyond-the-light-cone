@@ -66,6 +66,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ activeView, se
           <button
             key={item.view}
             onClick={() => setActiveView(item.view)}
+            data-tutorial-id={`mobile-nav-${item.view}`}
             className={`
               flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-lg transition-all duration-200 cursor-pointer relative
               ${isActive

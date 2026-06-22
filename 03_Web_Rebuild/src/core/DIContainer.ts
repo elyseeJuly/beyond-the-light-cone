@@ -82,4 +82,7 @@ export const ServiceKeys = {
   COMBAT_ENGINE: 'combatEngine',
   ECOLOGY_CHAIN: 'ecologyChain',
   RELATION_NETWORK: 'relationNetwork',
+  EVENT_SYSTEM: 'eventSystem',
+  ECONOMY_SYSTEM: 'economySystem',
+  POPULATION_SYSTEM: 'populationSystem',
 } as const;

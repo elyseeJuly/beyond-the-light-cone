@@ -1,8 +1,206 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BookOpen, X, Clock, Music, Play, Pause, Disc, Lock, RotateCcw, Check, Volume2 } from 'lucide-react';
+import { BookOpen, X, Clock, Music, Play, Pause, Disc, Lock, RotateCcw, Check, Volume2, Eye, Image as ImageIcon } from 'lucide-react';
 import { EndingCollectionGrid } from './ending/EndingCollectionGrid';
 import { SaveManager } from '../core/SaveManager';
 import { getAssetUrl } from '../utils/assetUrl';
+import { GameInstance } from '../core/Game';
+import { StatisticsManager } from '../core/StatisticsManager';
+
+interface CgEvent {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  era: string;
+  hint: string;
+}
+
+const CG_EVENTS: CgEvent[] = [
+  {
+    id: "event_red_shore_base",
+    name: "红岸基地建立",
+    description: "在大兴安岭深处，红岸基地悄然建立，承载着向太空探寻生命的最初渴望。",
+    image: "cg_red_shore_base.png",
+    era: "黄金岁月",
+    hint: "在黄金岁月自动触发"
+  },
+  {
+    id: "event_yewenjie_signal",
+    name: "叶文洁的呼唤",
+    description: "“到这里来吧，我将帮助你们获得这个世界。”这声呼唤彻底改变了人类的命运。",
+    image: "cg_yewenjie_signal.png",
+    era: "黄金岁月",
+    hint: "在黄金岁月选择【向宇宙发送红岸信号】触发"
+  },
+  {
+    id: "event_trisolaris_reply",
+    name: "三体文明回复",
+    description: "来自遥远异星文明的警告：“不要回答！不要回答！不要回答！”但文明的齿轮已然合上。",
+    image: "cg_trisolaris_reply.png",
+    era: "黄金岁月",
+    hint: "在发送信号后自动触发"
+  },
+  {
+    id: "event_eto_founded",
+    name: "地球三体组织成立",
+    description: "人类精英的秘密聚会，高呼“消灭人类暴政，世界属于三体”，ETO 宣告诞生。",
+    image: "cg_eto_founded.png",
+    era: "黄金岁月",
+    hint: "在危机纪元前夕接触伊文斯建立 ETO 触发"
+  },
+  {
+    id: "event_crisis_start",
+    name: "危机纪元开启",
+    description: "智子展开，封锁人类基础科学。末日之剑高悬，危机纪元大幕沉重开启。",
+    image: "cg_crisis_start.png",
+    era: "危机纪元",
+    hint: "经历危机纪元更替自动触发"
+  },
+  {
+    id: "event_sophon_blockade",
+    name: "智子锁死科学",
+    description: "三体智子干扰高能加速器，将人类基础物理锁死在现有水平，切断前沿探索。",
+    image: "cg_sophon_blockade.png",
+    era: "危机纪元",
+    hint: "经历智子封锁科学事件触发"
+  },
+  {
+    id: "event_guzheng",
+    name: "古筝行动",
+    description: "在巴拿马运河，死亡的琴弦拂过，“审判日”号在一片寂静中被切割成薄片，彻底揭开了智子的秘密。",
+    image: "cg_guzheng.png",
+    era: "危机纪元",
+    hint: "在危机纪元早期批准实施【古筝行动】触发"
+  },
+  {
+    id: "event_moon_crisis",
+    name: "月球危机",
+    description: "危机纪元中期的月球轨道核弹危机，人类不得不直面无垠深空带来的技术壁垒与考验。",
+    image: "cg_moon_crisis.png",
+    era: "危机纪元",
+    hint: "在危机纪元第 50 年自动触发"
+  },
+  {
+    id: "event_beihai_assassination",
+    name: "自然选择号启航",
+    description: "章北海为了人类的延续，坚决执行飞船的太空出逃，刺杀顽固守旧派，留下深空火种。",
+    image: "cg_beihai_assassination.png",
+    era: "危机纪元",
+    hint: "任命章北海并推进太空军工程触发"
+  },
+  {
+    id: "event_teardrop_probe",
+    name: "水滴到达太阳系",
+    description: "三体探测器“水滴”以优美而冷酷的强互作用力外壳抵达太阳系，震撼人类世界。",
+    image: "cg_teardrop_probe.png",
+    era: "危机纪元",
+    hint: "经历水滴探测器到达剧情事件触发"
+  },
+  {
+    id: "event_droplet_attack",
+    name: "末日战役 (水滴突袭)",
+    description: "仅仅一颗微不足道的水滴，便如死神的穿梭针般，瞬间在太空中将人类两千多艘主力战舰化为火海。",
+    image: "cg_droplet_attack.png",
+    era: "危机纪元",
+    hint: "遭遇三体水滴探测器交火触发"
+  },
+  {
+    id: "event_deterrence_established",
+    name: "威慑建立 (执剑诞生)",
+    description: "罗辑手握毁灭双世界的遥控器，以生命为筹码，迫使三体文明妥协，威慑纪元正式建立。",
+    image: "cg_deterrence_established.png",
+    era: "威慑纪元",
+    hint: "罗辑成功建立黑暗森林威慑触发"
+  },
+  {
+    id: "event_black_domain",
+    name: "黑域安全声明论证",
+    description: "人类内部关于降低光速、在太阳系周围建立永久安全黑域以躲避黑森打击的可行性论证。",
+    image: "cg_black_domain_debate.png",
+    era: "威慑纪元",
+    hint: "经历黑域计划讨论事件触发"
+  },
+  {
+    id: "event_deterrence_broken",
+    name: "威慑中止 (强袭废墟)",
+    description: "执剑人交接的刹那，强互作用力水滴瞬间摧毁了所有的引力波广播天线，威慑崩塌。",
+    image: "cg_deterrence_broken.png",
+    era: "威慑纪元",
+    hint: "程心接任执剑人并遭遇水滴突袭触发"
+  },
+  {
+    id: "event_gravitational_broadcast",
+    name: "引力波广播",
+    description: "“万有引力”号飞船在太空中广播了三体世界的坐标，黑暗森林的死神开始向两个世界踱步。",
+    image: "cg_gravitational_broadcast.png",
+    era: "广播纪元",
+    hint: "万有引力号触发重力广播触发"
+  },
+  {
+    id: "event_bunker_world",
+    name: "掩体世界太空城",
+    description: "利用巨行星的阴影作为掩体，人类建立了宏大的太空城群，以躲避黑暗森林打击。",
+    image: "cg_bunker_world.png",
+    era: "掩体纪元",
+    hint: "经历掩体纪元更替自动触发"
+  },
+  {
+    id: "event_lightspeed_ship",
+    name: "曲率光速飞船研发",
+    description: "维德在星环集团的暗中支持下，秘密开展人类首艘曲率驱动光速飞船的科研攻关。",
+    image: "cg_lightspeed_ship.png",
+    era: "掩体纪元",
+    hint: "经历曲率光速飞船建造事件触发"
+  },
+  {
+    id: "event_wandering_earth",
+    name: "行星发动机启航",
+    description: "行星发动机在地表喷射出幽蓝火柱，带着故土的温存，人类决意开始长达数千年的星际远征。",
+    image: "cg_wandering_earth.png",
+    era: "掩体纪元",
+    hint: "在掩体纪元第 300 年选择启动行星远征触发"
+  },
+  {
+    id: "event_dimensional_warning",
+    name: "奥尔特星云重力凹陷",
+    description: "雷达捕捉到太阳系边缘空间出现严重的引力塌缩，维度打击迫在眉睫的灾难前兆。",
+    image: "cg_dimensional_warning.png",
+    era: "掩体纪元",
+    hint: "经历空间维度警报剧情事件触发"
+  },
+  {
+    id: "event_pluto_museum",
+    name: "冥王星博物馆",
+    description: "在太阳系的边缘，冥王星上建立起人类文明的最后遗迹博物馆，记录着这个种族存在过的痕迹。",
+    image: "cg_pluto_museum.png",
+    era: "银河纪元",
+    hint: "遭遇二维化打击时进入冥王星触发"
+  },
+  {
+    id: "event_solar_system_flattened",
+    name: "太阳系二维化",
+    description: "歌者抛出的二向箔展开，太阳系的一切物质跌落为没有厚度的二维画作，人类无声谢幕。",
+    image: "cg_solar_system_flattened.png",
+    era: "银河纪元",
+    hint: "遭遇二向箔打击并降维失败触发"
+  },
+  {
+    id: "event_galaxy_exodus",
+    name: "银河远征星舰集结",
+    description: "太阳系崩塌后，逃脱的光速飞船在银河深处汇合，星舰文明的人类向着未知远海启航。",
+    image: "cg_galaxy_exodus.png",
+    era: "银河纪元",
+    hint: "经历银河远征启航剧情事件触发"
+  },
+  {
+    id: "event_zeroer_broadcast",
+    name: "归零者超空间广播",
+    description: "归零者向全宇宙广播归还大宇宙质量的超维倡议，推动宇宙重启至原始的十维田园状态。",
+    image: "cg_zeroer_broadcast.png",
+    era: "星屑纪元",
+    hint: "经历归零者超空间广播事件触发"
+  }
+];
 
 interface Props {
   onClose: () => void;
@@ -24,7 +222,7 @@ const SOUNDTRACKS: Track[] = [
   {
     name: "岁月底座",
     englishName: "Theme Base",
-    path: "/audio/years_base.mp3",
+    path: "/audio/era_years_base.mp3",
     description: "黄金岁月与主界面背景乐。庄严的主导动机，诠释人类迈向太空的坚实底座。",
     isEnding: false,
     unlockConditionText: "默认解锁",
@@ -96,7 +294,7 @@ const SOUNDTRACKS: Track[] = [
   {
     name: "Stardust Exodus (星屑启航)",
     englishName: "True Ending Vocal Theme",
-    path: "/audio/stardust Exodus.mp3",
+    path: "/audio/ending_stardust_exodus.mp3",
     description: "【真结局主题曲】流浪远航 / 星际征服胜利。交响电子与空灵女声人声演唱，极具爆发力与史诗感。",
     isEnding: true,
     unlockConditionText: "达成「星际征服胜利」或「流浪胜利」解锁",
@@ -106,10 +304,10 @@ const SOUNDTRACKS: Track[] = [
   {
     name: "Fate Beyond the Light Cone (光锥之外的命运)",
     englishName: "Platinum Credits Vocal Theme",
-    path: "/audio/fate_beyond_the_light_cone.mp3",
+    path: "/audio/ending_fate_beyond_the_light_cone.mp3",
     description: "【白金成就终章曲】全图鉴解锁演播。汉斯·季默式宏大交响乐，人声吟唱，文明永恒赞歌。",
     isEnding: true,
-    unlockConditionText: "解锁所有 10 个结局（6个胜利与4个失败）解锁",
+    unlockConditionText: "解锁所有结局解锁",
     unlockCheck: () => SaveManager.isAllEndingsUnlocked(),
     promptText: "Epic cinematic space opera, soulful and powerful female vocal, gradual build-up, Hans Zimmer style"
   },
@@ -136,7 +334,7 @@ const SOUNDTRACKS: Track[] = [
   {
     name: "光锥之死 (Death of the Light Cone)",
     englishName: "Dark Domain Ending theme",
-    path: "/audio/death_of_the_light_cone.mp3",
+    path: "/audio/ending_death_of_the_light_cone.mp3",
     description: "黑域结局配乐。慢速安魂曲，神圣的无字唱诗班，凝固在降至零的永恒琥珀之中。",
     isEnding: true,
     unlockConditionText: "达成「黑域胜利」解锁",
@@ -154,7 +352,7 @@ const SOUNDTRACKS: Track[] = [
   {
     name: "量子幽灵 (Ghost in the Quantum)",
     englishName: "Digital Ending theme",
-    path: "/audio/ghost_in_the_quantum.mp3",
+    path: "/audio/ending_ghost_in_the_quantum.mp3",
     description: "数字永生结局配乐。电子浪潮与冷酷的赛博朋克合成器，宣告碳基肉身的逝去，硅基意识之永恒。",
     isEnding: true,
     unlockConditionText: "达成「数字永生」解锁",
@@ -163,7 +361,7 @@ const SOUNDTRACKS: Track[] = [
   {
     name: "最后的档案 (The Last Archive)",
     englishName: "Hidden Ending theme",
-    path: "/audio/the_last_archive.mp3",
+    path: "/audio/ending_the_last_archive.mp3",
     description: "隐藏结局配乐。忧伤的独奏钢琴与斑驳的老电台白噪音，最后翻书声落，归于绝对寂静。",
     isEnding: true,
     unlockConditionText: "达成「死神永生·小宇宙」结局解锁",
@@ -193,7 +391,7 @@ const SOUNDTRACKS: Track[] = [
     name: "恒星终焉 (Helium Flash Defeat)",
     englishName: "Defeat theme",
     path: "/audio/ending_defeat_helium_flash.mp3",
-    description: "太阳氦闪失败配乐。突然膨胀的轰鸣管弦与极致的爆发感，在白光中蒸发一切遗恨。",
+    description: "太阳氦闪失败配乐。突然膨胀 of 轰鸣管弦与极致的爆发感，在白光中蒸发一切遗恨。",
     isEnding: true,
     unlockConditionText: "达成「太阳氦闪（恒星终焉）」结局解锁",
     unlockCheck: (unlocks) => unlocks.has("unlocked_defeat_2"),
@@ -207,11 +405,32 @@ const SOUNDTRACKS: Track[] = [
     unlockConditionText: "达成「二向箔降维（空间坍缩）」结局解锁",
     unlockCheck: (unlocks) => unlocks.has("unlocked_defeat_3"),
   },
+
+  // Neutral Epilogues
+  {
+    name: "无尽漂流 (Eternal Exile)",
+    englishName: "Neutral Exile theme",
+    path: "/audio/ending_neutral_eternal_exile.mp3",
+    description: "永恒的流亡结局配乐。迷茫而苍凉的电子低吟，诉说着失去太阳的人类在幽暗虚空中的无尽漂泊。",
+    isEnding: true,
+    unlockConditionText: "达成「永恒的流亡」结局解锁",
+    unlockCheck: (unlocks) => unlocks.has("unlocked_neutral_0") || unlocks.has("unlocked_neutral_ETERNAL_EXILE"),
+  },
+  {
+    name: "星海归于静默 (Cosmic Silence)",
+    englishName: "Neutral Silence theme",
+    path: "/audio/ending_neutral_cosmic_silence.mp3",
+    description: "宇宙静默结局配乐。微弱舒缓的电磁背景音与渐行渐远的长笛，宣告一个喧嚣种族的终极宁静。",
+    isEnding: true,
+    unlockConditionText: "达成「宇宙静默」结局解锁",
+    unlockCheck: (unlocks) => unlocks.has("unlocked_neutral_1") || unlocks.has("unlocked_neutral_COSMIC_SILENCE"),
+  },
 ];
 
 export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
   const history = SaveManager.getEndingHistory();
-  const [activeTab, setActiveTab] = useState<'chronicles' | 'phonograph'>('chronicles');
+  const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph'>('chronicles');
+  const [selectedCg, setSelectedCg] = useState<CgEvent | null>(null);
   const [unlockedSet] = useState<Set<string>>(() => SaveManager.getEndingUnlocks());
 
   // Audio Preview Player States
@@ -374,8 +593,24 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                 : 'text-white/40 hover:text-white/80'
             }`}
           >
-            <span>星历纪实</span>
+            <span>星历终章</span>
             {activeTab === 'chronicles' && (
+              <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
+            )}
+          </button>
+          <button 
+            onClick={() => setActiveTab('cgGallery')}
+            className={`px-5 py-2.5 font-mono text-sm tracking-widest uppercase transition-all duration-300 relative cursor-pointer ${
+              activeTab === 'cgGallery' 
+                ? 'text-cyan-400 font-bold' 
+                : 'text-white/40 hover:text-white/80'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <ImageIcon className="w-4 h-4" />
+              纪元浮光 (CG图鉴)
+            </span>
+            {activeTab === 'cgGallery' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
             )}
           </button>
@@ -474,6 +709,107 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                 </div>
               )}
             </section>
+          </div>
+        )}
+
+        {/* Tab: CG Gallery */}
+        {activeTab === 'cgGallery' && (
+          <div className="space-y-6 pb-12 flex-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center justify-between border-b border-white/5 pb-3">
+              <h3 className="text-sm font-mono tracking-widest text-cyan-400 uppercase font-bold flex items-center gap-2">
+                <span className="w-2 h-2 rounded bg-cyan-400" />
+                纪元历史浮光 (Major Event CG Gallery)
+              </h3>
+              <span className="text-[10px] text-white/40 font-mono">
+                已解锁 CG: {
+                  (() => {
+                    const stats = StatisticsManager.getStats();
+                    const unlockedCount = CG_EVENTS.filter(cg => {
+                      const statsUnlock = stats.eventsTriggered && (stats.eventsTriggered[cg.id] > 0 || stats.eventsTriggered[cg.id.replace('event_', 'cg_')] > 0);
+                      const currentSessionUnlock = SaveManager.getEndingUnlocks().has(cg.id);
+                      const timelineUnlock = (GameInstance.get()?.playerTimeline || []).some(t => t.event.includes(cg.name));
+                      return statsUnlock || currentSessionUnlock || timelineUnlock;
+                    }).length;
+                    return `${unlockedCount} / ${CG_EVENTS.length}`;
+                  })()
+                }
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {CG_EVENTS.map(cg => {
+                const stats = StatisticsManager.getStats();
+                const isUnlocked = !!(
+                  (stats.eventsTriggered && (stats.eventsTriggered[cg.id] > 0 || stats.eventsTriggered[cg.id.replace('event_', 'cg_')] > 0)) ||
+                  unlockedSet.has(cg.id) ||
+                  (GameInstance.get()?.playerTimeline || []).some(t => t.event.includes(cg.name))
+                );
+
+                return (
+                  <div
+                    key={cg.id}
+                    onClick={() => isUnlocked && setSelectedCg(cg)}
+                    className={`relative rounded-xl overflow-hidden border transition-all duration-300 flex flex-col justify-between group ${
+                      isUnlocked 
+                        ? 'border-white/10 hover:border-cyan-500/30 hover:scale-[1.03] cursor-pointer bg-slate-900/40 shadow-lg' 
+                        : 'border-white/5 bg-slate-950/20 opacity-55 select-none'
+                    }`}
+                  >
+                    {/* Image / Lock Container */}
+                    <div className="relative aspect-[16/10] bg-slate-950/80 overflow-hidden flex items-center justify-center border-b border-white/5">
+                      {isUnlocked ? (
+                        <>
+                          <img 
+                            src={getAssetUrl(`images/${cg.image}`)} 
+                            alt={cg.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => {
+                              const img = e.currentTarget;
+                              if (img.src.includes('cg_')) {
+                                img.src = img.src.replace('cg_', 'event_');
+                              }
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="p-2.5 rounded-full bg-cyan-500/20 border border-cyan-400 text-cyan-400 backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                              <Eye className="w-5 h-5" />
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 text-white/20">
+                          <Lock className="w-8 h-8 text-white/10" />
+                          <span className="text-[10px] font-mono tracking-widest uppercase">LOCKED</span>
+                        </div>
+                      )}
+                      
+                      {/* Era badge */}
+                      <span className="absolute top-2 left-2 text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-950/80 border border-white/10 text-white/60">
+                        {cg.era}
+                      </span>
+                    </div>
+
+                    {/* Metadata container */}
+                    <div className="p-3.5 flex-1 flex flex-col justify-between gap-2">
+                      <div>
+                        <h4 className={`text-xs font-bold ${isUnlocked ? 'text-white' : 'text-white/30 line-through'}`}>
+                          {isUnlocked ? cg.name : '【未探索大事件】'}
+                        </h4>
+                        <p className={`text-[10px] leading-relaxed mt-1 font-light ${isUnlocked ? 'text-white/50' : 'text-white/20'}`}>
+                          {isUnlocked ? cg.description : `解锁线索: ${cg.hint}`}
+                        </p>
+                      </div>
+                      
+                      {isUnlocked && (
+                        <div className="text-[9px] font-mono text-cyan-400/60 uppercase tracking-widest self-end">
+                          UNLOCKED
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -807,6 +1143,43 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
           </div>
         )}
       </div>
+
+      {/* Full-screen CG Modal */}
+      {selectedCg && (
+        <div className="fixed inset-0 z-[350] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <button 
+            onClick={() => setSelectedCg(null)}
+            className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-full border border-white/10 transition-all z-10"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          <div className="max-w-5xl w-full flex flex-col gap-4 relative">
+            <img 
+              src={getAssetUrl(`images/${selectedCg.image}`)} 
+              alt={selectedCg.name}
+              className="w-full max-h-[75vh] object-contain rounded-lg border border-white/10 shadow-2xl bg-slate-900"
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (img.src.includes('cg_')) {
+                  img.src = img.src.replace('cg_', 'event_');
+                }
+              }}
+            />
+            <div className="p-4 bg-slate-900/80 border border-white/5 rounded-xl backdrop-blur-md">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <span className="text-cyan-400 font-mono text-sm px-2 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">{selectedCg.era}</span>
+                  {selectedCg.name}
+                </h3>
+              </div>
+              <p className="text-sm text-white/70 mt-2 leading-relaxed">
+                {selectedCg.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes spin-slow {

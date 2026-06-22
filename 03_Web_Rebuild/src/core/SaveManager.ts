@@ -1,6 +1,7 @@
-import { VictoryType, DefeatType, EpochType } from "../types/enums";
+import { VictoryType, DefeatType, EpochType, NeutralType } from "../types/enums";
 import { storage } from "./IndexedDBStorage";
 import { StatisticsManager } from "./StatisticsManager";
+import { validateSavePackage, validateSaveIndex, validateSaveMeta } from "./SaveSchema";
 
 /**
  * SaveManager - 独立存档管理器 (IndexedDB 单一数据源)
@@ -52,6 +53,7 @@ export interface SlotInfo {
 export interface EndingRecord {
   victoryType: VictoryType | null;
   defeatType: DefeatType | null;
+  neutralType?: NeutralType | null;
   label: string;
   year: number;
   epoch: EpochType;
@@ -94,6 +96,26 @@ export class SaveManager {
   public static readonly SAVE_VERSION = 3;
   private static _ready: Promise<void> | null = null;
   private static _migrations = new MigrationRegistry();
+
+  // 注册版本迁移脚本
+  static {
+    // v1 -> v2: 旧存档可能没有 flags / loreMode / filteredEvents，补充默认值
+    this.registerMigration(1, (data: any) => {
+      if (!data.flags) data.flags = [];
+      if (!data.loreMode) data.loreMode = 'strict_three_body';
+      if (!data.filteredEvents) data.filteredEvents = [];
+      return data;
+    });
+
+    // v2 -> v3: 确保子系统解耦后所需字段存在；子系统实例会在 Game 构造时重建
+    this.registerMigration(2, (data: any) => {
+      if (!data.turnHistory) data.turnHistory = [];
+      if (data.deterrenceEnduranceRounds === undefined) data.deterrenceEnduranceRounds = 0;
+      if (data.dimensionStrikeTriggered === undefined) data.dimensionStrikeTriggered = false;
+      if (data.broadcastTriggered === undefined) data.broadcastTriggered = false;
+      return data;
+    });
+  }
 
   /**
    * 注册版本迁移脚本。
@@ -180,12 +202,12 @@ export class SaveManager {
       const dataStr = serializeFn();
       const signature = SaveManager.computeHash(dataStr);
 
-      const savePackage: SavePackage = {
+      const savePackage: SavePackage = validateSavePackage({
         version: SaveManager.SAVE_VERSION,
         timestamp: Date.now(),
         signature,
         data: dataStr,
-      };
+      });
 
       // 同步记录缓存
       this._cacheSlot(slotId, savePackage);
@@ -272,7 +294,7 @@ export class SaveManager {
       const dataStr = typeof parsed.data === 'string' ? parsed.data : JSON.stringify(parsed.data);
       const data = JSON.parse(dataStr);
 
-      return {
+      return validateSaveMeta({
         year: data.year ?? 0,
         epoch: data.epoch ?? 0,
         population: data.earthCivi?.population ?? 0,
@@ -280,7 +302,7 @@ export class SaveManager {
         culture: data.earthCivi?.culture ?? 0,
         timestamp: parsed.timestamp,
         slotId,
-      };
+      });
     } catch {
       return null;
     }
@@ -340,7 +362,7 @@ export class SaveManager {
     storage.setMeta('endingHistory', history).catch(() => {});
 
     // Sync to unified telemetry manager
-    StatisticsManager.recordEnding(record.victoryType, record.defeatType);
+    StatisticsManager.recordEnding(record.victoryType, record.defeatType, record.neutralType ?? null);
   }
 
   public static getEndingHistory(): EndingRecord[] {
@@ -361,6 +383,9 @@ export class SaveManager {
       }
       if (record.defeatType !== null && record.defeatType !== undefined) {
         unlocked.add(`unlocked_defeat_${record.defeatType}`);
+      }
+      if (record.neutralType !== null && record.neutralType !== undefined) {
+        unlocked.add(`unlocked_neutral_${record.neutralType}`);
       }
     }
     return unlocked;
@@ -416,8 +441,11 @@ export class SaveManager {
   private static _readSaveIndex(): Record<string, SaveIndexEntry> {
     try {
       const raw = localStorage.getItem(this.SAVE_INDEX_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch {
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return validateSaveIndex(parsed);
+    } catch (e) {
+      console.warn('SaveManager: Save index corrupted, resetting:', e);
       return {};
     }
   }
@@ -453,7 +481,12 @@ export class SaveManager {
   }
 
   private static _verifyAndExtract(savePackage: SavePackage): string {
-    let pkg = savePackage;
+    let pkg: SavePackage;
+    try {
+      pkg = validateSavePackage(savePackage);
+    } catch (e: any) {
+      throw new SaveDataCorruptedError(`存档包校验失败: ${e?.message || '未知错误'}`);
+    }
 
     // 版本迁移：旧版本存档尝试升级到当前版本
     if (pkg.version < SaveManager.SAVE_VERSION) {
@@ -467,7 +500,7 @@ export class SaveManager {
           data: migratedStr,
           signature: this.computeHash(migratedStr),
         };
-      } catch (e) {
+      } catch {
         throw new SaveDataCorruptedError(
           `存档版本不兼容：当前版本 v${SaveManager.SAVE_VERSION}，存档版本 v${pkg.version}`
         );

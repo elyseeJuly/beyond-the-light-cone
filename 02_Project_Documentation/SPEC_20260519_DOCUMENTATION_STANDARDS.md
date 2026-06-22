@@ -155,6 +155,7 @@ Active development logs, blueprints, and task runners.
 *   [EXEC_20260616_STARSEA_PHONOGRAPH_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260616_STARSEA_PHONOGRAPH_WALKTHROUGH.md) — *Starsea Phonograph music gallery & custom BGM selection walkthrough*
 *   [EXEC_20260621_PWA_UPGRADE_WALKTHROUGH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_PWA_UPGRADE_WALKTHROUGH.md) — *PWA upgrade walkthrough and validation report*
 *   [EXEC_20260621_ART_ASSETS_REAUDIT_AND_REMEDIATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_ART_ASSETS_REAUDIT_AND_REMEDIATION.md) — *Execution report on re-auditing local art assets, generating missing NPC portraits, and remapping dialogue CGs*
+*   [EXEC_20260621_PWA_COVER_AND_CLOUDFLARE_DEPLOY.md](file:///workspace/02_Project_Documentation/EXEC_20260621_PWA_COVER_AND_CLOUDFLARE_DEPLOY.md) — *PWA splash-screen cover loading fix and Cloudflare Pages deployment support*
 
 ---
 

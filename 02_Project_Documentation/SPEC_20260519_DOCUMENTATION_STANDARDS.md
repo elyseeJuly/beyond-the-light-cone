@@ -75,6 +75,7 @@ Documents defining features, architectures, and design directives.
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.
+*   [AUDIT_20260622_ARCHITECTURE_REBUILD.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_ARCHITECTURE_REBUILD.md) — *Architecture and infrastructure iteration repair audit report (updated)*
 *   [AUDIT_20260621_ARCHITECTURE_REBUILD.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_ARCHITECTURE_REBUILD.md) — *Architecture and infrastructure iteration repair audit report*
 *   [AUDIT_20260512_BUGFIXES.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260512_BUGFIXES.md) — *Legacy audit of game bugs and numerical limits*
 *   [AUDIT_20260514_BUGFIX_V2.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260514_BUGFIX_V2.md) — *Audit of game bugs and numerical limits*

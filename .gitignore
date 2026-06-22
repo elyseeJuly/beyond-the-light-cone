@@ -29,6 +29,10 @@ Win32/
 03_Web_Rebuild/node_modules/
 03_Web_Rebuild/dist/
 03_Web_Rebuild/coverage/
+03_Web_Rebuild/playwright-report/
+
+# Debug artifacts
+error_screenshot.png
 
 # OS files
 .DS_Store

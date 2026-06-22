@@ -50,6 +50,9 @@ export interface FilteredEventCondition {
   reqTech?: string;
   reqFlag?: string;
   reqNotFlag?: string;
+  reqTag?: string;
+  reqNotTag?: string;
+  minTagIntensity?: number;
   minEconomy?: number;
   maxEconomy?: number;
   minPopulation?: number;

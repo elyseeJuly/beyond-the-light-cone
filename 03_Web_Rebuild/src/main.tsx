@@ -53,8 +53,9 @@ async function bootstrap() {
     console.log("Initializing Statistics Manager...");
     StatisticsManager.init();
 
-    // Setup global access for debugging
+    // Setup global access for debugging and E2E tests
     (window as any).game = GameInstance.get();
+    (window as any).GameInstance = GameInstance;
 
     // Step 5: Service Worker 由 UpdatePrompt (virtual:pwa-register) 负责注册
 

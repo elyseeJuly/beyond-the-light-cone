@@ -558,7 +558,15 @@ export class Game {
         }
 
         // 3. 角色生命状态检查与卸任
+        const epochNamesInternal = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
+        const currentEpochStr = epochNamesInternal[this.epoch] || "GOLDEN";
+
         for (const p of this.personManager.getAllPersons()) {
+          // If character is currently alive but shouldn't be in this epoch, they pass away
+          if (p.isAlive && !this.eventManager.isPersonAliveInEpoch(p.name, currentEpochStr)) {
+            p.isAlive = false;
+          }
+
           if (!p.isAlive) {
             // 解除执剑人
             if (this.earthCivi.swordholder === p.name) {

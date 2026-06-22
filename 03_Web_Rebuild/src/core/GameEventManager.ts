@@ -917,7 +917,7 @@ export class GameEventManager {
     return triggered;
   }
 
-  private isPersonAliveInEpoch(personName: string, epochName: string): boolean {
+  public isPersonAliveInEpoch(personName: string, epochName: string): boolean {
     const epochDeathMap: Record<string, string[]> = {
       "伊文斯": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
       "林云": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],

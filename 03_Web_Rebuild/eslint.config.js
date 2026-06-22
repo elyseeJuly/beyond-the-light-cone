@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default ts.config(
-  { ignores: ['dist', 'node_modules', 'src-tauri', 'coverage', 'public', 'vite.config.ts', 'scripts', '*.cjs', '*.mjs'] },
+  { ignores: ['dist', 'node_modules', 'src-tauri', 'coverage', 'public', 'vite.config.ts', 'playwright.config.ts', 'scripts', '*.cjs', '*.mjs'] },
   js.configs.recommended,
   ...ts.configs.recommended,
   {

@@ -215,6 +215,11 @@ export class SaveManager {
       // 异步写入 IndexedDB（单一数据源）
       storage.setSlot(slotId, savePackage).catch(err => {
         console.error(`SaveManager: IndexedDB write failed for slot ${slotId}:`, err);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('save-storage-warning', {
+            detail: { slotId, message: '存档持久化存储写入失败，数据已暂存于浏览器本地缓存。' }
+          }));
+        }
       });
 
       // localStorage: save_index（目录元数据）
@@ -379,13 +384,13 @@ export class SaveManager {
     const unlocked = new Set<string>();
     for (const record of history) {
       if (record.victoryType !== null && record.victoryType !== undefined) {
-        unlocked.add(`unlocked_victory_${record.victoryType}`);
+        unlocked.add(`unlocked_victory_${VictoryType[record.victoryType]}`);
       }
       if (record.defeatType !== null && record.defeatType !== undefined) {
-        unlocked.add(`unlocked_defeat_${record.defeatType}`);
+        unlocked.add(`unlocked_defeat_${DefeatType[record.defeatType]}`);
       }
       if (record.neutralType !== null && record.neutralType !== undefined) {
-        unlocked.add(`unlocked_neutral_${record.neutralType}`);
+        unlocked.add(`unlocked_neutral_${NeutralType[record.neutralType]}`);
       }
     }
     return unlocked;
@@ -393,14 +398,18 @@ export class SaveManager {
 
   public static isAllEndingsUnlocked(): boolean {
     const unlocks = this.getEndingUnlocks();
-    const totalVictories = 6;
-    const totalDefeats = 4;
+    const victoryKeys = ['CONQUEST', 'DETERRENCE', 'DARK_DOMAIN', 'WANDERING', 'DIGITAL', 'HIDDEN'];
+    const defeatKeys = ['TREACHERY', 'EXTINCTION', 'HELIUM_FLASH', 'DIMENSION_STRIKE'];
+    const neutralKeys = ['ETERNAL_EXILE', 'COSMIC_SILENCE'];
 
-    for (let i = 0; i < totalVictories; i++) {
-      if (!unlocks.has(`unlocked_victory_${i}`)) return false;
+    for (const key of victoryKeys) {
+      if (!unlocks.has(`unlocked_victory_${key}`)) return false;
     }
-    for (let i = 0; i < totalDefeats; i++) {
-      if (!unlocks.has(`unlocked_defeat_${i}`)) return false;
+    for (const key of defeatKeys) {
+      if (!unlocks.has(`unlocked_defeat_${key}`)) return false;
+    }
+    for (const key of neutralKeys) {
+      if (!unlocks.has(`unlocked_neutral_${key}`)) return false;
     }
     return true;
   }

@@ -1,4 +1,4 @@
-import { EpochType, EventEffect, FriendshipType, TecTreeType, VictoryType, EventType, DefeatType, LoreMode } from "../types/enums";
+import { EpochType, EventEffect, FriendshipType, TecTreeType, VictoryType, EventType, DefeatType, NeutralType, LoreMode } from "../types/enums";
 import { StarManager } from "./StarManager";
 import { PersonManager } from "./PersonManager";
 import { WeaponManager } from "./WeaponManager";
@@ -90,6 +90,7 @@ export class Game {
   public gameOverReason: string = "";
   public victoryType: VictoryType | null = null;
   public defeatType: DefeatType | null = null;
+  public neutralType: NeutralType | null = null;
   public isProcessing: boolean = false;
   private _hadRunError: boolean = false;
 
@@ -920,7 +921,7 @@ export class Game {
           label: cond.label,
           year: this.year,
           epoch: this.epoch,
-          keyFlags: Array.from(this.flags).filter(f => ['wandering_chosen', 'digital_ark_chosen', 'swordholder_appointed', 'wallfacer_project', 'galaxy_exodus_seen', 'alien_alliance'].includes(f)),
+          keyFlags: Array.from(this.flags).filter(f => ['wandering_completed', 'digital_ark_upgrade', 'swordholder_appointed', 'wallfacer_project', 'galaxy_exodus_seen', 'alien_alliance'].includes(f)),
           timestamp: Date.now()
         });
         this.tagManager.applyWorldTag(`victory_${cond.type.toLowerCase()}`, 100, 'game:ending', this.year);
@@ -931,6 +932,44 @@ export class Game {
         window.dispatchEvent(new CustomEvent('game-over'));
         return;
       }
+    }
+
+    // ===== 中性结局判定 =====
+    // 永恒的流亡：银河纪元中人口极度稀少，人类成为星舰漂流文明
+    if (this.epoch >= EpochType.GALAXY && this.hasFlag("galaxy_exodus_seen") &&
+        this.earthCivi.population > 0 && this.earthCivi.population <= 5 &&
+        !this.hasFlag("wandering_completed") && !this.hasFlag("digital_ark_upgrade")) {
+      this.isGameOver = true;
+      this.neutralType = NeutralType.ETERNAL_EXILE;
+      this.gameOverReason = "永恒的流亡：地球已被遗弃，幸存的人类乘坐星舰在黑暗的宇宙中无尽漂流，成为永远的星际游牧民族。";
+      this.playerTimeline.push({ year: this.year, event: '【终结】人类文明化为永恒的星舰流亡者' });
+      SaveManager.recordEnding({
+        victoryType: null, defeatType: null, neutralType: this.neutralType,
+        label: "永恒的流亡",
+        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+      });
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
+      window.dispatchEvent(new CustomEvent('game-over'));
+      return;
+    }
+
+    // 宇宙静默：黑域/降维后文明选择彻底静默
+    if (this.epoch >= EpochType.BUNKER &&
+        (this.hasFlag("dark_domain_decision") || this.hasFlag("black_domain_decision")) &&
+        this.earthCivi.population > 0 && this.earthCivi.population <= 10 &&
+        this.earthCivi.deterrenceValue < 20) {
+      this.isGameOver = true;
+      this.neutralType = NeutralType.COSMIC_SILENCE;
+      this.gameOverReason = "宇宙静默：战争与扩张失去了意义，文明选择了向内探索。我们不再发出任何声音，彻底融入了宇宙的背景辐射之中。";
+      this.playerTimeline.push({ year: this.year, event: '【终结】人类文明选择了永恒的静默' });
+      SaveManager.recordEnding({
+        victoryType: null, defeatType: null, neutralType: this.neutralType,
+        label: "宇宙静默",
+        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+      });
+      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
+      window.dispatchEvent(new CustomEvent('game-over'));
+      return;
     }
 
     if (this.earthCivi.treachery >= 100) {

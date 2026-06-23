@@ -88,8 +88,8 @@ export const CivilizationArchive: React.FC = () => {
       { id: 'wallfacer', name: '面壁壁障', desc: '启动旨在欺骗三体的面壁计划', unlocked: game.hasFlag('wallfacer_project') },
       { id: 'swordholder', name: '执剑守护者', desc: '任命终极核阻断执剑人', unlocked: game.hasFlag('swordholder_appointed') },
       { id: 'exodus', name: '掩体避难所', desc: '在木星群轨道建立星港城市', unlocked: game.hasFlag('galaxy_exodus_seen') },
-      { id: 'wandering', name: '光速宣言', desc: '实施流浪逃亡计划并达成光速推进', unlocked: game.hasFlag('wandering_chosen') },
-      { id: 'digital', name: '数字永生者', desc: '主意识备份并上传至数字方舟中', unlocked: game.hasFlag('digital_ark_chosen') },
+      { id: 'wandering', name: '光速宣言', desc: '实施流浪逃亡计划并达成光速推进', unlocked: game.hasFlag('wandering_completed') },
+      { id: 'digital', name: '数字永生者', desc: '主意识备份并上传至数字方舟中', unlocked: game.hasFlag('digital_ark_upgrade') },
       { id: 'safety', name: '安全回声', desc: '发布宇宙安全声明，构建星系黑域', unlocked: game.hasFlag('safety_declaration') || game.hasFlag('black_domain_completed') }
     ];
     return list;

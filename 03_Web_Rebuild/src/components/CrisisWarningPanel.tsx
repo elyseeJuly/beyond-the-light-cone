@@ -29,7 +29,7 @@ export const CrisisWarningPanel: React.FC = () => {
       const isSafe = earth.tecTreeManager.isTecFinishedAnywhere("黑域生成") ||
                      earth.tecTreeManager.isTecFinishedAnywhere("数字方舟") ||
                      game.hasFlag("dimensional_defense") ||
-                     game.hasFlag("wandering_chosen");
+                     game.hasFlag("wandering_completed");
       if (!isSafe) {
         const remaining = 350 - game.year;
         if (remaining > 0) {

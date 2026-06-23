@@ -372,10 +372,10 @@ export class GameEventManager {
           { speakerName: "联合政府发言人", content: "经过充分论证，流浪地球计划是人类唯一的生路。", avatarUrl: this.mapAvatar("default", "联合政府发言人") },
           { speakerName: "反对派", content: "这是拿全人类的生命在赌博！我们需要数字方舟方案！", avatarUrl: this.mapAvatar("default", "反对派") }
         ],
-        condition: { minYear: 100, epoch: "CRISIS", reqTech: "行星发动机基础", loreDomain: "liu_cixin_crossover" },
+        condition: { minYear: 100, epoch: "CRISIS", reqTech: "行星发动机基础" },
         choices: [
-          { label: "启动流浪地球计划", effects: [{ type: "flag", target: "wandering_chosen", value: 1 }, { type: "resource", target: "economy", value: -100 }, { type: "resource", target: "prestige", value: 30 }] },
-          { label: "转向数字方舟方案", effects: [{ type: "flag", target: "digital_ark_chosen", value: 1 }, { type: "resource", target: "culture", value: 50 }] }
+          { label: "启动流浪地球计划", effects: [{ type: "flag", target: "wandering_completed", value: 1 }, { type: "resource", target: "economy", value: -100 }, { type: "resource", target: "prestige", value: 30 }] },
+          { label: "转向数字方舟方案", effects: [{ type: "flag", target: "digital_ark_upgrade", value: 1 }, { type: "resource", target: "culture", value: 50 }] }
         ]
       },
       {
@@ -793,6 +793,7 @@ export class GameEventManager {
       'human_heritage_archived': 'pluto_museum',
       'galaxy_exodus_successful': 'galaxy_exodus_seen',
       'tech_explosion_active': 'technological_explosion',
+      'black_domain_decision': 'dark_domain_decision',
     };
     const mapFlag = (f: string) => FLAG_ALIAS_MAP[f] || f;
     if (cond.reqFlag && !game.hasFlag(mapFlag(cond.reqFlag))) return false;

@@ -428,11 +428,57 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   };
 
   return (
-    <div className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
       {/* Darkened background with highlight cutout */}
-      {!showHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />}
+      {!showHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm pointer-events-auto" />}
       
-      {/* Highlight glow - transition removed from coordinates to prevent lag during tracking */}
+      {/* 4-slice backdrop overlay to block clicks to non-highlighted areas while leaving the cutout clickable */}
+      {showHighlight && highlightRect && (
+        <>
+          {/* Top backdrop */}
+          <div 
+            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
+            style={{
+              top: 0,
+              left: 0,
+              right: 0,
+              height: `${highlightRect.top}px`,
+            }}
+          />
+          {/* Bottom backdrop */}
+          <div 
+            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
+            style={{
+              top: `${highlightRect.top + highlightRect.height}px`,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          {/* Left backdrop */}
+          <div 
+            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
+            style={{
+              top: `${highlightRect.top}px`,
+              left: 0,
+              width: `${highlightRect.left}px`,
+              height: `${highlightRect.height}px`,
+            }}
+          />
+          {/* Right backdrop */}
+          <div 
+            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
+            style={{
+              top: `${highlightRect.top}px`,
+              left: `${highlightRect.left + highlightRect.width}px`,
+              right: 0,
+              height: `${highlightRect.height}px`,
+            }}
+          />
+        </>
+      )}
+
+      {/* Highlight glow outline box */}
       {showHighlight && highlightRect && (
         <div 
           className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-opacity duration-300 rounded"
@@ -441,7 +487,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
             left: `${highlightRect.left}px`,
             width: `${highlightRect.width}px`,
             height: `${highlightRect.height}px`,
-            boxShadow: '0 0 0 9999px rgba(0,0,0,0.85), 0 0 20px rgba(0,229,255,0.4), inset 0 0 20px rgba(0,229,255,0.15)',
+            boxShadow: '0 0 20px rgba(0,229,255,0.4), inset 0 0 20px rgba(0,229,255,0.15)',
           }}
         />
       )}
@@ -474,7 +520,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       {/* Main tutorial card */}
       <div 
         style={getCardStyle()} 
-        className={`relative z-[1002] w-full mx-auto flex flex-col max-h-[58vh] md:max-h-none transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
+        className={`relative z-[1002] w-full mx-auto flex flex-col max-h-[58vh] md:max-h-none pointer-events-auto transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
       >
         {/* Progress bar */}
         <div className="w-full h-1 bg-[#243245]/40 rounded-t overflow-hidden shrink-0">

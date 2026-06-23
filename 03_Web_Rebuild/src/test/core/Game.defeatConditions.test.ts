@@ -44,6 +44,7 @@ describe('Game Defeat Conditions', () => {
 
   it('HELIUM_FLASH 太阳氦闪：年数超 350 且无逃逸手段触发', () => {
     game.year = 360;
+    game.loreMode = 'liu_cixin_mixed';
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.defeatType).toBe(DefeatType.HELIUM_FLASH);
@@ -52,6 +53,7 @@ describe('Game Defeat Conditions', () => {
   it('HELIUM_FLASH 太阳氦闪：如果仅有 wandering_chosen 标志仍会触发（修复绕过漏洞）', () => {
     game.year = 360;
     game.addFlag("wandering_chosen");
+    game.loreMode = 'liu_cixin_mixed';
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.defeatType).toBe(DefeatType.HELIUM_FLASH);
@@ -101,6 +103,7 @@ describe('Game Defeat Conditions', () => {
     game.isGameOver = false;
     game.defeatType = null;
     game.earthCivi.population = 100;
+    game.loreMode = 'liu_cixin_mixed';
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.defeatType).toBe(DefeatType.HELIUM_FLASH);
@@ -153,6 +156,7 @@ describe('Game Defeat Conditions', () => {
     game.defeatType = null;
     game.earthCivi.population = 100;
     game.year = 350;
+    game.loreMode = 'liu_cixin_mixed';
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(false);
 

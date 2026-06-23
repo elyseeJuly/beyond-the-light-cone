@@ -250,7 +250,6 @@ export const App: React.FC = () => {
           ackBtn.click();
         } else if (!game.currentEvent && !game.isProcessing && !isGameOver) {
           game.runARound();
-          window.dispatchEvent(new CustomEvent('game-turn-complete'));
         }
       }
 

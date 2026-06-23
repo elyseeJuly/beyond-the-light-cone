@@ -1010,8 +1010,6 @@ export class GameEventManager {
         }
       }
 
-      const prob = (e.cadenceMeta?.probability) ?? 0.02;
-      e.cadenceMeta!.probability = prob;
       eligible.push(e);
     }
 

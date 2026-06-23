@@ -228,6 +228,7 @@ describe('Game Victory Conditions', () => {
     // 不设置任何氦闪防护（无黑域生成、无数字方舟、无 wandering_completed... etc）
     // Wait - wandering_completed 本身防氦闪，所以先清除掉再测
     game.removeFlag("wandering_completed");
+    game.loreMode = 'liu_cixin_mixed';
     game.checkVictoryConditions();
     expect(game.isGameOver).toBe(true);
     expect(game.defeatType).toBe(DefeatType.HELIUM_FLASH);

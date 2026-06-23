@@ -113,7 +113,6 @@ export const TopHUD: React.FC = () => {
   const handleNextTurn = () => {
     GameInstance.get().runARound();
     setUpdateCount(n => n + 1);
-    window.dispatchEvent(new CustomEvent('game-turn-complete'));
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);

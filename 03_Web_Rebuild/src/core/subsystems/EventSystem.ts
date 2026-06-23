@@ -54,13 +54,14 @@ export class EventSystem {
     if (isInteractive) {
       window.dispatchEvent(new CustomEvent('game-event-triggered'));
       this.processNextEvent();
-      if (this.game.eventQueue.length === 0 && !this.game.currentEvent) {
+      if (this.game.eventQueue.length === 0 && !this.game.currentEvent && !this.game._yearJustAdvanced) {
         this.game.year++;
         this.game.updateEpoch();
         this.game.checkVictoryConditions();
         this.game.addHistory(`回合推进完成：${this.game.year - 1} -> ${this.game.year} (存活异星文明: ${this.game.alienCiviManager.aliens.size}, 待处理事件: ${this.game.eventQueue.length})`);
         window.dispatchEvent(new CustomEvent('game-turn-complete'));
       }
+      this.game._yearJustAdvanced = false;
     }
   }
 

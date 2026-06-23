@@ -109,6 +109,7 @@ export class AlienCivilization extends Civilization {
 
   public launchHandoverWaterdropAttack(game: any, shName: string): void {
     if (game.earthCivi.starIndices.size <= 1) return; // Safety valve
+    if (this.waterdropCount >= 3) return; // 超过水滴上限，不再发射
     this.waterdropCount++;
     this.waterdropCooldown = 10;
 

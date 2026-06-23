@@ -354,6 +354,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       return {
         position: 'relative',
         maxWidth: '640px',
+        width: windowWidth < 768 ? 'calc(100% - 24px)' : '100%',
       };
     }
 
@@ -473,10 +474,10 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       {/* Main tutorial card */}
       <div 
         style={getCardStyle()} 
-        className={`relative z-[1002] w-full mx-auto flex flex-col transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
+        className={`relative z-[1002] w-full mx-auto flex flex-col max-h-[58vh] md:max-h-none transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
       >
         {/* Progress bar */}
-        <div className="w-full h-1 bg-[#243245]/40 rounded-t overflow-hidden">
+        <div className="w-full h-1 bg-[#243245]/40 rounded-t overflow-hidden shrink-0">
           <div 
             className="h-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -484,7 +485,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         </div>
 
         {/* Content card */}
-        <div className="relative bg-[#070B14]/90 backdrop-blur-md border border-[var(--color-primary)]/30 rounded-b p-5 sm:p-8 flex flex-col gap-4 sm:gap-6 overflow-hidden shadow-[0_0_40px_rgba(0,184,255,0.15)]">
+        <div className="relative bg-[#070B14]/90 backdrop-blur-md border border-[var(--color-primary)]/30 rounded-b p-4 sm:p-8 flex flex-col gap-3 sm:gap-6 overflow-hidden flex-1 min-h-0 shadow-[0_0_40px_rgba(0,184,255,0.15)]">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-[var(--color-primary)]/10 border-x border-b border-[var(--color-primary)]/30 px-4 py-0.5 rounded-b text-[10px] text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase shadow-[0_0_10px_rgba(0,184,255,0.2)]">
             光锥之外·纪元往事
           </div>
@@ -507,83 +508,87 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           </button>
 
           {/* Chapter navigation */}
-          <div className="flex flex-wrap items-center gap-2 select-none relative z-10 border-b border-[#243245]/40 pb-4">
-            {categories.map((cat, ci) => {
-              const isActive = step >= cat.startIdx && step < cat.startIdx + cat.count;
-              return (
-                <button 
-                  key={ci}
-                  onClick={() => handleGoTo(cat.startIdx)}
-                  className={`text-[10px] font-title font-bold uppercase tracking-widest px-3 py-1.5 border transition-all cursor-pointer ${
-                    isActive 
-                      ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)] text-[var(--color-primary)] shadow-[inset_0_0_10px_rgba(0,184,255,0.2)]' 
-                      : 'border-transparent text-[var(--text-secondary)]/60 hover:text-white bg-white/5'
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              );
-            })}
-            <div className="flex-1" />
-            <span className="text-[10px] text-[var(--color-primary)]/60 font-mono font-bold tracking-wider">
+          <div className="flex items-center justify-between gap-3 select-none relative z-10 border-b border-[#243245]/40 pb-3 shrink-0">
+            <div className="flex-grow flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
+              {categories.map((cat, ci) => {
+                const isActive = step >= cat.startIdx && step < cat.startIdx + cat.count;
+                return (
+                  <button 
+                    key={ci}
+                    onClick={() => handleGoTo(cat.startIdx)}
+                    className={`text-[10px] font-title font-bold uppercase tracking-widest px-2.5 py-1 border transition-all cursor-pointer shrink-0 ${
+                      isActive 
+                        ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)] text-[var(--color-primary)] shadow-[inset_0_0_10px_rgba(0,184,255,0.2)]' 
+                        : 'border-transparent text-[var(--text-secondary)]/60 hover:text-white bg-white/5'
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                );
+              })}
+            </div>
+            <span className="text-[10px] text-[var(--color-primary)]/60 font-mono font-bold tracking-wider shrink-0 select-none pb-1">
               {step + 1} / {TUTORIAL_STEPS.length}
             </span>
           </div>
 
           {/* Icon + Title */}
-          <div className={`flex items-center gap-5 transition-all duration-300 z-10 ${isAnimating ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'}`}>
-            <div className="w-14 h-14 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(0,184,255,0.1)] relative overflow-hidden">
+          <div className={`flex items-center gap-3 sm:gap-5 transition-all duration-300 z-10 ${isAnimating ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'} shrink-0`}>
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(0,184,255,0.1)] relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/10 to-transparent opacity-50" />
               {current.icon}
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Flag className="w-3 h-3 text-[var(--color-primary)]/60" />
-                <div className="text-[10px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">{current.category}</div>
+              <div className="flex items-center gap-2 mb-0.5 sm:mb-1">
+                <Flag className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--color-primary)]/60" />
+                <div className="text-[9px] sm:text-[10px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">{current.category}</div>
               </div>
-              <h2 className="text-xl font-title font-black text-white tracking-widest leading-none drop-shadow-md">{current.title}</h2>
+              <h2 className="text-base sm:text-xl font-title font-black text-white tracking-widest leading-none drop-shadow-md">{current.title}</h2>
             </div>
           </div>
 
-          {/* Description */}
-          <div className={`transition-all duration-300 delay-75 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} font-sans text-xs sm:text-sm bg-black/20 p-4 sm:p-5 border-l-2 border-[var(--color-primary)]/40`}>
-            <p className="text-[var(--text-secondary)] leading-[1.6] sm:leading-[1.8] whitespace-pre-line">
-              {current.description}
-            </p>
-          </div>
-
-          {/* Tips */}
-          {current.tips && current.tips.length > 0 && (
-            <div className={`bg-[#070B14]/60 border border-amber-500/20 p-3 sm:p-4 transition-all duration-300 delay-150 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
-              <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-2">
-                <Lightbulb size={12} className="shrink-0" />
-                系统提示分析
-              </div>
-              <ul className="space-y-1.5">
-                {current.tips.map((tip, idx) => (
-                  <li key={idx} className="text-xs text-amber-500/70 flex items-start gap-2">
-                    <span className="text-[10px] opacity-50 font-mono select-none relative top-[1px]">{'>'}</span>
-                    <span className="leading-relaxed">{tip}</span>
-                  </li>
-                ))}
-              </ul>
+          {/* Scrollable content area */}
+          <div className="flex-grow overflow-y-auto min-h-0 flex flex-col gap-3 pr-1 scrollbar-none z-10">
+            {/* Description */}
+            <div className={`transition-all duration-300 delay-75 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} font-sans text-xs sm:text-sm bg-black/20 p-3 sm:p-5 border-l-2 border-[var(--color-primary)]/40 shrink-0`}>
+              <p className="text-[var(--text-secondary)] leading-[1.6] sm:leading-[1.8] whitespace-pre-line">
+                {current.description}
+              </p>
             </div>
-          )}
+
+            {/* Tips */}
+            {current.tips && current.tips.length > 0 && (
+              <div className={`bg-[#070B14]/60 border border-amber-500/20 p-3 sm:p-4 transition-all duration-300 delay-150 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} shrink-0`}>
+                <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-1.5 sm:mb-2">
+                  <Lightbulb size={12} className="shrink-0" />
+                  系统提示分析
+                </div>
+                <ul className="space-y-1.5">
+                  {current.tips.map((tip, idx) => (
+                    <li key={idx} className="text-xs text-amber-500/70 flex items-start gap-2">
+                      <span className="text-[10px] opacity-50 font-mono select-none relative top-[1px]">{'>'}</span>
+                      <span className="leading-relaxed">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
 
           {/* Controls */}
-          <div className={`flex items-center justify-between mt-2 pt-5 border-t border-[#243245]/40 transition-opacity duration-300 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`flex items-center justify-between mt-1 sm:mt-2 pt-3 sm:pt-5 border-t border-[#243245]/40 transition-opacity duration-300 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} shrink-0`}>
             <div className="flex items-center gap-3">
               <button 
                 onClick={handlePrev}
                 disabled={step === 0}
-                className={`flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
               >
                 <ChevronLeft size={16} /> 上一步
               </button>
               
               <button 
                 onClick={handleSkip}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
               >
                 跳过教程
               </button>
@@ -591,7 +596,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
             <button 
               onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-2.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 text-[var(--color-primary)] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(0,184,255,0.15)] hover:shadow-[0_0_20px_rgba(0,184,255,0.3)]"
+              className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 text-[var(--color-primary)] text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(0,184,255,0.15)] hover:shadow-[0_0_20px_rgba(0,184,255,0.3)]"
             >
               {step === TUTORIAL_STEPS.length - 1 ? '确认授权并开始' : '下一步'} <ChevronRight size={16} />
             </button>

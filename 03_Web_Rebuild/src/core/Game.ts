@@ -37,7 +37,8 @@ export interface RngProvider {
  */
 function gameReplacer(_key: string, value: any) {
   if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory' ||
-      _key === 'eventSystem' || _key === 'economySystem' || _key === 'populationSystem' || _key === 'game') {
+      _key === 'eventSystem' || _key === 'economySystem' || _key === 'populationSystem' || _key === 'game' ||
+      _key === '_hadRunError' || _key === '_yearJustAdvanced') {
     return undefined;
   }
   if (value instanceof Map) {
@@ -50,6 +51,9 @@ function gameReplacer(_key: string, value: any) {
 
 export class Game {
   public year: number = 0;
+
+  /** 防止 EventSystem 与 runARound 双重推进年份的安全锁 */
+  public _yearJustAdvanced: boolean = false;
   public epoch: EpochType = EpochType.CRISIS;
   public historyLogs: string[] = [];
   public playerTimeline: Array<{ year: number; event: string }> = [];
@@ -87,6 +91,7 @@ export class Game {
   public victoryType: VictoryType | null = null;
   public defeatType: DefeatType | null = null;
   public isProcessing: boolean = false;
+  private _hadRunError: boolean = false;
 
   // 新增状态字段，用于结局重写与高级扩展
   public deterrenceEnduranceRounds: number = 0;
@@ -206,11 +211,22 @@ export class Game {
   public runARound(): void {
     if (this.isGameOver && !this.isObserverMode) return;
 
+    if (this.currentEvent || this.eventQueue.length > 0) {
+      this.addHistory("提示：请先处理当前的剧情事件。");
+      return;
+    }
+
+    if (this.isProcessing) {
+      console.warn("Turn blocked by processing lock");
+      return;
+    }
+
     // 录入当前回合的存档快照，用于命运分歧点回溯
     if (!this.turnHistory) this.turnHistory = [];
     this.turnHistory.push(JSON.stringify(this, (key, val) => {
       if (key === 'currentEvent' || key === 'eventQueue' || key === 'isProcessing' || key === '_rngProvider' || key === 'turnHistory' ||
-          key === 'eventSystem' || key === 'economySystem' || key === 'populationSystem' || key === 'game') {
+          key === 'eventSystem' || key === 'economySystem' || key === 'populationSystem' || key === 'game' ||
+          key === '_hadRunError' || key === '_yearJustAdvanced') {
         return undefined;
       }
       if (val instanceof Map) {
@@ -222,16 +238,6 @@ export class Game {
     }));
     if (this.turnHistory.length > 10) {
       this.turnHistory.shift();
-    }
-
-    if (this.currentEvent || this.eventQueue.length > 0) {
-      this.addHistory("提示：请先处理当前的剧情事件。");
-      return;
-    }
-
-    if (this.isProcessing) {
-      console.warn("Turn blocked by processing lock");
-      return;
     }
 
     this.isProcessing = true;
@@ -586,22 +592,28 @@ export class Game {
         }
 
         this.year++;
+        this._yearJustAdvanced = true;
         this.updateEpoch();
         this.checkVictoryConditions();
         this.processNextEvent();
         this.addHistory(`回合推进完成：${this.year - 1} -> ${this.year} (存活异星文明: ${this.alienCiviManager.aliens.size}, 待处理事件: ${this.eventQueue.length})`);
+        window.dispatchEvent(new CustomEvent('game-turn-complete'));
       } else {
         this.processNextEvent();
         this.addHistory(`已触发交互事件，年份推进暂缓 (存活异星文明: ${this.alienCiviManager.aliens.size}, 待处理事件: ${this.eventQueue.length})`);
       }
     } catch (err: any) {
+      this._hadRunError = true;
       console.error("Critical error in runARound:", err);
       this.addHistory(`【核心崩溃】结算失败! 错误详情: ${err?.message || "未知错误"}`);
       this.addHistory("系统已尝试紧急回滚状态锁，请尝试再次点击或重新开始。");
     } finally {
       this.isProcessing = false;
-      // 自动存档：回合结束
-      SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
+      // 仅在未发生错误时自动存档，防止损坏存档
+      if (!this._hadRunError) {
+        SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
+      }
+      this._hadRunError = false;
     }
   }
 
@@ -974,20 +986,21 @@ export class Game {
         !this.hasFlag("dimensional_defense_completed") &&
         !this.hasFlag("wandering_completed")) {
       this.isGameOver = true;
-      const isStrikeText = this.dimensionStrikeTriggered || this.loreMode === 'strict_three_body';
       if (this.dimensionStrikeTriggered) {
+        this.defeatType = DefeatType.DIMENSION_STRIKE;
+        this.gameOverReason = "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。";
+        this.playerTimeline.push({ year: this.year, event: '【终结】二向箔降维打击抹去了整个太阳系' });
+      } else if (this.loreMode === 'strict_three_body') {
         this.defeatType = DefeatType.DIMENSION_STRIKE;
         this.gameOverReason = "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。";
         this.playerTimeline.push({ year: this.year, event: '【终结】二向箔降维打击抹去了整个太阳系' });
       } else {
         this.defeatType = DefeatType.HELIUM_FLASH;
-        this.gameOverReason = isStrikeText
-          ? "二向箔打击：黑暗森林打击降临，太阳系从三维空间跌入二维。文明未能逃逸。"
-          : "太阳氦闪：漫长的等待终结于刺眼的白光，地球未能逃离。";
-        this.playerTimeline.push({ year: this.year, event: isStrikeText ? '【终结】二向箔降维打击抹去了整个太阳系' : '【终结】太阳的死亡终结了一切' });
+        this.gameOverReason = "太阳氦闪：漫长的等待终结于刺眼的白光，地球未能逃离。";
+        this.playerTimeline.push({ year: this.year, event: '【终结】太阳的死亡终结了一切' });
       }
       SaveManager.recordEnding({
-        victoryType: null, defeatType: this.defeatType, label: this.dimensionStrikeTriggered ? "二向箔打击" : "太阳氦闪",
+        victoryType: null, defeatType: this.defeatType, label: this.dimensionStrikeTriggered || this.loreMode === 'strict_three_body' ? "二向箔打击" : "太阳氦闪",
         year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
       });
       
@@ -1254,9 +1267,9 @@ export class Game {
     // 4. DARK_DOMAIN
     let darkDomainProgress = 0;
     if (tm.isTecFinished(TecTreeType.PHYSICS, "光速飞船推进器")) darkDomainProgress += 40;
-    if (this.hasFlag("dark_domain_declared")) darkDomainProgress += 30;
-    if (this.year >= 280) darkDomainProgress += 30;
-    else darkDomainProgress += Math.floor((this.year / 280) * 30);
+    if (this.hasFlag("dark_domain_decision")) darkDomainProgress += 30;
+    if (this.year >= 250) darkDomainProgress += 30;
+    else darkDomainProgress += Math.floor((this.year / 250) * 30);
     forecast.push({ name: "黑域安全声明", progress: darkDomainProgress, isThreat: false });
 
     // 5. CONQUEST

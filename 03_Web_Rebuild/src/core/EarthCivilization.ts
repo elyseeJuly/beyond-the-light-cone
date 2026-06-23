@@ -373,7 +373,7 @@ export class EarthCivilization extends Civilization {
       if (!hasMassConversion) {
         const resCost = add * 2;
         if (resCost > this.resource) add = Math.floor(this.resource / 2);
-        this.resource -= add * 2;
+        this.resource = Math.max(0, this.resource - add * 2);
       }
       totalEco += add;
     }
@@ -597,6 +597,7 @@ export class EarthCivilization extends Civilization {
                 game.alienCiviManager.loseStar(oldOwner, fleet.targetStarIndex);
               }
               game.addHistory(`【胜利】成功占领星系 ${targetStar.name}！`);
+              this.fleets.splice(i, 1);
             } else {
               this.fleets.splice(i, 1);
             }

@@ -177,10 +177,12 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Turn off AI brain to allow manual step-by-step guidance, and restore it on unmount
+  // Turn off AI brain to allow manual step-by-step guidance, and restore player's previous preference on unmount
   useEffect(() => {
+    let previousAiState = false;
     try {
       const game = GameInstance.get();
+      previousAiState = game.earthCivi.isAiBrainEnabled;
       game.earthCivi.isAiBrainEnabled = false;
       window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
       window.dispatchEvent(new CustomEvent('game-state-changed'));
@@ -190,7 +192,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     return () => {
       try {
         const game = GameInstance.get();
-        game.earthCivi.isAiBrainEnabled = true;
+        game.earthCivi.isAiBrainEnabled = previousAiState;
         window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
         window.dispatchEvent(new CustomEvent('game-state-changed'));
       } catch (e) {

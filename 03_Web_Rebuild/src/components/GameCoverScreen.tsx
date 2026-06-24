@@ -4,7 +4,7 @@ import { getImageUrl } from '../utils/assetUrl';
 
 interface GameCoverScreenProps {
   hasSave: boolean;
-  onStartNewGame: (withTutorial: boolean) => void;
+  onStartNewGame: (withTutorial: boolean, enableAiBrain: boolean) => void;
   onContinueGame: () => void;
   onOpenArchive: () => void;
 }
@@ -20,6 +20,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
   const [hoveredOption, setHoveredOption] = useState<MenuOption>(null);
   const [rendered, setRendered] = useState(false);
+  const [enableAiBrain, setEnableAiBrain] = useState(false);
 
   // Handle responsive background image
   useEffect(() => {
@@ -137,7 +138,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
 
             {/* Option 2: New Game with Tutorial */}
             <button
-              onClick={() => onStartNewGame(true)}
+              onClick={() => onStartNewGame(true, enableAiBrain)}
               onMouseEnter={() => setHoveredOption('new_tutorial')}
               onMouseLeave={() => setHoveredOption(null)}
               className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
@@ -152,7 +153,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
 
             {/* Option 3: New Game Free Exploration */}
             <button
-              onClick={() => onStartNewGame(false)}
+              onClick={() => onStartNewGame(false, enableAiBrain)}
               onMouseEnter={() => setHoveredOption('new_free')}
               onMouseLeave={() => setHoveredOption(null)}
               className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
@@ -164,6 +165,28 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">FREE EXPLORATION MODE</div>
               </div>
             </button>
+
+            {/* AI Brain Toggle */}
+            <div className="flex items-center justify-between px-4 py-3 border border-[var(--color-primary)]/30 rounded bg-[var(--color-primary)]/5">
+              <div className="flex items-center gap-3">
+                <Cpu size={16} className="text-cyan-400" />
+                <div>
+                  <div className="text-xs font-bold tracking-wider font-title text-cyan-300">AI 智脑托管</div>
+                  <div className="text-[9px] opacity-60 mt-0.5 font-mono text-slate-400">自动任命部长、科研、调配工种</div>
+                </div>
+              </div>
+              <button
+                onClick={() => setEnableAiBrain(!enableAiBrain)}
+                className={`relative w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer ${
+                  enableAiBrain ? 'bg-cyan-500' : 'bg-slate-600'
+                }`}
+                title={enableAiBrain ? 'AI托管已开启 - 点击关闭' : 'AI托管已关闭 - 点击开启'}
+              >
+                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
+                  enableAiBrain ? 'left-6' : 'left-1'
+                }`} />
+              </button>
+            </div>
 
             {/* Option 4: View Archive */}
             <button

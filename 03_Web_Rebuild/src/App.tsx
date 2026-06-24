@@ -365,8 +365,9 @@ export const App: React.FC = () => {
             {showCoverScreen && (
               <GameCoverScreen
                 hasSave={SaveManager.hasSave()}
-                onStartNewGame={(withTutorial) => {
+                onStartNewGame={(withTutorial, enableAiBrain) => {
                   GameInstance.reset();
+                  GameInstance.get().earthCivi.isAiBrainEnabled = enableAiBrain;
                   if (!withTutorial) {
                     localStorage.setItem('game-tutorial-seen', 'true');
                   } else {

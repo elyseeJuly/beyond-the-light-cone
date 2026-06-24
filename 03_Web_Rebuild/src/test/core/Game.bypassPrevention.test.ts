@@ -69,6 +69,7 @@ describe('Game Bypass Prevention & Rollback Tests', () => {
       const keysWithSize = Object.keys(parsed).map(k => ({ key: k, size: JSON.stringify(parsed[k]).length }));
       keysWithSize.sort((a,b) => b.size - a.size);
       console.log(`[Test Debug] Top keys:`, keysWithSize.slice(0, 5));
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
     }
     const finalYear = game.year; // 应该是 13

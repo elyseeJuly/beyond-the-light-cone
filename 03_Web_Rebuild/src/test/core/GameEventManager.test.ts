@@ -324,6 +324,7 @@ describe('GameEventManager', () => {
         ]
       };
       game.eventManager.events = [choiceEvent as any];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       expect(game.currentEvent).not.toBeNull();
 
@@ -347,6 +348,7 @@ describe('GameEventManager', () => {
         ]
       };
       game.eventManager.events = [multiEvent as any];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       expect(game.currentEvent).not.toBeNull();
       expect(game.currentEvent!.choices!.length).toBe(2);
@@ -371,6 +373,7 @@ describe('GameEventManager', () => {
         choices: undefined
       };
       game.eventManager.events = [noChoiceEvent as any];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       expect(game.currentEvent).not.toBeNull();
       expect(game.currentEvent!.choices!.length).toBe(1);
@@ -391,6 +394,7 @@ describe('GameEventManager', () => {
         ]
       };
       game.eventManager.events = [logEvent as any];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       expect(game.currentEvent).not.toBeNull();
 
@@ -554,6 +558,7 @@ describe('GameEventManager', () => {
         dialogQueue: [{ speakerName: 'System', content: 'Just info' }],
         condition: { minYear: 5, epoch: 'CRISIS' },
       }];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       if (game.currentEvent && game.currentEvent.id === 'no_choice_filtered') {
         expect(game.currentEvent.choices).toHaveLength(1);

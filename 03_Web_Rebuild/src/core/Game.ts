@@ -10,6 +10,7 @@ import { TecTree } from "./TecTree";
 import { GameEventPayload, VictoryCondition, FilteredEventPayload } from "../types/narrative";
 import { createGameEvent } from "./GameEvent";
 import epochsData from "../data/epochs.json";
+import timelineData from "../data/timeline.json";
 import { EVENT_BUDGET } from "./EventCadence";
 import { PlanetEngine } from "./PlanetEngine";
 import { DigitalLife } from "./DigitalLife";
@@ -592,7 +593,7 @@ export class Game {
         try {
           this.relationNetwork.updateRelations(this.tagManager);
           for (const alien of this.alienCiviManager.aliens.values()) {
-            if (alien.unlocked && !alien.isDieOut()) {
+            if (alien.discovered && !alien.isDieOut()) {
               const rel = this.relationNetwork.getRelation('地球', alien.name);
               if (rel) {
                 if (rel.intensity > 70 && alien.diplomacyCooldown > 1) {
@@ -610,7 +611,7 @@ export class Game {
 
         try {
           const slice = this.sliceNarrativeEngine.generateSlice(
-            `auto_turn_${this.year}`, `年份推进`, this.tagManager
+            `auto_turn_${this.year}`, `年份推进`, this.tagManager, this.year
           );
           if (slice) {
             const msg = `${slice.characterName}(${slice.characterRole}): ${slice.innerMonologue}`;
@@ -726,14 +727,22 @@ export class Game {
     const prevEpoch = this.epoch;
     const culture = this.earthCivi?.culture || 0;
 
-    const matched = epochsData.find(e => culture >= e.minCulture && culture <= e.maxCulture);
+    // 按纪元降序查找，取 culture 满足最低阈值且 epoch 高于当前纪元的最晚纪元
+    // 避免 culture 超过最后一个纪元 maxCulture 时 matched 为 undefined 导致纪元永远卡住
+    let matched = epochsData.find(e => culture >= e.minCulture && culture <= e.maxCulture);
+    if (matched === undefined && culture > 0) {
+      // culture 溢出所有纪元上限时，回退到最后一个满足 minCulture 的纪元
+      const sorted = [...epochsData].sort((a, b) => b.epoch - a.epoch);
+      matched = sorted.find(e => culture >= e.minCulture);
+    }
     if (matched !== undefined && matched.epoch > this.epoch) {
       let allowed = true;
       if (matched.epoch === EpochType.DETERRENCE && !this.flags.has('deterrence_established')) allowed = false;
       if (matched.epoch === EpochType.BROADCAST && !this.flags.has('coordinates_broadcasted')) allowed = false;
       if (matched.epoch === EpochType.BUNKER && !this.flags.has('bunker_world_completed')) allowed = false;
       if (matched.epoch === EpochType.GALAXY && (!this.flags.has('galaxy_exodus_seen') && !this.flags.has('dimensional_strike'))) allowed = false;
-      
+      if (matched.epoch === EpochType.STARDUST && !this.flags.has('stardust_era_declared') && !this.flags.has('stardust_era_seen') && !this.flags.has('zero_homer_contacted')) allowed = false;
+
       if (allowed) {
         this.epoch = matched.epoch;
       } else {
@@ -748,8 +757,22 @@ export class Game {
     if (prevEpoch !== this.epoch) {
       this.flags.delete('epoch_stalled');
       const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-      this.addHistory(`【纪元更替】进入${epochNames[this.epoch]}！`);
-      this.playerTimeline.push({ year: this.year, event: `【纪元更替】人类正式进入${epochNames[this.epoch]}` });
+      const epochName = epochNames[this.epoch];
+      this.addHistory(`【纪元更替】进入${epochName}！`);
+      this.playerTimeline.push({ year: this.year, event: `【纪元更替】人类正式进入${epochName}` });
+
+      // 时间线锚点：从 timeline.json 注入底部资讯滚动播报
+      const timelineEntry = timelineData.find(t => t.epoch === epochName || 
+        (epochName === "银河纪元" && t.epoch.startsWith("银河纪元")) ||
+        (epochName === "星屑纪元" && t.epoch.includes("星屑")));
+      if (timelineEntry) {
+        this.tickerMessages.push(
+          `📜【${timelineEntry.epoch}】${timelineEntry.yearRange} | ${timelineEntry.description}`
+        );
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('ticker-message-added'));
+        }
+      }
 
       // UEE 纪元 Tag
       const epochTagMap: Record<number, string> = {
@@ -1218,6 +1241,7 @@ export class Game {
   private _conductDiplomacyInternal(alienName: string, actionType: string): string {
     const alien = this.alienCiviManager.aliens.get(alienName);
     if (!alien || alien.isDieOut()) return `无法与已灭亡的文明 ${alienName} 进行外交。`;
+    if (!alien.contacted) return `【通信未建立】人类尚未与 ${alienName} 建立可外交的通信信道，无法执行外交行动。`;
     if (alien.diplomacyCooldown > 0) return `外交冷却中，还需等待 ${alien.diplomacyCooldown} 回合。`;
 
     const e = this.earthCivi;
@@ -1285,91 +1309,87 @@ export class Game {
 
   public updateDiplomacyUnlocks(): void {
     const trisolaris = this.alienCiviManager.aliens.get("三体");
-    if (trisolaris) trisolaris.unlocked = true;
+    if (trisolaris) {
+      trisolaris.discovered = true;
+      trisolaris.contacted = true;
+    }
+
+    const tryDiscoverAndContact = (alien: any, condition: boolean, msg: string) => {
+      if (!alien) return;
+      if (condition && !alien.discovered) {
+        alien.discovered = true;
+        alien.contacted = true;
+        this.addHistory(msg);
+      }
+    };
 
     const singer = this.alienCiviManager.aliens.get("歌者");
-    if (singer && !singer.unlocked) {
-      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("1万光年远镜") ||
-                        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("太阳波放大器50光年") ||
-                        this.year >= 150 ||
-                        this.hasFlag("singer_contact");
-      if (condition) {
-        singer.unlocked = true;
-        this.addHistory(`【探索信道解锁】深空观测站捕获到高频光粒波段信号，成功建立与异星文明「歌者」的通信信道！`);
-      }
-    }
+    tryDiscoverAndContact(
+      singer,
+      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("1万光年远镜") ||
+        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("太阳波放大器50光年") ||
+        this.year >= 150 ||
+        this.hasFlag("singer_contact"),
+      `【探索信道解锁】深空观测站捕获到高频光粒波段信号，成功建立与异星文明「歌者」的通信信道！`
+    );
 
     const ring = this.alienCiviManager.aliens.get("魔戒");
-    if (ring && !ring.unlocked) {
-      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("宇宙社会学") ||
-                        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船") ||
-                        this.earthCivi.starIndices.has(10) ||
-                        this.earthCivi.starIndices.has(11) ||
-                        this.hasFlag("ring_contact");
-      if (condition) {
-        ring.unlocked = true;
-        this.addHistory(`【探索信道解锁】探索飞船在太阳系边缘发现四维空间碎块及墓地遗迹，成功解密与异星生命「魔戒」的通信信道！`);
-      }
-    }
+    tryDiscoverAndContact(
+      ring,
+      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("宇宙社会学") ||
+        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船") ||
+        this.earthCivi.starIndices.has(10) ||
+        this.earthCivi.starIndices.has(11) ||
+        this.hasFlag("ring_contact"),
+      `【探索信道解锁】探索飞船在太阳系边缘发现四维空间碎块及墓地遗迹，成功解密与异星生命「魔戒」的通信信道！`
+    );
 
     const fringe = this.alienCiviManager.aliens.get("边缘世界");
-    if (fringe && !fringe.unlocked) {
-      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("99%光速飞船") ||
-                        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("引力波广播系统") ||
-                        this.epoch >= EpochType.BROADCAST ||
-                        this.hasFlag("fringe_contact");
-      if (condition) {
-        fringe.unlocked = true;
-        this.addHistory(`【探索信道解锁】引力波天线捕获到正在与三体文明交战的敌对势力讯号，建立通信信道：「边缘世界」！`);
-      }
-    }
+    tryDiscoverAndContact(
+      fringe,
+      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("99%光速飞船") ||
+        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("引力波广播系统") ||
+        this.epoch >= EpochType.BROADCAST ||
+        this.hasFlag("fringe_contact"),
+      `【探索信道解锁】引力波天线捕获到正在与三体文明交战的敌对势力讯号，建立通信信道：「边缘世界」！`
+    );
 
     const zeroers = this.alienCiviManager.aliens.get("归零者");
-    if (zeroers && !zeroers.unlocked) {
-      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("归零者研究") ||
-                        this.hasFlag("zeroers_contact") ||
-                        this.year >= 280;
-      if (condition) {
-        zeroers.unlocked = true;
-        this.addHistory(`【探索信道解锁】检测到全宇宙广播的终极归零重置宣言，成功接入神级文明通信信道：「归零者」！`);
-      }
-    }
+    tryDiscoverAndContact(
+      zeroers,
+      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("归零者研究") ||
+        this.hasFlag("zeroers_contact") ||
+        this.year >= 280,
+      `【探索信道解锁】检测到全宇宙广播的终极归零重置宣言，成功接入神级文明通信信道：「归零者」！`
+    );
 
     const carbon = this.alienCiviManager.aliens.get("碳基联邦");
-    if (carbon && !carbon.unlocked) {
-      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150;
-      if (condition) {
-        carbon.unlocked = true;
-        this.addHistory(`【探索信道解锁】银河系远镜捕捉到了古老的硅碳大战残余遗迹波段，成功接入「碳基联邦」通信信道！`);
-      }
-    }
+    tryDiscoverAndContact(
+      carbon,
+      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150,
+      `【探索信道解锁】银河系远镜捕捉到了古老的硅碳大战残余遗迹波段，成功接入「碳基联邦」通信信道！`
+    );
 
     const silicon = this.alienCiviManager.aliens.get("硅基帝国");
-    if (silicon && !silicon.unlocked) {
-      const condition = this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150;
-      if (condition) {
-        silicon.unlocked = true;
-        this.addHistory(`【探索信道解锁】银河系远镜捕捉到了高强度无机计算矩阵波动，成功接入「硅基帝国」通信信道！`);
-      }
-    }
+    tryDiscoverAndContact(
+      silicon,
+      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150,
+      `【探索信道解锁】银河系远镜捕捉到了高强度无机计算矩阵波动，成功接入「硅基帝国」通信信道！`
+    );
 
     const god = this.alienCiviManager.aliens.get("上帝文明");
-    if (god && !god.unlocked) {
-      const condition = this.epoch >= EpochType.GALAXY && this.year >= 250;
-      if (condition) {
-        god.unlocked = true;
-        this.addHistory(`【探索信道解锁】深空舰队遭遇了正在衰亡的古老文明秋林，成功接入「上帝文明」通信信道！`);
-      }
-    }
+    tryDiscoverAndContact(
+      god,
+      this.epoch >= EpochType.GALAXY && this.year >= 250,
+      `【探索信道解锁】深空舰队遭遇了正在衰亡的古老文明秋林，成功接入「上帝文明」通信信道！`
+    );
 
     const quantum = this.alienCiviManager.aliens.get("量子态文明");
-    if (quantum && !quantum.unlocked) {
-      const condition = this.epoch >= EpochType.GALAXY && this.year >= 250;
-      if (condition) {
-        quantum.unlocked = true;
-        this.addHistory(`【探索信道解锁】物理学家观测到了呈现文明特征的宏观量子涨落，成功接入「量子态文明」通信信道！`);
-      }
-    }
+    tryDiscoverAndContact(
+      quantum,
+      this.epoch >= EpochType.GALAXY && this.year >= 250,
+      `【探索信道解锁】物理学家观测到了呈现文明特征的宏观量子涨落，成功接入「量子态文明」通信信道！`
+    );
   }
 
   public updateCiviLevel(oldCulture: number): void {
@@ -1479,7 +1499,8 @@ export class GameInstance {
       }
       if (unlocked.has('unlocked_victory_CONQUEST')) {
         for (const alien of this.instance.alienCiviManager.aliens.values()) {
-          alien.unlocked = true;
+          // 二周目征服奖励：仅让所有文明被"发现"（可观测），但不自动建立外交通信
+          alien.discovered = true;
         }
       }
       if (unlocked.has('unlocked_victory_DARK_DOMAIN')) {

@@ -49,6 +49,9 @@ export class StarManager {
       earth.found = true;
       earth.populationLimit = 1000;
       earth.currentPopulation = 100;
+      // 地球初始已有基础建筑：采矿场和工厂
+      earth.hasStope = true;
+      earth.hasFactory = true;
     }
   }
 

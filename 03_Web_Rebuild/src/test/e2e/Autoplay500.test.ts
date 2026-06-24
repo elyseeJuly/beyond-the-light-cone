@@ -39,6 +39,7 @@ function processAllEvents(game: Game): void {
  */
 function runSingleTurn(game: Game): boolean {
   const yearBefore = game.year;
+  game.earthCivi.isAiBrainEnabled = true;
   game.runARound();
   // If events are blocking, process them until year advances
   if (game.currentEvent || game.eventQueue.length > 0) {

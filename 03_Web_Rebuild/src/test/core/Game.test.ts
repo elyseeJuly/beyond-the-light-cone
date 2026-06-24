@@ -309,6 +309,7 @@ describe('Game Core Extended', () => {
       const geZhe = game.alienCiviManager.aliens.get('歌者');
       if (geZhe && !geZhe.isDieOut()) {
         geZhe.starIndices.add(1000);
+        geZhe.contacted = true;
         const before = geZhe.friendshipType;
         const msg = game.conductDiplomacy('歌者', 'negotiate');
         expect(msg).toContain('关系提升');
@@ -321,6 +322,7 @@ describe('Game Core Extended', () => {
       const geZhe = game.alienCiviManager.aliens.get('歌者');
       if (geZhe && !geZhe.isDieOut()) {
         geZhe.starIndices.add(1000);
+        geZhe.contacted = true;
         const msg = game.conductDiplomacy('歌者', 'trade');
         expect(msg).toContain('不足以');
       }
@@ -331,6 +333,7 @@ describe('Game Core Extended', () => {
       const geZhe = game.alienCiviManager.aliens.get('歌者');
       if (geZhe && !geZhe.isDieOut()) {
         geZhe.starIndices.add(1000);
+        geZhe.contacted = true;
         const msg = game.conductDiplomacy('歌者', 'trade');
         expect(msg).toContain('贸易交换');
       }
@@ -340,6 +343,7 @@ describe('Game Core Extended', () => {
       const geZhe = game.alienCiviManager.aliens.get('歌者');
       if (geZhe && !geZhe.isDieOut()) {
         geZhe.starIndices.add(1000);
+        geZhe.contacted = true;
         geZhe.friendshipType = FriendshipType.NORMAL;
         game.conductDiplomacy('歌者', 'provoke');
         expect(geZhe.friendshipType).toBe(FriendshipType.ANGRY);
@@ -350,6 +354,7 @@ describe('Game Core Extended', () => {
       const geZhe = game.alienCiviManager.aliens.get('歌者');
       if (geZhe && !geZhe.isDieOut()) {
         geZhe.starIndices.add(1000);
+        geZhe.contacted = true;
         game.conductDiplomacy('歌者', 'negotiate');
         expect(geZhe.diplomacyCooldown).toBe(3);
         const msg = game.conductDiplomacy('歌者', 'negotiate');
@@ -361,6 +366,7 @@ describe('Game Core Extended', () => {
       const geZhe = game.alienCiviManager.aliens.get('歌者');
       if (geZhe && !geZhe.isDieOut()) {
         geZhe.starIndices.add(1000);
+        geZhe.contacted = true;
         const msg = game.conductDiplomacy('歌者', 'weird_action');
         expect(msg).toContain('未知的外交行动');
       }
@@ -504,6 +510,7 @@ describe('Game Core Extended', () => {
 
   describe('runARound 流程', () => {
     it('正常推进回合 年份+1', () => {
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       while (game.currentEvent) {
         game.applyEventEffect(0);
@@ -536,6 +543,7 @@ describe('Game Core Extended', () => {
       
       game.eventManager.events = [milestoneEvent as any];
       
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       
       // The event should be pushed to the eventQueue since dialogNodes.length > 0
@@ -565,6 +573,7 @@ describe('Game Core Extended', () => {
       };
       
       game.eventManager.events = [choiceEvent as any];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       
       expect(game.currentEvent).not.toBeNull();
@@ -611,6 +620,7 @@ describe('Game Core Extended', () => {
       game.eventManager.randomEvents = [];
 
       const beforeFleets = sanTi.fleets.length;
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
 
       expect(sanTi.fleets.length).toBeGreaterThan(beforeFleets);

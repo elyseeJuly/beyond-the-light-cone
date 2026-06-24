@@ -328,6 +328,7 @@ describe('Edge Cases', () => {
       game.eventManager.events = [];
       game.eventManager.filteredEvents = [];
       game.eventManager.randomEvents = [];
+      game.earthCivi.isAiBrainEnabled = true;
       game.runARound();
       expect(game.year).toBeGreaterThanOrEqual(1);
     });
@@ -346,6 +347,7 @@ describe('Edge Cases', () => {
       game.eventManager.randomEvents = [];
 
       // Should not crash
+      game.earthCivi.isAiBrainEnabled = true;
       expect(() => game.runARound()).not.toThrow();
 
       // Year should continue to increment
@@ -379,7 +381,7 @@ describe('Edge Cases', () => {
         { startEpoch: EpochType.BROADCAST, culture: 800, flag: 'bunker_world_completed', expectedEpoch: EpochType.BUNKER },
         { startEpoch: EpochType.BROADCAST, culture: 1199, flag: 'bunker_world_completed', expectedEpoch: EpochType.BUNKER },
         { startEpoch: EpochType.BUNKER, culture: 1200, flag: 'galaxy_exodus_seen', expectedEpoch: EpochType.GALAXY },
-        { startEpoch: EpochType.GALAXY, culture: 2500, flag: null, expectedEpoch: EpochType.STARDUST },
+        { startEpoch: EpochType.GALAXY, culture: 2500, flag: 'zero_homer_contacted', expectedEpoch: EpochType.STARDUST },
       ];
 
       for (const { startEpoch, culture, flag, expectedEpoch } of boundaries) {

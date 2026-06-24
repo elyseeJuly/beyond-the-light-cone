@@ -26,8 +26,8 @@ export class EarthCivilization extends Civilization {
   public apMax: number = 100;
   /** 当前可用指令点 */
   public apCurrent: number = 100;
-  /** AI 智脑是否开启（true = 自动驾驶，false = 手动模式） */
-  public isAiBrainEnabled: boolean = true;
+  /** AI 智脑是否开启（true = 自动驾驶，false = 手动模式），默认关闭，由玩家主动选择 */
+  public isAiBrainEnabled: boolean = false;
 
   /** 注入的 Game 实例，使用私有字段避免被序列化导致循环引用 */
   #game: Game | null = null;
@@ -535,12 +535,12 @@ export class EarthCivilization extends Civilization {
   private processCulture(game: any): number {
     const culDept = this.departments.get(DepartmentType.CULTURE);
     let leaderBonus = 0;
-    let deptBase = 5;
+    let deptBase = 2;
     if (culDept && culDept.leaderName) {
       const leader = game.personManager.getPerson(culDept.leaderName);
       if (leader) {
-        leaderBonus = Math.floor(leader.social / 5);
-        deptBase += Math.floor(leader.social * 0.5);
+        leaderBonus = Math.floor(leader.social / 8);
+        deptBase += Math.floor(leader.social * 0.10);
       }
     }
 
@@ -550,7 +550,7 @@ export class EarthCivilization extends Civilization {
     else if (tm.isTecFinished(TecTreeType.INFORMATION, "思想钢印Ⅱ")) weight = 4;
     else if (tm.isTecFinished(TecTreeType.INFORMATION, "思想钢印Ⅰ")) weight = 3;
 
-    let cultureGain = Math.floor((this.cultureWorkers + leaderBonus) * weight / 20) + deptBase;
+    let cultureGain = Math.floor((this.cultureWorkers + leaderBonus) * weight / 15) + deptBase;
     cultureGain = Math.min(cultureGain, 100);
     return cultureGain;
   }

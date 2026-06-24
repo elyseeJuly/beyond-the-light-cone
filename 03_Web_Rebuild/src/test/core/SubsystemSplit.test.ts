@@ -97,7 +97,7 @@ describe('EventSystem isolated behavior', () => {
   it('applyNewEffects 解析 spend_ap 效果', () => {
     game.earthCivi.apCurrent = 30;
     game.eventSystem.applyNewEffects([{ type: 'spend_ap', value: 10 }]);
-    expect(game.earthCivi.apCurrent).toBe(25); // AI 模式减半
+    expect(game.earthCivi.apCurrent).toBe(20); // AI 关闭时不减半
   });
 
   it('applyNewEffects 解析 diplomacy 效果', () => {

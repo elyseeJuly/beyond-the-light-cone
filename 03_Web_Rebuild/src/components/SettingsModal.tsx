@@ -75,6 +75,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     }
   };
 
+  const handleExitToMainMenu = () => {
+    if (confirm("确认保存当前进度并返回主菜单吗？")) {
+      GameInstance.saveGame();
+      window.dispatchEvent(new CustomEvent('open-cover-screen'));
+      onClose();
+    }
+  };
+
   // Sync BGM
   useEffect(() => {
     localStorage.setItem('game-bgm-muted', String(bgmMuted));
@@ -331,7 +339,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                 <div className="text-xs font-bold text-white uppercase tracking-wider border-b border-[#243245]/30 pb-2">
                   银河档案馆归档管理器
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <button 
                     onClick={handleSave}
                     className="py-3 rounded border border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] font-bold transition-all cursor-pointer text-center"
@@ -349,6 +357,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                     className="py-3 rounded border border-red-500 bg-red-950/20 text-red-400 hover:bg-red-950/40 font-bold transition-all cursor-pointer text-center"
                   >
                     🔄 重置时间线
+                  </button>
+                  <button 
+                    onClick={handleExitToMainMenu}
+                    className="py-3 rounded border border-yellow-500 bg-yellow-950/20 text-yellow-400 hover:bg-yellow-950/40 font-bold transition-all cursor-pointer text-center"
+                  >
+                    🚪 返回主菜单
                   </button>
                 </div>
               </div>

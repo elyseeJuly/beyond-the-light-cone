@@ -46,6 +46,7 @@ export const StarMap: React.FC = () => {
         console.error("StarMapRenderer failed to init:", err);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update active area in renderer when state changes

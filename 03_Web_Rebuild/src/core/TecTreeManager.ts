@@ -171,4 +171,31 @@ export class TecTreeManager {
     }
     return false;
   }
+
+  /**
+   * 为指定科技节点增加研究进度。若节点已完成或前置节点未完成则返回 false。
+   * 进度达到总工作量时自动标记为完成。
+   */
+  public addProgress(treeType: TecTreeType, nodeName: string, amount: number): boolean {
+    const tree = this.trees.get(treeType);
+    if (!tree) return false;
+    const node = tree.nodes.get(nodeName);
+    if (!node || node.finished) return false;
+
+    const parentFinished = !node.parentName || tree.isFinished(node.parentName);
+    if (!parentFinished) return false;
+
+    if (!node.inResearch) {
+      node.inResearch = true;
+    }
+
+    node.currentWorkload = Math.min(node.totalWorkload, node.currentWorkload + Math.max(0, amount));
+    if (node.currentWorkload >= node.totalWorkload) {
+      node.currentWorkload = node.totalWorkload;
+      node.finished = true;
+      node.inResearch = false;
+      return true;
+    }
+    return false;
+  }
 }

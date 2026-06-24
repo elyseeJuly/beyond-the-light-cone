@@ -209,6 +209,95 @@ export class Game {
     return false;
   }
 
+  /**
+   * AI 智脑托管：自动消耗剩余 AP 维持国家运转
+   * 在 runARound 起始阶段按需调用
+   */
+  public runAIBrain(): void {
+    if (!this.earthCivi.isAiBrainEnabled) return;
+
+    const civi = this.earthCivi;
+    const actions: string[] = [];
+
+    if (civi.isResearchIdle() && civi.apCurrent >= 10) {
+      const best = civi.pickBestResearch();
+      if (best) {
+        civi.setResearchTarget(best.tree, best.node, false);
+        civi.apCurrent = Math.max(0, civi.apCurrent - 10);
+        actions.push(`🤖 [AI智脑] 已自动将科研重心转移至『${best.node}』`);
+      }
+    }
+
+    if (civi.resource < 50 && civi.miningRatio < 60 && civi.apCurrent >= 5) {
+      const available = 100 - civi.miningRatio - civi.factoryRatio - civi.cultureRatio;
+      const boost = Math.min(10, Math.max(0, available));
+      if (boost > 0) {
+        civi.miningRatio += boost;
+        const reduce = Math.min(boost, civi.cultureRatio);
+        civi.cultureRatio -= reduce;
+        civi.apCurrent = Math.max(0, civi.apCurrent - 5);
+        civi.allocateWorkers();
+        actions.push(`🤖 [AI智脑] 资源紧张，已自动将采矿比例提升至 ${civi.miningRatio}%`);
+      }
+    }
+
+    if (civi.economy < 50 && civi.factoryRatio < 50 && civi.apCurrent >= 5) {
+      const available = 100 - civi.miningRatio - civi.factoryRatio - civi.cultureRatio;
+      const boost = Math.min(10, Math.max(0, available));
+      if (boost > 0) {
+        civi.factoryRatio += boost;
+        const reduce = Math.min(boost, civi.cultureRatio);
+        civi.cultureRatio -= reduce;
+        civi.apCurrent = Math.max(0, civi.apCurrent - 5);
+        civi.allocateWorkers();
+        actions.push(`🤖 [AI智脑] 经济低迷，已自动将工厂比例提升至 ${civi.factoryRatio}%`);
+      }
+    }
+
+    let hasEmptyDept = false;
+    for (const dept of civi.departments.values()) {
+      if (!dept.leaderName) { hasEmptyDept = true; break; }
+    }
+    if (hasEmptyDept && civi.apCurrent >= 5) {
+      civi.autoAssignMinisters(this);
+      civi.apCurrent = Math.max(0, civi.apCurrent - 5);
+      actions.push(`🤖 [AI智脑] 已自动补全部门首长空缺`);
+    }
+
+    for (const action of actions) {
+      this.tickerMessages.push(action);
+    }
+    if (actions.length > 0 && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ticker-message-added'));
+    }
+  }
+
+  /** 获取手动模式下的回合阻断原因列表 */
+  public getTurnBlockers(): string[] {
+    const blockers: string[] = [];
+    const civi = this.earthCivi;
+
+    if (civi.isResearchIdle()) {
+      blockers.push('科研停滞：至少有一个科技树未设置研究目标');
+    }
+
+    for (const dept of civi.departments.values()) {
+      if (!dept.leaderName) {
+        blockers.push(`首长空缺：${dept.name} 尚未任命负责人`);
+        break;
+      }
+    }
+
+    if (civi.resource <= 10) {
+      blockers.push('资源崩盘：资源储备即将耗尽');
+    }
+    if (civi.economy <= 10) {
+      blockers.push('经济危机：经济产出濒临崩溃');
+    }
+
+    return blockers;
+  }
+
   public runARound(): void {
     if (this.isGameOver && !this.isObserverMode) return;
 
@@ -221,6 +310,21 @@ export class Game {
       console.warn("Turn blocked by processing lock");
       return;
     }
+
+    if (!this.earthCivi.isAiBrainEnabled) {
+      const blockers = this.getTurnBlockers();
+      if (blockers.length > 0) {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('turn-blocked', {
+            detail: { blockers }
+          }));
+        }
+        this.addHistory("⚠ 回合被阻断：存在需要手动处理的紧急事务。");
+        return;
+      }
+    }
+
+    this.runAIBrain();
 
     // 录入当前回合的存档快照，用于命运分歧点回溯
     if (!this.turnHistory) this.turnHistory = [];

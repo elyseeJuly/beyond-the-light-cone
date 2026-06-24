@@ -3,9 +3,13 @@ import starsData from "../data/stars.json";
 import { generateStars } from "./StarGenerator";
 import { StarArea } from "../types/enums";
 import { STAR_INDEX } from "../config/starIndices";
+import { Barback, createBarback } from "./Barback";
 
 export class StarManager {
   public stars: Map<number, Star> = new Map();
+
+  /** 星系驻防军映射（id -> Barback） */
+  public barbacks: Map<string, Barback> = new Map();
 
   constructor() {
     this.init();
@@ -20,9 +24,9 @@ export class StarManager {
       star.currentResource = star.totalResource;
       if (data.Distance) star.Distance = data.Distance;
       if (data.starType) star.starType = data.starType;
-      
+
       // Random generation bounds mapping logic goes here if needed
-      
+
       this.stars.set(star.index, star);
     });
 
@@ -72,5 +76,60 @@ export class StarManager {
       if (area === StarArea.GALAXY) return s.index > 200 && s.index <= 1000;
       return false;
     });
+  }
+
+  /** 设置星图状态标记 */
+  public markStarStatus(star: Star, status: 'rebellion' | 'building' | null): void {
+    star.status = status;
+  }
+
+  /**
+   * 在星系启动设施建设。value 作为每回合建设进度，返回是否成功启动。
+   * 支持的 infraType: 'mine'/'stope'、'factory'、'city'。
+   */
+  public buildInfrastructure(star: Star, infraType: string, value: number): boolean {
+    const keyMap: Record<string, string> = {
+      mine: 'stope',
+      stope: 'stope',
+      factory: 'factory',
+      city: 'city',
+    };
+    const key = keyMap[infraType];
+    if (!key) return false;
+
+    // 已有同类型建筑或在建则忽略
+    const alreadyExists =
+      (key === 'stope' && star.hasStope) ||
+      (key === 'factory' && star.hasFactory) ||
+      (key === 'city' && star.hasCity);
+    if (alreadyExists) return false;
+
+    if (!star.buildingProgress) {
+      star.buildingProgress = {};
+    }
+    if (star.buildingProgress[key]) return false;
+
+    const buildPerRound = Math.max(5, value || 10);
+    star.buildingProgress[key] = {
+      currentBuild: 0,
+      totalBuild: Math.max(50, buildPerRound * 5),
+      buildPerRound,
+    };
+    return true;
+  }
+
+  /**
+   * 获取星系的驻防力量。优先返回已注册的 Barback，否则根据星系人口/归属创建临时卫戍军。
+   */
+  public getStarDefenseForce(star: Star): Barback | null {
+    if (star.barbackId) {
+      const barback = this.barbacks.get(star.barbackId);
+      if (barback) return barback;
+    }
+    if (!star.belongToCivi) return null;
+
+    const def = createBarback(`def_${star.index}`, star.index);
+    def.soldierCount = Math.max(20, Math.floor(star.currentPopulation * 0.2));
+    return def;
   }
 }

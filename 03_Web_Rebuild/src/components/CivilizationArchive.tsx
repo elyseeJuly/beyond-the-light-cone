@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { GameInstance } from '../core/Game';
 import timelineData from '../data/timeline.json';
 import { Clock, BookOpen, Flag, Cpu, Globe, Award, Sparkles, AlertCircle } from 'lucide-react';
@@ -14,10 +14,10 @@ export const CivilizationArchive: React.FC = () => {
   const game = GameInstance.get();
   const earth = game.earthCivi;
 
-  const updateArchive = () => {
+  const updateArchive = useCallback(() => {
     setPlayerTimeline([...game.playerTimeline]);
     setCurrentYear(game.year);
-  };
+  }, [game]);
 
   useEffect(() => {
     updateArchive();
@@ -27,7 +27,7 @@ export const CivilizationArchive: React.FC = () => {
       window.removeEventListener('game-turn-complete', updateArchive);
       window.removeEventListener('game-loaded', updateArchive);
     };
-  }, []);
+  }, [updateArchive]);
 
   // Filter for Major Events (includes epoch transitions and CG events)
   const majorEvents = useMemo(() => {
@@ -67,7 +67,7 @@ export const CivilizationArchive: React.FC = () => {
       }
     }
     return list;
-  }, [earth?.tecTreeManager, currentYear]);
+  }, [earth]);
 
   // Discovered Civs
   const discoveredCivs = useMemo(() => {
@@ -80,7 +80,7 @@ export const CivilizationArchive: React.FC = () => {
       isDead: alien.isDieOut(),
       population: alien.population
     }));
-  }, [game.alienCiviManager, currentYear]);
+  }, [game.alienCiviManager]);
 
   // Achievements based on flags
   const achievements = useMemo(() => {
@@ -93,7 +93,7 @@ export const CivilizationArchive: React.FC = () => {
       { id: 'safety', name: '安全回声', desc: '发布宇宙安全声明，构建星系黑域', unlocked: game.hasFlag('safety_declaration') || game.hasFlag('black_domain_completed') }
     ];
     return list;
-  }, [playerTimeline]);
+  }, [game]);
 
   const getTabStyle = (tab: ArchiveTab) => {
     return activeTab === tab

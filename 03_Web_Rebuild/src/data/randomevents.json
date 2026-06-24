@@ -20,6 +20,14 @@
         "avatarUrl": "dingyi",
         "content": "我们在高能物理实验中发现了一个有趣的现象，虽然智子封锁了宏观规律，但微观层面的扰动给了我们新的启发！"
       }
+    ],
+    "effects": [
+      {
+        "type": "rush_tech",
+        "target": "物理",
+        "value": 50,
+        "techAmount": 50
+      }
     ]
   },
   {

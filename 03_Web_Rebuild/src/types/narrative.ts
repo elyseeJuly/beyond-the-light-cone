@@ -22,9 +22,24 @@ export interface DialogNode {
 }
 
 export interface EventEffectDef {
-  type: 'resource' | 'flag' | 'event_effect' | 'techtree' | 'diplomacy' | 'population';
+  type:
+    | 'resource'
+    | 'flag'
+    | 'event_effect'
+    | 'techtree'
+    | 'diplomacy'
+    | 'population'
+    | 'unlock_person'
+    | 'spawn_barback'
+    | 'lock_ratio'
+    | 'rush_tech'
+    | 'build_infrastructure';
   target: string;
   value: number;
+  // 实体化效果扩展字段
+  targetStarIndex?: number;
+  duration?: number;
+  techAmount?: number;
 }
 
 export interface EventChoice {
@@ -34,6 +49,7 @@ export interface EventChoice {
   value?: number;
   effects?: EventEffectDef[];
   flags?: string[];
+  apCost?: number;
 }
 
 export interface GameEventPayload {

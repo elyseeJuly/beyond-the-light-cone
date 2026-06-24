@@ -97,6 +97,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
       audio!.pause();
       audio!.src = '';
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [epoch, customBgmPath]);
 
   // Update volume / mute settings

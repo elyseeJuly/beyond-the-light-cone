@@ -49,7 +49,7 @@ describe('SaveLoad - 存档往返', () => {
 
       const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
       const parsed = JSON.parse(raw);
-      expect(parsed.version).toBe(3);
+      expect(parsed.version).toBe(4);
       expect(parsed.data).toBeTruthy();
       expect(parsed.timestamp).toBeTypeOf('number');
     });

@@ -29,6 +29,8 @@ const TechUnlockModal = lazy(() => import('./components/TechUnlockModal').then(m
 const MuseumGallery = lazy(() => import('./components/MuseumGallery').then(m => ({ default: m.MuseumGallery })));
 const SettingsModal = lazy(() => import('./components/SettingsModal').then(m => ({ default: m.SettingsModal })));
 const OrientationPrompt = lazy(() => import('./components/OrientationPrompt').then(m => ({ default: m.OrientationPrompt })));
+const GameCoverScreen = lazy(() => import('./components/GameCoverScreen').then(m => ({ default: m.GameCoverScreen })));
+import { SaveManager } from './core/SaveManager';
 
 const LazyFallback: React.FC = () => (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#070B14]/80" />
@@ -39,7 +41,8 @@ export const App: React.FC = () => {
   const [currentEvent, setCurrentEvent] = useState<GameEventPayload | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showMuseum, setShowMuseum] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(() => !localStorage.getItem('game-tutorial-seen'));
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [showCoverScreen, setShowCoverScreen] = useState(true);
   const [showFleetModal, setShowFleetModal] = useState(false);
   const [showBattleScreen, setShowBattleScreen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -53,7 +56,12 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     preloadCoreImages();
-    const handleOpenTutorial = () => setShowTutorial(true);
+    const handleOpenTutorial = () => {
+      if (localStorage.getItem('game-tutorial-seen') !== 'true') {
+        setShowTutorial(true);
+      }
+    };
+    const handleOpenCoverScreen = () => setShowCoverScreen(true);
     const handleOpenFleetModal = () => setShowFleetModal(true);
     const handleBattleTriggered = () => setShowBattleScreen(true);
     const handleOpenSettings = () => setShowSettings(true);
@@ -90,6 +98,7 @@ export const App: React.FC = () => {
     };
 
     window.addEventListener('open-tutorial', handleOpenTutorial);
+    window.addEventListener('open-cover-screen', handleOpenCoverScreen);
     window.addEventListener('open-fleet-modal', handleOpenFleetModal);
     window.addEventListener('battle-triggered', handleBattleTriggered);
     window.addEventListener('open-settings', handleOpenSettings);
@@ -102,6 +111,7 @@ export const App: React.FC = () => {
 
     return () => {
       window.removeEventListener('open-tutorial', handleOpenTutorial);
+      window.removeEventListener('open-cover-screen', handleOpenCoverScreen);
       window.removeEventListener('open-fleet-modal', handleOpenFleetModal);
       window.removeEventListener('battle-triggered', handleBattleTriggered);
       window.removeEventListener('open-settings', handleOpenSettings);
@@ -341,13 +351,41 @@ export const App: React.FC = () => {
 
           {/* Story Modal - Rendered globally */}
           <Suspense fallback={<LazyFallback />}>
+            {showCoverScreen && (
+              <GameCoverScreen
+                hasSave={SaveManager.hasSave()}
+                onStartNewGame={(withTutorial) => {
+                  GameInstance.reset();
+                  if (!withTutorial) {
+                    localStorage.setItem('game-tutorial-seen', 'true');
+                  } else {
+                    localStorage.removeItem('game-tutorial-seen');
+                  }
+                  setShowCoverScreen(false);
+                }}
+                onContinueGame={() => {
+                  const success = GameInstance.loadGame();
+                  if (success) {
+                    setShowCoverScreen(false);
+                  } else {
+                    alert('无法读取存档！');
+                  }
+                }}
+                onOpenArchive={() => {
+                  if (SaveManager.hasSave()) {
+                    GameInstance.loadGame();
+                  }
+                  setActiveView('archive');
+                  setShowCoverScreen(false);
+                }}
+              />
+            )}
             {currentEvent && (
               <StoryModal
                 event={currentEvent}
                 onClose={() => {
                   GameInstance.get().currentEvent = null;
                   GameInstance.get().processNextEvent();
-                  window.dispatchEvent(new CustomEvent('game-turn-complete'));
                 }}
               />
             )}

@@ -116,6 +116,7 @@ describe('EarthCivilization', () => {
 
   it('威慑度衰减：高威慑度时衰减更快（比例衰减）', () => {
     const e = game.earthCivi;
+    game.rng = () => 0.9;
     e.deterrenceValue = 100;
     // 记录衰减后的值
     e.runARound();
@@ -127,6 +128,7 @@ describe('EarthCivilization', () => {
 
   it('威慑度衰减：面壁者可以减缓衰减', () => {
     const e = game.earthCivi;
+    game.rng = () => 0.9;
     e.deterrenceValue = 100;
     // 添加一个面壁者
     e.addWallfacer('罗辑');
@@ -138,6 +140,7 @@ describe('EarthCivilization', () => {
 
   it('威慑度衰减：执剑人额外减缓衰减', () => {
     const e = game.earthCivi;
+    game.rng = () => 0.9;
     e.deterrenceValue = 100;
     e.swordholder = '罗辑';
     e.runARound();
@@ -148,6 +151,7 @@ describe('EarthCivilization', () => {
 
   it('面壁者威慑增益：相比旧版大幅降低', () => {
     const e = game.earthCivi;
+    game.rng = () => 0.9;
     e.deterrenceValue = 0;
     e.addWallfacer('罗辑');
     game.personManager.unlockPerson('罗辑');

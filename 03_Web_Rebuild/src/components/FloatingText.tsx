@@ -5,6 +5,7 @@ interface Floater {
   value: number;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useFloatingText = () => {
   const [floaters, setFloaters] = useState<Floater[]>([]);
 

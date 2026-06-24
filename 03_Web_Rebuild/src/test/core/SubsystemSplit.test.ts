@@ -117,7 +117,7 @@ describe('PopulationSystem isolated behavior', () => {
   });
 
   it('getEarthPopulationCapacity 返回基础值', () => {
-    expect(game.populationSystem.getEarthPopulationCapacity()).toBe(300);
+    expect(game.populationSystem.getEarthPopulationCapacity()).toBe(1000);
   });
 
   it('getTotalPopulationCapacity 包含殖民地容量', () => {
@@ -127,7 +127,7 @@ describe('PopulationSystem isolated behavior', () => {
       star.belongToCivi = '地球';
       star.hasCity = true;
       star.populationLimit = 100;
-      expect(game.populationSystem.getTotalPopulationCapacity()).toBe(300 + 300);
+      expect(game.populationSystem.getTotalPopulationCapacity()).toBe(1000 + 300);
     }
   });
 

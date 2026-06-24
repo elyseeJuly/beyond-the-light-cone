@@ -34,11 +34,13 @@ describe('SaveManager', () => {
 
   it('load 损坏数据抛出 SaveDataCorruptedError', () => {
     localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify({
-      version: 3,
+      version: 4,
       timestamp: Date.now(),
       signature: 0,
       data: '{"corrupted": true}',
     }));
+    // 清除内存缓存以强制从 localStorage 读取
+    SaveManager.resetCache();
     expect(() => SaveManager.load()).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.load()).toThrow('哈希校验失败');
   });
@@ -48,8 +50,10 @@ describe('SaveManager', () => {
     SaveManager.save(() => JSON.stringify(gameData));
     const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
     const parsed = JSON.parse(raw);
-    parsed.version = 4;
+    parsed.version = 5;
     localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify(parsed));
+    // 清除内存缓存以强制从 localStorage 读取
+    SaveManager.resetCache();
     expect(() => SaveManager.load()).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.load()).toThrow('存档版本不兼容');
   });
@@ -88,8 +92,8 @@ describe('SaveManager', () => {
     expect(SaveManager.load()).toBeNull();
   });
 
-  it('SAVE_VERSION 是 3', () => {
-    expect(SaveManager.SAVE_VERSION).toBe(3);
+  it('SAVE_VERSION 是 4', () => {
+    expect(SaveManager.SAVE_VERSION).toBe(4);
   });
 
   it('load 无效 JSON 抛出 SaveDataCorruptedError', () => {
@@ -107,11 +111,12 @@ describe('SaveManager', () => {
 
   it('load 空数据抛出 SaveDataCorruptedError', () => {
     localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify({
-      version: 3,
+      version: 4,
       timestamp: Date.now(),
       signature: 12345,
       data: '',
     }));
+    SaveManager.resetCache();
     expect(() => SaveManager.load()).toThrow(SaveDataCorruptedError);
   });
 
@@ -121,6 +126,7 @@ describe('SaveManager', () => {
     const parsed = JSON.parse(raw);
     parsed.data = JSON.stringify({ year: 999 });
     localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify(parsed));
+    SaveManager.resetCache();
     expect(() => SaveManager.load()).toThrow('哈希校验失败');
   });
 
@@ -210,8 +216,10 @@ describe('Version Compatibility', () => {
     SaveManager.saveToSlot('slot1', () => JSON.stringify(data));
     const raw = localStorage.getItem('LegendOfUni_Save_slot1')!;
     const parsed = JSON.parse(raw);
-    parsed.version = 4;
+    parsed.version = 5;
     localStorage.setItem('LegendOfUni_Save_slot1', JSON.stringify(parsed));
+    // 清除内存缓存以强制从 localStorage 读取
+    SaveManager.resetCache();
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow('存档版本不兼容');
   });
@@ -223,6 +231,7 @@ describe('Version Compatibility', () => {
       signature: 0,
       data: JSON.stringify({ year: 10 }),
     }));
+    SaveManager.resetCache();
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow('存档版本不兼容');
   });
@@ -241,17 +250,19 @@ describe('Hash/Signature Verification', () => {
     const parsed = JSON.parse(raw);
     parsed.data = JSON.stringify({ year: 999 });
     localStorage.setItem('LegendOfUni_Save_slot1', JSON.stringify(parsed));
+    SaveManager.resetCache();
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow(SaveDataCorruptedError);
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow('哈希校验失败');
   });
 
   it('空数据字符串签名不通过', () => {
     localStorage.setItem('LegendOfUni_Save_slot1', JSON.stringify({
-      version: 3,
+      version: 4,
       timestamp: Date.now(),
       signature: 12345,
       data: '',
     }));
+    SaveManager.resetCache();
     expect(() => SaveManager.loadFromSlot('slot1')).toThrow(SaveDataCorruptedError);
   });
 });

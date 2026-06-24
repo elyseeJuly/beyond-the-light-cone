@@ -20,6 +20,9 @@ export interface Star {
 
   departmentName: string | null;
 
+  /** 星图状态标记：rebellion（叛乱）、building（建设中）等 */
+  status?: 'rebellion' | 'building' | null;
+
   Distance?: number;
   starType?: string;
 }

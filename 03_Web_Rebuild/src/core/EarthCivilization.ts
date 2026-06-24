@@ -21,6 +21,14 @@ export class EarthCivilization extends Civilization {
   public swordholder: string | null = null;
   public swordholderHandoverTurn: boolean = false;
   public departments: Map<DepartmentType, Department> = new Map();
+
+  /** 执政指令点上限 */
+  public apMax: number = 100;
+  /** 当前可用指令点 */
+  public apCurrent: number = 100;
+  /** AI 智脑是否开启（true = 自动驾驶，false = 手动模式） */
+  public isAiBrainEnabled: boolean = true;
+
   /** 注入的 Game 实例，使用私有字段避免被序列化导致循环引用 */
   #game: Game | null = null;
 
@@ -29,11 +37,134 @@ export class EarthCivilization extends Civilization {
   }
 
   public techResearchQueue: Map<TecTreeType, string> = new Map();
-  public setResearchTarget(treeType: TecTreeType, nodeName: string): void {
+  /** 获取有首长的部门数量加成 */
+  public getDepartmentBonus(): number {
+    let bonus = 0;
+    for (const dept of this.departments.values()) {
+      if (dept.leaderName) bonus += 5;
+    }
+    return bonus;
+  }
+
+  /** 检查是否有足够 AP，AI 模式下始终返回 true */
+  public canSpendAP(cost: number): boolean {
+    if (this.isAiBrainEnabled) return true;
+    return this.apCurrent >= cost;
+  }
+
+  /** 消耗 AP，如果 AP 不足且手动模式返回 false，否则扣除并返回 true */
+  public spendAP(cost: number): boolean {
+    if (!this.canSpendAP(cost)) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('ap-insufficient', {
+          detail: { required: cost, current: this.apCurrent }
+        }));
+      }
+      return false;
+    }
+    if (!this.isAiBrainEnabled) {
+      this.apCurrent = Math.max(0, this.apCurrent - cost);
+    } else {
+      this.apCurrent = Math.max(0, this.apCurrent - Math.floor(cost * 0.5));
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ap-changed'));
+    }
+    return true;
+  }
+
+  /** 回合开始时恢复 AP */
+  public recoverAP(): void {
+    const baseRecovery = 30;
+    const departmentBonus = this.getDepartmentBonus();
+    const cultureBonus = Math.floor(this.culture / 100);
+    this.apCurrent = Math.min(this.apMax, this.apCurrent + baseRecovery + departmentBonus + cultureBonus);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ap-changed'));
+    }
+  }
+
+  public setResearchTarget(treeType: TecTreeType, nodeName: string, costAP: boolean = true): boolean {
+    if (costAP && !this.spendAP(20)) return false;
     this.techResearchQueue.set(treeType, nodeName);
+    return true;
   }
   public getResearchTarget(treeType: TecTreeType): string | null {
     return this.techResearchQueue.get(treeType) || null;
+  }
+
+  /** 手动调整工种比例，消耗 10 AP */
+  public adjustWorkerRatio(type: 'mining' | 'factory' | 'culture', delta: number): boolean {
+    if (!this.spendAP(10)) return false;
+
+    const applyLock = (ratio: number, lockType: 'mining' | 'factory' | 'culture') => {
+      for (const lock of this.ratioLocks) {
+        if (lock.type === lockType && ratio > lock.max) return lock.max;
+      }
+      return ratio;
+    };
+
+    if (type === 'mining') {
+      this.miningRatio = Math.max(0, Math.min(100, applyLock(this.miningRatio + delta, 'mining')));
+    } else if (type === 'factory') {
+      this.factoryRatio = Math.max(0, Math.min(100, applyLock(this.factoryRatio + delta, 'factory')));
+    } else if (type === 'culture') {
+      this.cultureRatio = Math.max(0, Math.min(100, applyLock(this.cultureRatio + delta, 'culture')));
+    }
+
+    const total = this.miningRatio + this.factoryRatio + this.cultureRatio;
+    if (total > 100) {
+      const over = total - 100;
+      if (type !== 'mining' && this.miningRatio > 0) {
+        this.miningRatio = Math.max(0, this.miningRatio - over);
+      } else if (type !== 'factory' && this.factoryRatio > 0) {
+        this.factoryRatio = Math.max(0, this.factoryRatio - over);
+      } else if (type !== 'culture' && this.cultureRatio > 0) {
+        this.cultureRatio = Math.max(0, this.cultureRatio - over);
+      }
+    }
+
+    this.allocateWorkers();
+    return true;
+  }
+
+  /** 判断是否所有科技树都在研究中（无停滞） */
+  public isResearchIdle(): boolean {
+    const tm = this.tecTreeManager;
+    for (const tree of tm.trees.values()) {
+      let hasActive = false;
+      for (const node of tree.nodes.values()) {
+        if (node.inResearch && !node.finished) {
+          hasActive = true;
+          break;
+        }
+      }
+      if (!hasActive) {
+        const target = this.getResearchTarget(
+          Array.from(tm.trees.entries()).find(([, t]) => t === tree)?.[0] as TecTreeType
+        );
+        if (!target) return true;
+      }
+    }
+    return false;
+  }
+
+  /** AI 智脑选择最优科研目标 */
+  public pickBestResearch(): { tree: TecTreeType; node: string } | null {
+    const tm = this.tecTreeManager;
+    let best: { tree: TecTreeType; node: string; cost: number } | null = null;
+
+    for (const [treeType, tree] of tm.trees.entries()) {
+      for (const node of tree.nodes.values()) {
+        if (node.finished) continue;
+        const parentFinished = !node.parentName || tree.isFinished(node.parentName);
+        if (!parentFinished) continue;
+        if (!best || node.cost < best.cost) {
+          best = { tree: treeType, node: node.name, cost: node.cost };
+        }
+      }
+    }
+    return best ? { tree: best.tree, node: best.node } : null;
   }
 
   public setSwordholder(name: string | null): void {
@@ -53,6 +184,9 @@ export class EarthCivilization extends Civilization {
   public miningRatio: number = 30;
   public factoryRatio: number = 30;
   public cultureRatio: number = 30;
+
+  /** 工种比例锁列表：事件强制锁定指定工种比例上限，持续 N 回合 */
+  public ratioLocks: Array<{ type: 'mining' | 'factory' | 'culture'; max: number; duration: number }> = [];
 
   private _rngProvider: RngProvider | null = null;
 
@@ -102,7 +236,13 @@ export class EarthCivilization extends Civilization {
       return;
     }
 
+    this.recoverAP();
     this.allocateWorkers();
+
+    // 每回合减少工种比例锁的剩余回合数
+    this.ratioLocks = this.ratioLocks
+      .map(lock => ({ ...lock, duration: lock.duration - 1 }))
+      .filter(lock => lock.duration > 0);
 
     this.processMining(game);
     this.processFactories(game);
@@ -275,6 +415,17 @@ export class EarthCivilization extends Civilization {
   }
 
   public allocateWorkers(): void {
+    // 应用事件触发的工种比例锁定
+    for (const lock of this.ratioLocks) {
+      if (lock.type === 'mining' && this.miningRatio > lock.max) {
+        this.miningRatio = lock.max;
+      } else if (lock.type === 'factory' && this.factoryRatio > lock.max) {
+        this.factoryRatio = lock.max;
+      } else if (lock.type === 'culture' && this.cultureRatio > lock.max) {
+        this.cultureRatio = lock.max;
+      }
+    }
+
     const total = this.population;
     const totalRatio = this.miningRatio + this.factoryRatio + this.cultureRatio;
     const denom = totalRatio > 0 ? totalRatio : 1;
@@ -474,7 +625,6 @@ export class EarthCivilization extends Civilization {
       for (const node of tree.nodes.values()) {
         if (node.inResearch && !node.finished) {
           let progress = 10 + scienceBonus;
-          if (progress < 5) progress = 5;
           const treacheryFactor = Math.max(1, 100 - this.treachery);
           progress = Math.floor(progress * treacheryFactor / 100);
           if (game.isSophonBlocked()) {

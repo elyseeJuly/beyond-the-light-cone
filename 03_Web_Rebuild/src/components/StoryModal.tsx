@@ -127,7 +127,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
     }, 20);
 
     return () => clearInterval(timer);
-  }, [currentNode, currentNodeIndex, event.id]);
+  }, [currentNode, currentNodeIndex, event.id, event.dialogQueue.length]);
 
   const handleNext = useCallback(() => {
     if (isTyping) {

@@ -550,6 +550,12 @@
         "target": "technological_explosion"
       },
       {
+        "type": "rush_tech",
+        "target": "工程",
+        "value": 200,
+        "techAmount": 200
+      },
+      {
         "type": "resource",
         "target": "culture",
         "value": 50
@@ -852,6 +858,12 @@
         "target": "australia_migration"
       },
       {
+        "type": "lock_ratio",
+        "target": "factory",
+        "value": 50,
+        "duration": 5
+      },
+      {
         "type": "resource",
         "target": "population",
         "value": -15
@@ -1012,6 +1024,12 @@
       {
         "type": "flag",
         "target": "bunker_world_completed"
+      },
+      {
+        "type": "build_infrastructure",
+        "target": "city",
+        "value": 15,
+        "targetStarIndex": 3
       },
       {
         "type": "resource",

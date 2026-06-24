@@ -714,6 +714,17 @@ export class StarMapRenderer {
         this.ctx.fillText(star.name, x - 15, y - radius - 5);
       }
 
+      // Event-driven status indicators (rebellion / building)
+      if (star.status === 'rebellion') {
+        this.ctx.font = "bold 10px Inter, sans-serif";
+        this.ctx.fillStyle = "#FF5252";
+        this.ctx.fillText("⚠ 叛乱", x + radius + 6, y - radius - 22);
+      } else if (star.status === 'building') {
+        this.ctx.font = "bold 10px Inter, sans-serif";
+        this.ctx.fillStyle = "#66BB6A";
+        this.ctx.fillText("🔨 建设", x + radius + 6, y - radius - 22);
+      }
+
       // Anomaly & Ruin markers
       if (star.index > 10 && !star.belongToCivi) {
         this.ctx.font = "9px Inter, sans-serif";

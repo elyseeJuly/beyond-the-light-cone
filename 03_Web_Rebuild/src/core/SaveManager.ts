@@ -93,7 +93,7 @@ export const SAVE_SLOTS = ['autosave', 'slot1', 'slot2', 'slot3'] as const;
 export type SaveSlotId = typeof SAVE_SLOTS[number];
 
 export class SaveManager {
-  public static readonly SAVE_VERSION = 3;
+  public static readonly SAVE_VERSION = 4;
   private static _ready: Promise<void> | null = null;
   private static _migrations = new MigrationRegistry();
 
@@ -113,6 +113,16 @@ export class SaveManager {
       if (data.deterrenceEnduranceRounds === undefined) data.deterrenceEnduranceRounds = 0;
       if (data.dimensionStrikeTriggered === undefined) data.dimensionStrikeTriggered = false;
       if (data.broadcastTriggered === undefined) data.broadcastTriggered = false;
+      return data;
+    });
+
+    // v3 -> v4: AP 指令点与 AI 智脑系统字段
+    this.registerMigration(3, (data: any) => {
+      if (data.earthCivi) {
+        if (data.earthCivi.apMax === undefined) data.earthCivi.apMax = 100;
+        if (data.earthCivi.apCurrent === undefined) data.earthCivi.apCurrent = 100;
+        if (data.earthCivi.isAiBrainEnabled === undefined) data.earthCivi.isAiBrainEnabled = true;
+      }
       return data;
     });
   }

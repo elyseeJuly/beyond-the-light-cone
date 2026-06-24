@@ -310,12 +310,11 @@ describe('异常/边界处理', () => {
     }).not.toThrow();
   });
 
-  it('舰队空武器数组自动装备默认武器', () => {
-    const fleet = createFleet('autoEquip舰队', '地球', 0, 3, 0);
-    fleet.weapons = []; // 触发autoEquip
+  it('舰队空武器数组战力为0', () => {
+    const fleet = createFleet('emptyWeapon舰队', '地球', 0, 3, 0);
+    fleet.weapons = [];
     const power = (CombatEngine as any).calculateFleetPower(fleet);
-    expect(power).toBeGreaterThan(0);
-    expect(fleet.weapons.length).toBeGreaterThan(0);
+    expect(power).toBe(0);
   });
 
   it('军营零士兵但有武器时战力来自武器', () => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward } from 'lucide-react';
+import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Brain, Zap } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 
 interface TopHUDStatItemProps {
@@ -29,8 +29,22 @@ const TopHUDStatItem: React.FC<TopHUDStatItemProps> = ({ icon, label, value, col
 };
 
 export const TopHUD: React.FC = () => {
-  const [updateCount, setUpdateCount] = useState(0);
   const [showStabilityDropdown, setShowStabilityDropdown] = useState(false);
+  const [, forceUpdate] = useState({});
+
+  useEffect(() => {
+    const update = () => forceUpdate({});
+    window.addEventListener('game-turn-complete', update);
+    window.addEventListener('game-state-changed', update);
+    window.addEventListener('ap-changed', update);
+    window.addEventListener('ai-brain-toggled', update);
+    return () => {
+      window.removeEventListener('game-turn-complete', update);
+      window.removeEventListener('game-state-changed', update);
+      window.removeEventListener('ap-changed', update);
+      window.removeEventListener('ai-brain-toggled', update);
+    };
+  }, []);
 
   const stats = useMemo(() => {
     const game = GameInstance.get();
@@ -45,6 +59,10 @@ export const TopHUD: React.FC = () => {
     const res = earth.resource;
     const treachery = earth.treachery;
     const deterrence = Math.floor(earth.deterrenceValue);
+    const apMax = earth.apMax;
+    const apCurrent = earth.apCurrent;
+    const isAiBrainEnabled = earth.isAiBrainEnabled;
+    const turnBlockers = isAiBrainEnabled ? [] : game.getTurnBlockers();
 
     // Dynamic Stability calculation
     let finishedTechs = 0;
@@ -82,13 +100,18 @@ export const TopHUD: React.FC = () => {
       res,
       treachery,
       deterrence,
+      apMax,
+      apCurrent,
+      isAiBrainEnabled,
+      turnBlockers,
       civiLevel: earth.civiLevel,
       civiLevelLabel: earth.getCiviLevelLabel(),
       stability,
       techProgress,
+      hasEvent: game.currentEvent !== null || game.eventQueue.length > 0,
       isGameOver: game.victoryType !== null || game.defeatType !== null
     };
-  }, [updateCount]);
+  }, []);
 
   const stabilityColor = useMemo(() => {
     const s = stats.stability;
@@ -98,21 +121,8 @@ export const TopHUD: React.FC = () => {
     return "text-red-500 animate-pulse";
   }, [stats.stability]);
 
-  useEffect(() => {
-    const refresh = () => setUpdateCount(n => n + 1);
-    window.addEventListener('game-loaded', refresh);
-    window.addEventListener('game-over', refresh);
-    window.addEventListener('game-turn-complete', refresh);
-    return () => {
-      window.removeEventListener('game-loaded', refresh);
-      window.removeEventListener('game-over', refresh);
-      window.removeEventListener('game-turn-complete', refresh);
-    };
-  }, []);
-
   const handleNextTurn = () => {
     GameInstance.get().runARound();
-    setUpdateCount(n => n + 1);
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -216,15 +226,54 @@ export const TopHUD: React.FC = () => {
       </div>
 
       {/* Right: Operations Block */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* AP Display */}
+        <div data-tutorial-id="top-hud-ap" className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-[rgba(138,43,226,0.1)] border border-[rgba(138,43,226,0.3)] rounded">
+          <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-400 stroke-[1.5]" />
+          <div className="flex flex-col items-center">
+            <span className="text-[8px] text-purple-400/70 font-title font-bold uppercase tracking-wider">AP</span>
+            <span className={`text-xs sm:text-sm font-data font-bold ${stats.apCurrent < 20 ? 'text-red-400' : 'text-purple-300'}`}>
+              {stats.apCurrent}/{stats.apMax}
+            </span>
+          </div>
+        </div>
+
+        {/* AI Brain Toggle */}
+        <button
+          onClick={() => {
+            const game = GameInstance.get();
+            game.earthCivi.isAiBrainEnabled = !game.earthCivi.isAiBrainEnabled;
+            window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
+            window.dispatchEvent(new CustomEvent('game-state-changed'));
+          }}
+          data-tutorial-id="btn-ai-brain"
+          className={`flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded border text-[10px] sm:text-xs transition-colors ${
+            stats.isAiBrainEnabled
+              ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300'
+              : 'bg-gray-800/50 border-gray-600/50 text-gray-400'
+          }`}
+          title={stats.isAiBrainEnabled ? 'AI智脑托管中 - 点击切换手动模式' : '手动模式 - 点击切换AI托管'}
+        >
+          <Brain className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />
+          <span className="font-title font-bold hidden sm:inline">
+            {stats.isAiBrainEnabled ? '智脑托管' : '手动'}
+          </span>
+        </button>
+
+        {/* Next Turn Button */}
         <button 
           onClick={handleNextTurn} 
-          disabled={GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver}
+          disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0)}
           data-tutorial-id="btn-next-turn"
-          className={`btn-next-turn flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-1 sm:py-2 text-[10px] sm:text-xs ${(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0 || stats.isGameOver) ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}`}
+          className={`btn-next-turn flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-1 sm:py-2 text-[10px] sm:text-xs ${
+            (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0))
+              ? 'opacity-40 cursor-not-allowed pointer-events-none'
+              : 'cursor-pointer'
+          }`}
+          title={!stats.isAiBrainEnabled && stats.turnBlockers.length > 0 ? stats.turnBlockers[0] : ''}
         >
           <span className="font-title font-bold tracking-wider">
-            {(GameInstance.get().currentEvent !== null || GameInstance.get().eventQueue.length > 0) ? "同步中" : "下一回合"}
+            {stats.hasEvent ? "同步中" : (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) ? "有阻断" : "下一回合"}
           </span>
           <SkipForward size={12} className="sm:hidden stroke-[2.5]" />
           <SkipForward size={14} className="hidden sm:block stroke-[2.5]" />

@@ -296,7 +296,7 @@ export class AlienCivilization extends Civilization {
 
     this.hasDimensionStruck = true;
     this.dimensionStrikeWarningTurns = 5;
-    game.addHistory(`【死神警报】深空雷达侦测到一颗由 ${this.name} 抛出的微小薄膜物体正以光速扑向太阳系！高维空间崩塌倒计时开始：5回合后！`);
+    game.addHistory(`【死神警报】深空雷达侦测到一颗由 ${this.name} 抛出的微小薄膜物体正以光速扑向太阳系！高维空间崩塌倒计时开始：6回合后！`);
   }
 
   private processDimensionStrike(game: any): void {

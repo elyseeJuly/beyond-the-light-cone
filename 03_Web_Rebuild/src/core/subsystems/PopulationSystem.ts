@@ -23,9 +23,10 @@ export class PopulationSystem {
     return capacity;
   }
 
-  /** 获取地球本体人口上限（基础容量） */
+  /** 获取地球本体人口上限（基础容量），从地球星球的 populationLimit 读取 */
   public getEarthPopulationCapacity(): number {
-    return 300;
+    const earth = this.game.starManager.getAllStars().find(s => s.name === '地球');
+    return earth?.populationLimit ?? 300;
   }
 
   /** 计算文明总人口上限 */

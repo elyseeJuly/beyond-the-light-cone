@@ -96,7 +96,7 @@ export const EndGameScreen: React.FC = () => {
         game.audioManager.restoreVolumes();
       }
     };
-  }, [endingKey]);
+  }, [endingKey, game]);
 
   // Switch to Platinum theme in Credits if all endings are unlocked
   useEffect(() => {

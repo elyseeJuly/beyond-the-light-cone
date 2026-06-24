@@ -11,6 +11,7 @@ import { getPerformanceConfig } from './ending/particlePerformance';
 
 const AtmosphereContext = createContext<AtmosphereConfig | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAtmosphere = () => useContext(AtmosphereContext);
 
 interface Props {

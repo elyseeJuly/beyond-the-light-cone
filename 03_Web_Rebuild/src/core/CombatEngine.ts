@@ -1,6 +1,7 @@
 import { Fleet } from "./Fleet";
-import { Barback } from "./Barback";
+import { Barback, createBarback } from "./Barback";
 import { GameInstance } from "./Game";
+import { Star } from "./Star";
 
 export interface BattleRound {
   round: number;
@@ -178,6 +179,60 @@ export class CombatEngine {
     return win;
   }
 
+  /** 处理星系叛乱：叛军 Barback 与星系守军进行简化战斗，返回叛军是否胜利 */
+  public static resolveBarbackRaid(targetStar: Star, rebel: Barback): boolean {
+    const game = GameInstance.get();
+
+    let defender: Barback | null = null;
+    if (targetStar.barbackId) {
+      defender = game.starManager.barbacks.get(targetStar.barbackId) || null;
+    }
+    if (!defender && targetStar.belongToCivi) {
+      defender = createBarback(`garrison_${targetStar.index}`, targetStar.index);
+      defender.soldierCount = Math.max(
+        30,
+        Math.floor(targetStar.currentPopulation * 0.3) +
+          (targetStar.belongToCivi === '地球' ? Math.floor(game.earthCivi.army * 0.1) : 0)
+      );
+      defender.departmentLeaderName = targetStar.departmentName;
+    }
+
+    if (!defender) {
+      game.addHistory(`【军情】${targetStar.name} 无驻军，叛乱不战而胜。`);
+      return true;
+    }
+
+    const atkPower = this.calculateBarbackPower(rebel);
+    const defPower = this.calculateBarbackPower(defender);
+
+    game.addHistory(`【平叛战斗】${targetStar.name} 爆发叛乱，叛军战力 ${atkPower} vs 守军战力 ${defPower}。`);
+
+    let atkHp = atkPower;
+    let defHp = defPower;
+    let round = 0;
+    const maxRounds = 3;
+
+    while (atkHp > 0 && defHp > 0 && round < maxRounds) {
+      round++;
+      const atkDice = 0.8 + game.rng() * 0.4;
+      const defDice = 0.85 + game.rng() * 0.5;
+      const atkDamage = Math.floor(atkHp * 0.25 * atkDice) + 5;
+      const defDamage = Math.floor(defHp * 0.25 * defDice) + 5;
+      defHp -= Math.min(defHp, atkDamage);
+      atkHp -= Math.min(atkHp, defDamage);
+      game.addHistory(`>> 第${round}轮: 叛军剩余 ${Math.max(0, atkHp)}，守军剩余 ${Math.max(0, defHp)}。`);
+    }
+
+    const rebelWins = defHp <= 0 || (atkHp > 0 && atkHp > defHp);
+    if (rebelWins) {
+      game.addHistory(`【战报】${targetStar.name} 守军被叛军击溃，星系陷入混乱！`);
+    } else {
+      game.addHistory(`【战报】${targetStar.name} 守军成功镇压叛乱。`);
+    }
+
+    return rebelWins;
+  }
+
   public static resolveFleetVsFleet(atkFleet: Fleet, defFleet: Fleet): boolean {
     const game = GameInstance.get();
     const atkPower = this.calculateFleetPower(atkFleet);
@@ -266,15 +321,7 @@ export class CombatEngine {
 
   private static calculateFleetPower(fleet: Fleet): number {
     if (!fleet.weapons || fleet.weapons.length === 0) {
-      fleet.weapons = [];
-      if (fleet.belongToCivi === "地球") {
-        fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 20 });
-      } else if (fleet.belongToCivi === "三体") {
-        fleet.weapons.push({ weaponName: "水滴型战舰", currentBuild: 80 });
-        fleet.weapons.push({ weaponName: "强互作用探测器", currentBuild: 40 });
-      } else {
-        fleet.weapons.push({ weaponName: "星际无畏舰", currentBuild: 50 });
-      }
+      return 0;
     }
 
     let base = 0;

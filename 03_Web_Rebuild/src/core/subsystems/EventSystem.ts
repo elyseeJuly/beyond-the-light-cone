@@ -1,5 +1,7 @@
 import type { Game } from '../Game';
 import { EventEffect, FriendshipType, TecTreeType } from '../../types/enums';
+import { CombatEngine } from '../CombatEngine';
+import { createBarback } from '../Barback';
 
 /**
  * EventSystem - 事件与效果子系统
@@ -103,14 +105,15 @@ export class EventSystem {
         const canonicalTarget = EventSystem.EFFECT_TARGET_ALIAS[eff.target] || eff.target;
         const val = this.clampEffectValue(canonicalTarget, Number(eff.value));
         if (val < 0) {
+          const absVal = Math.abs(val);
           switch (canonicalTarget) {
-            case 'army': this.game.earthCivi.army -= Math.min(this.game.earthCivi.army * 0.5, Math.abs(val)); break;
-            case 'economy': this.game.earthCivi.economy -= Math.min(this.game.earthCivi.economy * 0.5, Math.abs(val)); break;
-            case 'population': this.game.earthCivi.population -= Math.min(this.game.earthCivi.population * 0.5, Math.abs(val)); break;
-            case 'culture': this.game.earthCivi.culture -= Math.min(this.game.earthCivi.culture * 0.5, Math.abs(val)); break;
-            case 'deterrenceValue': this.game.earthCivi.deterrenceValue -= Math.min(this.game.earthCivi.deterrenceValue * 0.5, Math.abs(val)); break;
-            case 'treachery': this.game.earthCivi.treachery = Math.max(0, this.game.earthCivi.treachery - Math.abs(val)); break;
-            case 'resource': this.game.earthCivi.resource -= Math.min(this.game.earthCivi.resource * 0.5, Math.abs(val)); break;
+            case 'army': this.game.earthCivi.army -= absVal; break;
+            case 'economy': this.game.earthCivi.economy -= absVal; break;
+            case 'population': this.game.earthCivi.population -= absVal; break;
+            case 'culture': this.game.earthCivi.culture -= absVal; break;
+            case 'deterrenceValue': this.game.earthCivi.deterrenceValue -= absVal; break;
+            case 'treachery': this.game.earthCivi.treachery = Math.max(0, this.game.earthCivi.treachery - absVal); break;
+            case 'resource': this.game.earthCivi.resource -= absVal; break;
           }
         } else {
           switch (canonicalTarget) {
@@ -140,8 +143,90 @@ export class EventSystem {
             this.game.addHistory(`【外交】与${eff.target}结成同盟！`);
           }
         }
+      } else if (eff.type === 'spawn_barback') {
+        const starIdx = eff.targetStarIndex ?? 0;
+        const targetStar = this.game.starManager.getStar(starIdx);
+        if (targetStar) {
+          const rebel = createBarback(`rebel_${starIdx}_${Date.now()}`, starIdx);
+          rebel.soldierCount = eff.value ?? 50;
+
+          const defender = this.game.starManager.getStarDefenseForce(targetStar);
+          let rebelWins = false;
+          if (defender && rebel.soldierCount > defender.soldierCount) {
+            rebelWins = true;
+            this.game.addHistory(`【紧急军情】${targetStar.name} 爆发大规模叛乱，星系已沦陷！`);
+          } else {
+            rebelWins = CombatEngine.resolveBarbackRaid(targetStar, rebel);
+            this.game.addHistory(`【军情】${targetStar.name} 爆发叛乱，驻军正在镇压中。`);
+          }
+
+          if (rebelWins) {
+            const oldOwner = targetStar.belongToCivi;
+            targetStar.belongToCivi = '';
+            if (oldOwner && oldOwner !== '地球' && oldOwner !== '') {
+              this.game.alienCiviManager.loseStar(oldOwner, starIdx);
+            }
+            this.game.earthCivi.starIndices.delete(starIdx);
+          }
+
+          this.game.starManager.markStarStatus(targetStar, 'rebellion');
+        }
+      } else if (eff.type === 'lock_ratio') {
+        if (eff.target && eff.duration) {
+          this.game.earthCivi.ratioLocks.push({
+            type: eff.target as 'mining' | 'factory' | 'culture',
+            max: eff.value ?? 50,
+            duration: eff.duration,
+          });
+          this.game.addHistory(`【政策】${eff.target} 工种比例被强制限制在 ${eff.value ?? 50}% 以内，持续 ${eff.duration} 回合。`);
+        }
+      } else if (eff.type === 'rush_tech') {
+        const treeType = this.parseTecTreeType(eff.target);
+        if (treeType !== null) {
+          const amount = eff.techAmount ?? eff.value ?? 100;
+          const currentResearch = this.game.earthCivi.getResearchTarget(treeType);
+          if (currentResearch) {
+            const finished = this.game.earthCivi.tecTreeManager.addProgress(treeType, currentResearch, amount);
+            this.game.addHistory(`【科技】${eff.target} 研究取得突破性进展，进度 +${amount}。`);
+            if (finished) {
+              this.game.addHistory(`【科技】${currentResearch} 研究完成！`);
+            }
+          }
+        }
+      } else if (eff.type === 'build_infrastructure') {
+        const starIdx = eff.targetStarIndex ?? 0;
+        const targetStar = this.game.starManager.getStar(starIdx);
+        if (targetStar) {
+          const infraType = eff.target;
+          const success = this.game.starManager.buildInfrastructure(targetStar, infraType, eff.value ?? 10);
+          if (success) {
+            this.game.addHistory(`【建设】${targetStar.name} 新建了 ${infraType} 设施。`);
+            this.game.starManager.markStarStatus(targetStar, 'building');
+          }
+        }
+      } else if (eff.type === 'spend_ap') {
+        const cost = eff.value ?? 10;
+        this.game.earthCivi.spendAP(cost);
       }
     });
+  }
+
+  /** 将科技树类型名称解析为枚举值 */
+  private parseTecTreeType(raw: string): TecTreeType | null {
+    const map: Record<string, TecTreeType> = {
+      physics: TecTreeType.PHYSICS,
+      aerospace: TecTreeType.AEROSPACE,
+      military: TecTreeType.MILITARY,
+      information: TecTreeType.INFORMATION,
+      interstellar: TecTreeType.INTERSTELLAR,
+      物理: TecTreeType.PHYSICS,
+      工程: TecTreeType.AEROSPACE,
+      航天: TecTreeType.AEROSPACE,
+      军事: TecTreeType.MILITARY,
+      信息: TecTreeType.INFORMATION,
+      星际: TecTreeType.INTERSTELLAR,
+    };
+    return map[raw] ?? null;
   }
 
   private applyUnlockPerson(target: string): void {
@@ -159,7 +244,7 @@ export class EventSystem {
       "章北海": { role: "太空军政委", content: "增援未来实施者，谋划百年逃亡，自然选择号逆天启航。" },
       "庄颜": { role: "画中人", content: "罗辑的挚爱，面壁计划中最温柔的人性火种与背景图景。" },
       "程心": { role: "第二代执剑人", content: "爱的圣母，在冷酷宇宙博弈中让地球错失两次生存良机。" },
-      "维德": { role: "PIA首任局长", content: "终身践行“前进！前进！不择手段地前进”的冷酷钢铁人物。" },
+      "维德": { role: "PIA首任局长", content: "终身践行「前进！前进！不择手段地前进」的冷酷钢铁人物。" },
       "艾AA": { role: "星空企业家", content: "活泼聪颖的商业天才，在世界末日中维系人类生的希望。" },
       "云天明": { role: "大脑流浪者", content: "被三体捕获重构，以三个童话故事破译并传递最后的宇宙生路。" },
       "智子": { role: "三体文明代言人", content: "优雅日本女性形态，美丽之下操控超维计算，宣判人类流放。" },
@@ -169,7 +254,7 @@ export class EventSystem {
     const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
     const epName = epochNames[this.game.epoch] || "未知纪元";
     if (intro) {
-      this.game.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.game.year} 年 - 【重要人物正式入列】${target} (${intro.role})。“${intro.content}”`);
+      this.game.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.game.year} 年 - 【重要人物正式入列】${target} (${intro.role})。"${intro.content}"`);
     } else {
       this.game.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.game.year} 年 - 【人员加入】重要人物 ${target} 正式加入统帅部。`);
     }

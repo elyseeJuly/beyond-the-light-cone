@@ -44,6 +44,7 @@ export const DiplomacyPanel: React.FC = () => {
       window.removeEventListener('game-turn-complete', loadDiplomacyState);
       window.removeEventListener('game-loaded', loadDiplomacyState);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAlien]);
 
   const handleAction = (alienName: string, action: string) => {

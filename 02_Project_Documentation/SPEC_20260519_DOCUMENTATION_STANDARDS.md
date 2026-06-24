@@ -72,6 +72,7 @@ Documents defining features, architectures, and design directives.
 *   [SPEC_20260621_RESOURCE_LAYERING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_RESOURCE_LAYERING.md) — *Resource layering and packaging specifications*
 *   [SPEC_20260621_RESPONSIVE_LAYOUT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_RESPONSIVE_LAYOUT.md) — *Responsive layout and UI design specifications*
 *   [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) — *Master Art Generation Prompts Guide V2.0 (Consolidated 43 event CGs & 17 endings)*
+*   [SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md) — *PWA development guide and multi-platform deployment specifications*
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.

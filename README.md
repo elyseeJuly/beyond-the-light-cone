@@ -53,7 +53,7 @@
 | 👁️ **宇宙观察者模式** | 文明消亡后退出决策角色，静观外星 AI 竞逐与宇宙演化 |
 | 🎨 **极简巨物原画风 CG** | Craig Mullins 风格 21:9 电影级美术；7 大历史节点 CG + 5 大新增结局 CG 全量补全 |
 | 🎵 **OST 配乐系统** | 纪元主题音乐 + 结局专属曲目，动态氛围引擎 `AtmosphereEngine` 驱动 |
-| 📱 **PWA 响应式** | 移动端适配，桌面端 Tauri 构建；支持离线缓存、安装至主屏 |
+| 📱 **PWA 响应式** | 移动端适配，桌面端 Tauri 构建；支持离线缓存、安装至主屏，已沉淀完整 [PWA 开发方案](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md) |
 | ✅ **全量测试覆盖** | Vitest 单元测试 + Playwright E2E + 500 回合 Headless 自动推演 |
 
 ---
@@ -89,10 +89,10 @@ npm run build
 # 本地预览构建产物
 npm run preview
 
-# 部署到 GitHub Pages
+# 部署到 GitHub Pages（子路径 /beyond-the-light-cone/）
 npm run deploy
 
-# 或部署到 Cloudflare Pages
+# 部署到 Cloudflare Workers（根路径，使用 wrangler static assets）
 npm run deploy:cf
 ```
 
@@ -140,7 +140,7 @@ npm run lint             # ESLint 校验
 | **样式方案** | Tailwind CSS 4 · Framer Motion · Canvas Pattern（GPU 背景） |
 | **UI 图标** | Lucide React |
 | **数据验证** | Zod |
-| **PWA / 打包** | vite-plugin-pwa · gh-pages · Cloudflare Pages |
+| **PWA / 打包** | vite-plugin-pwa · gh-pages · Cloudflare Workers |
 | **桌面端** | Tauri |
 | **测试体系** | Vitest · Playwright |
 | **CI / CD** | GitHub Actions（`.github/workflows/`） |
@@ -259,6 +259,7 @@ beyond-the-light-cone/
 | [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) | 美术资源提示词规范 |
 | [EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md) | CG 重绘与结局视觉补全执行报告 |
 | [AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md) | 事件因果链分析 |
+| [SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md) | PWA 开发方案与多平台部署指南 |
 
 ---
 

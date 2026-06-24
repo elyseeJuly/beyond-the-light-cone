@@ -2,7 +2,7 @@
 
 **日期**: 2026-06-24  
 **任务**: TASK-EVENT: 事件实体化集成 (Event-Board Integration)  
-**来源**: [03_Web_Rebuild/docs/TASK_20260623_EVENT_BOARD_INTEGRATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_EVENT_BOARD_INTEGRATION.md)
+**来源**: [02_Project_Documentation/EXEC_20260623_EVENT_BOARD_INTEGRATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_EVENT_BOARD_INTEGRATION.md)
 
 ---
 

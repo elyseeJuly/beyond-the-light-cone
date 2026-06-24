@@ -9,7 +9,7 @@
 
 ## 背景
 
-[AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md) 定义了 4 项 Beta 前红线，本任务书覆盖其中 3 项（结局 Flag 已在 6/23 审计修复中完成）。另外补充 [AUDIT_REPORT_20250623.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/AUDIT_REPORT_20250623.md) 中剩余未修复的 P1 项。
+[AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md) 定义了 4 项 Beta 前红线，本任务书覆盖其中 3 项（结局 Flag 已在 6/23 审计修复中完成）。另外补充 [AUDIT_REPORT_20250623.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_QA_CODE_AUDIT.md) 中剩余未修复的 P1 项。
 
 ---
 
@@ -207,4 +207,4 @@ BUG-05：HELIUM_FLASH 结局在 `strict_three_body` 模式下显示"二向箔打
 
 ---
 
-*本任务书基于 [AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md) 和 [AUDIT_REPORT_20250623.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/AUDIT_REPORT_20250623.md) 编写。*
+*本任务书基于 [AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md) 和 [AUDIT_REPORT_20250623.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_QA_CODE_AUDIT.md) 编写。*

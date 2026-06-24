@@ -13,7 +13,7 @@
 | 新手教程点击穿透修复报告 | [EXEC_20260623_TUTORIAL_CLICK_THROUGH_REMEDY.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_TUTORIAL_CLICK_THROUGH_REMEDY.md) |
 | 核心循环与 AI 智脑规范 | [SPEC_20260623_CORE_LOOP_ITERATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260623_CORE_LOOP_ITERATION.md) |
 | 全项目失败路径审计 | [AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_FULL_PROJECT_FAILURE_PATH_AUDIT.md) |
-| QA 代码审计报告 | [AUDIT_REPORT_20250623.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/AUDIT_REPORT_20250623.md) |
+| QA 代码审计报告 | [AUDIT_REPORT_20250623.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260623_QA_CODE_AUDIT.md) |
 
 ---
 
@@ -21,11 +21,11 @@
 
 | # | 任务书 | 优先级 | 可并行 | 预估影响 | 状态 |
 |---|--------|--------|--------|---------|------|
-| 1 | [TASK-P0: Beta 红线修复](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_P0_BETA_REDLINE.md) | **P0** | 是（任务间并行） | 6 文件，~200 行 | 待执行 |
-| 2 | [TASK-AP: AP 指令点 + AI 智脑](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_AP_AI_BRAIN.md) | P1 | 是（独立子系统） | 8 文件，~900 行 | 待执行 |
-| 3 | [TASK-EVENT: 事件实体化集成](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_EVENT_BOARD_INTEGRATION.md) | P1 | 是（纯增量功能） | 5 文件，~400 行 | 待执行 |
-| 4 | [TASK-ARCH: 架构债务清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_ARCHITECTURE_DEBT.md) | P1 | 否（依赖 TASK-P0） | 15+ 文件，~2000 行 | 待执行 |
-| 5 | [TASK-HYGIENE: 项目卫生清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_PROJECT_HYGIENE.md) | P2 | 是（完全独立） | 22 文件，~100 行 | 待执行 |
+| 1 | [TASK-P0: Beta 红线修复](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_P0_BETA_REDLINE_FIX.md) | **P0** | 是（任务间并行） | 6 文件，~200 行 | 待执行 |
+| 2 | [TASK-AP: AP 指令点 + AI 智脑](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_AP_AI_BRAIN_IMPLEMENTATION.md) | P1 | 是（独立子系统） | 8 文件，~900 行 | 待执行 |
+| 3 | [TASK-EVENT: 事件实体化集成](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_EVENT_BOARD_INTEGRATION.md) | P1 | 是（纯增量功能） | 5 文件，~400 行 | 待执行 |
+| 4 | [TASK-ARCH: 架构债务清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_ARCHITECTURE_DEBT_CLEANUP.md) | P1 | 否（依赖 TASK-P0） | 15+ 文件，~2000 行 | 待执行 |
+| 5 | [TASK-HYGIENE: 项目卫生清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_PROJECT_HYGIENE_CLEANUP.md) | P2 | 是（完全独立） | 22 文件，~100 行 | 待执行 |
 
 ---
 

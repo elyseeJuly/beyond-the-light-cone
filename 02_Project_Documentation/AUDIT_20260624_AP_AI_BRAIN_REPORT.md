@@ -2,7 +2,7 @@
 
 **日期**: 2026-06-24  
 **任务**: TASK-AP: AP 指令点 + AI 智脑 (Action Points & AI Brain Automation)  
-**来源**: [03_Web_Rebuild/docs/TASK_20260623_AP_AI_BRAIN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_AP_AI_BRAIN.md)
+**来源**: [02_Project_Documentation/EXEC_20260623_AP_AI_BRAIN_IMPLEMENTATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_AP_AI_BRAIN_IMPLEMENTATION.md)
 
 ---
 

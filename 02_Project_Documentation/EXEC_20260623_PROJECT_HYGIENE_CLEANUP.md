@@ -88,7 +88,7 @@ if (import.meta.env.DEV) {
 
 位置：[CombatEngine.ts:267-278](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/CombatEngine.ts#L267-L278)
 
-详见 [TASK_20260623_P0_BETA_REDLINE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/docs/TASK_20260623_P0_BETA_REDLINE.md) 任务 1。
+详见 [TASK_20260623_P0_BETA_REDLINE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_P0_BETA_REDLINE_FIX.md) 任务 1。
 
 ### 2.2 搜索其他硬编码测试数据
 

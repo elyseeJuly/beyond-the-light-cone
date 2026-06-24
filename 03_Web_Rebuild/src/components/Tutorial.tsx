@@ -6,6 +6,7 @@ import {
   Lightbulb, Clock, Crosshair, Landmark, Lock, Flag
 } from 'lucide-react';
 import { ActiveViewType } from './LeftHub';
+import { GameInstance } from '../core/Game';
 
 interface TutorialStep {
   icon: React.ReactNode;
@@ -42,6 +43,16 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     tips: ['纪元会随文明发展进度与年份自动推进', '不同纪元会解锁不同的事件与科技路线'],
     cardPosition: 'bottom',
   },
+  {
+    icon: <Cpu size={32} />,
+    title: '执政指令点与 AI 智脑',
+    category: '序章',
+    description: '关注顶部 HUD 指标区的紫色「AP」与「智脑托管」按钮：\n\n• ⚡ AP (执政指令点) = 文明每回合的决策行动力上限。建造（10 AP）、研发科研（20 AP）都会消耗可用指令值。\n• 🤖 AI 智脑托管 = 协助决策系统（默认开启，开启时AI决策消耗AP减半）。智脑在每回合开始前，会自动任命空缺首长、选择成本最低科研并应急调配工种。\n\n⚠️ 手动模式阻断器：若关闭智脑托管，存在科技停滞、首长空缺或经济崩盘时，将无法推进「下一回合」。系统已临时将您的智脑切换至「手动」，便于您手动完成基础授权。',
+    highlightTarget: 'btn-ai-brain',
+    activeView: 'starmap',
+    tips: ['智脑托管在前期可极大地减少繁琐操作，但在战略决战时推荐切换手动', '首长任命可获得 AP 回合恢复力加成'],
+    cardPosition: 'bottom',
+  },
 
   // ===== 第二章：战略星图与基础操作 =====
   {
@@ -72,7 +83,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     highlightTarget: 'btn-build-stope',
     activeView: 'starmap',
     inspectorTab: 'build',
-    tips: ['有了采矿场后，建造加工厂可以进一步加工矿产为经济收入', '右下角的「下一回合」按钮是推进年份的唯一方式'],
+    tips: ['有了采矿场后，建造加工厂可以进一步加工矿产为经济收入', '右上角的「下一回合」按钮是推进年份的唯一方式'],
     cardPosition: 'left',
   },
 
@@ -81,7 +92,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Landmark size={32} />,
     title: '内阁政府管理中枢',
     category: '内政管理',
-    description: '【手把手指令 ③】：\n系统已为您自动打开「政府」管理界面。\n\n在这里，您可以行使最高统帅权：\n• 任命科学、国防、文化、社会部长以获取各种产出加成\n• 指派面壁者秘密策划，应对三体危机\n\n⚠️ 开局提示：点击右侧的「进入中央计划局」任命各部门官员，可以让您的产出速度提升一倍以上！',
+    description: '【手把手指令 ③】：\n系统已为您自动打开「政府」管理界面。\n\n在这里，您可以行使最高统帅权：\n• 任命经济、军事、科研与文化部的负责人以获取各种产出加成\n• 指派面壁者秘密策划，应对三体危机\n\n⚠️ 开局提示：点击下方的「进入中央计划局 (分配与扩产)」指派负责人，可以让您的产出速度提升一倍以上！',
     highlightTarget: 'btn-gov-finance-dept',
     activeView: 'government',
     govTab: 'finance',
@@ -92,7 +103,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Cpu size={32} />,
     title: '科学技术解码中心',
     category: '内政管理',
-    description: '【手把手指令 ④】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！我们需要率先研发“550W量子计算机”等关键技术，降低智子的研究封锁惩罚。',
+    description: '【手把手指令 ④】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！在此以物理学分类下的「天文观测」为例，点击该节点即可消耗资源并启动研发。我们需要逐步积累研发度，直至攻克“550W量子计算机”等核心技术以对抗智子封锁。',
     highlightTarget: 'tech-node-天文观测',
     activeView: 'techtree',
     tips: ['未任命科学部长时，科研效率将极其低下', '研发高级科技需要对应的前置物理学突破'],
@@ -102,7 +113,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Shield size={32} />,
     title: '黑暗森林防备体系',
     category: '外御备战',
-    description: '【手把手指令 ⑤】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明的入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！',
+    description: '【手把手指令 ⑤】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明的入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！\n\n🎯 执政指令：点击下方的「召开面壁计划战略听证会」可以进入面壁者与执剑人的管理终端。',
     highlightTarget: 'btn-open-wallfacer-hearings',
     activeView: 'government',
     govTab: 'security',
@@ -113,7 +124,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Crosshair size={32} />,
     title: '深空外交监测网络',
     category: '外御备战',
-    description: '【手把手指令 ⑥】：\n系统已为您连接到「情报中心」的外星电波信道。\n\n在这里，宇宙的冷酷与利益交织展现：\n• 监测三体文明、歌者、归零者等宇宙文明的动态\n• 展开跨星际沟通：谈判（提升关系）、贸易（互换资源）或共同缔结结盟\n\n🎯 谈判技巧：当与其他文明的关系达到“亲密”时，可以尝试申请结盟。将全部存活文明消亡或全数纳为盟友，将达成伟大的“征服大同”胜利。',
+    description: '【手把手指令 ⑥】：\n系统已为您连接到「情报中心」的外星电波与系统广播信道。\n\n在这里，宇宙的冷酷与动态变化尽收眼底：\n• 危机报告 🚨 — 记录三体探测器接近、水滴入侵等宇宙危机\n• 外交互动 🌐 — 记录与其他宇宙文明（三体、歌者、归零者）的往来动态\n• 科研、军事与民生 — 全方位监测地球内部的建设与社会秩序\n\n🎯 执政提醒：当有新消息未读时，左侧侧边栏或底部导航栏的情报中心图标上会出现红色呼吸提示气泡，请随时点击查看最新局势。实际的外交谈判与交易，需在「政府管理」的「外交委员会」中进行。',
     highlightTarget: 'intel-sidebar',
     activeView: 'intelligence',
     tips: ['关系过于恶劣的外星文明将拒绝接受任何贸易提案', '在实力薄弱时，依靠结盟外交是求生的不二法门'],
@@ -123,7 +134,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Building2 size={32} />,
     title: '文明稳定维系法则',
     category: '生存危机',
-    description: '系统已将您的视角还原到主星图。请将视线移到顶部 HUD 指标区。\n\n🏛 文明稳定度是您执政的生命线：\n• 它由您的 经济能力、军事规模、科技研发度 以及 文化产出 四大维度加权决定\n• 🚨 惩罚因子：当文明内部积攒了过高的「逃亡倾向」时，社会秩序失控，稳定度会遭到沉重处罚！\n\n稳定度一旦降为 0%，您的本局游戏将立即宣告失败。请通过社会保障和文化建设，随时抚平社会的恐慌。',
+    description: '系统已将您的视角还原到主星图。请将视线移到顶部 HUD 指标区。\n\n🏛 文明稳定度是您执政的生命线：\n• 它由您的 经济能力、军事规模、科技研发度 以及 文化产出 四大维度加权决定\n• 🚨 惩罚因子：当文明内部积攒了过高的「逃亡倾向」时，社会秩序失控，稳定度会遭到沉重处罚！\n\n稳定度一旦降为 0%，您的本局游戏将立即宣告失败。请通过社会保障 and 文化建设，随时抚平社会的恐慌。',
     highlightTarget: 'top-hud-stability',
     activeView: 'starmap',
     tips: ['经济崩溃或军事大败会直接腰斩文明稳定度', '社会 & 文化部长的 Art 属性可以用来平复逃亡倾向'],
@@ -133,7 +144,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Rocket size={32} />,
     title: '授权通过：执政官生存法则',
     category: '最终指示',
-    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「采矿场」积累原始矿产\n② 建设「工厂」将矿产转化为经济收入\n③ 在政府中任命四个部门 of 执掌官员\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力的执剑人建立威慑盾牌\n⑥ 研发航天技术，向火星建立第二采矿基地\n⑦ 不条在无前置矿场时连续建造工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的官员疏导逃亡主义\n⑨ 太阳系打击降临时，依靠“掩体太空城”疏散人口\n⑩ 合理利用情报中心与异星斡旋。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
+    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「资源采矿场」积累原始矿产\n② 建设「工业加工厂」将矿产转化为经济收入\n③ 在政府管理中指派各部门负责人\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力 (Leadership) 的执剑人建立威慑盾牌\n⑥ 研发航天与宇宙科学，扩张星图开发区\n⑦ 不要在没有采矿场的情况下连续建造加工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的部委负责人疏导逃亡倾向\n⑨ 太阳系打击降临时，依靠“太空城市”或“掩体太空城”疏散人口\n⑩ 合理利用情报中心监测动态与异星外交谈判。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
     highlightTarget: 'btn-next-turn',
     activeView: 'starmap',
     cardPosition: 'left',
@@ -164,6 +175,28 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Turn off AI brain to allow manual step-by-step guidance, and restore it on unmount
+  useEffect(() => {
+    try {
+      const game = GameInstance.get();
+      game.earthCivi.isAiBrainEnabled = false;
+      window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
+      window.dispatchEvent(new CustomEvent('game-state-changed'));
+    } catch (e) {
+      console.error("Failed to disable AI brain on tutorial start:", e);
+    }
+    return () => {
+      try {
+        const game = GameInstance.get();
+        game.earthCivi.isAiBrainEnabled = true;
+        window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
+        window.dispatchEvent(new CustomEvent('game-state-changed'));
+      } catch (e) {
+        console.error("Failed to restore AI brain on tutorial exit:", e);
+      }
+    };
   }, []);
 
   // Calculate dynamic highlight coordinates with requestAnimationFrame loop for tracking animations/transitions
@@ -317,6 +350,15 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       }
       if (current.govTab) {
         window.dispatchEvent(new CustomEvent('tutorial:set-gov-tab', { detail: current.govTab }));
+      }
+      // Close legacy modal overlay to prevent blocking screen on step transitions
+      try {
+        const modal = document.getElementById('modal-container');
+        if (modal) {
+          modal.classList.add('hidden');
+        }
+      } catch (e) {
+        console.error("Failed to dismiss legacy modal:", e);
       }
     }
   }, [current]);

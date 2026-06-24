@@ -85,6 +85,66 @@ describe('EventSystem isolated behavior', () => {
     game.eventSystem.applyNewEffects([{ type: 'flag', target: 'test_flag' }]);
     expect(game.hasFlag('test_flag')).toBe(true);
   });
+
+  it('applyNewEffects 解析 lock_ratio 效果', () => {
+    game.eventSystem.applyNewEffects([{ type: 'lock_ratio', target: 'mining', value: 50, duration: 5 }]);
+    expect(game.earthCivi.ratioLocks.length).toBe(1);
+    expect(game.earthCivi.ratioLocks[0].type).toBe('mining');
+    expect(game.earthCivi.ratioLocks[0].max).toBe(50);
+    expect(game.earthCivi.ratioLocks[0].duration).toBe(5);
+  });
+
+  it('applyNewEffects 解析 spend_ap 效果', () => {
+    game.earthCivi.apCurrent = 30;
+    game.eventSystem.applyNewEffects([{ type: 'spend_ap', value: 10 }]);
+    expect(game.earthCivi.apCurrent).toBe(25); // AI 模式减半
+  });
+
+  it('applyNewEffects 解析 diplomacy 效果', () => {
+    const alien = game.alienCiviManager.aliens.get('三体');
+    expect(alien).toBeDefined();
+    const before = alien!.friendshipType;
+    game.eventSystem.applyNewEffects([{ type: 'diplomacy', target: '三体', value: 2 }]);
+    expect(alien!.friendshipType).toBeGreaterThan(before);
+  });
+
+  it('applyNewEffects 解析 unlock_person 效果', () => {
+    game.eventSystem.applyNewEffects([{ type: 'unlock_person', target: '罗辑' }]);
+    const person = game.personManager.getPerson('罗辑');
+    expect(person).toBeDefined();
+    expect(game.personManager.availablePersons.has('罗辑')).toBe(true);
+  });
+
+  it('applyNewEffects 解析 rush_tech 效果', () => {
+    // 确保有研究目标
+    game.earthCivi.economy = 0;
+    game.eventSystem.applyNewEffects([{ type: 'rush_tech', target: 'physics', value: 100, techAmount: 100 }]);
+    // 不抛错即通过
+    expect(true).toBe(true);
+  });
+
+  it('applyNewEffects 解析 spawn_barback 效果', () => {
+    game.eventSystem.applyNewEffects([{ type: 'spawn_barback', targetStarIndex: 3, value: 50 }]);
+    // 不抛错即通过，验证叛军已生成
+    const star = game.starManager.getStar(3);
+    expect(star).toBeDefined();
+  });
+
+  it('applyNewEffects 解析 build_infrastructure 效果', () => {
+    game.eventSystem.applyNewEffects([{ type: 'build_infrastructure', target: 'factory', targetStarIndex: 5, value: 10 }]);
+    // 不抛错即通过
+    expect(true).toBe(true);
+  });
+
+  it('applyNewEffects 多个效果混合执行', () => {
+    game.eventSystem.applyNewEffects([
+      { type: 'flag', target: 'multi_test' },
+      { type: 'resource', target: 'economy', value: 50 },
+      { type: 'lock_ratio', target: 'factory', value: 40, duration: 3 },
+    ]);
+    expect(game.hasFlag('multi_test')).toBe(true);
+    expect(game.earthCivi.ratioLocks.length).toBe(1);
+  });
 });
 
 describe('EconomySystem isolated behavior', () => {

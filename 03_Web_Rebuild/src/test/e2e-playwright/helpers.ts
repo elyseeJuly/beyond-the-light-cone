@@ -8,6 +8,7 @@ import { Page, expect } from '@playwright/test';
 export async function disableTutorial(page: Page): Promise<void> {
   await page.addInitScript(() => {
     localStorage.setItem('game-tutorial-seen', 'true');
+    localStorage.setItem('skip_cover', 'true');
   });
 }
 
@@ -26,7 +27,13 @@ export async function skipTutorial(page: Page): Promise<void> {
 /** 等待主界面关键元素就绪 */
 export async function waitForMainUI(page: Page): Promise<void> {
   await expect(page.locator('header')).toBeVisible();
-  await expect(page.locator('text=LOG TELEMETRY')).toBeVisible();
+  
+  const viewport = page.viewportSize();
+  const isMobile = viewport ? viewport.width < 768 : false;
+  if (!isMobile) {
+    await expect(page.locator('text=LOG TELEMETRY')).toBeVisible();
+  }
+
   // 主星图包含两个 canvas（star-canvas-main 与 star-canvas-react）
   await expect(page.locator('canvas#star-canvas-main')).toBeAttached();
   await expect(page.locator('canvas#star-canvas-react')).toBeAttached();

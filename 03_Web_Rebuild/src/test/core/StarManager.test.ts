@@ -409,3 +409,133 @@ describe('StarManager — 边缘情况', () => {
     expect(count1).toBe(EXPECTED_STAR_COUNT);
   });
 });
+
+describe('StarManager — 星球状态与设施建设', () => {
+  it('markStarStatus 设置 rebellion 状态', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    game.starManager.markStarStatus(star, 'rebellion');
+    expect(star.status).toBe('rebellion');
+  });
+
+  it('markStarStatus 设置 building 状态', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    game.starManager.markStarStatus(star, 'building');
+    expect(star.status).toBe('building');
+  });
+
+  it('markStarStatus 清除状态为 null', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.status = 'rebellion';
+    game.starManager.markStarStatus(star, null);
+    expect(star.status).toBeNull();
+  });
+
+  it('buildInfrastructure 启动采矿场建设', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.hasStope = false;
+    const result = game.starManager.buildInfrastructure(star, 'stope', 20);
+    expect(result).toBe(true);
+    expect(star.buildingProgress).toBeDefined();
+    expect(star.buildingProgress!.stope).toBeDefined();
+    expect(star.buildingProgress!.stope.currentBuild).toBe(0);
+  });
+
+  it('buildInfrastructure 已有建筑时返回 false', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.hasStope = true;
+    const result = game.starManager.buildInfrastructure(star, 'stope', 20);
+    expect(result).toBe(false);
+  });
+
+  it('buildInfrastructure 不支持的设施类型返回 false', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    const result = game.starManager.buildInfrastructure(star, 'invalid_type', 20);
+    expect(result).toBe(false);
+  });
+
+  it('buildInfrastructure mine 别名映射到 stope', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.hasStope = false;
+    const result = game.starManager.buildInfrastructure(star, 'mine', 15);
+    expect(result).toBe(true);
+    expect(star.buildingProgress!.stope).toBeDefined();
+  });
+
+  it('buildInfrastructure 工厂建设', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.hasFactory = false;
+    const result = game.starManager.buildInfrastructure(star, 'factory', 10);
+    expect(result).toBe(true);
+    expect(star.buildingProgress!.factory).toBeDefined();
+  });
+
+  it('buildInfrastructure 城市建造', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.hasCity = false;
+    const result = game.starManager.buildInfrastructure(star, 'city', 10);
+    expect(result).toBe(true);
+    expect(star.buildingProgress!.city).toBeDefined();
+  });
+
+  it('buildInfrastructure 重复开始同一类型建设返回 false', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.hasStope = false;
+    game.starManager.buildInfrastructure(star, 'stope', 20);
+    const result = game.starManager.buildInfrastructure(star, 'stope', 20);
+    expect(result).toBe(false);
+  });
+});
+
+describe('StarManager — 驻防力量', () => {
+  it('getStarDefenseForce 无归属星球返回 null', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.belongToCivi = '';
+    const def = game.starManager.getStarDefenseForce(star);
+    expect(def).toBeNull();
+  });
+
+  it('getStarDefenseForce 有归属星球创建临时卫戍军', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.belongToCivi = '地球';
+    star.populationLimit = 5000;
+    const def = game.starManager.getStarDefenseForce(star);
+    expect(def).toBeDefined();
+    expect(def!.id).toContain('def_');
+  });
+
+  it('getStarDefenseForce 已注册 Barback 优先返回', () => {
+    const game = setupGame();
+    const star = game.starManager.getStar(STAR_INDEX.MARS)!;
+    star.belongToCivi = '地球';
+    star.barbackId = 'test_barback_123';
+    const mockBarback = {
+      id: 'test_barback_123',
+      planetIndex: STAR_INDEX.MARS,
+      soldierCount: 100,
+      weapons: [],
+      isFriend: false,
+      alignmentYear: 0,
+      departmentLeaderName: null,
+      departmentName: '测试部',
+      totalBuild: 100,
+      currentBuild: 50,
+      buildPerRound: 10,
+    };
+    game.starManager.barbacks.set('test_barback_123', mockBarback);
+    const def = game.starManager.getStarDefenseForce(star);
+    expect(def).toBeDefined();
+    expect(def!.id).toBe('test_barback_123');
+  });
+});

@@ -12,9 +12,15 @@ test.describe('Smoke Tests', () => {
     await expect(page).toHaveTitle(/光锥之外|LegendOfUni|Beyond the Light Cone/);
     await waitForMainUI(page);
 
-    // 桌面端布局元素
+    // 桌面端/移动端自适应布局元素
     await expect(page.locator('header')).toBeVisible();
-    await expect(page.locator('text=LOG TELEMETRY')).toBeVisible();
+    
+    const viewport = page.viewportSize();
+    const isMobile = viewport ? viewport.width < 768 : false;
+    if (!isMobile) {
+      await expect(page.locator('text=LOG TELEMETRY')).toBeVisible();
+    }
+    
     await expect(page.locator('canvas#star-canvas-main')).toBeAttached();
     await expect(page.locator('canvas#star-canvas-react')).toBeAttached();
   });

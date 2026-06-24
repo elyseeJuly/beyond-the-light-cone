@@ -42,7 +42,18 @@ export const App: React.FC = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [showMuseum, setShowMuseum] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showCoverScreen, setShowCoverScreen] = useState(true);
+  const [showCoverScreen, setShowCoverScreen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('skip_cover') === 'true') {
+        return false;
+      }
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('skip_cover') === 'true') {
+        return false;
+      }
+    }
+    return true;
+  });
   const [showFleetModal, setShowFleetModal] = useState(false);
   const [showBattleScreen, setShowBattleScreen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);

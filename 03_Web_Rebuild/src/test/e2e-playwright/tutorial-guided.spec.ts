@@ -9,6 +9,12 @@ test.describe('Guided Tutorial E2E Flow', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
 
+    // 点击开始新游戏 (启用引导)
+    const newGameBtn = page.locator('button:has-text("开始新游戏 (启用引导)")');
+    await expect(newGameBtn).toBeVisible();
+    await newGameBtn.click();
+    await page.waitForTimeout(400);
+
     // 检查初始状态下教程面板出现
     const tutorialCard = page.locator('.relative.z-\\[1002\\]');
     await expect(tutorialCard).toBeVisible();
@@ -22,6 +28,11 @@ test.describe('Guided Tutorial E2E Flow', () => {
 
     // ===== 第 2 步：历史纪元演进 =====
     await expect(page.locator('text=历史纪元演进')).toBeVisible();
+    await nextBtn.click();
+    await page.waitForTimeout(200);
+
+    // ===== 第 2.5 步：执政指令点与 AI 智脑 =====
+    await expect(page.locator('text=执政指令点与 AI 智脑')).toBeVisible();
     await nextBtn.click();
     await page.waitForTimeout(200);
 

@@ -73,6 +73,17 @@ export const STANDARD_TAGS: Record<string, {
   broadcast_era:        { name: "广播纪元",       category: 'epoch',    isMilestone: true,  description: "广播纪元的事件特征" },
   bunker_era_deep:      { name: "掩体纪元特征",   category: 'epoch',    isMilestone: true,  description: "掩体纪元的事件特征" },
   galaxy_era_deep:      { name: "银河纪元特征",   category: 'epoch',    isMilestone: true,  description: "银河纪元的事件特征" },
+  stardust_era_deep:    { name: "星屑纪元特征",   category: 'epoch',    isMilestone: true,  description: "星屑纪元的事件特征" },
+
+  /** 结局与 NG+ 标记 */
+  victory_wandering:    { name: "流浪胜利",       category: 'state',    isMilestone: true,  description: "达成流浪地球胜利结局" },
+  victory_digital:      { name: "数字永生胜利",   category: 'state',    isMilestone: true,  description: "达成数字永生胜利结局" },
+  victory_deterrence:   { name: "威慑胜利",       category: 'state',    isMilestone: true,  description: "达成威慑胜利结局" },
+  victory_conquest:     { name: "征服胜利",       category: 'state',    isMilestone: true,  description: "达成征服胜利结局" },
+  victory_dark_domain:  { name: "黑域胜利",       category: 'state',    isMilestone: true,  description: "达成黑域胜利结局" },
+  victory_hidden:       { name: "隐藏胜利",       category: 'state',    isMilestone: true,  description: "达成隐藏胜利结局" },
+  ending_completed:     { name: "结局完成",       category: 'state',    isMilestone: true,  description: "游戏结局已完成" },
+  echo_of_past_ending:  { name: "往世回响",       category: 'state',    isMilestone: true,  description: "New Game+ 继承前周目结局标记" },
 };
 
 /** 标准角色立场 Tag 定义 */

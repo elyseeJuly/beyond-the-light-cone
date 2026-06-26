@@ -64,6 +64,8 @@ export const App: React.FC = () => {
   const atmosphereEngineRef = useRef<any>(null);
   const bp = useBreakpoint();
   const isMobile = bp.isMobile;
+  const isMobileLandscape = bp.isMobileLandscape;
+  const showDesktopLayout = !isMobile || isMobileLandscape;
 
   useEffect(() => {
     preloadCoreImages();
@@ -358,7 +360,7 @@ export const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <AtmosphereProvider engineRef={atmosphereEngineRef}>
-        <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
+        <div className={`flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black ${isMobileLandscape ? 'mobile-landscape-scale' : ''}`}>
 
           {/* Story Modal - Rendered globally */}
           <Suspense fallback={<LazyFallback />}>
@@ -420,8 +422,8 @@ export const App: React.FC = () => {
 
           {/* Main Layout Body */}
           <main className="flex-1 flex overflow-hidden">
-            {/* Left Sidebar — visible on tablet+, hidden on mobile (replaced by MobileBottomNav) */}
-            {!isMobile && (
+            {/* Left Sidebar — visible on tablet+ and mobile landscape, hidden on mobile portrait (replaced by MobileBottomNav) */}
+            {showDesktopLayout && (
               <LeftHub activeView={activeView} setActiveView={setActiveView} />
             )}
 
@@ -430,8 +432,8 @@ export const App: React.FC = () => {
               {renderCenterView()}
             </div>
 
-            {/* Right Inspector — sidebar on tablet+, drawer on mobile */}
-            {!isMobile ? (
+            {/* Right Inspector — sidebar on tablet+ and mobile landscape, drawer on mobile portrait */}
+            {showDesktopLayout ? (
               <RightInspector />
             ) : (
               <>
@@ -457,10 +459,10 @@ export const App: React.FC = () => {
           </main>
 
           {/* Bottom Event Bar */}
-          {!isMobile && <BottomEventBar />}
+          {showDesktopLayout && <BottomEventBar />}
 
-          {/* Mobile Bottom Navigation — only on mobile */}
-          {isMobile && (
+          {/* Mobile Bottom Navigation — only on mobile portrait */}
+          {!showDesktopLayout && (
             <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
           )}
 

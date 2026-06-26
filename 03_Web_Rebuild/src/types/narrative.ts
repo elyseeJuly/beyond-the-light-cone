@@ -33,7 +33,9 @@ export interface EventEffectDef {
     | 'spawn_barback'
     | 'lock_ratio'
     | 'rush_tech'
-    | 'build_infrastructure';
+    | 'build_infrastructure'
+    | 'kill_person'
+    | 'spend_ap';
   target: string;
   value: number;
   // 实体化效果扩展字段

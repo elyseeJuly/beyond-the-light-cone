@@ -292,16 +292,26 @@ export class SliceNarrativeEngine {
   }
 
   /** 自动生成切片叙事 */
-  generateSlice(eventId: string, eventTitle: string, tagManager: any): SliceNarrative {
+  generateSlice(eventId: string, eventTitle: string, tagManager: any, currentYear?: number): SliceNarrative {
     const name = this.getNextNpcName();
     const role = NPC_ROLES[Math.floor(Math.random() * NPC_ROLES.length)];
     const area = AREAS[Math.floor(Math.random() * AREAS.length)];
 
     let matchedTemplate: MonologueTemplate | null = null;
 
+    // 标签时效性过滤：非里程碑标签只在应用后 30 年内产生切片叙事，避免时代错乱
+    const isTagFresh = (tagId: string): boolean => {
+      if (!tagManager || typeof tagManager.getTag !== 'function') return true;
+      const tag = tagManager.getTag(tagId);
+      if (!tag) return false;
+      if (tag.isMilestone) return true;
+      if (typeof currentYear !== 'number') return true;
+      return currentYear - tag.firstAppliedYear <= 30;
+    };
+
     // 1. 优先尝试从活跃的世界标签 (World Tags) 中匹配叙事
     if (tagManager && typeof tagManager.hasTag === 'function') {
-      const activeTags = Object.keys(TAG_NARRATIVES).filter(tagId => tagManager.hasTag(tagId, 1));
+      const activeTags = Object.keys(TAG_NARRATIVES).filter(tagId => tagManager.hasTag(tagId, 1) && isTagFresh(tagId));
       if (activeTags.length > 0) {
         // 随机选一个激活的标签
         const chosenTag = activeTags[Math.floor(Math.random() * activeTags.length)];

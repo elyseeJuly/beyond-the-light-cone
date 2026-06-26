@@ -191,6 +191,11 @@ export class TagManager {
     return tag !== undefined && tag.intensity >= minIntensity;
   }
 
+  /** 获取标签详情 */
+  getTag(id: string): WorldTag | undefined {
+    return this.worldTags.get(id);
+  }
+
   /** 获取标签强度 */
   getTagIntensity(id: string): number {
     return this.worldTags.get(id)?.intensity ?? 0;

@@ -207,6 +207,15 @@ export class EventSystem {
       } else if (eff.type === 'spend_ap') {
         const cost = eff.value ?? 10;
         this.game.earthCivi.spendAP(cost);
+      } else if (eff.type === 'kill_person') {
+        const person = this.game.personManager.getPerson(eff.target);
+        if (person && person.isAlive) {
+          person.isAlive = false;
+          person.deathYear = this.game.year;
+          this.game.addHistory(`【讣告】${eff.target} 于 ${this.game.year} 年逝世。`);
+          this.game.tickerMessages.push(`讣告：${eff.target} 逝世。`);
+          window.dispatchEvent(new CustomEvent('ticker-message-added'));
+        }
       }
     });
   }

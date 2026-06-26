@@ -24,7 +24,8 @@ describe('DataSchema - events.json', () => {
     for (const evt of eventsData as any[]) {
       const hasDialog = !!evt.dialogQueue;
       const hasTalk = typeof evt.talkcount === 'number' && evt.talkcount > 0;
-      expect(hasDialog || hasTalk).toBe(true);
+      const hasTip = typeof evt.tip === 'string' && evt.tip.length > 0;
+      expect(hasDialog || hasTalk || hasTip).toBe(true);
     }
   });
 
@@ -186,7 +187,8 @@ describe('Data Referential Integrity', () => {
   // 已知的非人物对话者（组织/舰船/抽象实体）
   const nonPersonTalkers = new Set([
     '联合政府', '三体监听员', '最高统帅部', '万有引力号',
-    '联邦政府', '星环集团科学家', '太阳系预警系统', '星环号舰长', '归零者播报'
+    '联邦政府', '星环集团科学家', '太阳系预警系统', '星环号舰长', '归零者播报',
+    '联合国秘书长', '星环号科学官', 'PDC 首席科学家'
   ]);
 
   it('events.json 引用的对话者存在于 persons.json 中（排除组织实体）', () => {
@@ -292,7 +294,12 @@ describe('Type Schema Compliance', () => {
       expect(typeof evt.eventeffect).toBe('number');
       expect(typeof evt.eventvalue).toBe('number');
       expect(typeof evt.talkcount).toBe('number');
-      expect(typeof evt.talk0_content).toBe('string');
+      // Ticker events (talkcount < 0) use `tip` instead of `talk0_content`
+      if (evt.talkcount >= 0) {
+        expect(typeof evt.talk0_content).toBe('string');
+      } else {
+        expect(typeof evt.tip).toBe('string');
+      }
       if (evt.triggerCondition) {
         expect(typeof evt.triggerCondition.epoch).toBe('string');
       }

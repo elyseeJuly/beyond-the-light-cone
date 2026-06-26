@@ -13,8 +13,14 @@ export class AlienCivilization extends Civilization {
   public attackCooldown: number = 0;
   public lastAttackYear: number = 0;
   public starsys: number = 0;
-  public unlocked: boolean = false;
-  
+  /** 该文明是否已被地球观测/发现存在（可出现在星图/外交列表中） */
+  public discovered: boolean = false;
+  /** 该文明是否与地球建立了可外交的通信信道（可执行 negotiate/trade/alliance/provoke） */
+  public contacted: boolean = false;
+  /** @deprecated 旧字段，现等价于 contacted，保留以兼容旧存档 */
+  get unlocked(): boolean { return this.contacted; }
+  set unlocked(value: boolean) { this.contacted = value; if (value) this.discovered = true; }
+
   public waterdropCount: number = 0;
   public waterdropCooldown: number = 0;
   public hasDimensionStruck: boolean = false;
@@ -359,7 +365,8 @@ export class AlienCiviManager {
         data.starsys || 1
       );
       if (civiName === "三体") {
-        alien.unlocked = true;
+        alien.discovered = true;
+        alien.contacted = true;
       }
       const homeStarIndex = 999 - this.aliens.size;
       alien.starIndices.add(homeStarIndex);

@@ -33,14 +33,19 @@ interface BreakpointInfo {
   isTouchDevice: boolean;
   /** 是否为竖屏手机（用于 OrientationPrompt） */
   isPortraitMobile: boolean;
+  /** 是否为横屏手机 */
+  isMobileLandscape: boolean;
 }
 
 function getBreakpointInfo(width: number, height: number): BreakpointInfo {
   const isLandscape = width > height;
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  // Mobile landscape can have width > 768, so we need to rely on touch/height heuristics
+  const isMobileDevice = (isTouchDevice && width < 768) || (isTouchDevice && isLandscape && height <= 500);
 
   let breakpoint: Breakpoint;
-  if (width < 768) breakpoint = 'mobile';
+  if (isMobileDevice) breakpoint = 'mobile';
   else if (width < 1024) breakpoint = 'tablet';
   else if (width < 1536) breakpoint = 'desktop';
   else breakpoint = 'wide';
@@ -55,6 +60,7 @@ function getBreakpointInfo(width: number, height: number): BreakpointInfo {
     isLandscape,
     isTouchDevice,
     isPortraitMobile: breakpoint === 'mobile' && !isLandscape,
+    isMobileLandscape: breakpoint === 'mobile' && isLandscape,
   };
 }
 
@@ -71,6 +77,7 @@ export function useBreakpoint(): BreakpointInfo {
         isLandscape: true,
         isTouchDevice: false,
         isPortraitMobile: false,
+        isMobileLandscape: false,
       };
     }
     return getBreakpointInfo(window.innerWidth, window.innerHeight);

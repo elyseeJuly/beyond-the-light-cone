@@ -295,7 +295,7 @@ describe('Fleet & Colony System', () => {
     star.currentResource = 500;
     star.populationLimit = 1000;
 
-    const beforeResource = e.resource;
+    // const _beforeResource = game.earthCivi.resource;
     game.earthCivi.isAiBrainEnabled = true;
     e.runARound();
 

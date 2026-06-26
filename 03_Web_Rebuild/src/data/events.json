@@ -120,6 +120,11 @@
         "target": "yangdong_suicide"
       },
       {
+        "type": "kill_person",
+        "target": "杨冬",
+        "value": 0
+      },
+      {
         "type": "resource",
         "target": "culture",
         "value": -10
@@ -140,14 +145,11 @@
     "eventtype": 0,
     "eventeffect": 0,
     "eventvalue": 0,
-    "talkcount": 1,
-    "talk0_pic": "event_crisis_start_1778921554350.png",
-    "talk0_talker": "联合政府",
-    "talk0_content": "执政官，由于三体舰队的发现，全球已进入危机纪元。行星防御理事会（PDC）正式授权您接管最高统帅权。基础物理已被锁死，但人类文明的火种绝不能熄灭！",
+    "talkcount": -1,
+    "tip": "联合政府：执政官，由于三体舰队的发现，全球已进入危机纪元。行星防御理事会（PDC）正式授权您接管最高统帅权。基础物理已被锁死，但人类文明的火种绝不能熄灭！",
     "triggerCondition": {
       "epoch": "CRISIS",
-      "minYear": 0,
-      "reqFlag": "yangdong_suicide"
+      "minYear": 0
     }
   },
   {
@@ -354,6 +356,40 @@
     "triggerCondition": {
       "epoch": "CRISIS",
       "minYear": 20
+    }
+  },
+  {
+    "name": 25,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 2,
+    "talk0_pic": "event_thought_seal_placeholder.png",
+    "talk0_talker": "山杉惠子",
+    "talk0_content": "我是希恩斯的妻子，也是他的破壁人。他的思想钢印计划根本不是为了给士兵打上必胜信念——他在秘密给太空军打上'必败'的信念，目的是让人类在认识到失败不可避免后，全力推动逃亡主义。",
+    "talk1_pic": "unified_hines_1779691718751.png",
+    "talk1_talker": "希恩斯",
+    "talk1_content": "惠子……你赢了。是的，面壁计划的真正意图从来不是胜利，而是逃亡。只有让人类真正相信会失败，我们才会不顾一切地建造飞船，把文明的火种送出太阳系。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "hines_breached"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": -10
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 8
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 25,
+      "reqFlag": "thought_seal_created"
     }
   },
   {
@@ -644,6 +680,32 @@
     "eventeffect": 0,
     "eventvalue": 0,
     "talkcount": 1,
+    "talk0_pic": "event_deterrence_established_placeholder.png",
+    "talk0_talker": "联合国秘书长",
+    "talk0_content": "【威慑纪元·纪元宣告】今日，人类正式迈入威慑纪元。罗辑博士以黑暗森林法则为剑，迫使三体世界坐在了谈判桌前。这是人类历史上第一次与高等外星文明达成战略平衡——我们不再是被猎杀的羔羊，而是持剑的猎人。愿威慑恒久，愿和平永驻。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "deterrence_era_declared"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 30
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 201,
+      "reqFlag": "deterrence_established"
+    }
+  },
+  {
+    "name": 201,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
     "talk0_pic": "event_dark_battle_placeholder.png",
     "talk0_talker": "章北海",
     "talk0_content": "【黑暗战役】在末日之战的余波中，逃亡舰队之间爆发了黑暗战役。为了争夺有限的资源，'蓝色空间'号向'自然选择'号发起了攻击。这就是黑暗森林法则在人类内部的体现。",
@@ -775,30 +837,29 @@
     "eventvalue": 0,
     "talkcount": 1,
     "talk0_pic": "event_swordholder_handover_placeholder.png",
-    "talk0_talker": "程心",
-    "talk0_content": "我当选为第二任执剑人了。罗辑把那个按钮交给了我，但我真的有勇气按下它吗？威慑的平衡，现在掌握在我的手中...",
-    "effects": [
+    "talk0_talker": "罗辑",
+    "talk0_content": "五十四年了，我一直握着这个按钮。现在，是时候交给下一代执剑人了。但程心……她真的能在关键时刻按下毁灭两个文明的按钮吗？执政官，这个决定，需要你来下。",
+    "choices": [
       {
-        "type": "unlock_person",
-        "target": "程心"
+        "label": "任命程心为第二任执剑人",
+        "effects": [
+          { "type": "unlock_person", "target": "程心", "value": 0 },
+          { "type": "unlock_person", "target": "艾AA", "value": 0 },
+          { "type": "flag", "target": "swordholder_handover", "value": 0 },
+          { "type": "flag", "target": "swordholder_chengxin", "value": 0 },
+          { "type": "resource", "target": "prestige", "value": 20 },
+          { "type": "resource", "target": "treachery", "value": 10 }
+        ]
       },
       {
-        "type": "unlock_person",
-        "target": "艾AA"
-      },
-      {
-        "type": "flag",
-        "target": "swordholder_handover"
-      },
-      {
-        "type": "resource",
-        "target": "prestige",
-        "value": 20
-      },
-      {
-        "type": "resource",
-        "target": "treachery",
-        "value": 10
+        "label": "罗辑连任执剑人，继续威慑",
+        "effects": [
+          { "type": "flag", "target": "swordholder_handover", "value": 0 },
+          { "type": "flag", "target": "swordholder_luoji_retained", "value": 0 },
+          { "type": "resource", "target": "prestige", "value": 40 },
+          { "type": "resource", "target": "deterrenceValue", "value": 30 },
+          { "type": "resource", "target": "culture", "value": 10 }
+        ]
       }
     ],
     "triggerCondition": {
@@ -817,30 +878,36 @@
     "talk0_talker": "智子",
     "talk0_content": "【威慑中止】程心女士，你确实没有按下按钮的决心。水滴已经摧毁了地球上所有的引力波广播天线。威慑纪元结束了，人类准备接受流放吧。",
     "effects": [
-      {
-        "type": "resource",
-        "target": "prestige",
-        "value": -90
-      },
-      {
-        "type": "resource",
-        "target": "treachery",
-        "value": 40
-      },
-      {
-        "type": "resource",
-        "target": "population",
-        "value": -20
-      },
-      {
-        "type": "flag",
-        "target": "deterrence_broken"
-      }
+      { "type": "resource", "target": "prestige", "value": -90 },
+      { "type": "resource", "target": "treachery", "value": 40 },
+      { "type": "resource", "target": "population", "value": -20 },
+      { "type": "flag", "target": "deterrence_broken", "value": 0 }
     ],
     "triggerCondition": {
       "epoch": "DETERRENCE",
       "minYear": 220,
-      "reqFlag": "swordholder_handover"
+      "reqFlag": "swordholder_chengxin"
+    }
+  },
+  {
+    "name": 220,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_deterrence_established_placeholder.png",
+    "talk0_talker": "罗辑",
+    "talk0_content": "【威慑持续】我用余生的全部意志握着这个按钮。三体人知道，只要我活着，威慑就不会终结。他们不会冒险——因为黑暗森林的法则不是玩笑，而我是那个会笑着按下按钮的人。",
+    "effects": [
+      { "type": "flag", "target": "deterrence_held_strong", "value": 0 },
+      { "type": "resource", "target": "prestige", "value": 30 },
+      { "type": "resource", "target": "deterrenceValue", "value": 20 },
+      { "type": "resource", "target": "culture", "value": 15 }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 220,
+      "reqFlag": "swordholder_luoji_retained"
     }
   },
   {
@@ -914,6 +981,37 @@
       "epoch": "BROADCAST",
       "minYear": 230,
       "reqFlag": "australia_migration"
+    }
+  },
+  {
+    "name": 230,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_gravitational_broadcast_placeholder.png",
+    "talk0_talker": "万有引力号",
+    "talk0_content": "【引力波广播】万有引力号与蓝色空间号共同启动了引力波广播。执剑人的威慑给我们争取了时间，但人类的命运不能永远寄托于一个人的意志。今天，我们主动广播三体星系和太阳系的坐标，让黑暗森林法则成为人类最强大的武器。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "coordinates_broadcasted"
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 30
+      },
+      {
+        "type": "resource",
+        "target": "deterrenceValue",
+        "value": 50
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "DETERRENCE",
+      "minYear": 230,
+      "reqFlag": "deterrence_held_strong"
     }
   },
   {
@@ -1012,6 +1110,32 @@
     }
   },
   {
+    "name": 261,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_broadcast_era_placeholder.png",
+    "talk0_talker": "PDC 首席科学家",
+    "talk0_content": "【广播纪元·纪元宣告】三体星系的毁灭已经被全宇宙观测到。人类亲手按下了引力波广播按钮，将两个世界的坐标送入了黑暗森林。从今天起，我们不再是宇宙中默默无闻的文明——我们的存在已经被所有人知晓。这是广播纪元，一个暴露于全宇宙目光下的时代。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "broadcast_era_declared"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 40
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BROADCAST",
+      "minYear": 261,
+      "reqFlag": "coordinates_broadcasted"
+    }
+  },
+  {
     "name": 280,
     "eventtype": 0,
     "eventeffect": 0,
@@ -1045,6 +1169,37 @@
     "triggerCondition": {
       "epoch": "BUNKER",
       "minYear": 280
+    }
+  },
+  {
+    "name": 281,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_bunker_era_placeholder.png",
+    "talk0_talker": "联合政府",
+    "talk0_content": "【掩体纪元·纪元宣告】黑暗森林打击的阴影笼罩着太阳系，但人类没有坐以待毙。今天，我们正式宣布进入掩体纪元——木星、土星、天王星与海王星背后的太空城将成为人类文明的堡垒。无论宇宙多么黑暗，只要还有一个掩体在，人类就还有未来。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "bunker_era_declared"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 40
+      },
+      {
+        "type": "resource",
+        "target": "prestige",
+        "value": 20
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 281,
+      "reqFlag": "bunker_world_completed"
     }
   },
   {
@@ -1105,26 +1260,28 @@
     "talkcount": 1,
     "talk0_pic": "event_wade_coup_placeholder.png",
     "talk0_talker": "维德",
-    "talk0_content": "前进！不择手段地前进！为了光速飞船计划，我必须夺取星环集团的控制权。程心，你的善良救不了人类，只有力量才能。",
-    "effects": [
+    "talk0_content": "前进！不择手段地前进！执政官，为了光速飞船计划，我必须夺取星环集团的控制权。程心的善良救不了人类，联合政府的保守正在把人类推向深渊。给我授权，让我放手去做——历史会证明我是对的。",
+    "choices": [
       {
-        "type": "flag",
-        "target": "wade_coup"
+        "label": "支持维德，全力推进光速飞船",
+        "effects": [
+          { "type": "flag", "target": "supported_wade", "value": 0 },
+          { "type": "flag", "target": "wade_coup", "value": 0 },
+          { "type": "resource", "target": "military", "value": 50 },
+          { "type": "resource", "target": "prestige", "value": -30 },
+          { "type": "resource", "target": "treachery", "value": 30 },
+          { "type": "unlock_person", "target": "维德", "value": 0 }
+        ]
       },
       {
-        "type": "resource",
-        "target": "military",
-        "value": -100
-      },
-      {
-        "type": "resource",
-        "target": "prestige",
-        "value": -20
-      },
-      {
-        "type": "resource",
-        "target": "treachery",
-        "value": 10
+        "label": "阻止维德，维护联合政府权威",
+        "effects": [
+          { "type": "flag", "target": "wade_opposed", "value": 0 },
+          { "type": "flag", "target": "wade_coup", "value": 0 },
+          { "type": "resource", "target": "military", "value": -100 },
+          { "type": "resource", "target": "prestige", "value": -20 },
+          { "type": "resource", "target": "treachery", "value": 10 }
+        ]
       }
     ],
     "triggerCondition": {
@@ -1143,30 +1300,37 @@
     "talk0_talker": "维德",
     "talk0_content": "我遵守了承诺。当我重新获得对星环集团的控制权时，我把它交还给了程心。现在，联合政府要处决我。没关系，至少我为人类争取了更多的时间...",
     "effects": [
-      {
-        "type": "flag",
-        "target": "wade_executed"
-      },
-      {
-        "type": "resource",
-        "target": "prestige",
-        "value": -15
-      },
-      {
-        "type": "resource",
-        "target": "treachery",
-        "value": 5
-      },
-      {
-        "type": "resource",
-        "target": "culture",
-        "value": 5
-      }
+      { "type": "flag", "target": "wade_executed", "value": 0 },
+      { "type": "resource", "target": "prestige", "value": -15 },
+      { "type": "resource", "target": "treachery", "value": 5 },
+      { "type": "resource", "target": "culture", "value": 5 }
     ],
     "triggerCondition": {
       "epoch": "BUNKER",
       "minYear": 310,
-      "reqFlag": "wade_coup"
+      "reqFlag": "wade_opposed"
+    }
+  },
+  {
+    "name": 310,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_lightspeed_ship_placeholder.png",
+    "talk0_talker": "维德",
+    "talk0_content": "【光速飞船量产】执政官，感谢你当初的信任。星环集团已经掌握了成熟的曲率驱动技术，第一批量产型光速飞船——星环号系列——已经正式下线。我们为人类文明争得了逃亡的船票。",
+    "effects": [
+      { "type": "flag", "target": "wade_succeeded", "value": 0 },
+      { "type": "resource", "target": "military", "value": 100 },
+      { "type": "resource", "target": "economy", "value": -200 },
+      { "type": "resource", "target": "culture", "value": 30 },
+      { "type": "resource", "target": "prestige", "value": 20 }
+    ],
+    "triggerCondition": {
+      "epoch": "BUNKER",
+      "minYear": 310,
+      "reqFlag": "supported_wade"
     }
   },
   {
@@ -1367,6 +1531,37 @@
     }
   },
   {
+    "name": 405,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_galaxy_micro_universe_door.png",
+    "talk0_talker": "星环号科学官",
+    "talk0_content": "【小宇宙对接】我们成功解析了云天明留下的647号小宇宙门控信号，并在银河系边缘建立了稳定的对接通道。这个小宇宙将成为人类文明最后的避难所——即使大宇宙死去，我们的记忆与火种也能在其中延续。",
+    "effects": [
+      {
+        "type": "flag",
+        "target": "mini_universe_built"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 80
+      },
+      {
+        "type": "resource",
+        "target": "deterrenceValue",
+        "value": 10
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GALAXY",
+      "minYear": 405,
+      "reqFlag": "galaxy_exodus_seen"
+    }
+  },
+  {
     "name": 225,
     "eventtype": 0,
     "eventeffect": 0,
@@ -1374,16 +1569,38 @@
     "talkcount": 1,
     "talk0_pic": "event_black_domain_debate_placeholder.png",
     "talk0_talker": "联合政府",
-    "talk0_content": "【掩体与黑域辩论】面壁者与科学家之间爆发了一场大辩论。一方主张建造木星、土星背面的掩体太空城来躲避光粒打击；另一方则主张通过制造低光速黑域来发布宇宙安全声明。执政官，请选择人类的未来方向。",
-    "effects": [
+    "talk0_content": "【生存路线大辩论】面壁者与科学家之间爆发了一场关于人类文明终极出路的辩论。一方主张在木星背后建造掩体太空城来躲避光粒打击；另一方主张通过制造低光速黑域来发布宇宙安全声明；还有少数人坚持不计代价研发光速飞船以求逃离。执政官，请选择人类文明的未来方向。",
+    "choices": [
       {
-        "type": "flag",
-        "target": "black_domain_debate_started"
+        "label": "掩体路线：建造木星/土星背面太空城",
+        "effects": [
+          { "type": "flag", "target": "black_domain_debate_started", "value": 0 },
+          { "type": "flag", "target": "route_bunker_chosen", "value": 0 },
+          { "type": "resource", "target": "culture", "value": 20 },
+          { "type": "resource", "target": "economy", "value": 50 },
+          { "type": "resource", "target": "prestige", "value": 10 }
+        ]
       },
       {
-        "type": "resource",
-        "target": "culture",
-        "value": 20
+        "label": "黑域路线：发布宇宙安全声明",
+        "effects": [
+          { "type": "flag", "target": "black_domain_debate_started", "value": 0 },
+          { "type": "flag", "target": "route_black_domain_chosen", "value": 0 },
+          { "type": "resource", "target": "culture", "value": 30 },
+          { "type": "resource", "target": "prestige", "value": 20 },
+          { "type": "resource", "target": "deterrenceValue", "value": 40 }
+        ]
+      },
+      {
+        "label": "光速飞船路线：不惜代价逃离太阳系",
+        "effects": [
+          { "type": "flag", "target": "black_domain_debate_started", "value": 0 },
+          { "type": "flag", "target": "route_lightspeed_chosen", "value": 0 },
+          { "type": "resource", "target": "culture", "value": 10 },
+          { "type": "resource", "target": "economy", "value": -100 },
+          { "type": "resource", "target": "treachery", "value": 20 },
+          { "type": "resource", "target": "military", "value": 30 }
+        ]
       }
     ],
     "triggerCondition": {
@@ -1399,16 +1616,16 @@
     "talkcount": 1,
     "talk0_pic": "event_galaxy_era_placeholder.png",
     "talk0_talker": "星环号舰长",
-    "talk0_content": "【银河纪元】我们已经在银河系中航行了5年。星环号的曲率引擎稳定运转，人类文明的火种在深空中持续燃烧。前方是无尽的星辰大海，后方是已经二维化的太阳系。一个新的纪元开始了。",
+    "talk0_content": "【银河纪元·纪元宣告】太阳系已经成为一幅悬挂在宇宙中的二维画卷，而我们——星环号上的人类，是旧时代最后的见证者。从今天起，人类正式进入银河纪元。我们将以星舰为家，以星辰为路，在银河系中重新点燃文明的火焰。旧神已死，新纪已至。",
     "effects": [
       {
         "type": "flag",
-        "target": "galaxy_era_seen"
+        "target": "galaxy_era_declared"
       },
       {
         "type": "resource",
         "target": "culture",
-        "value": 50
+        "value": 60
       }
     ],
     "triggerCondition": {
@@ -1425,11 +1642,11 @@
     "talkcount": 1,
     "talk0_pic": "event_stardust_era_placeholder.png",
     "talk0_talker": "关一帆",
-    "talk0_content": "【星屑纪元】五十年了。我们在银河系的旋臂之间穿梭，像一粒尘埃般渺小。人类文明已经演变为星屑聚落——我们不再有国家，不再有城市，只有分散在数艘星舰上的生命火种。但只要我们还在，文明就没有终结。",
+    "talk0_content": "【星屑纪元·纪元宣告】宇宙正在老去。恒星逐一熄灭，黑洞缓缓蒸发，曾经辉煌的银河文明如今只剩下散落在旋臂之间的星屑聚落。我们不再有行星，不再有国家，星舰就是家园，流浪即是文明。但只要还有一束光在传播，人类的记忆就仍在宇宙中回响。",
     "effects": [
       {
         "type": "flag",
-        "target": "stardust_era_seen"
+        "target": "stardust_era_declared"
       },
       {
         "type": "resource",

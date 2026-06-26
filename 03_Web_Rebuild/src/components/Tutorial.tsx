@@ -262,15 +262,20 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         }
 
         const rect = element.getBoundingClientRect();
+        
+        // Account for global CSS scaling (mobile landscape mode)
+        const scaleEl = document.querySelector('.mobile-landscape-scale');
+        const scale = scaleEl ? 0.85 : 1;
+
         // If element is hidden or has 0 size, hide the highlight box
         if (rect.width === 0 || rect.height === 0) {
           setHighlightRect(null);
         } else {
           setHighlightRect({
-            top: Math.max(0, rect.top - 4),
-            left: Math.max(0, rect.left - 4),
-            width: rect.width + 8,
-            height: rect.height + 8,
+            top: Math.max(0, rect.top / scale - 4),
+            left: Math.max(0, rect.left / scale - 4),
+            width: rect.width / scale + 8,
+            height: rect.height / scale + 8,
           });
         }
       } else {
@@ -517,6 +522,20 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
               left: `${highlightRect.left + highlightRect.width}px`,
               right: 0,
               height: `${highlightRect.height}px`,
+            }}
+          />
+          {/* Center interceptor to prevent premature interaction during linear tutorial */}
+          <div 
+            className="absolute bg-transparent pointer-events-auto z-[1000]"
+            style={{
+              top: `${highlightRect.top}px`,
+              left: `${highlightRect.left}px`,
+              width: `${highlightRect.width}px`,
+              height: `${highlightRect.height}px`,
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
             }}
           />
         </>

@@ -20,6 +20,9 @@ export const OrientationPrompt: React.FC = () => {
       if (screen.orientation) {
         const isLand = screen.orientation.type.includes('landscape');
         setIsLandscape(isLand);
+        if (!isLand && typeof (screen.orientation as any).lock === 'function') {
+          (screen.orientation as any).lock('landscape').catch(() => { /* Ignore failure */ });
+        }
       } else {
         // Fallback using window dimensions
         setIsLandscape(window.innerWidth > window.innerHeight);

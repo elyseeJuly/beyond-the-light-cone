@@ -89,7 +89,7 @@ export function isEventEligible(
 
 export function scoreEvent(
   event: GameEvent,
-  _game: any,
+  game: any,
   _state: any
 ): number {
   const meta = event.cadenceMeta;
@@ -98,8 +98,22 @@ export function scoreEvent(
   const laneWeight = EVENT_LANE_WEIGHTS[meta.lane] || 1;
   const eventWeight = meta.weight || 1;
   const severity = meta.severity || 1;
+  let score = laneWeight * eventWeight * severity;
 
-  return laneWeight * eventWeight * severity;
+  // === TagManager integration: tags listed in cadenceMeta boost/dampen event weight ===
+  if (meta.tags && meta.tags.length > 0 && game?.tagManager) {
+    const tm = game.tagManager;
+    for (const tagId of meta.tags) {
+      if (tm.hasTag(tagId)) {
+        const intensity = tm.getTagIntensity(tagId);
+        score *= 1 + intensity / 100;
+      } else {
+        score *= 0.5;
+      }
+    }
+  }
+
+  return score;
 }
 
 export function pickWeightedEvent(

@@ -69,16 +69,17 @@ export const CivilizationArchive: React.FC = () => {
     return list;
   }, [earth]);
 
-  // Discovered Civs
+  // Discovered Civs (observed existence, not necessarily contacted)
   const discoveredCivs = useMemo(() => {
     if (!game.alienCiviManager) return [];
     return Array.from(game.alienCiviManager.aliens.values())
-      .filter(alien => alien.unlocked)
+      .filter(alien => alien.discovered)
       .map(alien => ({
       name: alien.name,
       friendship: alien.friendshipType,
       isDead: alien.isDieOut(),
-      population: alien.population
+      population: alien.population,
+      contacted: alien.contacted
     }));
   }, [game.alienCiviManager]);
 
@@ -275,6 +276,7 @@ export const CivilizationArchive: React.FC = () => {
                         <div className="font-bold text-white text-sm">{civ.name} 文明</div>
                         <div className="text-[10px] text-[var(--text-secondary)] mt-1">
                           常驻人口: {civ.population} 点 | 外交友好度: {getFriendshipLabel(civ.friendship)}
+                          {!civ.contacted && <span className="ml-2 text-amber-400">[未建立通信]</span>}
                         </div>
                       </div>
                       <span className={`px-2 py-0.5 rounded text-[10px] ${civ.isDead ? 'bg-red-950/30 text-red-500 border border-red-500/30' : 'bg-emerald-950/30 text-emerald-400 border border-emerald-500/30'}`}>

@@ -920,21 +920,57 @@ export class GameEventManager {
 
   public isPersonAliveInEpoch(personName: string, epochName: string): boolean {
     const epochDeathMap: Record<string, string[]> = {
+      // 危机纪元初古筝行动死亡
       "伊文斯": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
-      "林云": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
-      "泰勒": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
-      "雷迪亚兹": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 危机纪元球状闪电结局后量子态化/退场
+      "林云": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 危机纪元破壁后自杀
+      "泰勒": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 危机纪元被人民砸死
+      "雷迪亚兹": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 面壁者，原著未明确死亡，默认活到广播纪元后
       "希恩斯": ["BROADCAST", "BUNKER", "GALAXY"],
+      // 掩体纪元末冥王星二维化死亡
       "罗辑": ["GALAXY"],
-      "章北海": ["BROADCAST", "BUNKER", "GALAXY"],
-      "丁仪": ["BROADCAST", "BUNKER", "GALAXY"],
+      // 危机纪元末黑暗战役死亡
+      "章北海": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 危机纪元末末日战役牺牲
+      "丁仪": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 威慑纪元后隐退，视为广播纪元后不再活跃
       "庄颜": ["BROADCAST", "BUNKER", "GALAXY"],
-      "维德": ["GALAXY"],
+      // 掩体纪元被处决
+      "维德": ["BUNKER", "GALAXY"],
+      // 活到宇宙终结
       "程心": [],
       "云天明": [],
-      "艾AA": ["CRISIS"],
       "智子": [],
-      "关一帆": ["CRISIS", "DETERRENCE"],
+      // 广播/掩体/银河纪元均存活（修复倒置错误）
+      "艾AA": [],
+      "关一帆": [],
+      // 危机纪元初/黄金岁月末去世
+      "叶文洁": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "汪淼": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "大史": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "常伟思": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "东方延绪": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "杨冬": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 红岸基地事故（黄金岁月末）
+      "雷志成": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "杨卫宁": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 危机纪元中自杀/退场
+      "山杉惠子": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "伊依": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "霍金": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "沈渊": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "水娃": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "严井": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "白冰": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "苗福全": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      // 刘慈欣宇宙联动人物，默认活到较后
+      "华华": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "滑膛": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "朱汉扬": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
+      "刘慈欣": ["GALAXY"],
     };
     return !(epochDeathMap[personName] || []).includes(epochName);
   }

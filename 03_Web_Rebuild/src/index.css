@@ -291,6 +291,27 @@
   }
 }
 
+/* Mobile Landscape Scaling */
+@media (max-height: 500px) and (orientation: landscape) {
+  .mobile-landscape-scale {
+    transform: scale(0.85);
+    transform-origin: top center;
+    width: 117.64% !important; /* 100 / 0.85 */
+    height: 117.64% !important;
+  }
+  
+  .sidebar-left {
+    width: clamp(140px, 15vw, 200px) !important;
+  }
+  .sidebar-right {
+    width: clamp(200px, 25vw, 280px) !important;
+  }
+  
+  .top-bar-compressed {
+    height: 48px !important;
+  }
+}
+
 /* ============== Modal System ============== */
 .modal-overlay {
   position: fixed;

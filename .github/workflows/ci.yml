@@ -38,6 +38,20 @@ jobs:
       - name: Build for production
         run: npm run build
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: 03_Web_Rebuild/playwright-report/
+          retention-days: 7
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4

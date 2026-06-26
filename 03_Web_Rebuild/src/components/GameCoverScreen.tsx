@@ -20,7 +20,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
   const [hoveredOption, setHoveredOption] = useState<MenuOption>(null);
   const [rendered, setRendered] = useState(false);
-  const [enableAiBrain] = useState(true); // Default to true, AI brain toggle relocated to TopHUD
+  const [enableAiBrain, setEnableAiBrain] = useState(false); // Default off per project constraint
 
   // Handle responsive background image
   useEffect(() => {
@@ -165,6 +165,26 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">FREE EXPLORATION MODE</div>
               </div>
             </button>
+
+            {/* AI Brain Toggle */}
+            <div className="flex items-center justify-between px-4 py-2 border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/3 rounded">
+              <div className="flex items-center gap-2">
+                <Cpu size={14} className={enableAiBrain ? 'text-[var(--color-primary)]' : 'text-slate-500'} />
+                <span className="text-[11px] text-[var(--text-secondary)] font-mono tracking-wider">AI 智脑托管</span>
+              </div>
+              <button
+                onClick={() => setEnableAiBrain(!enableAiBrain)}
+                className={`relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer ${
+                  enableAiBrain ? 'bg-[var(--color-primary)]/40' : 'bg-slate-700'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
+                    enableAiBrain ? 'left-5' : 'left-0.5'
+                  }`}
+                />
+              </button>
+            </div>
 
             {/* Option 4: View Museum (Chronicles of Time) */}
             <button

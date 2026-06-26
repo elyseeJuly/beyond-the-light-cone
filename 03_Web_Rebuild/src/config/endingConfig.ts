@@ -58,17 +58,17 @@ export const ERA_BGM_PATHS = {
 
 /** 结局与终章专属 BGM 预留音乐位 */
 export const ENDING_BGM_PATHS = {
-  CONQUEST: '/audio/ending_conquest.mp3',               // 征服胜利
-  DETERRENCE: '/audio/ending_deterrence.mp3',           // 威慑胜利
-  DARK_DOMAIN: '/audio/ending_death_of_the_light_cone.mp3',   // 黑域结局：《Death of the Light Cone》
-  WANDERING: '/audio/ending_wandering.mp3',             // 流浪胜利
-  DIGITAL: '/audio/ending_ghost_in_the_quantum.mp3',          // 数字永生：《Ghost in the Quantum》
-  HIDDEN: '/audio/ending_the_last_archive.mp3',               // 隐藏结局：《The Last Archive》
-  CREDITS_PLATINUM: '/audio/ending_fate_beyond_the_light_cone.mp3', // Fate Beyond the Light Cone：《A Past Within the Light Cone》
-  DEFEAT_TREACHERY: '/audio/ending_defeat_treachery.mp3',
-  DEFEAT_EXTINCTION: '/audio/ending_defeat_extinction.mp3',
-  DEFEAT_HELIUM_FLASH: '/audio/ending_defeat_helium_flash.mp3',
-  DEFEAT_DIMENSION_STRIKE: '/audio/ending_defeat_dimension_strike.mp3',
+  CONQUEST: '/audio/ending_death_of_the_light_cone.mp3',        // 征服胜利（复用黑域主题）
+  DETERRENCE: '/audio/ending_stardust_exodus.mp3',              // 威慑胜利（复用终章主题曲）
+  DARK_DOMAIN: '/audio/ending_death_of_the_light_cone.mp3',     // 黑域结局：《Death of the Light Cone》
+  WANDERING: '/audio/ending_stardust_exodus.mp3',               // 流浪胜利（复用终章主题曲）
+  DIGITAL: '/audio/ending_ghost_in_the_quantum.mp3',            // 数字永生：《Ghost in the Quantum》
+  HIDDEN: '/audio/ending_the_last_archive.mp3',                 // 隐藏结局：《The Last Archive》
+  CREDITS_PLATINUM: '/audio/ending_fate_beyond_the_light_cone.mp3', // Fate Beyond the Light Cone
+  DEFEAT_TREACHERY: '/audio/ending_neutral_eternal_exile.mp3',  // 背叛失败（复用流亡主题）
+  DEFEAT_EXTINCTION: '/audio/ending_neutral_cosmic_silence.mp3', // 灭绝失败（复用静默主题）
+  DEFEAT_HELIUM_FLASH: '/audio/era_crisis.mp3',                 // 氦闪失败（复用危机纪元BGM）
+  DEFEAT_DIMENSION_STRIKE: '/audio/ending_death_of_the_light_cone.mp3', // 二向箔失败（复用黑域主题）
   NEUTRAL_ETERNAL_EXILE: '/audio/ending_neutral_eternal_exile.mp3',
   NEUTRAL_COSMIC_SILENCE: '/audio/ending_neutral_cosmic_silence.mp3',
 };

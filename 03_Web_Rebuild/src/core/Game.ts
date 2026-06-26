@@ -312,6 +312,9 @@ export class Game {
     if (civi.economy <= 10) {
       blockers.push('经济危机：经济产出濒临崩溃');
     }
+    if (civi.apCurrent <= 0) {
+      blockers.push('执政指令点耗尽：请等待下一回合恢复或开启AI智脑托管');
+    }
 
     return blockers;
   }

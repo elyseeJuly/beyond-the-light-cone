@@ -19,7 +19,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['list'], ['html', { outputFolder: './playwright-report/html' }]],
   use: {
-    baseURL: 'http://localhost:4173/beyond-the-light-cone/',
+    baseURL: 'http://localhost:4173/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -48,7 +48,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run preview -- --port 4173',
-    url: 'http://localhost:4173/beyond-the-light-cone/',
+    url: 'http://localhost:4173/',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

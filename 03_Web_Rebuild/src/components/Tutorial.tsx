@@ -220,6 +220,22 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     let active = true;
     const stepStartTime = Date.now();
 
+    // Detect mobile-landscape-scale CSS transform for coordinate correction
+    const getScaleFactor = (): number => {
+      try {
+        const el = document.querySelector('.mobile-landscape-scale');
+        if (el) {
+          const style = window.getComputedStyle(el);
+          const matrix = new DOMMatrixReadOnly(style.transform);
+          if (matrix.a !== 1 || matrix.d !== 1) {
+            return matrix.a; // scaleX (should equal scaleY for uniform scaling)
+          }
+        }
+      } catch (_) { /* ignore */ }
+      return 1;
+    };
+    const scaleFactor = getScaleFactor();
+
     const updateRect = () => {
       if (!active) return;
 
@@ -263,15 +279,23 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
         const rect = element.getBoundingClientRect();
         
+        // Apply scale correction for mobile-landscape-scale transform
+        const correctedRect = scaleFactor !== 1 ? {
+          top: rect.top / scaleFactor,
+          left: rect.left / scaleFactor,
+          width: rect.width / scaleFactor,
+          height: rect.height / scaleFactor,
+        } : rect;
+        
         // If element is hidden or has 0 size, hide the highlight box
-        if (rect.width === 0 || rect.height === 0) {
+        if (correctedRect.width === 0 || correctedRect.height === 0) {
           setHighlightRect(null);
         } else {
           setHighlightRect({
-            top: Math.max(0, rect.top - 4),
-            left: Math.max(0, rect.left - 4),
-            width: rect.width + 8,
-            height: rect.height + 8,
+            top: Math.max(0, correctedRect.top - 4),
+            left: Math.max(0, correctedRect.left - 4),
+            width: correctedRect.width + 8,
+            height: correctedRect.height + 8,
           });
         }
       } else {

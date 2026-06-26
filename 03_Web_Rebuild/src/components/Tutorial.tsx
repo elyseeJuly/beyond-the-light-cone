@@ -113,7 +113,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Shield size={32} />,
     title: '黑暗森林防备体系',
     category: '外御备战',
-    description: '【手把手指令 ⑤】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明的入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！\n\n🎯 执政指令：点击下方的「召开面壁计划战略听证会」可以进入面壁者与执剑人的管理终端。',
+    description: '【手把手指令 ⑤】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明 of 入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！\n\n🎯 执政指令：点击下方的「召开面壁计划战略听证会」可以进入面壁者与执剑人的管理终端。',
     highlightTarget: 'btn-open-wallfacer-hearings',
     activeView: 'government',
     govTab: 'security',
@@ -144,7 +144,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     icon: <Rocket size={32} />,
     title: '授权通过：执政官生存法则',
     category: '最终指示',
-    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「资源采矿场」积累原始矿产\n② 建设「工业加工厂」将矿产转化为经济收入\n③ 在政府管理中指派各部门负责人\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力 (Leadership) 的执剑人建立威慑盾牌\n⑥ 研发航天与宇宙科学，扩张星图开发区\n⑦ 不要在没有采矿场的情况下连续建造加工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的部委负责人疏导逃亡倾向\n⑨ 太阳系打击降临时，依靠“太空城市”或“掩体太空城”疏散人口\n⑩ 合理利用情报中心监测动态与异星外交谈判。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
+    description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「资源采矿场」积累原始矿产\n② 建设「工业加工厂」将矿产转化为经济收入\n③ 在政府管理中指派各部门负责人\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力 (Leadership) 的执剑人建立威慑盾牌\n⑥ 研发航天与宇宙科学，扩张星图开发区\n⑦ 不不要在没有采矿场的情况下连续建造加工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的部委负责人疏导逃亡倾向\n⑨ 太阳系打击降临时，依靠“太空城市”或“掩体太空城”疏散人口\n⑩ 合理利用情报中心监测动态与异星外交谈判。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
     highlightTarget: 'btn-next-turn',
     activeView: 'starmap',
     cardPosition: 'left',
@@ -180,6 +180,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   // Turn off AI brain to allow manual step-by-step guidance, and restore player's previous preference on unmount
   useEffect(() => {
     let previousAiState = false;
+    (window as any).isTutorialActive = true;
     try {
       const game = GameInstance.get();
       previousAiState = game.earthCivi.isAiBrainEnabled;
@@ -190,6 +191,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       console.error("Failed to disable AI brain on tutorial start:", e);
     }
     return () => {
+      (window as any).isTutorialActive = false;
       try {
         const game = GameInstance.get();
         game.earthCivi.isAiBrainEnabled = previousAiState;
@@ -481,7 +483,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         top: '50%',
         transform: 'translateY(-50%)',
         margin: 0,
-        maxWidth: '540px',
+        maxWidth: '640px',
       };
     }
     if (pos === 'right') {
@@ -491,7 +493,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         top: '50%',
         transform: 'translateY(-50%)',
         margin: 0,
-        maxWidth: '540px',
+        maxWidth: '640px',
       };
     }
     if (pos === 'bottom') {
@@ -523,38 +525,82 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
   return (
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
-      {/* SVG backdrop overlay with cutout mask to darken non-highlighted area */}
+      {/* SVG backdrop overlay replaced by 4 absolute-positioned divs to support click-through cutouts */}
       {showHighlight && highlightRect ? (
-        <svg className="fixed inset-0 w-full h-full pointer-events-auto z-[1000]">
-          <defs>
-            <mask id="tutorial-mask">
-              <rect width="100%" height="100%" fill="white" />
-              <rect 
-                x={highlightRect.left} 
-                y={highlightRect.top} 
-                width={highlightRect.width} 
-                height={highlightRect.height} 
-                rx="8" 
-                ry="8" 
-                fill="black" 
-                style={{ transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)' }}
-              />
-            </mask>
-          </defs>
-          <rect 
-            width="100%" 
-            height="100%" 
-            fill="rgba(5, 8, 16, 0.65)" 
-            mask="url(#tutorial-mask)"
+        <div className="absolute inset-0 pointer-events-none z-[1000]">
+          {/* Top backdrop */}
+          <div 
+            data-testid="tutorial-overlay-top"
+            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            style={{
+              top: 0,
+              left: 0,
+              right: 0,
+              height: `${highlightRect.top}px`,
+            }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
             }}
           />
-        </svg>
+          {/* Bottom backdrop */}
+          <div 
+            data-testid="tutorial-overlay-bottom"
+            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            style={{
+              top: `${highlightRect.top + highlightRect.height}px`,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
+          {/* Left backdrop */}
+          <div 
+            data-testid="tutorial-overlay-left"
+            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            style={{
+              top: `${highlightRect.top}px`,
+              height: `${highlightRect.height}px`,
+              left: 0,
+              width: `${highlightRect.left}px`,
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
+          {/* Right backdrop */}
+          <div 
+            data-testid="tutorial-overlay-right"
+            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            style={{
+              top: `${highlightRect.top}px`,
+              height: `${highlightRect.height}px`,
+              left: `${highlightRect.left + highlightRect.width}px`,
+              right: 0,
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
+        </div>
       ) : (
         /* Full-screen solid backdrop when no element is highlighted */
-        !showHighlight && <div className="absolute inset-0 bg-black/85 pointer-events-auto z-[1000]" />
+        !showHighlight && (
+          <div 
+            data-testid="tutorial-overlay-full"
+            className="absolute inset-0 bg-[#050810]/85 pointer-events-auto z-[1000]"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
+        )
       )}
 
       {/* Highlight glow outline box */}
@@ -635,100 +681,199 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
             <X size={16} />
           </button>
 
-          {/* Chapter navigation */}
-          <div className="flex items-center justify-between gap-3 select-none relative z-10 border-b border-[#243245]/40 pb-3 shrink-0">
-            <div className="flex-grow flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
-              {categories.map((cat, ci) => {
-                const isActive = step >= cat.startIdx && step < cat.startIdx + cat.count;
-                return (
-                  <button 
-                    key={ci}
-                    onClick={() => handleGoTo(cat.startIdx)}
-                    className={`text-[10px] font-title font-bold uppercase tracking-widest px-2.5 py-1 border transition-all cursor-pointer shrink-0 ${
-                      isActive 
-                        ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)] text-[var(--color-primary)] shadow-[inset_0_0_10px_rgba(0,184,255,0.2)]' 
-                        : 'border-transparent text-[var(--text-secondary)]/60 hover:text-white bg-white/5'
-                    }`}
-                  >
-                    {cat.name}
-                  </button>
-                );
-              })}
-            </div>
-            <span className="text-[10px] text-[var(--color-primary)]/60 font-mono font-bold tracking-wider shrink-0 select-none pb-1">
-              {step + 1} / {TUTORIAL_STEPS.length}
-            </span>
-          </div>
-
-          {/* Icon + Title */}
-          <div className={`flex items-center gap-3 sm:gap-5 transition-all duration-300 z-10 ${isAnimating ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'} shrink-0`}>
-            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(0,184,255,0.1)] relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/10 to-transparent opacity-50" />
-              {current.icon}
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-0.5 sm:mb-1">
-                <Flag className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--color-primary)]/60" />
-                <div className="text-[9px] sm:text-[10px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">{current.category}</div>
-              </div>
-              <h2 className="text-base sm:text-xl font-title font-black text-white tracking-widest leading-none drop-shadow-md">{current.title}</h2>
-            </div>
-          </div>
-
-          {/* Scrollable content area */}
-          <div className="flex-grow overflow-y-auto min-h-0 flex flex-col gap-3 pr-1 scrollbar-none z-10">
-            {/* Description */}
-            <div className={`transition-all duration-300 delay-75 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} font-sans text-xs sm:text-sm bg-black/20 p-3 sm:p-5 border-l-2 border-[var(--color-primary)]/40 shrink-0`}>
-              <p className="text-[var(--text-secondary)] leading-[1.6] sm:leading-[1.8] whitespace-pre-line">
-                {current.description}
-              </p>
-            </div>
-
-            {/* Tips */}
-            {current.tips && current.tips.length > 0 && (
-              <div className={`bg-[#070B14]/60 border border-amber-500/20 p-3 sm:p-4 transition-all duration-300 delay-150 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} shrink-0`}>
-                <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-1.5 sm:mb-2">
-                  <Lightbulb size={12} className="shrink-0" />
-                  系统提示分析
+          {windowWidth >= 768 ? (
+            /* DESKTOP SIDEBAR CHAPTER LAYOUT */
+            <div className="flex flex-row gap-6 w-full h-full min-h-0 z-10" data-testid="tutorial-categories-vertical">
+              {/* Left sidebar for chapters */}
+              <div className="flex flex-col gap-2 overflow-y-auto scrollbar-none w-[140px] shrink-0 border-r border-[#243245]/30 pr-4 select-none">
+                <div className="text-[9px] font-title font-bold text-[var(--color-primary)]/85 uppercase tracking-[0.2em] mb-2 px-1">章节目录</div>
+                <div className="flex flex-col gap-1.5 overflow-y-auto scrollbar-none">
+                  {categories.map((cat, ci) => {
+                    const isActive = step >= cat.startIdx && step < cat.startIdx + cat.count;
+                    return (
+                      <button 
+                        key={ci}
+                        onClick={() => handleGoTo(cat.startIdx)}
+                        className={`text-[10px] font-title font-bold uppercase tracking-widest px-2.5 py-2 border transition-all cursor-pointer text-left w-full ${
+                          isActive 
+                            ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)] text-[var(--color-primary)] shadow-[inset_0_0_10px_rgba(0,184,255,0.2)]' 
+                            : 'border-transparent text-[var(--text-secondary)]/60 hover:text-white bg-white/5'
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    );
+                  })}
                 </div>
-                <ul className="space-y-1.5">
-                  {current.tips.map((tip, idx) => (
-                    <li key={idx} className="text-xs text-amber-500/70 flex items-start gap-2">
-                      <span className="text-[10px] opacity-50 font-mono select-none relative top-[1px]">{'>'}</span>
-                      <span className="leading-relaxed">{tip}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-            )}
-          </div>
 
-          {/* Controls */}
-          <div className={`flex items-center justify-between mt-1 sm:mt-2 pt-3 sm:pt-5 border-t border-[#243245]/40 transition-opacity duration-300 z-10 ${isAnimating ? 'opacity-0' : 'opacity-100'} shrink-0`}>
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={handlePrev}
-                disabled={step === 0}
-                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
-              >
-                <ChevronLeft size={16} /> 上一步
-              </button>
-              
-              <button 
-                onClick={handleSkip}
-                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
-              >
-                跳过教程
-              </button>
+              {/* Right content column */}
+              <div className="flex-1 flex flex-col gap-4 min-w-0 min-h-0 justify-between">
+                {/* Header: Icon + Title + Counter */}
+                <div className="flex items-center justify-between border-b border-[#243245]/40 pb-3 shrink-0">
+                  <div className="flex items-center gap-4">
+                    <div className="w-11 h-11 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(0,184,255,0.1)] relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/10 to-transparent opacity-50" />
+                      {current.icon}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <Flag className="w-2.5 h-2.5 text-[var(--color-primary)]/60" />
+                        <div className="text-[9px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">{current.category}</div>
+                      </div>
+                      <h2 className="text-base font-title font-black text-white tracking-widest leading-none drop-shadow-md">{current.title}</h2>
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-[var(--color-primary)]/60 font-mono font-bold tracking-wider select-none">
+                    {step + 1} / {TUTORIAL_STEPS.length}
+                  </span>
+                </div>
+
+                {/* Content body */}
+                <div className="flex-grow overflow-y-auto min-h-0 flex flex-col gap-3 pr-1 scrollbar-none">
+                  <div className={`font-sans text-xs bg-black/20 p-4 border-l-2 border-[var(--color-primary)]/40 shrink-0`}>
+                    <p className="text-[var(--text-secondary)] leading-[1.7] whitespace-pre-line">
+                      {current.description}
+                    </p>
+                  </div>
+                  {current.tips && current.tips.length > 0 && (
+                    <div className="bg-[#070B14]/60 border border-amber-500/20 p-3.5 shrink-0">
+                      <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-1.5">
+                        <Lightbulb size={11} className="shrink-0" />
+                        系统提示分析
+                      </div>
+                      <ul className="space-y-1">
+                        {current.tips.map((tip, idx) => (
+                          <li key={idx} className="text-xs text-amber-500/70 flex items-start gap-2">
+                            <span className="text-[9px] opacity-50 font-mono select-none relative top-[1px]">{'>'}</span>
+                            <span className="leading-relaxed">{tip}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Controls */}
+                <div className="flex items-center justify-between pt-3 border-t border-[#243245]/40 shrink-0">
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={handlePrev}
+                      disabled={step === 0}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
+                    >
+                      <ChevronLeft size={14} /> 上一步
+                    </button>
+                    <button 
+                      onClick={handleSkip}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
+                    >
+                      跳过教程
+                    </button>
+                  </div>
+                  <button 
+                    onClick={handleNext}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 text-[var(--color-primary)] text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(0,184,255,0.15)] hover:shadow-[0_0_20px_rgba(0,184,255,0.3)]"
+                  >
+                    {step === TUTORIAL_STEPS.length - 1 ? '确认授权并开始' : '下一步'} <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
             </div>
+          ) : (
+            /* MOBILE LAYOUT */
+            <div className="flex flex-col gap-3 flex-grow min-h-0 z-10" data-testid="tutorial-categories-horizontal">
+              {/* Chapter navigation */}
+              <div className="flex items-center justify-between gap-3 select-none relative border-b border-[#243245]/40 pb-3 shrink-0">
+                <div className="flex-grow flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
+                  {categories.map((cat, ci) => {
+                    const isActive = step >= cat.startIdx && step < cat.startIdx + cat.count;
+                    return (
+                      <button 
+                        key={ci}
+                        onClick={() => handleGoTo(cat.startIdx)}
+                        className={`text-[10px] font-title font-bold uppercase tracking-widest px-2.5 py-1 border transition-all cursor-pointer shrink-0 ${
+                          isActive 
+                            ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)] text-[var(--color-primary)] shadow-[inset_0_0_10px_rgba(0,184,255,0.2)]' 
+                            : 'border-transparent text-[var(--text-secondary)]/60 hover:text-white bg-white/5'
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    );
+                  })}
+                </div>
+                <span className="text-[10px] text-[var(--color-primary)]/60 font-mono font-bold tracking-wider shrink-0 select-none pb-1">
+                  {step + 1} / {TUTORIAL_STEPS.length}
+                </span>
+              </div>
 
-            <button 
-              onClick={handleNext}
-              className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 text-[var(--color-primary)] text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(0,184,255,0.15)] hover:shadow-[0_0_20px_rgba(0,184,255,0.3)]"
-            >
-              {step === TUTORIAL_STEPS.length - 1 ? '确认授权并开始' : '下一步'} <ChevronRight size={16} />
-            </button>
-          </div>
+              {/* Icon + Title */}
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="w-12 h-12 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-primary)] shrink-0 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/10 to-transparent opacity-50" />
+                  {current.icon}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <Flag className="w-2.5 h-2.5 text-[var(--color-primary)]/60" />
+                    <div className="text-[9px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">{current.category}</div>
+                  </div>
+                  <h2 className="text-base font-title font-black text-white tracking-widest leading-none">{current.title}</h2>
+                </div>
+              </div>
+
+              {/* Scrollable content */}
+              <div className="flex-grow overflow-y-auto min-h-0 flex flex-col gap-3 pr-1 scrollbar-none">
+                <div className="font-sans text-xs bg-black/20 p-3 border-l-2 border-[var(--color-primary)]/40 shrink-0">
+                  <p className="text-[var(--text-secondary)] leading-[1.6] whitespace-pre-line">
+                    {current.description}
+                  </p>
+                </div>
+                {current.tips && current.tips.length > 0 && (
+                  <div className="bg-[#070B14]/60 border border-amber-500/20 p-3 shrink-0">
+                    <div className="flex items-center gap-2 text-[10px] font-title font-bold text-amber-500/90 uppercase tracking-widest mb-1.5">
+                      <Lightbulb size={12} className="shrink-0" />
+                      系统提示分析
+                    </div>
+                    <ul className="space-y-1">
+                      {current.tips.map((tip, idx) => (
+                        <li key={idx} className="text-xs text-amber-500/70 flex items-start gap-2">
+                          <span className="text-[10px] opacity-50 font-mono select-none">{'>'}</span>
+                          <span className="leading-relaxed">{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center justify-between pt-3 border-t border-[#243245]/40 shrink-0">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={handlePrev}
+                    disabled={step === 0}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer ${step === 0 ? 'opacity-30 cursor-not-allowed text-[var(--text-secondary)]' : 'text-white hover:text-[var(--color-primary)]'}`}
+                  >
+                    <ChevronLeft size={16} /> 上一步
+                  </button>
+                  <button 
+                    onClick={handleSkip}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
+                  >
+                    跳过
+                  </button>
+                </div>
+                <button 
+                  onClick={handleNext}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 text-[var(--color-primary)] text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                >
+                  {step === TUTORIAL_STEPS.length - 1 ? '开始' : '下一步'} <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <style>{`

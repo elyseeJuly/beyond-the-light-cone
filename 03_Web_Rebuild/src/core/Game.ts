@@ -336,7 +336,8 @@ export class Game {
       return;
     }
 
-    if (!this.earthCivi.isAiBrainEnabled) {
+    const isTutorialActive = typeof window !== 'undefined' && (window as any).isTutorialActive;
+    if (!this.earthCivi.isAiBrainEnabled && !isTutorialActive) {
       const blockers = this.getTurnBlockers();
       if (blockers.length > 0) {
         if (typeof window !== 'undefined') {

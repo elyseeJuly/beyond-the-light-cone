@@ -5,7 +5,7 @@ import { RightInspector } from './components/RightInspector';
 import { StarMap } from './components/StarMap';
 import { IntelligenceCenter } from './components/IntelligenceCenter';
 import { GovManagement } from './components/GovManagement';
-import { CivilizationArchive } from './components/CivilizationArchive';
+import { MuseumGallery } from './components/MuseumGallery';
 import { BottomEventBar } from './components/BottomEventBar';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { TecTreeView } from './ui/TecTreeView';
@@ -26,7 +26,6 @@ const EndGameScreen = lazy(() => import('./components/EndGameScreen').then(m => 
 const FleetModal = lazy(() => import('./components/FleetModal').then(m => ({ default: m.FleetModal })));
 const BattleScreen = lazy(() => import('./components/BattleScreen').then(m => ({ default: m.BattleScreen })));
 const TechUnlockModal = lazy(() => import('./components/TechUnlockModal').then(m => ({ default: m.TechUnlockModal })));
-const MuseumGallery = lazy(() => import('./components/MuseumGallery').then(m => ({ default: m.MuseumGallery })));
 const SettingsModal = lazy(() => import('./components/SettingsModal').then(m => ({ default: m.SettingsModal })));
 const OrientationPrompt = lazy(() => import('./components/OrientationPrompt').then(m => ({ default: m.OrientationPrompt })));
 const GameCoverScreen = lazy(() => import('./components/GameCoverScreen').then(m => ({ default: m.GameCoverScreen })));
@@ -306,6 +305,10 @@ export const App: React.FC = () => {
           setMobileDrawerOpen(false);
           return;
         }
+        if (activeView === 'archive') {
+          setActiveView('starmap');
+          return;
+        }
         const fleetCloseBtn = document.querySelector('.fleet-modal-close-btn') as HTMLButtonElement | null;
         if (fleetCloseBtn) fleetCloseBtn.click();
         const tutorialCloseBtn = document.querySelector('.tutorial-modal-close-btn') as HTMLButtonElement | null;
@@ -354,15 +357,67 @@ export const App: React.FC = () => {
     }
     if (activeView === 'intelligence') return <IntelligenceCenter />;
     if (activeView === 'government') return <GovManagement />;
-    return <CivilizationArchive />;
+    return <MuseumGallery onClose={() => setActiveView('starmap')} />;
   };
 
   return (
     <ErrorBoundary>
       <AtmosphereProvider engineRef={atmosphereEngineRef}>
-        <div className={`flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black ${isMobileLandscape ? 'mobile-landscape-scale' : ''}`}>
+        <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
 
-          {/* Story Modal - Rendered globally */}
+          {/* Scaled Container for Gameplay and HUD */}
+          <div className={`flex flex-col h-full w-full overflow-hidden ${isMobileLandscape ? 'mobile-landscape-scale' : ''}`}>
+            {/* Top HUD */}
+            <TopHUD />
+
+            {/* Main Layout Body */}
+            <main className="flex-1 flex overflow-hidden">
+              {/* Left Sidebar — visible on tablet+ and mobile landscape, hidden on mobile portrait (replaced by MobileBottomNav) */}
+              {showDesktopLayout && (
+                <LeftHub activeView={activeView} setActiveView={setActiveView} />
+              )}
+
+              {/* Dynamic Center Viewport */}
+              <div data-tutorial-id="starmap-viewport" className="flex-1 relative overflow-hidden bg-black/25">
+                {renderCenterView()}
+              </div>
+
+              {/* Right Inspector — sidebar on tablet+ and mobile landscape, drawer on mobile portrait */}
+              {showDesktopLayout ? (
+                <RightInspector />
+              ) : (
+                <>
+                  {/* Drawer overlay + panel for mobile */}
+                  {mobileDrawerOpen && (
+                    <div className="drawer-overlay" onClick={() => setMobileDrawerOpen(false)} />
+                  )}
+                  <div className={`${mobileDrawerOpen ? 'drawer-panel' : 'hidden'}`}>
+                    <div className="flex justify-end p-3 shrink-0">
+                      <button
+                        onClick={() => setMobileDrawerOpen(false)}
+                        className="text-[var(--text-secondary)] hover:text-white text-sm px-3 py-1 rounded hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        ✕ 关闭
+                      </button>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <RightInspector />
+                    </div>
+                  </div>
+                </>
+              )}
+            </main>
+
+            {/* Bottom Event Bar */}
+            {showDesktopLayout && <BottomEventBar />}
+
+            {/* Mobile Bottom Navigation — only on mobile portrait */}
+            {!showDesktopLayout && (
+              <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
+            )}
+          </div>
+
+          {/* Overlays and Modals (outside scaled container) */}
           <Suspense fallback={<LazyFallback />}>
             {showCoverScreen && (
               <GameCoverScreen
@@ -385,12 +440,8 @@ export const App: React.FC = () => {
                     alert('无法读取存档！');
                   }
                 }}
-                onOpenArchive={() => {
-                  if (SaveManager.hasSave()) {
-                    GameInstance.loadGame();
-                  }
-                  setActiveView('archive');
-                  setShowCoverScreen(false);
+                onOpenMuseum={() => {
+                  setShowMuseum(true);
                 }}
               />
             )}
@@ -414,57 +465,10 @@ export const App: React.FC = () => {
 
           {/* PWA Components */}
           <UpdatePrompt />
-          <OrientationPrompt />
+          <Suspense fallback={null}>
+            <OrientationPrompt />
+          </Suspense>
           <Toast />
-
-          {/* Top HUD */}
-          <TopHUD />
-
-          {/* Main Layout Body */}
-          <main className="flex-1 flex overflow-hidden">
-            {/* Left Sidebar — visible on tablet+ and mobile landscape, hidden on mobile portrait (replaced by MobileBottomNav) */}
-            {showDesktopLayout && (
-              <LeftHub activeView={activeView} setActiveView={setActiveView} />
-            )}
-
-            {/* Dynamic Center Viewport */}
-            <div data-tutorial-id="starmap-viewport" className="flex-1 relative overflow-hidden bg-black/25">
-              {renderCenterView()}
-            </div>
-
-            {/* Right Inspector — sidebar on tablet+ and mobile landscape, drawer on mobile portrait */}
-            {showDesktopLayout ? (
-              <RightInspector />
-            ) : (
-              <>
-                {/* Drawer overlay + panel for mobile */}
-                {mobileDrawerOpen && (
-                  <div className="drawer-overlay" onClick={() => setMobileDrawerOpen(false)} />
-                )}
-                <div className={`${mobileDrawerOpen ? 'drawer-panel' : 'hidden'}`}>
-                  <div className="flex justify-end p-3 shrink-0">
-                    <button
-                      onClick={() => setMobileDrawerOpen(false)}
-                      className="text-[var(--text-secondary)] hover:text-white text-sm px-3 py-1 rounded hover:bg-white/5 transition-colors cursor-pointer"
-                    >
-                      ✕ 关闭
-                    </button>
-                  </div>
-                  <div className="flex-1 min-h-0">
-                    <RightInspector />
-                  </div>
-                </div>
-              </>
-            )}
-          </main>
-
-          {/* Bottom Event Bar */}
-          {showDesktopLayout && <BottomEventBar />}
-
-          {/* Mobile Bottom Navigation — only on mobile portrait */}
-          {!showDesktopLayout && (
-            <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
-          )}
 
           {/* Legacy Modal System Bridge */}
           <div id="modal-container" className="modal-overlay hidden">

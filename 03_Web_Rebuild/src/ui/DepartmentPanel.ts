@@ -58,7 +58,7 @@ export class DepartmentPanel {
       const avatarUrl = leader?.faceFile ? getImageUrl(leader.faceFile) : '';
       const avatarHtml = avatarUrl 
         ? `<img src="${avatarUrl}" onerror="this.style.display='none'" style="width:64px;height:64px;border-radius:12px;object-fit:cover;border:2px solid var(--color-primary);margin-right:16px;" />`
-        : `<div style="width:64px;height:64px;border-radius:12px;background:var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-right:16px;">${dept.leaderName[0]}</div>`;
+        : `<div style="width:64px;height:64px;border-radius:12px;background:var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-right:16px;">${(dept.leaderName || '?')[0]}</div>`;
 
       leaderInfoHtml = `
         <div style="padding: 12px; background: var(--color-primary-glass); border: 1px solid var(--color-primary); border-radius: 8px; display: flex; align-items: center; margin-bottom: 16px;">

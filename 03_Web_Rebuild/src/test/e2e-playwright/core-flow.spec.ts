@@ -28,7 +28,7 @@ test.describe('Core User Flow', () => {
       } else if (view === 'government') {
         await expect(page.getByRole('heading', { name: '执政官政府内阁总署' })).toBeVisible();
       } else if (view === 'archive') {
-        await expect(page.getByRole('heading', { name: '银河文明档案馆' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: '岁月史书 · 独立画廊' })).toBeVisible();
       } else {
         await expect(page.locator('canvas#star-canvas-main')).toBeVisible();
       }

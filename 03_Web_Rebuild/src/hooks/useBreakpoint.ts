@@ -42,7 +42,7 @@ function getBreakpointInfo(width: number, height: number): BreakpointInfo {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
   // Mobile landscape can have width > 768, so we need to rely on touch/height heuristics
-  const isMobileDevice = (isTouchDevice && width < 768) || (isTouchDevice && isLandscape && height <= 500);
+  const isMobileDevice = (width < 768) || (isTouchDevice && isLandscape && height <= 500);
 
   let breakpoint: Breakpoint;
   if (isMobileDevice) breakpoint = 'mobile';

@@ -16,8 +16,9 @@ import type {
   DownloadState,
   AssetRecord,
 } from '../types/asset';
+import { getAssetUrl } from '../utils/assetUrl';
 
-const MANIFEST_URL = '/beyond-the-light-cone/asset_manifest.json';
+const MANIFEST_URL = getAssetUrl('asset_manifest.json');
 
 /** IndexedDB 中资产管理的 Store 名 */
 const ASSET_DB_NAME = 'BeyondLightCone_Assets';
@@ -70,7 +71,7 @@ export class AssetLoader {
   getCoreAssetUrl(assetId: string): string | null {
     if (!this.manifest) return null;
     const asset = this.manifest.core.find(a => a.id === assetId);
-    return asset ? `/beyond-the-light-cone/${asset.path}` : null;
+    return asset ? getAssetUrl(asset.path) : null;
   }
 
   // ==================== Layer 2: Expansion ====================
@@ -415,7 +416,7 @@ export class AssetLoader {
 
       try {
         // 下载资源（通过 fetch 触发缓存）
-        const url = `/beyond-the-light-cone/${asset.path}`;
+        const url = getAssetUrl(asset.path);
         const response = await fetch(url);
 
         if (!response.ok) {

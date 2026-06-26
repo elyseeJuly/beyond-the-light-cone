@@ -36,12 +36,12 @@ export class StatisticsManager {
 
     // Attempt upload on boot if online
     if (navigator.onLine) {
-      setTimeout(() => this.uploadStats(), 5000); // 5s delay to not block boot
+      setTimeout(() => this.uploadStats().catch(() => {}), 5000);
     }
     
     // Attempt upload when returning online
     window.addEventListener('online', () => {
-      this.uploadStats();
+      this.uploadStats().catch(() => {});
     });
 
     // Save on beforeunload

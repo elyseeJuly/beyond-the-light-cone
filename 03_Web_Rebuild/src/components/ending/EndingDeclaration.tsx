@@ -20,6 +20,7 @@ export const EndingDeclaration: React.FC<Props> = ({ config, onComplete }) => {
   const [phase, setPhase] = useState<'icon' | 'title' | 'declaration'>('icon');
   const [displayedText, setDisplayedText] = useState('');
   const typeRef = useRef(0);
+  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Phase transition: icon → title → declaration
   useEffect(() => {
@@ -40,10 +41,13 @@ export const EndingDeclaration: React.FC<Props> = ({ config, onComplete }) => {
         typeRef.current++;
       } else {
         clearInterval(timer);
-        setTimeout(onComplete, 2500);
+        completeTimerRef.current = setTimeout(onComplete, 2500);
       }
     }, 50);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    };
   }, [phase, config.declaration, onComplete]);
 
   const IconComponent = () => {

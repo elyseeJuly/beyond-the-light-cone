@@ -877,6 +877,21 @@ export class GameEventManager {
         inYear = data.name;
       }
 
+      // Dynamically extract ID from talk0_pic if id is missing
+      let eventId = data.id;
+      if (!eventId && data.talk0_pic && typeof data.talk0_pic === 'string') {
+        const match = data.talk0_pic.match(/^(event_[a-zA-Z0-9_]+?)_\d+\.png$/);
+        if (match && match[1]) {
+          eventId = match[1];
+        } else {
+          // Fallback if timestamp suffix is missing or custom
+          const simpleMatch = data.talk0_pic.replace('.png', '').replace('.jpg', '');
+          if (simpleMatch.startsWith('event_')) {
+            eventId = simpleMatch;
+          }
+        }
+      }
+
       const e = createGameEvent(
         data.title || (typeof data.name === 'string' ? data.name : `纪元大事记_${inYear}`),
         data.eventtype ?? 0,
@@ -884,7 +899,7 @@ export class GameEventManager {
         data.tip || (dialogNodes.length > 0 ? dialogNodes[0].content : ""),
         data.eventeffect ?? 0,
         dialogNodes,
-        data.id,
+        eventId,
         data.triggerCondition,
         data.choices,
         data.effects

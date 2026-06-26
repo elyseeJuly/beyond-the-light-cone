@@ -6,7 +6,7 @@ interface GameCoverScreenProps {
   hasSave: boolean;
   onStartNewGame: (withTutorial: boolean, enableAiBrain: boolean) => void;
   onContinueGame: () => void;
-  onOpenArchive: () => void;
+  onOpenMuseum: () => void;
 }
 
 type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'archive' | null;
@@ -15,12 +15,12 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   hasSave,
   onStartNewGame,
   onContinueGame,
-  onOpenArchive,
+  onOpenMuseum,
 }) => {
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
   const [hoveredOption, setHoveredOption] = useState<MenuOption>(null);
   const [rendered, setRendered] = useState(false);
-  const [enableAiBrain, setEnableAiBrain] = useState(false);
+  const [enableAiBrain] = useState(true); // Default to true, AI brain toggle relocated to TopHUD
 
   // Handle responsive background image
   useEffect(() => {
@@ -46,7 +46,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
       case 'new_free':
         return '跳过初级引导系统，直接以最高统帅身份跨入冷酷的宇宙博弈。';
       case 'archive':
-        return '访问银河深空数据库，查阅已解锁的文明终局与地球六大纪元里程碑。';
+        return '查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。';
       default:
         return '请选择操作指令。作为执政官，您在黑暗森林法则下的每一个决策都将书写人类文明的历史。';
     }
@@ -166,31 +166,9 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               </div>
             </button>
 
-            {/* AI Brain Toggle */}
-            <div className="flex items-center justify-between px-4 py-3 border border-[var(--color-primary)]/30 rounded bg-[var(--color-primary)]/5">
-              <div className="flex items-center gap-3">
-                <Cpu size={16} className="text-cyan-400" />
-                <div>
-                  <div className="text-xs font-bold tracking-wider font-title text-cyan-300">AI 智脑托管</div>
-                  <div className="text-[9px] opacity-60 mt-0.5 font-mono text-slate-400">自动任命部长、科研、调配工种</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setEnableAiBrain(!enableAiBrain)}
-                className={`relative w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer ${
-                  enableAiBrain ? 'bg-cyan-500' : 'bg-slate-600'
-                }`}
-                title={enableAiBrain ? 'AI托管已开启 - 点击关闭' : 'AI托管已关闭 - 点击开启'}
-              >
-                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
-                  enableAiBrain ? 'left-6' : 'left-1'
-                }`} />
-              </button>
-            </div>
-
-            {/* Option 4: View Archive */}
+            {/* Option 4: View Museum (Chronicles of Time) */}
             <button
-              onClick={onOpenArchive}
+              onClick={onOpenMuseum}
               onMouseEnter={() => setHoveredOption('archive')}
               onMouseLeave={() => setHoveredOption(null)}
               className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
@@ -198,8 +176,8 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <Landmark size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">文明档案馆</div>
-                <div className="text-[9px] opacity-60 mt-0.5 font-mono">CIVILIZATION ARCHIVES</div>
+                <div className="text-sm font-bold tracking-widest font-title">岁月史书</div>
+                <div className="text-[9px] opacity-60 mt-0.5 font-mono">CHRONICLES OF TIME</div>
               </div>
             </button>
           </div>

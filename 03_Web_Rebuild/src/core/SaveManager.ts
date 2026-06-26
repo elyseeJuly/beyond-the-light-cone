@@ -121,7 +121,7 @@ export class SaveManager {
       if (data.earthCivi) {
         if (data.earthCivi.apMax === undefined) data.earthCivi.apMax = 100;
         if (data.earthCivi.apCurrent === undefined) data.earthCivi.apCurrent = 100;
-        if (data.earthCivi.isAiBrainEnabled === undefined) data.earthCivi.isAiBrainEnabled = true;
+        if (data.earthCivi.isAiBrainEnabled === undefined) data.earthCivi.isAiBrainEnabled = false;
       }
       return data;
     });

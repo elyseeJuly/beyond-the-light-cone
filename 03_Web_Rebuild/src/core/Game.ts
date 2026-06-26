@@ -265,6 +265,23 @@ export class Game {
       actions.push(`🤖 [AI智脑] 已自动补全部门首长空缺`);
     }
 
+    // AI 托管自动处理待处理事件，避免死锁
+    if (this.currentEvent) {
+      const defaultChoice = this.currentEvent.choices?.[0];
+      if (defaultChoice) {
+        defaultChoice.action();
+        actions.push(`🤖 [AI智脑] 已自动处理剧情事件「${this.currentEvent.title}」`);
+      }
+    }
+    while (this.eventQueue.length > 0) {
+      const ev = this.eventQueue.shift()!;
+      const defaultChoice = ev.choices?.[0];
+      if (defaultChoice) {
+        defaultChoice.action();
+        actions.push(`🤖 [AI智脑] 已自动处理剧情事件「${ev.title}」`);
+      }
+    }
+
     for (const action of actions) {
       this.tickerMessages.push(action);
     }
@@ -303,8 +320,12 @@ export class Game {
     if (this.isGameOver && !this.isObserverMode) return;
 
     if (this.currentEvent || this.eventQueue.length > 0) {
-      this.addHistory("提示：请先处理当前的剧情事件。");
-      return;
+      if (this.earthCivi.isAiBrainEnabled) {
+        this.runAIBrain();
+      } else {
+        this.addHistory("提示：请先处理当前的剧情事件。");
+        return;
+      }
     }
 
     if (this.isProcessing) {
@@ -380,6 +401,16 @@ export class Game {
         if (alien.diplomacyCooldown > 0) alien.diplomacyCooldown--;
       }
       this.updateDiplomacyUnlocks();
+
+      // 清理过期星球状态标记
+      for (const star of this.starManager.getAllStars()) {
+        if (star.status === 'rebellion' && !star.barbackId) {
+          this.starManager.markStarStatus(star, null);
+        }
+        if (star.status === 'building' && !star.buildingProgress) {
+          this.starManager.markStarStatus(star, null);
+        }
+      }
 
       this.addHistory("...正在检索纪元剧情事件");
       const triggeredEvents = this.eventManager.checkEvents(this.year);
@@ -696,6 +727,9 @@ export class Game {
             }
           }
         }
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('game-state-changed'));
+        }
 
         this.year++;
         this._yearJustAdvanced = true;
@@ -848,6 +882,14 @@ export class Game {
         }]
       };
       this.eventQueue.unshift(newEpochEvent);
+
+      // Record epoch transition CG event in statistics
+      if (epochCG) {
+        StatisticsManager.recordEventTrigger(epochCG);
+        // Map galaxy and stardust epoch transitions to their gallery IDs
+        if (this.epoch === 5) StatisticsManager.recordEventTrigger("event_galaxy_exodus");
+        if (this.epoch === 6) StatisticsManager.recordEventTrigger("event_zeroer_broadcast");
+      }
 
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('epoch-changed'));
@@ -1580,7 +1622,7 @@ export class GameInstance {
 
     safeSP(inst.earthCivi, EarthCivilization.prototype);
     safeSP(inst.alienCiviManager, AlienCiviManager.prototype);
-    safeSP(inst.earthCivi?.tecTreeManager, TecTreeManager.prototype);
+    safeSP(inst.earthCivi.tecTreeManager, TecTreeManager.prototype);
     safeSP(inst.starManager, StarManager.prototype);
     safeSP(inst.personManager, PersonManager.prototype);
     safeSP(inst.eventManager, GameEventManager.prototype);

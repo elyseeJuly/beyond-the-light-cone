@@ -379,7 +379,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                     <li><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">空格键</kbd>: 推进下一回合 / 抉择事件快速前移</li>
                     <li><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">1</kbd>, <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">2</kbd>, <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">3</kbd>: 对应触发抉择事件中的 1-3 选项</li>
                     <li><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">M</kbd>: 星图 (Starmap) | <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">I</kbd>: 情报 (Intel) | <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">T</kbd>: 科技 (Tech)</li>
-                    <li><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">G</kbd>: 内阁政府 (Gov) | <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">A</kbd>: 文明档案馆 (Archive)</li>
+                    <li><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">G</kbd>: 内阁政府 (Gov) | <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">A</kbd>: 岁月史书 (Archive)</li>
                     <li><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">F</kbd>: 舰队调配指挥中心 | <kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded">Esc</kbd>: 关闭当前任何浮层面板</li>
                   </ul>
                   <p className="font-bold text-white mt-3">【执政官战略纲领】</p>

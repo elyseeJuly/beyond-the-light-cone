@@ -169,6 +169,9 @@ export class AlienCivilization extends Civilization {
       case AiPersonality.OPPORTUNIST:
         this.opportunistBehavior(game, deterrenceRate);
         break;
+      default:
+
+        break;
     }
   }
 

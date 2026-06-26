@@ -51,6 +51,9 @@ export class EventSystem {
           this.game.addHistory("缺少行星发动机技术，无法启动流浪地球计划！");
         }
         break;
+      default:
+
+        break;
     }
     this.game.currentEvent = null;
     if (isInteractive) {
@@ -114,6 +117,7 @@ export class EventSystem {
             case 'deterrenceValue': this.game.earthCivi.deterrenceValue -= absVal; break;
             case 'treachery': this.game.earthCivi.treachery = Math.max(0, this.game.earthCivi.treachery - absVal); break;
             case 'resource': this.game.earthCivi.resource -= absVal; break;
+            default: break;
           }
         } else {
           switch (canonicalTarget) {
@@ -124,6 +128,7 @@ export class EventSystem {
             case 'deterrenceValue': this.game.earthCivi.deterrenceValue += val; break;
             case 'treachery': this.game.earthCivi.treachery = Math.min(100, this.game.earthCivi.treachery + val); break;
             case 'resource': this.game.earthCivi.resource += val; break;
+            default: break;
           }
         }
       } else if (eff.type === 'flag') {
@@ -170,6 +175,7 @@ export class EventSystem {
           }
 
           this.game.starManager.markStarStatus(targetStar, 'rebellion');
+          this.game.addHistory(`[状态清除] ${targetStar.name} 的叛乱状态已记录，后续回合将自动清除。`);
         }
       } else if (eff.type === 'lock_ratio') {
         if (eff.target && eff.duration) {
@@ -274,5 +280,6 @@ export class EventSystem {
     }
 
     window.dispatchEvent(new CustomEvent('ticker-message-added'));
+    window.dispatchEvent(new CustomEvent('game-state-changed'));
   }
 }

@@ -115,19 +115,11 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         />
         
         <NavItem 
-          icon={<Archive size={18} className="stroke-[1.5]" />} 
-          label="文明档案" 
+          icon={<Archive size={18} className="stroke-[1.5] text-cyan-400" />} 
+          label="岁月史书" 
           active={activeView === 'archive'} 
           onClick={() => setActiveView('archive')}
           tutorialId="nav-archive"
-        />
-
-        <div className="h-px bg-white/5 my-2 mx-4" />
-
-        <NavItem 
-          icon={<Archive size={18} className="stroke-[1.5] text-cyan-400" />} 
-          label="岁月史书" 
-          onClick={() => window.dispatchEvent(new CustomEvent('open-museum'))}
         />
       </div>
 

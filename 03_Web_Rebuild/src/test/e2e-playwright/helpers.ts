@@ -59,6 +59,13 @@ export async function clickNextTurn(page: Page): Promise<void> {
 
 /** 打开指定侧边栏视图（桌面端用 LeftHub，移动端用底部导航） */
 export async function switchView(page: Page, viewName: string): Promise<void> {
+  // If a full-screen overlay like MuseumGallery (archive) is open, close it first
+  const closeBtn = page.locator('button:has(svg.lucide-x)');
+  if (await closeBtn.isVisible().catch(() => false)) {
+    await closeBtn.click();
+    await page.waitForTimeout(300);
+  }
+
   const isMobile = await page.evaluate(() => window.innerWidth < 640);
   if (isMobile) {
     const navBtn = page.locator(`[data-tutorial-id="mobile-nav-${viewName}"]`);

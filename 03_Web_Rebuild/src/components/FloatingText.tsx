@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 interface Floater {
   id: number;
@@ -8,15 +8,26 @@ interface Floater {
 // eslint-disable-next-line react-refresh/only-export-components
 export const useFloatingText = () => {
   const [floaters, setFloaters] = useState<Floater[]>([]);
+  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach((t) => clearTimeout(t));
+      timers.clear();
+    };
+  }, []);
 
   const addFloater = useCallback((value: number) => {
     if (value === 0) return;
     const id = Date.now() + Math.random();
     setFloaters((prev) => [...prev, { id, value }]);
     
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setFloaters((prev) => prev.filter((f) => f.id !== id));
+      timersRef.current.delete(id);
     }, 1500);
+    timersRef.current.set(id, timer);
   }, []);
 
   return { addFloater, floaters };

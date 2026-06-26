@@ -1659,5 +1659,37 @@
       "minYear": 420,
       "reqFlag": "galaxy_exodus_seen"
     }
+  },
+  {
+    "name": 320,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_crisis_placeholder.png",
+    "talk0_talker": "联合政府",
+    "talk0_content": "【殖民地叛乱】火星殖民地发生了大规模叛乱！定居者不满地球的统治，组建了武装力量要求独立。殖民地的资源开采已陷入停滞，驻军正在紧急镇压中。",
+    "effects": [
+      {
+        "type": "spawn_barback",
+        "targetStarIndex": 3,
+        "value": 40
+      },
+      {
+        "type": "resource",
+        "target": "treachery",
+        "value": 15
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": -15
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "CRISIS",
+      "minYear": 30,
+      "reqNotFlag": "mars_rebellion_quelled"
+    }
   }
 ]

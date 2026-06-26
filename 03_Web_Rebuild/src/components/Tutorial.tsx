@@ -263,19 +263,15 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
         const rect = element.getBoundingClientRect();
         
-        // Account for global CSS scaling (mobile landscape mode)
-        const scaleEl = document.querySelector('.mobile-landscape-scale');
-        const scale = scaleEl ? 0.85 : 1;
-
         // If element is hidden or has 0 size, hide the highlight box
         if (rect.width === 0 || rect.height === 0) {
           setHighlightRect(null);
         } else {
           setHighlightRect({
-            top: Math.max(0, rect.top / scale - 4),
-            left: Math.max(0, rect.left / scale - 4),
-            width: rect.width / scale + 8,
-            height: rect.height / scale + 8,
+            top: Math.max(0, rect.top - 4),
+            left: Math.max(0, rect.left - 4),
+            width: rect.width + 8,
+            height: rect.height + 8,
           });
         }
       } else {
@@ -407,6 +403,31 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       };
     }
 
+    // Landscape mobile phone/short viewport adjustment (height < 500px)
+    if (windowHeight < 500) {
+      let isTargetOnLeft = false;
+      if (highlightRect) {
+        const highlightCenterX = highlightRect.left + highlightRect.width / 2;
+        isTargetOnLeft = highlightCenterX < windowWidth / 2;
+      } else {
+        isTargetOnLeft = true; // Default to right side if no highlight
+      }
+
+      return {
+        position: 'absolute',
+        top: '12px',
+        bottom: '12px',
+        ...(isTargetOnLeft 
+          ? { right: '12px', left: 'auto' } 
+          : { left: '12px', right: 'auto' }
+        ),
+        width: '320px',
+        margin: 0,
+        maxHeight: 'calc(100vh - 24px)',
+        overflowY: 'auto'
+      };
+    }
+
     // Adapt layout for mobile/tablet screens (< 768px) to prevent blocking the highlighted button
     if (windowWidth < 768) {
       const highlightCenterY = highlightRect.top + highlightRect.height / 2;
@@ -478,79 +499,52 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
   return (
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
-      {/* Darkened background with highlight cutout */}
-      {!showHighlight && <div className="absolute inset-0 bg-black/85 backdrop-blur-sm pointer-events-auto" />}
-      
-      {/* 4-slice backdrop overlay to block clicks to non-highlighted areas while leaving the cutout clickable */}
-      {showHighlight && highlightRect && (
-        <>
-          {/* Top backdrop */}
-          <div 
-            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
-            style={{
-              top: 0,
-              left: 0,
-              right: 0,
-              height: `${highlightRect.top}px`,
-            }}
-          />
-          {/* Bottom backdrop */}
-          <div 
-            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
-            style={{
-              top: `${highlightRect.top + highlightRect.height}px`,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}
-          />
-          {/* Left backdrop */}
-          <div 
-            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
-            style={{
-              top: `${highlightRect.top}px`,
-              left: 0,
-              width: `${highlightRect.left}px`,
-              height: `${highlightRect.height}px`,
-            }}
-          />
-          {/* Right backdrop */}
-          <div 
-            className="absolute bg-black/85 backdrop-blur-[2px] transition-all duration-300 pointer-events-auto z-[1000]"
-            style={{
-              top: `${highlightRect.top}px`,
-              left: `${highlightRect.left + highlightRect.width}px`,
-              right: 0,
-              height: `${highlightRect.height}px`,
-            }}
-          />
-          {/* Center interceptor to prevent premature interaction during linear tutorial */}
-          <div 
-            className="absolute bg-transparent pointer-events-auto z-[1000]"
-            style={{
-              top: `${highlightRect.top}px`,
-              left: `${highlightRect.left}px`,
-              width: `${highlightRect.width}px`,
-              height: `${highlightRect.height}px`,
-            }}
+      {/* SVG backdrop overlay with cutout mask to darken non-highlighted area */}
+      {showHighlight && highlightRect ? (
+        <svg className="fixed inset-0 w-full h-full pointer-events-auto z-[1000]">
+          <defs>
+            <mask id="tutorial-mask">
+              <rect width="100%" height="100%" fill="white" />
+              <rect 
+                x={highlightRect.left} 
+                y={highlightRect.top} 
+                width={highlightRect.width} 
+                height={highlightRect.height} 
+                rx="8" 
+                ry="8" 
+                fill="black" 
+                style={{ transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)' }}
+              />
+            </mask>
+          </defs>
+          <rect 
+            width="100%" 
+            height="100%" 
+            fill="rgba(5, 8, 16, 0.65)" 
+            mask="url(#tutorial-mask)"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
             }}
           />
-        </>
+        </svg>
+      ) : (
+        /* Full-screen solid backdrop when no element is highlighted */
+        !showHighlight && <div className="absolute inset-0 bg-black/85 pointer-events-auto z-[1000]" />
       )}
 
       {/* Highlight glow outline box */}
       {showHighlight && highlightRect && (
         <div 
-          className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none transition-opacity duration-300 rounded"
+          className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none rounded-lg"
           style={{
             top: `${highlightRect.top}px`,
             left: `${highlightRect.left}px`,
             width: `${highlightRect.width}px`,
             height: `${highlightRect.height}px`,
-            boxShadow: '0 0 20px rgba(0,229,255,0.4), inset 0 0 20px rgba(0,229,255,0.15)',
+            transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+            boxShadow: '0 0 15px rgba(0,229,255,0.4), inset 0 0 15px rgba(0,229,255,0.15)',
+            animation: 'border-pulse 2s infinite alternate',
           }}
         />
       )}
@@ -560,7 +554,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         const pointFromBelow = highlightRect.top <= 60;
         return (
           <div 
-            className="absolute z-[1002] pointer-events-none transition-opacity duration-300 animate-bounce"
+            className="absolute z-[1002] pointer-events-none transition-all duration-300 animate-bounce"
             style={{
               top: pointFromBelow 
                 ? `${highlightRect.top + highlightRect.height + 4}px` 
@@ -575,6 +569,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
                 : { borderTop: '10px solid var(--color-primary)' }
               ),
               filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
+              transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
             }}
           />
         );
@@ -712,6 +707,18 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           </div>
         </div>
       </div>
+      <style>{`
+        @keyframes border-pulse {
+          0% {
+            border-color: rgba(0, 229, 255, 0.4);
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.25), inset 0 0 6px rgba(0, 229, 255, 0.1);
+          }
+          100% {
+            border-color: rgba(0, 229, 255, 1);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.65), inset 0 0 15px rgba(0, 229, 255, 0.3);
+          }
+        }
+      `}</style>
     </div>
   );
 };

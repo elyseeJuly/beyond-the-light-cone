@@ -23,6 +23,7 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const typeRef = useRef(0);
   const animRef = useRef<number>(0);
+  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setImgSrc(config.sceneImage);
@@ -47,10 +48,13 @@ export const EndingCinematic: React.FC<Props> = ({ config, onComplete }) => {
         typeRef.current++;
       } else {
         clearInterval(timer);
-        setTimeout(onComplete, 3000);
+        completeTimerRef.current = setTimeout(onComplete, 3000);
       }
     }, 40);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    };
   }, [showEpilogue, config.epilogue, onComplete]);
 
   // Particle effect on canvas

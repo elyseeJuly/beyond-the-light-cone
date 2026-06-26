@@ -357,7 +357,10 @@ export class EarthCivilization extends Civilization {
           }
         }
       }
-      if (Object.keys(bp).length === 0) star.buildingProgress = null;
+      if (Object.keys(bp).length === 0) {
+        star.buildingProgress = null;
+        game.starManager.markStarStatus(star, null);
+      }
     }
   }
 

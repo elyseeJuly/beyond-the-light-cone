@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import { Tutorial, TUTORIAL_STEPS } from '../../components/Tutorial';
 import { TopHUD } from '../../components/TopHUD';
@@ -63,7 +62,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
   it('SCEN-TUTORIAL-STEPS-MATCH: 教程步骤中的所有分类必须与 LeftHub 的导航项完全一致（或属于基础操作）', () => {
     // We will import TUTORIAL_STEPS at the top of the file
     const allowedCategories = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理'];
-    TUTORIAL_STEPS.forEach((step, idx) => {
+    TUTORIAL_STEPS.forEach((step) => {
       expect(allowedCategories).toContain(step.category);
     });
   });
@@ -181,9 +180,6 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     
     // Find the overlays
     const topOverlay = screen.queryByTestId('tutorial-overlay-top');
-    const bottomOverlay = screen.queryByTestId('tutorial-overlay-bottom');
-    const leftOverlay = screen.queryByTestId('tutorial-overlay-left');
-    const rightOverlay = screen.queryByTestId('tutorial-overlay-right');
     const fullOverlay = screen.queryByTestId('tutorial-overlay-full');
 
     // Initially, there might not be a highlighted area (Step 1 is welcome screen with center card position and no highlightTarget)

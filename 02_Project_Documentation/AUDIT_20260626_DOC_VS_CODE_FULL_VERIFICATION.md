@@ -23,7 +23,7 @@
 ## All 13 Failures
 
 ### 1. AI Brain Toggle Missing from Cover Screen (CRITICAL)
-- **Doc**: `FIX_20260624_NUMERIC_GROWTH_AND_AI_MODE.md` Fix 3b
+- **Doc**: `AUDIT_20260624_NUMERIC_GROWTH_AND_AI_MODE.md` Fix 3b
 - **Claim**: Cover screen has AI toggle switch, player explicitly enables
 - **Reality**: `GameCoverScreen.tsx:23` hardcoded `enableAiBrain = true`, no toggle UI
 - **Impact**: `EarthCivilization.ts:30` default `isAiBrainEnabled = false` is overridden; AI always enabled at game start

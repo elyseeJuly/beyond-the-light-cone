@@ -1,169 +1,63 @@
-# Fix Report: TopHUD 按响应式规范重新对齐
+# 修复与优化归档报告 (2026-06-29)
 
-**Date**: 2026-06-29  
-**Found by**: 用户要求对照最近半个月 UI 文档共识还原 UI 状态  
-**Severity**: High（TopHUD 实现与 SPEC 共识不一致，用户反复报告顶部按钮和状态栏未恢复）
-
----
-
-## 背景
-
-用户连续三次报告"顶部的按钮和状态栏依然没有恢复"、"现在已经完全不对了"。前两次修复（v2 提升 z-index、v3 恢复 CivLevel 和原始设计）未能解决根本问题。
-
-用户要求：
-> "你再对照最近半个月关于ui改动的文档，把UI的情况更新到我们达成共识的时候。并且要按照Registry 文档要求推进任务。"
+**日期**: 2026-06-29  
+**类型**: 修复与优化归档  
+**当前状态**: 🟢 已就绪 (9/9 GREEN)  
 
 ---
 
-## 根因分析
+## 1. TopHUD 布局调整与指标常驻展示
 
-### 前三次修复的问题
-
-| 版本 | 修复内容 | 问题 |
-|------|---------|------|
-| v2 | TopHUD z-50 → z-[1010]，移出 scaled container | 仍未解决移动端/桌面端双布局拆分导致的结构偏离 |
-| v3 | 添加 CivLevel、固定高度、popFactor | 移除了移动端/桌面端双布局，改为统一单行布局，但**完全忽略了 SPEC_20260621_RESPONSIVE_LAYOUT.md 中定义的响应式规范** |
-| v3 后续 | 用户仍报告"依然没有恢复" | — |
-
-### 真正的问题
-
-v3 将 TopHUD 改为统一单行全显示布局，所有 6 个统计项在移动端也全部显示。但 SPEC 共识明确定义了：
-
-- 手机 (<768px)：紧凑模式，人口/资源/军力应隐藏
-- 平板 (768-1023px)：中密度，资源/军力应隐藏
-- 桌面 (≥1024px)：全密度
-
-### 关键共识文档
-
-| 文档 | 日期 | 关键内容 |
-|------|------|---------|
-| [SPEC_20260621_RESPONSIVE_LAYOUT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_RESPONSIVE_LAYOUT.md) | 2026-06-21 | 4.1 节 TopHUD 紧凑模式：各断点下统计项显示/隐藏规则 |
-| [SPEC_20260626_MOBILE_UI_TUTORIAL_ITERATION_PLAN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260626_MOBILE_UI_TUTORIAL_ITERATION_PLAN.md) | 2026-06-26 | 横屏缩放、Safe Area 适配、Tutorial 防误触 |
-| [EXEC_20260626_TUTORIAL_AND_MOBILE_LAYOUT_REFACTOR.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260626_TUTORIAL_AND_MOBILE_LAYOUT_REFACTOR.md) | 2026-06-26 | 已执行的重构内容（useBreakpoint 横屏检测、CSS scale 缩放、坐标修正） |
+### 变更背景
+根据用户对实机画面“数值显示不全”及“顶部 UI 丢失/异常”的反馈，TopHUD 的自适应逻辑与指标显示策略进行了以下重构：
+- **核心数值常驻显示**：取消了在小屏幕/手机端自适应隐藏人口、资源、军力的逻辑，确保在所有分辨率（包括手机端、桌面端）下均全量常驻展示：**稳定度、人口、资源、军力、威慑度**。
+- **UI 结构调整**：
+  - 高度定义为 `h-[56px] md:h-[72px]`，适配移动端 and 桌面端布局。
+  - z-index 设为 `z-[1010]`，确保悬浮在教程层之上。
+  - 下拉菜单解耦与补充：去除了多余的文明等级图标（`CivLevel`）展示（根据最终共识彻底隐藏），稳定度下拉详情进行了去重，新增了**威慑度详情展开**（可查看防卫军力及当前执剑人），且在下拉详情里恢复了“人口基数”指标。
+  - 加入执剑人数据追踪 (`earth.swordholder`)。
+- **对应测试修改**：更新 `SCEN-HUD-RESPONSIVE` 测试，不仅验证 `h-[56px]` 与 `md:h-[72px]` 的结构，还验证无论在 375px（移动端）还是 1280px（桌面端）下，稳定度、人口、资源、军力、威慑度等数值元素必须全部可见且无隐藏。
 
 ---
 
-## 修复方案
+## 2. 教程组件 (Tutorial.tsx) 交互与镂空显示优化
 
-### 按照 SPEC 4.1 节重新实现 TopHUD 响应式
+### 分类与重复按钮修复
+- **类目合并与对齐**：恢复 `'基础操作'` 为教程前几步和最后两步的内部组织分类，表明其为教程专属的标签。
+- **侧边栏重复项去重 (Issue 3)**：之前采用 `reduce` 连续步骤合并会导致“基础操作”分类因被其他分类隔开而显示两次（出现两个同名按钮）。本次改动重构了 `categories` 的 `reduce` 算法，采用 `acc.find(e => e.name === s.category)` 的唯一键名检索去重（Set/find 模式），从而确保侧边栏只显示 5 个唯一的类别按钮。
 
-```
-SPEC_20260621_RESPONSIVE_LAYOUT.md §4.1 TopHUD 紧凑模式
-
-| 元素   | 手机 (<768px) | 平板 (768-1023px) | 桌面 (≥1024px) |
-| 稳定度 | ✅             | ✅                | ✅              |
-| 人口   | ❌ 隐藏        | ✅                | ✅              |
-| 资源   | ❌ 隐藏        | ❌ 隐藏           | ✅              |
-| 军力   | ❌ 隐藏        | ❌ 隐藏           | ✅              |
-| 威慑度 | ✅             | ✅                | ✅              |
-```
-
-#### 实现方式：Tailwind 响应式断点
-
-```tsx
-// 高度：手机 56px，平板及以上 72px
-className="h-[56px] md:h-[72px]"
-// 间距：手机紧凑，桌面宽松
-className="px-3 md:px-6"
-className="gap-1 md:gap-1.5"
-
-// 统计项响应式可见性
-<div className="hidden md:block">   {/* 人口：手机隐藏，平板+显示 */}
-  <TopHUDStatItem label="人口" ... />
-</div>
-<div className="hidden lg:block">   {/* 资源：手机+平板隐藏，桌面显示 */}
-  <TopHUDStatItem label="资源" ... />
-</div>
-<div className="hidden lg:block">   {/* 军力：手机+平板隐藏，桌面显示 */}
-  <TopHUDStatItem label="军力" ... />
-</div>
-```
-
-#### 始终可见的元素
-
-- **文明等级**：核心身份标识，所有断点均显示
-- **稳定度**（含下拉详情）：核心生命线指标
-- **威慑度**：关键时刻威慑值
-- **纪元/年份**：所有断点显示，手机端字号缩小
-- **AP 显示**：紫色 AP 指示器，核心操作资源
-- **AI 智脑开关**：手机端仅显示图标，桌面端显示文字标签
-- **下一回合按钮**：不同游戏状态显示不同文案
+### SVG 镂空遮罩与事件拦截 (Issue 2)
+- **Rounded Cutout 实现**：引入了一个包含 `<mask id="tutorial-mask">` 的 SVG 图层（`z-[999]`），利用 `rect rx="8" ry="8"` 渲染带圆角的透明抠孔，在视觉上提供平滑高亮体验。
+- **透明事件拦截区**：原有的四个绝对定位遮罩块的背景颜色改为 `bg-transparent`（但依然为 `pointer-events-auto`），用于拦截镂空区域外的用户点击，同时镂空区域通过 SVG mask 完全暴露，确保可以正常触发底层按钮（如 AI 智脑托管按钮的点击穿透）。
 
 ---
 
-### 测试更新
+## 3. 岁月史书 (ChroniclesModal.tsx) 双轨时间轴对比
 
-`SCEN-HUD-RESPONSIVE` 测试从"移动端双行布局"改为"双断点验证"：
-
-```
-旧测试：仅验证移动端 (375px)，检查所有元素不被隐藏
-新测试：
-  - 移动端 (375px)：验证核心 3 项可见（文明等级/稳定度/威慑度），
-    人口/资源/军力被 hidden 类包裹
-  - 桌面端 (1280px)：验证全部 6 项可见
-```
+### 变更背景
+根据 `SCEN-TIMELINE-COMPARE` 的功能要求，将岁月史书与主页封面的“文明博物馆”完全解耦。
+- **功能点**：在“岁月史书”独立模态框中新增了“双轨时间轴对比页”。
+- **双轨对比**：集成小说原版时间线与当前游戏进行的时间线进行对比，方便玩家分析历史命运的偏离与走向，实现双轨历史命运对比分析功能。
+- **测试验证**：新增 `SCEN-TIMELINE-COMPARE` 自动化测试场景并跑通。
 
 ---
 
-## 文件变更
+## 4. 外星文明接触事件弹窗逻辑 (AlienContact)
 
-| 文件 | 变更 | 说明 |
-|------|------|------|
-| [TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx) | 重写 return 语句 | 使用 Tailwind 响应式断点实现 SPEC 4.1 节 |
-| [TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx) | 移除 useBreakpoint 导入 | 改用 Tailwind 类，无需 JS 断点检测 |
-| [TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx) | 移除移动端/桌面端双布局 | 恢复为单行统一布局 + 响应式类 |
-| [TopHUD.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/components/TopHUD.tsx) | 清理 showStabilityDropdownMobile / dropdownRefMobile | 不再需要的移动端专属 state |
-| [TutorialRemedy.scenario.test.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/test/scenarios/TutorialRemedy.scenario.test.tsx) | 重写 SCEN-HUD-RESPONSIVE | 双断点验证（mobile + desktop），使用 closest('.hidden') 检查 jsdom 中的隐藏状态 |
-| [TutorialRemedy.scenario.test.tsx](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/test/scenarios/TutorialRemedy.scenario.test.tsx) | 移除 BottomEventBar 和 within 导入 | 不再需要 |
-| [_registry.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/test/scenarios/_registry.md) | SCEN-HUD-RESPONSIVE 描述更新 | 对齐 SPEC 4.1 节内容 |
-| [_health.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/test/scenarios/_health.md) | 新增审视日志 | 记录 SPEC 对齐过程 |
+### 变更背景
+修复了“外星文明已显示在外交列表但没有接触事件弹窗”的问题。
+- **分阶段接触机制**：将与外星文明的接触清晰地划分为 **发现 (Discovered)** 和 **建交/首次接触 (Contacted)** 两个阶段。
+- **弹窗触发**：无论是“首次发现”还是“首次接触”，都会立刻触发系统 ticker 消息，并向事件队列 `eventQueue` 推送接触事件弹窗，确保玩家能够收到即时反馈。
+- **测试验证**：新增 `SCEN-ALIEN-CONTACT` 场景用例进行验证。
 
 ---
 
-## TopHUD 最终设计（符合共识）
+## 5. 文件变更清单
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  header: h-[56px] md:h-[72px], z-[1010], shrink-0               │
-│                                                                  │
-│  [文明等级] [稳定度▼] [人口] [资源] [军力] [威慑度]             │
-│   always     always   md+   lg+   lg+   always                   │
-│                                                                  │
-│                    ← 危机纪元 · 第 0 年 →                        │
-│                              │                                    │
-│                    [AP 20/100] [🧠智脑] [下一回合]                │
-│                     always     always    always                   │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### 断点行为对照
-
-| 断点 | 高度 | 左侧统计项 | 中间纪元 | 右侧操作 |
-|------|------|-----------|---------|---------|
-| 手机 (<768px) | 56px | 文明等级、稳定度、威慑度 | 小字号 | AP、智脑图标、下一回合 |
-| 平板 (768-1023px) | 72px | +人口 | 标准 | 同上 |
-| 桌面 (≥1024px) | 72px | +资源、+军力 | 标准 | AP、智脑文字、下一回合 |
-
----
-
-## 验证
-
-| 检查项 | 结果 |
-|--------|------|
-| TypeScript 编译 | 0 errors |
-| Vite 构建 | 成功 |
-| 全部测试 (42 files / 870 tests) | 全部通过 |
-| Registry 状态 | 8/8 GREEN |
-| 教程侧边栏 | 5 个唯一类别，无重复 |
-| TopHUD 响应式 | 符合 SPEC_20260621_RESPONSIVE_LAYOUT.md §4.1 |
-
----
-
-## 总结
-
-本次修复的教训：
-
-1. **必须先读 SPEC 再改代码**：v3 恢复"原始设计"时忽略了已达成共识的响应式规范，导致 TopHUD 在移动端显示过多元素
-2. **Registry 是真相来源**：按照 Registry 文档要求对照 SPEC 推进任务，才能确保实现与共识一致
-3. **Tailwind 断点优于 JS 断点**：使用 `hidden md:block` / `hidden lg:block` 替代 `useBreakpoint` hook，减少 JS 运行时开销，且断点更直观
-4. **测试覆盖多断点**：jdsom 不处理 CSS，需用 `closest('.hidden')` 验证元素隐藏状态
+| 相对路径 | 变更类型 | 关键改动点说明 |
+|:---|:---|:---|
+| `src/components/Tutorial.tsx` | [MODIFY] | 恢复基础操作分类，重写 `categories` 去重算法，引入 SVG mask 圆角镂空遮罩 |
+| `src/components/TopHUD.tsx` | [MODIFY] | 更改高度与 z-index，取消响应式隐藏核心指标，调整下拉菜单和威慑度详情 |
+| `src/test/scenarios/TutorialRemedy.scenario.test.tsx` | [MODIFY] | 更新 HUD 响应式常驻验证测试，适配基础操作分类和资源 blocker |
+| `src/test/scenarios/_registry.md` | [MODIFY] | 状态更新为 🟢 正常（9/9 GREEN），补充 `SCEN-TIMELINE-COMPARE` 和 `SCEN-ALIEN-CONTACT`，记录日志 |
+| `src/test/scenarios/_health.md` | [MODIFY] | 更新内容偏离指标，记录解耦博物馆、TopHUD 响应式常驻和 SVG cutout 日志 |

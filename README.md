@@ -48,9 +48,9 @@
 
 > 所有画面均来自游戏内**真实渲染的 CG 与角色立绘**，采用统一的 **Craig Mullins 极简巨物画风**（21:9 电影画幅）。
 
-| 🎬 事件 CG · 威慑建立（罗辑对决三体世界） | 🧑‍🚀 角色立绘 · 章北海 |
+| 🎬 事件 CG · 水滴末日战役 | 🧑‍🚀 角色立绘 · 叶文洁 |
 | :---: | :---: |
-| ![威慑建立](03_Web_Rebuild/public/images/cg_deterrence_established.png) | ![章北海](03_Web_Rebuild/public/images/unified_beihai_1778921366897.png) |
+| ![水滴攻击](03_Web_Rebuild/public/images/cg_droplet_attack.png) | ![叶文洁](03_Web_Rebuild/public/images/unified_yewenjie_1778921299091.png) |
 
 ---
 

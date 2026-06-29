@@ -22,12 +22,12 @@ interface TutorialStep {
   cardPosition?: 'left' | 'right' | 'top' | 'bottom' | 'center';
 }
 
-const TUTORIAL_STEPS: TutorialStep[] = [
+export const TUTORIAL_STEPS: TutorialStep[] = [
   // ===== 第一章：欢迎与世界观 =====
   {
     icon: <Lock size={32} />,
     title: '档案访问授权确认',
-    category: '序章',
+    category: '基础操作',
     description: '权限验证通过。欢迎您，文明执政官。\n\n公元 2XXX 年，三体文明发现了地球的存在。作为地球防卫理事会最高指挥官，你将在黑暗森林法则的阴影下，带领人类文明穿越六大纪元。\n在这座银河文明档案馆中，你的每一个决策都将书写人类文明的历史。',
     highlightTarget: 'none',
     activeView: 'starmap',
@@ -36,7 +36,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Clock size={32} />,
     title: '历史纪元演进',
-    category: '序章',
+    category: '基础操作',
     description: '文明档案记录了六个宏大纪元，每个纪元都有独特的挑战与危机：\n\n• 危机纪元（第1-200年）— 面临智子封锁与生存危机\n• 威慑纪元（第201-260年）— 执剑人建立黑暗森林威慑\n• 广播纪元（第261-300年）— 坐标暴露，应对黑暗森林打击\n• 掩体纪元（第301-350年）— 太阳系最后的防御建设窗口\n• 银河纪元（第351年起）— 逃亡星海，成为星舰文明\n• 星屑纪元（尾声）— 宇宙降维崩塌中的最后火种',
     highlightTarget: 'top-hud-epoch',
     activeView: 'starmap',
@@ -46,7 +46,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Cpu size={32} />,
     title: '执政指令点与 AI 智脑',
-    category: '序章',
+    category: '基础操作',
     description: '关注顶部 HUD 指标区的紫色「AP」与「智脑托管」按钮：\n\n• ⚡ AP (执政指令点) = 文明每回合的决策行动力上限。建造（10 AP）、研发科研（20 AP）都会消耗可用指令值。\n• 🤖 AI 智脑托管 = 协助决策系统（默认开启，开启时AI决策消耗AP减半）。智脑在每回合开始前，会自动任命空缺首长、选择成本最低科研并应急调配工种。\n\n⚠️ 手动模式阻断器：若关闭智脑托管，存在科技停滞、首长空缺或经济崩盘时，将无法推进「下一回合」。系统已临时将您的智脑切换至「手动」，便于您手动完成基础授权。',
     highlightTarget: 'btn-ai-brain',
     activeView: 'starmap',
@@ -58,7 +58,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Star size={32} />,
     title: '战略星图观测仪',
-    category: '战略指挥',
+    category: '战略星图',
     description: '欢迎进入高维星图全息投影。这里展示了人类的势力范围与深空星天：\n\n• 🟡 发光天体 = 恒星（如太阳）\n• 🔵 蓝色光环 = 人类控制区/己方势力\n• 🔴 红色光环 = 异星文明占领区（如三体）\n• ⚪ 灰色光环 = 无主星系，可派遣舰队开发\n\n操作方式：使用鼠标滚轮缩放星图，长按左键拖拽调整视角。',
     highlightTarget: 'starmap-viewport',
     activeView: 'starmap',
@@ -68,7 +68,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Star size={32} />,
     title: '行星观测与选择',
-    category: '战略指挥',
+    category: '战略星图',
     description: '【手把手指令 ①】：\n现在，请点击星图中央的「地球」星球。\n\n这将激活右侧的行星指令开发终端，以便进行具体的建设与资源调配。',
     highlightTarget: 'earth-star',
     activeView: 'starmap',
@@ -78,7 +78,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <TrendingUp size={32} />,
     title: '行星开发建设',
-    category: '战略指挥',
+    category: '战略星图',
     description: '【手把手指令 ②】：\n系统已为您自动选择「地球」并打开右侧开发面板（在移动端已自动拉起抽屉）。\n\n⚠️ 开局至关重要的一步：点击右侧开发面板中的「采矿场」进行建设！有了矿产资源，每回合才能产出基础矿物。',
     highlightTarget: 'btn-build-stope',
     activeView: 'starmap',
@@ -91,7 +91,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Landmark size={32} />,
     title: '内阁政府管理中枢',
-    category: '内政管理',
+    category: '政府管理',
     description: '【手把手指令 ③】：\n系统已为您自动打开「政府」管理界面。\n\n在这里，您可以行使最高统帅权：\n• 任命经济、军事、科研与文化部的负责人以获取各种产出加成\n• 指派面壁者秘密策划，应对三体危机\n\n⚠️ 开局提示：点击下方的「进入中央计划局 (分配与扩产)」指派负责人，可以让您的产出速度提升一倍以上！',
     highlightTarget: 'btn-gov-finance-dept',
     activeView: 'government',
@@ -100,20 +100,10 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     cardPosition: 'left',
   },
   {
-    icon: <Cpu size={32} />,
-    title: '科学技术解码中心',
-    category: '内政管理',
-    description: '【手把手指令 ④】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！在此以物理学分类下的「天文观测」为例，点击该节点即可消耗资源并启动研发。我们需要逐步积累研发度，直至攻克“550W量子计算机”等核心技术以对抗智子封锁。',
-    highlightTarget: 'tech-node-天文观测',
-    activeView: 'techtree',
-    tips: ['未任命科学部长时，科研效率将极其低下', '研发高级科技需要对应的前置物理学突破'],
-    cardPosition: 'right',
-  },
-  {
     icon: <Shield size={32} />,
     title: '黑暗森林防备体系',
-    category: '外御备战',
-    description: '【手把手指令 ⑤】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明 of 入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！\n\n🎯 执政指令：点击下方的「召开面壁计划战略听证会」可以进入面壁者与执剑人的管理终端。',
+    category: '政府管理',
+    description: '【手把手指令 ④】：\n系统再次将视角拉回「政府」中枢的防备区域。\n\n面对外星文明的生存挤压，您必须建立强大的防御与阻断体系：\n• 面壁者：每回合静默积攒威慑度与军备\n• 执剑人：握有核阻断剑柄的终极威慑者\n\n⚠️ 执政法则：高威慑值能逼退敌意文明 of 入侵。威慑的成败不仅取决于威慑度数值，更取决于执剑人的 Leadership 属性！一旦威慑失效，太阳系将面临灭顶之灾！\n\n🎯 执政指令：点击下方的「召开面壁计划战略听证会」可以进入面壁者与执剑人的管理终端。',
     highlightTarget: 'btn-open-wallfacer-hearings',
     activeView: 'government',
     govTab: 'security',
@@ -121,9 +111,19 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     cardPosition: 'left',
   },
   {
+    icon: <Cpu size={32} />,
+    title: '科学技术解码中心',
+    category: '科技研发',
+    description: '【手把手指令 ⑤】：\n系统已为您切换至「科技研发」面板。\n\n物理学、航天学、信息学等五大科技树是文明的第二生命：\n• 🔬 基础科学（如量子计算、曲率驱动）决定文明上限\n• ⚔️ 战争科技（如恒星级战舰、黑暗森林打击）保障安全\n\n⚠️ 执政警告：智子对人类的基础物理进行了锁死！在此以物理学分类下的「天文观测」为例，点击该节点即可消耗资源并启动研发。我们需要逐步积累研发度，直至攻克“550W量子计算机”等核心技术以对抗智子封锁。',
+    highlightTarget: 'tech-node-天文观测',
+    activeView: 'techtree',
+    tips: ['未任命科学部长时，科研效率将极其低下', '研发高级科技需要对应的前置物理学突破'],
+    cardPosition: 'right',
+  },
+  {
     icon: <Crosshair size={32} />,
     title: '深空外交监测网络',
-    category: '外御备战',
+    category: '情报中心',
     description: '【手把手指令 ⑥】：\n系统已为您连接到「情报中心」的外星电波与系统广播信道。\n\n在这里，宇宙的冷酷与动态变化尽收眼底：\n• 危机报告 🚨 — 记录三体探测器接近、水滴入侵等宇宙危机\n• 外交互动 🌐 — 记录与其他宇宙文明（三体、歌者、归零者）的往来动态\n• 科研、军事与民生 — 全方位监测地球内部的建设与社会秩序\n\n🎯 执政提醒：当有新消息未读时，左侧侧边栏或底部导航栏的情报中心图标上会出现红色呼吸提示气泡，请随时点击查看最新局势。实际的外交谈判与交易，需在「政府管理」的「外交委员会」中进行。',
     highlightTarget: 'intel-sidebar',
     activeView: 'intelligence',
@@ -133,7 +133,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Building2 size={32} />,
     title: '文明稳定维系法则',
-    category: '生存危机',
+    category: '基础操作',
     description: '系统已将您的视角还原到主星图。请将视线移到顶部 HUD 指标区。\n\n🏛 文明稳定度是您执政的生命线：\n• 它由您的 经济能力、军事规模、科技研发度 以及 文化产出 四大维度加权决定\n• 🚨 惩罚因子：当文明内部积攒了过高的「逃亡倾向」时，社会秩序失控，稳定度会遭到沉重处罚！\n\n稳定度一旦降为 0%，您的本局游戏将立即宣告失败。请通过社会保障 and 文化建设，随时抚平社会的恐慌。',
     highlightTarget: 'top-hud-stability',
     activeView: 'starmap',
@@ -143,7 +143,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Rocket size={32} />,
     title: '授权通过：执政官生存法则',
-    category: '最终指示',
+    category: '基础操作',
     description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「资源采矿场」积累原始矿产\n② 建设「工业加工厂」将矿产转化为经济收入\n③ 在政府管理中指派各部门负责人\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力 (Leadership) 的执剑人建立威慑盾牌\n⑥ 研发航天与宇宙科学，扩张星图开发区\n⑦ 不不要在没有采矿场的情况下连续建造加工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的部委负责人疏导逃亡倾向\n⑨ 太阳系打击降临时，依靠“太空城市”或“掩体太空城”疏散人口\n⑩ 合理利用情报中心监测动态与异星外交谈判。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
     highlightTarget: 'btn-next-turn',
     activeView: 'starmap',

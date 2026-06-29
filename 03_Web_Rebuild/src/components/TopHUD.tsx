@@ -211,11 +211,11 @@ export const TopHUD: React.FC = () => {
           <div data-tutorial-id="top-hud-stability" className="relative" ref={dropdownRefMobile}>
             <div 
               onClick={() => setShowStabilityDropdownMobile(!showStabilityDropdownMobile)}
-              className={`flex items-center gap-1 px-1.5 py-0.5 rounded cursor-pointer select-none hover:bg-white/5 ${showStabilityDropdownMobile ? "bg-white/5" : ""}`}
+              className={`flex items-center gap-0.5 sm:gap-1 px-1 py-0.5 rounded cursor-pointer select-none hover:bg-white/5 ${showStabilityDropdownMobile ? "bg-white/5" : ""}`}
             >
-              <Landmark className="w-3 h-3 text-[var(--text-secondary)]" />
-              <span className="text-[10px] text-[var(--text-secondary)] font-title hidden xs:inline">稳定度:</span>
-              <span className={`text-[11px] font-mono font-bold ${stabilityColor}`}>
+              <Landmark className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--text-secondary)]" />
+              <span className="text-[9px] sm:text-[10px] text-[var(--text-secondary)] font-title">稳定:</span>
+              <span className={`text-[10px] sm:text-[11px] font-mono font-bold ${stabilityColor}`}>
                 {stats.stability}%
               </span>
             </div>
@@ -245,37 +245,37 @@ export const TopHUD: React.FC = () => {
           </div>
 
           {/* Population */}
-          <div className="flex items-center gap-1 px-1 py-0.5">
-            <Users className="w-3 h-3 text-[var(--text-secondary)]" />
-            <span className="text-[10px] text-[var(--text-secondary)] font-title hidden xs:inline">人口:</span>
-            <span className="text-[11px] font-mono font-bold text-white">
+          <div className="flex items-center gap-0.5 sm:gap-1 px-0.5 sm:px-1 py-0.5">
+            <Users className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--text-secondary)]" />
+            <span className="text-[9px] sm:text-[10px] text-[var(--text-secondary)] font-title">人口:</span>
+            <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white">
               {stats.pop}M
             </span>
           </div>
 
           {/* Resources */}
-          <div className="flex items-center gap-1 px-1 py-0.5">
-            <Gem className="w-3 h-3 text-[var(--text-secondary)]" />
-            <span className="text-[10px] text-[var(--text-secondary)] font-title hidden xs:inline">资源:</span>
-            <span className="text-[11px] font-mono font-bold text-white">
+          <div className="flex items-center gap-0.5 sm:gap-1 px-0.5 sm:px-1 py-0.5">
+            <Gem className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--text-secondary)]" />
+            <span className="text-[9px] sm:text-[10px] text-[var(--text-secondary)] font-title">资源:</span>
+            <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white">
               {stats.res}
             </span>
           </div>
 
           {/* Army */}
-          <div className="flex items-center gap-1 px-1 py-0.5">
-            <Swords className="w-3 h-3 text-[var(--text-secondary)]" />
-            <span className="text-[10px] text-[var(--text-secondary)] font-title hidden xs:inline">军力:</span>
-            <span className="text-[11px] font-mono font-bold text-white">
+          <div className="flex items-center gap-0.5 sm:gap-1 px-0.5 sm:px-1 py-0.5">
+            <Swords className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--text-secondary)]" />
+            <span className="text-[9px] sm:text-[10px] text-[var(--text-secondary)] font-title">军力:</span>
+            <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white">
               {stats.army}
             </span>
           </div>
 
           {/* Deterrence */}
-          <div className="flex items-center gap-1 px-1 py-0.5">
-            <AlertTriangle className="w-3 h-3 text-red-400" />
-            <span className="text-[10px] text-[var(--text-secondary)] font-title hidden xs:inline">威慑:</span>
-            <span className="text-[11px] font-mono font-bold text-red-400">
+          <div className="flex items-center gap-0.5 sm:gap-1 px-0.5 sm:px-1 py-0.5">
+            <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-red-400" />
+            <span className="text-[9px] sm:text-[10px] text-[var(--text-secondary)] font-title">威慑:</span>
+            <span className="text-[10px] sm:text-[11px] font-mono font-bold text-red-400">
               {stats.deterrence}
             </span>
           </div>

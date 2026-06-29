@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import { Tutorial, TUTORIAL_STEPS } from '../../components/Tutorial';
 import { TopHUD } from '../../components/TopHUD';
+import { BottomEventBar } from '../../components/BottomEventBar';
 import { GameInstance } from '../../core/Game';
 
 describe('Tutorial UI & Blocker Remediation Scenarios', () => {
@@ -65,6 +66,17 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     TUTORIAL_STEPS.forEach((step) => {
       expect(allowedCategories).toContain(step.category);
     });
+    
+    // Verify sequential chapter matching LeftHub navigation top-to-bottom list
+    const categoriesSeq: string[] = [];
+    TUTORIAL_STEPS.forEach((step) => {
+      if (categoriesSeq.length === 0 || categoriesSeq[categoriesSeq.length - 1] !== step.category) {
+        categoriesSeq.push(step.category);
+      }
+    });
+
+    const expectedOrder = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理', '基础操作'];
+    expect(categoriesSeq).toEqual(expectedOrder);
   });
 
   it('SCEN-HUD-RESPONSIVE: 移动端自适应双行 HUD 布局不隐藏核心数值', () => {
@@ -91,6 +103,17 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
       // Ensure the "hidden" class is NOT present on the label element
       expect(element.className).not.toMatch(/\bhidden\b/);
     });
+
+    // 3. Verify TopHUD and BottomEventBar have the shrink-0 class to prevent layout collapse
+    const { container: hudContainer } = render(<TopHUD />);
+    const header = hudContainer.querySelector('header');
+    expect(header).toBeInTheDocument();
+    expect(header?.className).toContain('shrink-0');
+
+    const { container: eventBarContainer } = render(<BottomEventBar />);
+    const eventBar = eventBarContainer.firstChild as HTMLElement;
+    expect(eventBar).toBeInTheDocument();
+    expect(eventBar.className).toContain('shrink-0');
   });
 
   it('SCEN-TUTORIAL-BLOCKER: 教程期间开启 blocker 穿透，即使有阻断也不禁用下一回合按钮并能推进回合', () => {

@@ -69,7 +69,7 @@ export const BottomEventBar: React.FC = () => {
   };
 
   return (
-    <div className="h-10 w-full bg-[#070B14]/90 border-t border-[#243245] flex items-center justify-between px-6 z-40 select-none overflow-hidden relative">
+    <div className="h-10 w-full bg-[#070B14]/90 border-t border-[#243245] flex items-center justify-between px-6 z-40 select-none overflow-hidden relative shrink-0">
       {/* Glow effect */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(0,184,255,0.03)_0%,_transparent_100%)] pointer-events-none" />
       

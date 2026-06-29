@@ -16,10 +16,11 @@
 | REG-PWA-FREEZE | Regression | PWA 更新卡住修复 | 修复 GitHub Pages 下使用相对路径导致 Service Worker 更新及页面刷新卡死的问题 | 🟢 GREEN | 立即更新按钮点击卡住/白屏 | vite.config.ts |
 
 ## 变更日志
+- 2026-06-29: SCEN-HUD-RESPONSIVE 从 RED 变 GREEN（TopHUD 增加 shrink-0 防缩水修复）
+- 2026-06-29: SCEN-TUTORIAL-STEPS-MATCH 从 RED 变 GREEN（重新排列引导步骤以完美匹配 LeftHub 目录顺序）
 - 2026-06-29: 新增 REG-PWA-FREEZE 并直接设为 GREEN（已配置 CI 绝对路径以修复 SW 更新卡死）
 - 2026-06-29: 新增 REG-BUILD-CLEAN 并直接设为 GREEN（已修复测试代码多余声明并验证打包无碍）
 - 2026-06-29: 新增 SCEN-MANUAL-BLOCKER 并直接设为 GREEN（经验证功能完备并通过测试）
-- 2026-06-29: SCEN-TUTORIAL-NAV, SCEN-HUD-RESPONSIVE 回退为 RED；新增 SCEN-TUTORIAL-STEPS-MATCH 并设为 RED
 - 2026-06-26: 所有4个UI与教程交互场景测试全部通过 (GREEN)
 - 2026-06-26: 注册四个UI与教程交互场景测试条目 (RED)
 - 2026-06-26: 初始化场景注册表

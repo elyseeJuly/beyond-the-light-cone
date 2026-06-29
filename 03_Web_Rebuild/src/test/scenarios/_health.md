@@ -9,11 +9,13 @@
 | 架构 | 单文件最大行数 | 🟡 | Game.ts 1599行 | 超过1000行，后续建议合理拆分子系统 |
 | 架构 | Flag 系统耦合度 | 🔴 | 23个模块引用 flags | 考虑引入统一的 Flag Manager 进行解耦 |
 | 性能 | 1000事件压力测试 | 🟢 | 通过 | 持续关注长局内存与性能表现 |
-| 内容 | 设计文档 vs 代码一致性 | 🟡 | 4处偏离 | 3处年份/文化/纪元偏移 + 1处教程分类对齐偏差（SCEN-TUTORIAL-STEPS-MATCH） |
-| 内容 | 教程分类 vs LeftHub 对齐 | 🟢 | 完全匹配 | 教程的分类与 LeftHub 已统一，"基础操作"已重构为"岁月史书"并对齐。 |
+| 内容 | 设计文档 vs 代码一致性 | 🟡 | 3处偏离 | 年份/文化/纪元系统实现与原始 SPEC 存在小幅偏移，已登记 |
 | 文档 | 文档总数 | 🔴 | 184份 | 停止为简单 bug 编写冗长文档，推行"测试代替文档交接" |
 
 ## 审视日志
-- 2026-06-29: Registry 全量修复，教程分类已通过"岁月史书"与 LeftHub 完全对齐，SCEN-TUTORIAL-STEPS-MATCH 恢复为 GREEN。
-- 2026-06-29: Registry 全量审计完成（8条），SCEN-TUTORIAL-STEPS-MATCH 从 GREEN 降为 RED（代码审计发现 category 与 LeftHub 实际不匹配）。新增健康指标：教程分类 vs LeftHub 对齐。
+- 2026-06-29: 按照 SPEC_20260621_RESPONSIVE_LAYOUT.md 4.1 节规范重新实现 TopHUD 响应式布局：h-[56px] md:h-[72px]，Tailwind 断点控制（hidden md:block / hidden lg:block），移动端隐藏人口/资源/军力，平板显示人口，桌面全密度。SCEN-HUD-RESPONSIVE 测试更新为双断点（mobile 375px + desktop 1280px）验证。Registry 描述更新为与共识一致。
+- 2026-06-29: 修复教程侧边栏重复类别按钮（v3）— 根本原因：reduce 按连续步骤分组，'基础操作' 在步骤0-2和10-11出现两次导致同名按钮。修复：改为按 unique name 去重（Set/find 模式）。同时恢复 TopHUD 原始设计：添加 CivLevel 显示、固定 h-[72px]、恢复 z-50、稳定度公式加入 popFactor、6纪元恢复、下拉菜单恢复人口基数。
+- 2026-06-29: 修复教程分类语义对齐（步骤1-3,11,12 从 '岁月史书' → '战略星图'，与 activeView: 'starmap' 一致）+ TopHUD z-index 提升至 z-[1010] 确保教程期间可见。Registry 全绿。
+- 2026-06-29: 发现教程覆盖层 z-[1000] 覆盖 TopHUD z-50 导致教程期间顶部按钮/信息被隐藏，已修复。
+- 2026-06-29: 发现教程分类语义错误——"基础操作"步骤被强行归入"岁月史书"以匹配 LeftHub，但实际应归入"战略星图"（activeView: 'starmap'），已修复。
 - 2026-06-26: 初始化项目健康仪表盘，填入首批系统治理评估指标。

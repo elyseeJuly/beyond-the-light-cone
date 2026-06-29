@@ -17,9 +17,14 @@ export class AlienCivilization extends Civilization {
   public discovered: boolean = false;
   /** 该文明是否与地球建立了可外交的通信信道（可执行 negotiate/trade/alliance/provoke） */
   public contacted: boolean = false;
-  /** @deprecated 旧字段，现等价于 contacted，保留以兼容旧存档 */
+  /** @deprecated 旧字段，保留以兼容旧存档；语义更新为 contacted，设置时自动标记 discovered */
   get unlocked(): boolean { return this.contacted; }
   set unlocked(value: boolean) { this.contacted = value; if (value) this.discovered = true; }
+
+  /** 是否已经触发过“首次发现”弹窗事件 */
+  public discoveryEventFired: boolean = false;
+  /** 是否已经触发过“建立通信”弹窗事件 */
+  public contactEventFired: boolean = false;
 
   public waterdropCount: number = 0;
   public waterdropCooldown: number = 0;

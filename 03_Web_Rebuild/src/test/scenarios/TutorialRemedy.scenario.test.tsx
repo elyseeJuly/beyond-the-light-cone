@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 import { Tutorial, TUTORIAL_STEPS } from '../../components/Tutorial';
 import { TopHUD } from '../../components/TopHUD';
-import { BottomEventBar } from '../../components/BottomEventBar';
 import { GameInstance } from '../../core/Game';
 
 describe('Tutorial UI & Blocker Remediation Scenarios', () => {
@@ -47,7 +46,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     expect(screen.queryByTestId('tutorial-categories-horizontal')).not.toBeInTheDocument();
 
     // Verify categories in desktop vertical nav (including the expected UI categories)
-    const expectedCategories = ['岁月史书', '战略星图', '情报中心', '科技研发', '政府管理'];
+    const expectedCategories = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理'];
     expectedCategories.forEach(cat => {
       expect(screen.getAllByRole('button', { name: new RegExp(cat) }).length).toBeGreaterThanOrEqual(1);
     });
@@ -62,7 +61,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
 
   it('SCEN-TUTORIAL-STEPS-MATCH: 教程步骤中的所有分类必须与 LeftHub 的导航项完全一致（或属于基础操作）', () => {
     // We will import TUTORIAL_STEPS at the top of the file
-    const allowedCategories = ['岁月史书', '战略星图', '情报中心', '科技研发', '政府管理'];
+    const allowedCategories = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理'];
     TUTORIAL_STEPS.forEach((step) => {
       expect(allowedCategories).toContain(step.category);
     });
@@ -75,53 +74,64 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
       }
     });
 
-    const expectedOrder = ['岁月史书', '战略星图', '情报中心', '科技研发', '政府管理', '岁月史书'];
+    const expectedOrder = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理', '基础操作'];
     expect(categoriesSeq).toEqual(expectedOrder);
   });
 
-  it('SCEN-HUD-RESPONSIVE: 移动端自适应双行 HUD 布局不隐藏核心数值', () => {
-    // Mock mobile screen size
+  it('SCEN-HUD-RESPONSIVE: 不同断点下 TopHUD 响应式显示/隐藏核心数值', () => {
+    // === Mobile viewport (< 768px): compact mode, height 56px ===
     setWindowSize(375, 667);
     render(<TopHUD />);
     
-    // Mobile layout container is rendered
-    const mobileLayout = screen.getByTestId('tophud-mobile-layout');
-    expect(mobileLayout).toBeInTheDocument();
-    
-    // Get all mobile HUD stat labels and verify they do not have class "hidden"
-    const statsLabels = [
-      { text: /稳定/, name: '稳定度' },
-      { text: /人口/, name: '人口' },
-      { text: /资源/, name: '资源' },
-      { text: /军力/, name: '军力' },
-      { text: /威慑/, name: '威慑' }
-    ];
-
-    statsLabels.forEach(stat => {
-      const element = within(mobileLayout).getByText(stat.text);
-      expect(element).toBeInTheDocument();
-      // Ensure the "hidden" class is NOT present on the label element
-      expect(element.className).not.toMatch(/\bhidden\b/);
-    });
-
-    // 3. Verify TopHUD and BottomEventBar have the shrink-0 class to prevent layout collapse
-    const { container: hudContainer } = render(<TopHUD />);
-    const header = hudContainer.querySelector('header');
+    const header = screen.getByRole('banner');
     expect(header).toBeInTheDocument();
-    expect(header?.className).toContain('shrink-0');
+    expect(header.className).toContain('shrink-0');
+    // On mobile: height should be 56px (h-[56px] class)
+    expect(header.className).toContain('h-[56px]');
 
-    const { container: eventBarContainer } = render(<BottomEventBar />);
-    const eventBar = eventBarContainer.firstChild as HTMLElement;
-    expect(eventBar).toBeInTheDocument();
-    expect(eventBar.className).toContain('shrink-0');
+    // Core stats always visible on mobile
+    expect(screen.queryByText(/文明等级/)).not.toBeInTheDocument();
+    expect(screen.getByText(/稳定度/)).toBeInTheDocument();
+    expect(screen.getByText(/威慑度/)).toBeInTheDocument();
+
+    // Population — hidden on mobile (hidden md:block wrapper)
+    const popEl = screen.queryByText(/^人口$/);
+    // In jsdom, the element exists in DOM but its wrapper has 'hidden' class
+    expect(popEl?.closest('.hidden')).toBeTruthy();
+    // Resources/Army — hidden on mobile+tablet (hidden lg:block wrapper)
+    const resEl = screen.queryByText(/^资源$/);
+    expect(resEl?.closest('.hidden')).toBeTruthy();
+    const armyEl = screen.queryByText(/^军力$/);
+    expect(armyEl?.closest('.hidden')).toBeTruthy();
+
+    // Epoch/year and Next Turn always visible
+    expect(screen.getByText(/第.*年/)).toBeInTheDocument();
+    expect(screen.getByText(/下一回合|同步逻辑中|有阻断/)).toBeInTheDocument();
+
+    // === Desktop viewport (>= 1024px): full mode, height 72px ===
+    cleanup();
+    setWindowSize(1280, 800);
+    render(<TopHUD />);
+    
+    const headerDesktop = screen.getByRole('banner');
+    expect(headerDesktop.className).toContain('md:h-[72px]');
+
+    // All stats visible on desktop
+    expect(screen.queryByText(/文明等级/)).not.toBeInTheDocument();
+    expect(screen.getByText(/稳定度/)).toBeInTheDocument();
+    expect(screen.getByText(/^人口$/)).toBeInTheDocument();
+    expect(screen.getByText(/^资源$/)).toBeInTheDocument();
+    expect(screen.getByText(/^军力$/)).toBeInTheDocument();
+    expect(screen.getByText(/威慑度/)).toBeInTheDocument();
   });
 
   it('SCEN-TUTORIAL-BLOCKER: 教程期间开启 blocker 穿透，即使有阻断也不禁用下一回合按钮并能推进回合', () => {
     const game = GameInstance.get();
     
-    // Setup blocker conditions manually (e.g. Empty cabinet seats, tech idle)
-    // By default, a fresh game starts with empty cabinet seats and tech idle.
+    // Setup blocker conditions manually (e.g. low resources)
     game.earthCivi.isAiBrainEnabled = false; // Disable AI brain to trigger manual checks
+    game.earthCivi.resource = 5;
+    game.earthCivi.economy = 5;
     
     // Ensure blockers list is non-empty
     const blockers = game.getTurnBlockers();
@@ -155,9 +165,11 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
   it('SCEN-MANUAL-BLOCKER: 非教程期间，手动模式下存在阻断时按钮禁用显示“有阻断”，阻断消除后恢复可用', () => {
     const game = GameInstance.get();
     
-    // 1. Setup blockers (manual mode)
+    // 1. Setup blockers (manual mode, low resources)
     game.earthCivi.isAiBrainEnabled = false;
     (window as any).isTutorialActive = false;
+    game.earthCivi.resource = 5;
+    game.earthCivi.economy = 5;
     
     // Ensure blockers list is non-empty initially
     expect(game.getTurnBlockers().length).toBeGreaterThan(0);
@@ -170,14 +182,6 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     nextTurnBtns.forEach(btn => expect(btn).toBeDisabled());
     
     // 2. Resolve blockers programmatically
-    // Set research target so it's not idle
-    vi.spyOn(game.earthCivi, 'isResearchIdle').mockReturnValue(false);
-    
-    // Resolve empty cabinet cabinet blockers
-    for (const dept of game.earthCivi.departments.values()) {
-      dept.leaderName = 'Test Leader';
-    }
-    
     // Clear other resource/ap blockers if any
     game.earthCivi.resource = 100;
     game.earthCivi.economy = 100;

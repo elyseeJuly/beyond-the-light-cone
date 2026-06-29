@@ -365,11 +365,10 @@ export const App: React.FC = () => {
       <AtmosphereProvider engineRef={atmosphereEngineRef}>
         <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
 
-          {/* Scaled Container for Gameplay and HUD */}
-          <div className={`flex flex-col h-full w-full overflow-hidden ${isMobileLandscape ? 'mobile-landscape-scale' : ''}`}>
-            {/* Top HUD */}
+          {/* Scaled Container for Gameplay */}
+          <div className={`flex-1 flex flex-col w-full overflow-hidden ${isMobileLandscape ? 'mobile-landscape-scale' : ''}`}>
+            {/* Top HUD — rendered inside scaled container to inherit landscape scaling */}
             <TopHUD />
-
             {/* Main Layout Body */}
             <main className="flex-1 flex overflow-hidden">
               {/* Left Sidebar — visible on tablet+ and mobile landscape, hidden on mobile portrait (replaced by MobileBottomNav) */}

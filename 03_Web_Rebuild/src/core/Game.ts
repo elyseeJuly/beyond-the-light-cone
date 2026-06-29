@@ -295,25 +295,11 @@ export class Game {
     const blockers: string[] = [];
     const civi = this.earthCivi;
 
-    if (civi.isResearchIdle()) {
-      blockers.push('科研停滞：至少有一个科技树未设置研究目标');
-    }
-
-    for (const dept of civi.departments.values()) {
-      if (!dept.leaderName) {
-        blockers.push(`首长空缺：${dept.name} 尚未任命负责人`);
-        break;
-      }
-    }
-
     if (civi.resource <= 10) {
       blockers.push('资源崩盘：资源储备即将耗尽');
     }
     if (civi.economy <= 10) {
       blockers.push('经济危机：经济产出濒临崩溃');
-    }
-    if (civi.apCurrent <= 0) {
-      blockers.push('执政指令点耗尽：请等待下一回合恢复或开启AI智脑托管');
     }
 
     return blockers;
@@ -1360,82 +1346,204 @@ export class Game {
       trisolaris.contacted = true;
     }
 
-    const tryDiscoverAndContact = (alien: any, condition: boolean, msg: string) => {
+    /**
+     * 尝试发现一个外星文明（可观测但未必可外交）。
+     * 首次发现时：标记 discovered=true，推入 ticker 消息，并尝试加入事件队列（milestone 级别）。
+     */
+    const tryDiscover = (alien: AlienCivilization | undefined, condition: boolean, discovery: { title: string; tip: string; speaker: string; content: string; avatar?: string }) => {
       if (!alien) return;
       if (condition && !alien.discovered) {
         alien.discovered = true;
-        alien.contacted = true;
+        const msg = `【首次发现】人类观测到异星文明「${alien.name}」的存在信号！`;
         this.addHistory(msg);
+        this.pushTickerMessage(msg);
+        this.dispatchTickerEvent();
+        this.enqueueAlienEvent(alien, discovery, "discovery");
       }
     };
 
+    /**
+     * 尝试与一个外星文明建立可外交的通信信道。
+     * 首次建立通信时：标记 contacted=true，推入 ticker 消息，并尝试加入事件队列。
+     */
+    const tryContact = (alien: AlienCivilization | undefined, condition: boolean, contact: { title: string; tip: string; speaker: string; content: string; avatar?: string }) => {
+      if (!alien) return;
+      if (condition && alien.discovered && !alien.contacted) {
+        alien.contacted = true;
+        const msg = `【探索信道解锁】成功建立与异星文明「${alien.name}」的通信信道！`;
+        this.addHistory(msg);
+        this.pushTickerMessage(msg);
+        this.dispatchTickerEvent();
+        this.enqueueAlienEvent(alien, contact, "contact");
+      }
+    };
+
+    const hasTech = (name: string) => this.earthCivi.tecTreeManager.isTecFinishedAnywhere(name);
+
+    // 歌者：远距离观测信号 → 可外交
     const singer = this.alienCiviManager.aliens.get("歌者");
-    tryDiscoverAndContact(
-      singer,
-      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("1万光年远镜") ||
-        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("太阳波放大器50光年") ||
-        this.year >= 150 ||
-        this.hasFlag("singer_contact"),
-      `【探索信道解锁】深空观测站捕获到高频光粒波段信号，成功建立与异星文明「歌者」的通信信道！`
-    );
+    tryDiscover(singer, this.year >= 120 || hasTech("太阳波放大器50光年"), {
+      title: "深空光粒信号",
+      tip: "深空观测站捕获到一段异常的高频光粒波段，其模式不可能是自然现象。某种智慧文明正在清理宇宙。",
+      speaker: "深空观测站",
+      content: "长官，我们在太阳系边缘捕捉到了一段高频光粒波段。这不是自然背景噪声——它太规律了，像是某种飞船或武器留下的痕迹。"
+    });
+    tryContact(singer, hasTech("1万光年远镜") || hasTech("太阳波放大器50光年") || this.year >= 150 || this.hasFlag("singer_contact"), {
+      title: "歌者文明接触",
+      tip: "通过太阳波放大器，人类终于与那个在黑暗中清理宇宙的文明建立了脆弱的通信信道。",
+      speaker: "通讯解码员",
+      content: "我们成功解码了信号。对方自称‘歌者’，对他们来说，毁灭一个文明就像捡起一张废纸一样平常。"
+    });
 
+    // 魔戒：四维遗迹发现 → 可外交
     const ring = this.alienCiviManager.aliens.get("魔戒");
-    tryDiscoverAndContact(
-      ring,
-      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("宇宙社会学") ||
-        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船") ||
-        this.earthCivi.starIndices.has(10) ||
-        this.earthCivi.starIndices.has(11) ||
-        this.hasFlag("ring_contact"),
-      `【探索信道解锁】探索飞船在太阳系边缘发现四维空间碎块及墓地遗迹，成功解密与异星生命「魔戒」的通信信道！`
-    );
+    tryDiscover(ring, hasTech("宇宙社会学") || this.earthCivi.starIndices.has(10) || this.earthCivi.starIndices.has(11), {
+      title: "四维空间遗迹",
+      tip: "探索飞船在太阳系边缘发现了一个不该存在的四维空间碎块，其中似乎封存着某种古老的生命信号。",
+      speaker: "探索队队长",
+      content: "长官，我们找到了一个四维碎块。三维空间中不该有这样的东西存在……里面有什么东西在回应我们的探测。"
+    });
+    tryContact(ring, hasTech("10%光速飞船") || this.earthCivi.starIndices.has(10) || this.earthCivi.starIndices.has(11) || this.hasFlag("ring_contact"), {
+      title: "魔戒文明接触",
+      tip: "探索队成功与四维碎块中的生命体建立了通信。它们自称‘墓地’，是来自更高维度的遗民。",
+      speaker: "魔戒",
+      content: "海？……水？……你们是低维世界的新生命。我们只剩下记忆，但愿意与你们交谈。"
+    });
 
+    // 边缘世界：引力波信号 → 可外交
     const fringe = this.alienCiviManager.aliens.get("边缘世界");
-    tryDiscoverAndContact(
-      fringe,
-      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("99%光速飞船") ||
-        this.earthCivi.tecTreeManager.isTecFinishedAnywhere("引力波广播系统") ||
-        this.epoch >= EpochType.BROADCAST ||
-        this.hasFlag("fringe_contact"),
-      `【探索信道解锁】引力波天线捕获到正在与三体文明交战的敌对势力讯号，建立通信信道：「边缘世界」！`
-    );
+    tryDiscover(fringe, this.epoch >= EpochType.BROADCAST || hasTech("引力波广播系统"), {
+      title: "遥远战场的回声",
+      tip: "引力波天线捕捉到一场正在进行的星际战争信号。交战的一方，似乎与三体文明有着深仇大恨。",
+      speaker: "引力波监听员",
+      content: "我们捕捉到了持续不断的引力波涟漪。有人在和三体舰队交战，而且他们离太阳系并不算太远。"
+    });
+    tryContact(fringe, hasTech("99%光速飞船") || hasTech("引力波广播系统") || this.epoch >= EpochType.BROADCAST || this.hasFlag("fringe_contact"), {
+      title: "边缘世界接触",
+      tip: "通过引力波广播系统，人类与正在和三体文明交战的‘边缘世界’建立了联系。",
+      speaker: "边缘世界使者",
+      content: "三体不是你们唯一的敌人，也不是最强的。我们可以是盟友，如果你们愿意共享情报。"
+    });
 
+    // 归零者：超维广播 → 可外交（神级文明）
     const zeroers = this.alienCiviManager.aliens.get("归零者");
-    tryDiscoverAndContact(
-      zeroers,
-      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("归零者研究") ||
-        this.hasFlag("zeroers_contact") ||
-        this.year >= 280,
-      `【探索信道解锁】检测到全宇宙广播的终极归零重置宣言，成功接入神级文明通信信道：「归零者」！`
-    );
+    tryDiscover(zeroers, hasTech("归零者研究") || this.year >= 260, {
+      title: "全宇宙广播",
+      tip: "一股来自宇宙深处的超维广播穿透了所有物理屏障。这不是任何已知文明能做到的事。",
+      speaker: "宇宙学研究院",
+      content: "这段广播同时出现在所有频段、所有维度上。它来自……宇宙之外，或者宇宙之始。"
+    });
+    tryContact(zeroers, hasTech("归零者研究") || this.hasFlag("zeroers_contact") || this.year >= 280, {
+      title: "归零者接触",
+      tip: "人类终于回应了归零者的召唤。这个神级文明想要重启宇宙，而人类有机会参与其中。",
+      speaker: "归零者",
+      content: "归还你们小宇宙中的质量。宇宙需要重启，否则一切将在热寂中终结。"
+    });
 
+    // 碳基联邦 / 硅基帝国：银河系远镜 → 可外交
     const carbon = this.alienCiviManager.aliens.get("碳基联邦");
-    tryDiscoverAndContact(
-      carbon,
-      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150,
-      `【探索信道解锁】银河系远镜捕捉到了古老的硅碳大战残余遗迹波段，成功接入「碳基联邦」通信信道！`
-    );
+    tryDiscover(carbon, hasTech("银河系远镜") && this.year >= 120, {
+      title: "银河遗迹信号",
+      tip: "银河系远镜捕捉到了一场远古战争的遗迹。那是碳基生命与硅基生命曾经争霸银河的证据。",
+      speaker: "银河系远镜观测员",
+      content: "我们在银河系旋臂发现了大量有机物战舰残骸。这里发生过一场史诗级战争。"
+    });
+    tryContact(carbon, hasTech("银河系远镜") && this.year >= 150, {
+      title: "碳基联邦接触",
+      tip: "银河系远镜成功定位了碳基联邦的残存舰队。它们曾是银河系的守护者之一。",
+      speaker: "碳基联邦外交官",
+      content: "硅基帝国并未被彻底消灭。如果你们不想重蹈我们的覆辙，就加入我们。"
+    });
 
     const silicon = this.alienCiviManager.aliens.get("硅基帝国");
-    tryDiscoverAndContact(
-      silicon,
-      this.earthCivi.tecTreeManager.isTecFinishedAnywhere("银河系远镜") && this.year >= 150,
-      `【探索信道解锁】银河系远镜捕捉到了高强度无机计算矩阵波动，成功接入「硅基帝国」通信信道！`
-    );
+    tryDiscover(silicon, hasTech("银河系远镜") && this.year >= 120, {
+      title: "无机计算矩阵",
+      tip: "银河系远镜捕捉到了高强度无机计算矩阵波动。某种非碳基文明仍在银河深处运转。",
+      speaker: "计算矩阵分析员",
+      content: "这些波动来自自我复制的计算节点。它们没有生物形态，但显然是智慧文明。"
+    });
+    tryContact(silicon, hasTech("银河系远镜") && this.year >= 150, {
+      title: "硅基帝国接触",
+      tip: "人类与硅基帝国建立了通信。它们对有机生命没有敌意，但也没有感情。",
+      speaker: "硅基帝国节点",
+      content: "碳基与硅基的战争已经结束。我们愿意与任何计算效率足够的文明进行数据交换。"
+    });
 
+    // 上帝文明 / 量子态文明：银河纪元 → 可外交
     const god = this.alienCiviManager.aliens.get("上帝文明");
-    tryDiscoverAndContact(
-      god,
-      this.epoch >= EpochType.GALAXY && this.year >= 250,
-      `【探索信道解锁】深空舰队遭遇了正在衰亡的古老文明秋林，成功接入「上帝文明」通信信道！`
-    );
+    tryDiscover(god, this.epoch >= EpochType.GALAXY && this.year >= 230, {
+      title: "衰亡的神级文明",
+      tip: "深空舰队在银河系边缘遇到了一个正在衰亡的古老文明。它们自称‘上帝文明’，曾经创造过无数生命。",
+      speaker: "深空舰队指挥官",
+      content: "它们的飞船巨大而破败，但它们的技术仍然远超我们。它们说自己正在‘退休’。"
+    });
+    tryContact(god, this.epoch >= EpochType.GALAXY && this.year >= 250, {
+      title: "上帝文明接触",
+      tip: "人类与上帝文明建立了通信。它们愿意分享自己最后的知识，但警告人类不要重蹈它们的覆辙。",
+      speaker: "上帝文明",
+      content: "我们曾经试图管理宇宙，但失败了。年轻人，不要犯我们犯过的错误。"
+    });
 
     const quantum = this.alienCiviManager.aliens.get("量子态文明");
-    tryDiscoverAndContact(
-      quantum,
-      this.epoch >= EpochType.GALAXY && this.year >= 250,
-      `【探索信道解锁】物理学家观测到了呈现文明特征的宏观量子涨落，成功接入「量子态文明」通信信道！`
-    );
+    tryDiscover(quantum, this.epoch >= EpochType.GALAXY && this.year >= 230, {
+      title: "宏观量子涨落",
+      tip: "物理学家观测到了呈现文明特征的宏观量子涨落。某种生命以量子态存在。",
+      speaker: "量子物理学家",
+      content: "这些涨落不是随机的。它们在‘思考’，以概率云的形式进行交流。"
+    });
+    tryContact(quantum, this.epoch >= EpochType.GALAXY && this.year >= 250, {
+      title: "量子态文明接触",
+      tip: "人类首次与一个以量子叠加态存在的文明建立了通信。它们的生命形式完全超出传统生物学。",
+      speaker: "量子态文明",
+      content: "我们同时存在于许多状态。与你们交流，只是我们选择坍缩到这一个现实。"
+    });
+  }
+
+  private pushTickerMessage(msg: string): void {
+    this.tickerMessages.push(msg);
+  }
+
+  private dispatchTickerEvent(): void {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ticker-message-added'));
+    }
+  }
+
+  /**
+   * 将外星文明发现/接触事件加入事件队列，确保玩家看到弹窗。
+   * 为避免阻塞回合推进，如果当前没有交互事件，则加入队列；否则只保留 ticker 提示。
+   */
+  private enqueueAlienEvent(
+    alien: AlienCivilization,
+    data: { title: string; tip: string; speaker: string; content: string; avatar?: string },
+    kind: "discovery" | "contact"
+  ): void {
+    const alreadyFired = kind === "discovery" ? alien.discoveryEventFired : alien.contactEventFired;
+    if (alreadyFired) return;
+    if (kind === "discovery") alien.discoveryEventFired = true;
+    else alien.contactEventFired = true;
+
+    const payload: GameEventPayload = {
+      id: `alien_${kind}_${alien.name}`,
+      title: data.title,
+      dialogQueue: [{
+        speakerName: data.speaker,
+        content: data.content,
+        avatarUrl: data.avatar
+      }, {
+        speakerName: "系统",
+        content: data.tip
+      }],
+      choices: [{
+        label: "确认",
+        action: () => {
+          this.addHistory(`[${kind === "discovery" ? "首次发现" : "通信建立"}] ${data.title} - 已与 ${alien.name} 建立记录`, this.year);
+        }
+      }]
+    };
+
+    // 优先加入事件队列；如果当前回合已有交互事件，放到队列末尾避免阻塞
+    this.eventQueue.push(payload);
   }
 
   public updateCiviLevel(oldCulture: number): void {

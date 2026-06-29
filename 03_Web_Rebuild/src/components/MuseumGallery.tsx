@@ -5,6 +5,8 @@ import { SaveManager } from '../core/SaveManager';
 import { getAssetUrl } from '../utils/assetUrl';
 import { GameInstance } from '../core/Game';
 import { StatisticsManager } from '../core/StatisticsManager';
+import { TimelineComparisonPanel } from './TimelineComparisonPanel';
+
 
 interface CgEvent {
   id: string;
@@ -429,7 +431,7 @@ const SOUNDTRACKS: Track[] = [
 
 export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
   const history = SaveManager.getEndingHistory();
-  const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph'>('chronicles');
+  const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph' | 'timeline'>('chronicles');
   const [selectedCg, setSelectedCg] = useState<CgEvent | null>(null);
   const [unlockedSet] = useState<Set<string>>(() => SaveManager.getEndingUnlocks());
 
@@ -630,6 +632,22 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
             )}
           </button>
+          <button 
+            onClick={() => setActiveTab('timeline')}
+            className={`px-5 py-2.5 font-mono text-sm tracking-widest uppercase transition-all duration-300 relative cursor-pointer ${
+              activeTab === 'timeline' 
+                ? 'text-cyan-400 font-bold' 
+                : 'text-white/40 hover:text-white/80'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              双轨时间线
+            </span>
+            {activeTab === 'timeline' && (
+              <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
+            )}
+          </button>
         </div>
 
         {/* Tab 1: Chronicles & Collections */}
@@ -711,6 +729,13 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
             </section>
           </div>
         )}
+        {/* Tab: Timeline Comparison */}
+        {activeTab === 'timeline' && (
+          <div className="flex-1 overflow-y-auto min-h-0 pb-12 flex justify-center">
+            <TimelineComparisonPanel />
+          </div>
+        )}
+
 
         {/* Tab: CG Gallery */}
         {activeTab === 'cgGallery' && (

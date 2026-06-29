@@ -27,7 +27,7 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Lock size={32} />,
     title: '档案访问授权确认',
-    category: '岁月史书',
+    category: '基础操作',
     description: '权限验证通过。欢迎您，文明执政官。\n\n公元 2XXX 年，三体文明发现了地球的存在。作为地球防卫理事会最高指挥官，你将在黑暗森林法则的阴影下，带领人类文明穿越六大纪元。\n在这座银河文明档案馆中，你的每一个决策都将书写人类文明的历史。',
     highlightTarget: 'none',
     activeView: 'starmap',
@@ -36,7 +36,7 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Clock size={32} />,
     title: '历史纪元演进',
-    category: '岁月史书',
+    category: '基础操作',
     description: '文明档案记录了六个宏大纪元，每个纪元都有独特的挑战与危机：\n\n• 危机纪元（第1-200年）— 面临智子封锁与生存危机\n• 威慑纪元（第201-260年）— 执剑人建立黑暗森林威慑\n• 广播纪元（第261-300年）— 坐标暴露，应对黑暗森林打击\n• 掩体纪元（第301-350年）— 太阳系最后的防御建设窗口\n• 银河纪元（第351年起）— 逃亡星海，成为星舰文明\n• 星屑纪元（尾声）— 宇宙降维崩塌中的最后火种',
     highlightTarget: 'top-hud-epoch',
     activeView: 'starmap',
@@ -46,7 +46,7 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Cpu size={32} />,
     title: '执政指令点与 AI 智脑',
-    category: '岁月史书',
+    category: '基础操作',
     description: '关注顶部 HUD 指标区的紫色「AP」与「智脑托管」按钮：\n\n• ⚡ AP (执政指令点) = 文明每回合的决策行动力上限。建造（10 AP）、研发科研（20 AP）都会消耗可用指令值。\n• 🤖 AI 智脑托管 = 协助决策系统（默认开启，开启时AI决策消耗AP减半）。智脑在每回合开始前，会自动任命空缺首长、选择成本最低科研并应急调配工种。\n\n⚠️ 手动模式阻断器：若关闭智脑托管，存在科技停滞、首长空缺或经济崩盘时，将无法推进「下一回合」。系统已临时将您的智脑切换至「手动」，便于您手动完成基础授权。',
     highlightTarget: 'btn-ai-brain',
     activeView: 'starmap',
@@ -133,7 +133,7 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Building2 size={32} />,
     title: '文明稳定维系法则',
-    category: '岁月史书',
+    category: '基础操作',
     description: '系统已将您的视角还原到主星图。请将视线移到顶部 HUD 指标区。\n\n🏛 文明稳定度是您执政的生命线：\n• 它由您的 经济能力、军事规模、科技研发度 以及 文化产出 四大维度加权决定\n• 🚨 惩罚因子：当文明内部积攒了过高的「逃亡倾向」时，社会秩序失控，稳定度会遭到沉重处罚！\n\n稳定度一旦降为 0%，您的本局游戏将立即宣告失败。请通过社会保障 and 文化建设，随时抚平社会的恐慌。',
     highlightTarget: 'top-hud-stability',
     activeView: 'starmap',
@@ -143,7 +143,7 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   {
     icon: <Rocket size={32} />,
     title: '授权通过：执政官生存法则',
-    category: '岁月史书',
+    category: '基础操作',
     description: '手把手操作演示完毕，您的执政官权限已全面激活。在踏入黑暗森林之前，请牢记这十步生存守则：\n\n① 在地球建设「资源采矿场」积累原始矿产\n② 建设「工业加工厂」将矿产转化为经济收入\n③ 在政府管理中指派各部门负责人\n④ 任命至少两名面壁者，积攒防御实力\n⑤ 任命一位高领导力 (Leadership) 的执剑人建立威慑盾牌\n⑥ 研发航天与宇宙科学，扩张星图开发区\n⑦ 不不要在没有采矿场的情况下连续建造加工厂，防止资源枯竭\n⑧ 随时关注稳定度跌幅，任命合适的部委负责人疏导逃亡倾向\n⑨ 太阳系打击降临时，依靠“太空城市”或“掩体太空城”疏散人口\n⑩ 合理利用情报中心监测动态与异星外交谈判。\n\n愿人类的荣光在黑暗森林中永不熄灭，执政官！',
     highlightTarget: 'btn-next-turn',
     activeView: 'starmap',
@@ -409,10 +409,11 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   }, [step, animateTransition]);
 
   const categories = TUTORIAL_STEPS.reduce<{name: string; startIdx: number; count: number}[]>((acc, s, i) => {
-    if (acc.length === 0 || acc[acc.length - 1].name !== s.category) {
+    const existing = acc.find(e => e.name === s.category);
+    if (!existing) {
       acc.push({ name: s.category, startIdx: i, count: 1 });
     } else {
-      acc[acc.length - 1].count++;
+      existing.count++;
     }
     return acc;
   }, []);
@@ -528,10 +529,30 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       {/* SVG backdrop overlay replaced by 4 absolute-positioned divs to support click-through cutouts */}
       {showHighlight && highlightRect ? (
         <div className="absolute inset-0 pointer-events-none z-[1000]">
+          {/* SVG visual backdrop with smooth rounded corner cutout */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-[999]">
+            <defs>
+              <mask id="tutorial-mask">
+                <rect width="100%" height="100%" fill="white" />
+                <rect 
+                  x={highlightRect.left} 
+                  y={highlightRect.top} 
+                  width={highlightRect.width} 
+                  height={highlightRect.height} 
+                  rx="8" 
+                  ry="8" 
+                  fill="black"
+                  style={{ transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)' }}
+                />
+              </mask>
+            </defs>
+            <rect width="100%" height="100%" fill="#050810" fillOpacity="0.65" mask="url(#tutorial-mask)" />
+          </svg>
+
           {/* Top backdrop */}
           <div 
             data-testid="tutorial-overlay-top"
-            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            className="absolute bg-transparent pointer-events-auto transition-all duration-300"
             style={{
               top: 0,
               left: 0,
@@ -546,7 +567,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           {/* Bottom backdrop */}
           <div 
             data-testid="tutorial-overlay-bottom"
-            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            className="absolute bg-transparent pointer-events-auto transition-all duration-300"
             style={{
               top: `${highlightRect.top + highlightRect.height}px`,
               left: 0,
@@ -561,7 +582,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           {/* Left backdrop */}
           <div 
             data-testid="tutorial-overlay-left"
-            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            className="absolute bg-transparent pointer-events-auto transition-all duration-300"
             style={{
               top: `${highlightRect.top}px`,
               height: `${highlightRect.height}px`,
@@ -576,7 +597,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           {/* Right backdrop */}
           <div 
             data-testid="tutorial-overlay-right"
-            className="absolute bg-[#050810]/65 pointer-events-auto transition-all duration-300"
+            className="absolute bg-transparent pointer-events-auto transition-all duration-300"
             style={{
               top: `${highlightRect.top}px`,
               height: `${highlightRect.height}px`,

@@ -2,7 +2,7 @@
 > 最后更新：2026-06-29
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 8 总计）
+## 发布状态：🟢 就绪（0 RED / 9 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -15,9 +15,11 @@
 | REG-BUILD-CLEAN | Regression | 编译构建无警告 | 本地与 CI 环境构建无 TypeScript 未使用变量警告/错误，打包流程正常 | 🟢 GREEN | GitHub Pages 编译失败与未引用变量报错 | package.json (npm run build) |
 | REG-PWA-FREEZE | Regression | PWA 更新卡住修复 | 修复 GitHub Pages 下使用相对路径导致 Service Worker 更新及页面刷新卡死的问题 | 🟢 GREEN | 立即更新按钮点击卡住/白屏 | vite.config.ts |
 | **SCEN-TIMELINE-COMPARE** | Feature | 岁月史书双轨时间轴对比 | 岁月史书集成小说原版时间线与当前时间线对比，提供双轨历史命运对比分析功能 | 🟢 GREEN | 岁月史书缺失小说原版时间线与当前时间线对比 | MuseumGallery.tsx |
+| **SCEN-ALIEN-CONTACT** | Feature | 外星文明接触事件弹窗 | 外星文明从发现到建立通信分为两阶段，首次发现/首次接触均触发 ticker 消息与事件弹窗 | 🟢 GREEN | 外星文明已显示在外交列表但没有接触事件弹窗 | AlienContact.scenario.test.ts |
 
 ## 变更日志
 - 2026-06-29: 彻底隐藏文明等级，稳定度详情去重，新增威慑度详情展开（防卫军力与执剑人）；岁月史书新增双轨时间线对比页。
+- 2026-06-29: 新增 SCEN-ALIEN-CONTACT 外星文明接触事件弹窗修复：区分 discovered/contacted 两阶段，首次发现/首次接触均触发 ticker 消息与 eventQueue 弹窗。
 - 2026-06-29: 修复教程侧边栏重复类别按钮（reduce 去重：unique by name）+ TopHUD 恢复原始设计（CivLevel 添加回、h-[72px] 固定高度、z-50 恢复、popFactor 稳定度公式、6纪元恢复、人口基数下拉恢复）
 - 2026-06-29: 按照 SPEC_20260621_RESPONSIVE_LAYOUT.md 规范重新实现 TopHUD 响应式：h-[56px] md:h-[72px]，移动端紧凑隐藏人口/资源/军力，平板可见人口，桌面全显示。符合共识。
 - 2026-06-29: SCEN-TUTORIAL-STEPS-MATCH 修复回归（恢复 '基础操作' 为教程内部组织分类，非 LeftHub 导航项）+ TopHUD 移出 scaled container 以修复 z-index 跨层叠上下文丢失问题

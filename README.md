@@ -48,9 +48,9 @@
 
 > 所有画面均来自游戏内**真实渲染的 CG 与角色立绘**，采用统一的 **Craig Mullins 极简巨物画风**（21:9 电影画幅）。
 
-| 🎬 事件 CG · 威慑建立（罗辑对决三体世界） | 🧑‍🚀 角色立绘 · 罗辑 |
+| 🎬 事件 CG · 威慑建立（罗辑对决三体世界） | 🧑‍🚀 角色立绘 · 章北海 |
 | :---: | :---: |
-| ![威慑建立](03_Web_Rebuild/public/images/cg_deterrence_established.png) | ![罗辑](03_Web_Rebuild/public/images/unified_luoji_1778921262534.png) |
+| ![威慑建立](03_Web_Rebuild/public/images/cg_deterrence_established.png) | ![章北海](03_Web_Rebuild/public/images/unified_beihai_1778921366897.png) |
 
 ---
 

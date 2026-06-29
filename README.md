@@ -44,43 +44,13 @@
 
 ---
 
-## 🎨 游戏实机画面 · CG 画廊
+## 🎨 游戏画面 · CG 与角色
 
-> 所有画面均来自游戏内**真实渲染的 CG 与结局过场**，采用统一的 **Craig Mullins 极简巨物画风**（21:9 电影画幅）。
+> 所有画面均来自游戏内**真实渲染的 CG 与角色立绘**，采用统一的 **Craig Mullins 极简巨物画风**（21:9 电影画幅）。
 
-### 🌍 主视觉 · 纪元开篇 CG
-
-| 危机纪元开启 · 智子展开 | 威慑建立 · 罗辑对决 |
+| 🎬 事件 CG · 威慑建立（罗辑对决三体世界） | 🧑‍🚀 角色立绘 · 罗辑 |
 | :---: | :---: |
-| ![危机纪元](03_Web_Rebuild/public/images/cg_crisis_start.png) | ![威慑建立](03_Web_Rebuild/public/images/cg_deterrence_established.png) |
-
-| 水滴末日战役 | 掩体世界 · 太空城市群 |
-| :---: | :---: |
-| ![水滴攻击](03_Web_Rebuild/public/images/cg_droplet_attack.png) | ![掩体世界](03_Web_Rebuild/public/images/cg_bunker_world.png) |
-
-### 🎬 关键历史节点
-
-| 古筝行动 | 引力波广播启动 |
-| :---: | :---: |
-| ![古筝行动](03_Web_Rebuild/public/images/cg_guzheng.png) | ![引力波广播](03_Web_Rebuild/public/images/cg_gravitational_broadcast.png) |
-
-| 执剑人交接 · 程心时代 | 二向箔降维打击 |
-| :---: | :---: |
-| ![执剑人交接](03_Web_Rebuild/public/images/cg_swordholder_handover.png) | ![降维打击](03_Web_Rebuild/public/images/cg_dimensional_strike.png) |
-
-| 银河纪元 · 星舰文明 | 星屑纪元 · 终期宇宙 |
-| :---: | :---: |
-| ![银河纪元](03_Web_Rebuild/public/images/cg_galaxy_era.png) | ![星屑纪元](03_Web_Rebuild/public/images/cg_stardust_era.png) |
-
-### 🏆 结局 CG 选览
-
-| 黑域胜利 · 永恒琥珀 | 数字永生 · 意识方舟 |
-| :---: | :---: |
-| ![黑域](03_Web_Rebuild/public/images/ending_dark_domain.png) | ![数字永生](03_Web_Rebuild/public/images/ending_digital.png) |
-
-| 流浪地球 · 行星远征 | 二向箔降维 · 失败结局 |
-| :---: | :---: |
-| ![流浪胜利](03_Web_Rebuild/public/images/ending_wandering.png) | ![二向箔失败](03_Web_Rebuild/public/images/ending_defeat_dimension_strike.png) |
+| ![威慑建立](03_Web_Rebuild/public/images/cg_deterrence_established.png) | ![罗辑](03_Web_Rebuild/public/images/unified_luoji_1778921262534.png) |
 
 ---
 

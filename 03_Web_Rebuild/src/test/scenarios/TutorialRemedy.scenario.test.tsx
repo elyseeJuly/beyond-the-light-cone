@@ -47,7 +47,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     expect(screen.queryByTestId('tutorial-categories-horizontal')).not.toBeInTheDocument();
 
     // Verify categories in desktop vertical nav (including the expected UI categories)
-    const expectedCategories = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理'];
+    const expectedCategories = ['岁月史书', '战略星图', '情报中心', '科技研发', '政府管理'];
     expectedCategories.forEach(cat => {
       expect(screen.getAllByRole('button', { name: new RegExp(cat) }).length).toBeGreaterThanOrEqual(1);
     });
@@ -62,7 +62,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
 
   it('SCEN-TUTORIAL-STEPS-MATCH: 教程步骤中的所有分类必须与 LeftHub 的导航项完全一致（或属于基础操作）', () => {
     // We will import TUTORIAL_STEPS at the top of the file
-    const allowedCategories = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理'];
+    const allowedCategories = ['岁月史书', '战略星图', '情报中心', '科技研发', '政府管理'];
     TUTORIAL_STEPS.forEach((step) => {
       expect(allowedCategories).toContain(step.category);
     });
@@ -75,7 +75,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
       }
     });
 
-    const expectedOrder = ['基础操作', '战略星图', '情报中心', '科技研发', '政府管理', '基础操作'];
+    const expectedOrder = ['岁月史书', '战略星图', '情报中心', '科技研发', '政府管理', '岁月史书'];
     expect(categoriesSeq).toEqual(expectedOrder);
   });
 

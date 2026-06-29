@@ -3,7 +3,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-const basePath = process.env.CF_PAGES === '1' ? '/' : './';
+const basePath = process.env.CF_PAGES === '1' 
+  ? '/' 
+  : (process.env.GITHUB_ACTIONS === 'true' ? '/beyond-the-light-cone/' : './');
 
 // https://vitejs.dev/config/
 export default defineConfig({

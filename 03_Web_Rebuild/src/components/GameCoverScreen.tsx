@@ -186,7 +186,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               </button>
             </div>
 
-            {/* Option 4: View Museum (Chronicles of Time) */}
+            {/* Option 4: View Museum (Civilization Museum) */}
             <button
               onClick={onOpenMuseum}
               onMouseEnter={() => setHoveredOption('archive')}
@@ -196,8 +196,8 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <Landmark size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">岁月史书</div>
-                <div className="text-[9px] opacity-60 mt-0.5 font-mono">CHRONICLES OF TIME</div>
+                <div className="text-sm font-bold tracking-widest font-title">文明博物馆</div>
+                <div className="text-[9px] opacity-60 mt-0.5 font-mono">CIVILIZATION MUSEUM</div>
               </div>
             </button>
           </div>

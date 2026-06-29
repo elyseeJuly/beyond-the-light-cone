@@ -11,7 +11,7 @@
 1. **隐藏文明等级**：完全屏蔽 `TopHUD` 上的「文明等级」显示，避免不必要的底层数值暴露给玩家。
 2. **稳定度指标去重**：从文明稳定度详情下拉框中移除了「人口基数」指标，防止其与 HUD 顶层已常驻的「人口」指标重复冗余；将详情中的发展维度锁定为：经济指数、文化资产、科技研发度、逃亡系数。
 3. **威慑度详情展开**：在 `TopHUD` 威慑度指标上新增点击下拉弹窗，整合展示威慑的核心防卫力量：「防卫军力」与「在位执剑人」，从而将军事/战略防御数值与威慑度有机结合，避免顶部冗余。
-4. **双轨对比载入岁月史书**：在「岁月史书」独立画廊中新增第四个选项卡「双轨时间线」，集成展现小说原著正统编年史与本局真实发展履历的并排对照视图。
+4. **博物馆与岁月史书分离**：主页入口「岁月史书」改名为「文明博物馆」（包含星历终章、CG图鉴及留声机）；游戏操作内侧边栏的「岁月史书」改为渲染专用的 `ChroniclesModal.tsx`（仅显示双轨对比时间线）。
 5. **恢复 TopHUD 容器缩放**：将 `<TopHUD />` 移动回 `.mobile-landscape-scale` 缩放容器内，确保其在移动端横屏小高度下自适应缩放，不再溢出或丢失。
 6. **解除非必要手动阻断**：移除了手动模式下「科研停滞」、「首长空缺」、「指令点耗尽」对“下一回合”按钮的硬性禁用拦截。AP 耗尽或初始阶段不设置目标不再会导致回合锁死，由玩家自由掌控决策节奏。
 
@@ -21,14 +21,15 @@
 
 ### 2.1 TopHUD 结构与下拉重构 (TopHUD.tsx)
 - 移除了 CivLevel 相关的 TopHUDStatItem 渲染。
-- 在 TopHUD 组件中添加 `showDeterrenceDropdown` (boolean) 状态和 `deterrenceDropdownRef` (useRef)。
+- 在 TopHUD 组件中添加 `showDeterrenceDropdown` (boolean) 状态 and `deterrenceDropdownRef` (useRef)。
 - 在全局 outside-click 监听中，对两个下拉菜单（稳定度、威慑度）分别进行失焦关闭控制。
 - 威慑度点击后展示「防卫军力（stats.army）」和「在位执剑人（stats.swordholder || '空缺'）」。
 
-### 2.2 岁月史书双轨时间轴集成 (MuseumGallery.tsx)
-- 在 `MuseumGallery.tsx` 的顶部引入了 `TimelineComparisonPanel` 模块。
-- 扩展 activeTab 状态为 `'chronicles' | 'cgGallery' | 'phonograph' | 'timeline'`。
-- 在画廊的 Tab 导航条尾部注入「双轨时间线」按钮，点击时调用 `<TimelineComparisonPanel />` 展示本局时间线偏离分析。
+### 2.2 博物馆与岁月史书分离 (MuseumGallery.tsx / ChroniclesModal.tsx / App.tsx)
+- 在 `GameCoverScreen.tsx` 中，将入口重命名为「文明博物馆」（CIVILIZATION MUSEUM）。
+- 还原 `MuseumGallery.tsx`：仅包含 3 个 tab，剔除了双轨时间线。
+- 新增 `ChroniclesModal.tsx`：专门渲染双轨时间轴对比视图，作为游戏操作内「岁月史书」的弹窗内容。
+- 在 `App.tsx` 中，将 cover 层的 `onOpenMuseum` 映射到 `MuseumGallery`，将操作页面的 `archive`（岁月史书）映射渲染为 `ChroniclesModal`。
 
 ### 2.3 手动阻断裁剪与测试对齐 (Game.ts / Test)
 - 修改 `getTurnBlockers()` 方法，移除了对 `isResearchIdle`、首长空位和 `apCurrent <= 0` 的 blocker 推送。仅在资源或经济耗尽（`<= 10`）时引发关键警戒。

@@ -6,6 +6,7 @@ import { StarMap } from './components/StarMap';
 import { IntelligenceCenter } from './components/IntelligenceCenter';
 import { GovManagement } from './components/GovManagement';
 import { MuseumGallery } from './components/MuseumGallery';
+import { ChroniclesModal } from './components/ChroniclesModal';
 import { BottomEventBar } from './components/BottomEventBar';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { TecTreeView } from './ui/TecTreeView';
@@ -357,7 +358,7 @@ export const App: React.FC = () => {
     }
     if (activeView === 'intelligence') return <IntelligenceCenter />;
     if (activeView === 'government') return <GovManagement />;
-    return <MuseumGallery onClose={() => setActiveView('starmap')} />;
+    return <ChroniclesModal onClose={() => setActiveView('starmap')} />;
   };
 
   return (

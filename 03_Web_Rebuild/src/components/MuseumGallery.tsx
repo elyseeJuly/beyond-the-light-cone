@@ -5,7 +5,6 @@ import { SaveManager } from '../core/SaveManager';
 import { getAssetUrl } from '../utils/assetUrl';
 import { GameInstance } from '../core/Game';
 import { StatisticsManager } from '../core/StatisticsManager';
-import { TimelineComparisonPanel } from './TimelineComparisonPanel';
 
 
 interface CgEvent {
@@ -431,7 +430,7 @@ const SOUNDTRACKS: Track[] = [
 
 export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
   const history = SaveManager.getEndingHistory();
-  const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph' | 'timeline'>('chronicles');
+  const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph'>('chronicles');
   const [selectedCg, setSelectedCg] = useState<CgEvent | null>(null);
   const [unlockedSet] = useState<Set<string>>(() => SaveManager.getEndingUnlocks());
 
@@ -569,7 +568,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
             </div>
             <div>
               <h1 className="text-3xl font-black tracking-widest text-white uppercase italic">
-                岁月史书 · 独立画廊
+                文明博物馆
               </h1>
               <p className="text-white/40 text-sm tracking-wide mt-1">
                 Museum Gallery // 记录平行宇宙中人类文明的纪元终章、属性馈赠与原声轨迹
@@ -629,22 +628,6 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
               星海留声机
             </span>
             {activeTab === 'phonograph' && (
-              <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
-            )}
-          </button>
-          <button 
-            onClick={() => setActiveTab('timeline')}
-            className={`px-5 py-2.5 font-mono text-sm tracking-widest uppercase transition-all duration-300 relative cursor-pointer ${
-              activeTab === 'timeline' 
-                ? 'text-cyan-400 font-bold' 
-                : 'text-white/40 hover:text-white/80'
-            }`}
-          >
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              双轨时间线
-            </span>
-            {activeTab === 'timeline' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
             )}
           </button>
@@ -729,14 +712,6 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
             </section>
           </div>
         )}
-        {/* Tab: Timeline Comparison */}
-        {activeTab === 'timeline' && (
-          <div className="flex-1 overflow-y-auto min-h-0 pb-12 flex justify-center">
-            <TimelineComparisonPanel />
-          </div>
-        )}
-
-
         {/* Tab: CG Gallery */}
         {activeTab === 'cgGallery' && (
           <div className="space-y-6 pb-12 flex-1 animate-in fade-in slide-in-from-bottom-2 duration-300">

@@ -94,15 +94,10 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     expect(screen.getByText(/稳定度/)).toBeInTheDocument();
     expect(screen.getByText(/威慑度/)).toBeInTheDocument();
 
-    // Population — hidden on mobile (hidden md:block wrapper)
-    const popEl = screen.queryByText(/^人口$/);
-    // In jsdom, the element exists in DOM but its wrapper has 'hidden' class
-    expect(popEl?.closest('.hidden')).toBeTruthy();
-    // Resources/Army — hidden on mobile+tablet (hidden lg:block wrapper)
-    const resEl = screen.queryByText(/^资源$/);
-    expect(resEl?.closest('.hidden')).toBeTruthy();
-    const armyEl = screen.queryByText(/^军力$/);
-    expect(armyEl?.closest('.hidden')).toBeTruthy();
+    // Population/Resources/Army — always visible
+    expect(screen.getByText(/^人口$/)).toBeInTheDocument();
+    expect(screen.getByText(/^资源$/)).toBeInTheDocument();
+    expect(screen.getByText(/^军力$/)).toBeInTheDocument();
 
     // Epoch/year and Next Turn always visible
     expect(screen.getByText(/第.*年/)).toBeInTheDocument();

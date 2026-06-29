@@ -199,32 +199,26 @@ export const TopHUD: React.FC = () => {
           )}
         </div>
 
-        {/* Population — hidden on mobile, visible on tablet+ */}
-        <div className="hidden md:block">
-          <TopHUDStatItem 
-            icon={<Users className="w-3.5 h-3.5 stroke-[1.5]" />}
-            label="人口"
-            value={`${stats.pop}M`}
-          />
-        </div>
+        {/* Population — always visible */}
+        <TopHUDStatItem 
+          icon={<Users className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="人口"
+          value={`${stats.pop}M`}
+        />
 
-        {/* Resources — hidden on mobile+tablet, visible on desktop */}
-        <div className="hidden lg:block">
-          <TopHUDStatItem 
-            icon={<Gem className="w-3.5 h-3.5 stroke-[1.5]" />}
-            label="资源"
-            value={stats.res}
-          />
-        </div>
+        {/* Resources — always visible */}
+        <TopHUDStatItem 
+          icon={<Gem className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="资源"
+          value={stats.res}
+        />
 
-        {/* Army — hidden on mobile+tablet, visible on desktop */}
-        <div className="hidden lg:block">
-          <TopHUDStatItem 
-            icon={<Swords className="w-3.5 h-3.5 stroke-[1.5]" />}
-            label="军力"
-            value={stats.army}
-          />
-        </div>
+        {/* Army — always visible */}
+        <TopHUDStatItem 
+          icon={<Swords className="w-3.5 h-3.5 stroke-[1.5]" />}
+          label="军力"
+          value={stats.army}
+        />
 
         {/* Deterrence with click dropdown — always visible */}
         <div className="relative" ref={deterrenceDropdownRef}>

@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "beyond-the-light-cone",
+  "compatibility_date": "2026-07-01",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "03_Web_Rebuild"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}

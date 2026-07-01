@@ -166,10 +166,10 @@ SaveManager
 
 | 槽位 ID | 用途 | localStorage Key |
 |:---|:---|:---|
-| `autosave` | 自动存档 | `LegendOfUni_Save_autosave` |
-| `slot1` | 手动存档 1 | `LegendOfUni_Save_slot1` |
-| `slot2` | 手动存档 2 | `LegendOfUni_Save_slot2` |
-| `slot3` | 手动存档 3 | `LegendOfUni_Save_slot3` |
+| `autosave` | 自动存档 | `Beyond-the-Light-Cone_Save_autosave` |
+| `slot1` | 手动存档 1 | `Beyond-the-Light-Cone_Save_slot1` |
+| `slot2` | 手动存档 2 | `Beyond-the-Light-Cone_Save_slot2` |
+| `slot3` | 手动存档 3 | `Beyond-the-Light-Cone_Save_slot3` |
 
 ### 3.3 存档格式 (v3)
 

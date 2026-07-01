@@ -660,7 +660,7 @@ export class Game {
           this.flags.add("ruins_checked");
           let ruins: Array<{ year: number; culture: number; techCount: number; timestamp: number }> = [];
           try {
-            const raw = localStorage.getItem('LegendOfUni_RuinHistory');
+            const raw = localStorage.getItem('Beyond-the-Light-Cone_RuinHistory');
             ruins = raw ? JSON.parse(raw) : [];
           } catch { /* ignore */ }
           if (ruins.length > 0) {

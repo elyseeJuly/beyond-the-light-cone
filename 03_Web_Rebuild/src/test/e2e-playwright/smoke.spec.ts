@@ -9,7 +9,7 @@ test.describe('Smoke Tests', () => {
   });
 
   test('页面标题与核心布局元素存在', async ({ page }) => {
-    await expect(page).toHaveTitle(/光锥之外|LegendOfUni|Beyond the Light Cone/);
+    await expect(page).toHaveTitle(/光锥之外|Beyond-the-Light-Cone|Beyond the Light Cone/);
     await waitForMainUI(page);
 
     // 桌面端/移动端自适应布局元素

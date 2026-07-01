@@ -15,7 +15,7 @@ export interface GameStatistics {
 }
 
 export class StatisticsManager {
-  private static readonly STORAGE_KEY = 'LegendOfUni_Statistics';
+  private static readonly STORAGE_KEY = 'Beyond-the-Light-Cone_Statistics';
   private static stats: GameStatistics | null = null;
   private static sessionStartTime: number = Date.now();
   private static isUploading: boolean = false;

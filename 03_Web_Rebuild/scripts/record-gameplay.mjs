@@ -114,8 +114,8 @@ async function record() {
 
     console.log(`🧪 Pre-seeding LocalStorage...`);
     await page.addInitScript(() => {
-      localStorage.removeItem('LegendOfUni_Save_autosave');
-      localStorage.removeItem('LegendOfUni_Save');
+      localStorage.removeItem('Beyond-the-Light-Cone_Save_autosave');
+      localStorage.removeItem('Beyond-the-Light-Cone_Save');
       localStorage.removeItem('game-tutorial-seen');
 
       const mockEndings = [
@@ -147,7 +147,7 @@ async function record() {
           timestamp: Date.now() - 3600000 * 8
         }
       ];
-      localStorage.setItem('LegendOfUni_EndingHistory', JSON.stringify(mockEndings));
+      localStorage.setItem('Beyond-the-Light-Cone_EndingHistory', JSON.stringify(mockEndings));
     });
 
     console.log(`🌐 Navigating to game client...`);

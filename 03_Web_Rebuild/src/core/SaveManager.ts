@@ -236,7 +236,7 @@ export class SaveManager {
       this._updateSaveIndex(slotId, savePackage);
 
       // localStorage: legacy 完整备份（过渡兼容，保证测试环境与无 IndexedDB 场景可用）
-      localStorage.setItem(`LegendOfUni_Save_${slotId}`, JSON.stringify(savePackage));
+      localStorage.setItem(`Beyond-the-Light-Cone_Save_${slotId}`, JSON.stringify(savePackage));
     } catch (e) {
       console.error('SaveManager: Failed to save game:', e);
       throw new SaveDataCorruptedError('存档写入失败');
@@ -331,8 +331,8 @@ export class SaveManager {
     storage.deleteSlot(slotId).catch(err => {
       console.error(`SaveManager: IndexedDB delete failed for slot ${slotId}:`, err);
     });
-    localStorage.removeItem(`LegendOfUni_Save_${slotId}`);
-    localStorage.removeItem('LegendOfUni_Save');
+    localStorage.removeItem(`Beyond-the-Light-Cone_Save_${slotId}`);
+    localStorage.removeItem('Beyond-the-Light-Cone_Save');
     this._removeFromSaveIndex(slotId);
   }
 
@@ -373,7 +373,7 @@ export class SaveManager {
     history.push(record);
     if (history.length > 10) history.shift();
     // 元数据使用 localStorage 快速读取 + IndexedDB 持久化双写（元数据体积小）
-    localStorage.setItem('LegendOfUni_EndingHistory', JSON.stringify(history));
+    localStorage.setItem('Beyond-the-Light-Cone_EndingHistory', JSON.stringify(history));
     storage.setMeta('endingHistory', history).catch(() => {});
 
     // Sync to unified telemetry manager
@@ -382,7 +382,7 @@ export class SaveManager {
 
   public static getEndingHistory(): EndingRecord[] {
     try {
-      const data = localStorage.getItem('LegendOfUni_EndingHistory');
+      const data = localStorage.getItem('Beyond-the-Light-Cone_EndingHistory');
       return data ? JSON.parse(data) : [];
     } catch {
       return [];
@@ -428,11 +428,11 @@ export class SaveManager {
 
   public static saveRuinRecord(record: { year: number; culture: number; techCount: number }): void {
     try {
-      const raw = localStorage.getItem('LegendOfUni_RuinHistory');
+      const raw = localStorage.getItem('Beyond-the-Light-Cone_RuinHistory');
       const history = raw ? JSON.parse(raw) : [];
       history.push({ ...record, timestamp: Date.now() });
       if (history.length > 5) history.shift();
-      localStorage.setItem('LegendOfUni_RuinHistory', JSON.stringify(history));
+      localStorage.setItem('Beyond-the-Light-Cone_RuinHistory', JSON.stringify(history));
       storage.setMeta('ruinHistory', history).catch(() => {});
     } catch (e) {
       console.error("Failed to save ruin history:", e);
@@ -441,7 +441,7 @@ export class SaveManager {
 
   public static getRuinHistory(): Array<{ year: number; culture: number; techCount: number; timestamp: number }> {
     try {
-      const raw = localStorage.getItem('LegendOfUni_RuinHistory');
+      const raw = localStorage.getItem('Beyond-the-Light-Cone_RuinHistory');
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];
@@ -449,13 +449,13 @@ export class SaveManager {
   }
 
   public static clearRuinHistory(): void {
-    localStorage.removeItem('LegendOfUni_RuinHistory');
+    localStorage.removeItem('Beyond-the-Light-Cone_RuinHistory');
     storage.deleteMeta('ruinHistory').catch(() => {});
   }
 
   // ==================== save_index 管理 ====================
 
-  private static readonly SAVE_INDEX_KEY = 'LegendOfUni_SaveIndex';
+  private static readonly SAVE_INDEX_KEY = 'Beyond-the-Light-Cone_SaveIndex';
 
   private static _readSaveIndex(): Record<string, SaveIndexEntry> {
     try {
@@ -546,12 +546,12 @@ export class SaveManager {
     if (cached) return JSON.stringify(cached);
 
     // Legacy full-package backup in localStorage
-    const raw = localStorage.getItem(`LegendOfUni_Save_${slotId}`);
+    const raw = localStorage.getItem(`Beyond-the-Light-Cone_Save_${slotId}`);
     if (raw) return raw;
 
     // Legacy autosave key
     if (slotId === 'autosave') {
-      const oldRaw = localStorage.getItem('LegendOfUni_Save');
+      const oldRaw = localStorage.getItem('Beyond-the-Light-Cone_Save');
       if (oldRaw) return oldRaw;
     }
 
@@ -559,9 +559,9 @@ export class SaveManager {
   }
 
   private static _loadLegacyLocalSync(slotId: SaveSlotId): string | null {
-    const raw = localStorage.getItem(`LegendOfUni_Save_${slotId}`);
+    const raw = localStorage.getItem(`Beyond-the-Light-Cone_Save_${slotId}`);
     if (!raw && slotId === 'autosave') {
-      const legacy = localStorage.getItem('LegendOfUni_Save');
+      const legacy = localStorage.getItem('Beyond-the-Light-Cone_Save');
       if (legacy) return this._parseAndVerify(legacy);
     }
     if (!raw) return null;
@@ -580,8 +580,8 @@ export class SaveManager {
 
   private static _hasSlotSync(slotId: SaveSlotId): boolean {
     if (this._getCachedSlot(slotId)) return true;
-    if (localStorage.getItem(`LegendOfUni_Save_${slotId}`)) return true;
-    if (slotId === 'autosave' && localStorage.getItem('LegendOfUni_Save')) return true;
+    if (localStorage.getItem(`Beyond-the-Light-Cone_Save_${slotId}`)) return true;
+    if (slotId === 'autosave' && localStorage.getItem('Beyond-the-Light-Cone_Save')) return true;
     return false;
   }
 

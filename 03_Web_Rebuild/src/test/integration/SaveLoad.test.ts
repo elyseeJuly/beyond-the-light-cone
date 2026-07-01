@@ -14,7 +14,7 @@ describe('SaveLoad - 存档往返', () => {
     });
 
     it('损坏 JSON 不崩溃', () => {
-      localStorage.setItem('LegendOfUni_Save_autosave', '{invalid json');
+      localStorage.setItem('Beyond-the-Light-Cone_Save_autosave', '{invalid json');
       const result = GameInstance.loadGame();
       expect(result).toBe(false);
     });
@@ -24,7 +24,7 @@ describe('SaveLoad - 存档往返', () => {
       game.earthCivi.economy = 150;
       GameInstance.saveGame();
 
-      const raw = localStorage.getItem('LegendOfUni_Save_autosave');
+      const raw = localStorage.getItem('Beyond-the-Light-Cone_Save_autosave');
       expect(raw).toBeDefined();
       expect(raw!.length).toBeGreaterThan(100);
     });
@@ -36,7 +36,7 @@ describe('SaveLoad - 存档往返', () => {
       expect(GameInstance.get().year).toBe(0);
       expect(GameInstance.get().earthCivi.economy).toBe(100);
 
-      const raw = localStorage.getItem('LegendOfUni_Save_autosave');
+      const raw = localStorage.getItem('Beyond-the-Light-Cone_Save_autosave');
       expect(raw).toBeNull();
     });
   });
@@ -47,7 +47,7 @@ describe('SaveLoad - 存档往返', () => {
       game.year = 77;
       GameInstance.saveGame();
 
-      const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
+      const raw = localStorage.getItem('Beyond-the-Light-Cone_Save_autosave')!;
       const parsed = JSON.parse(raw);
       expect(parsed.version).toBe(4);
       expect(parsed.data).toBeTruthy();
@@ -59,17 +59,17 @@ describe('SaveLoad - 存档往返', () => {
       game.earthCivi.economy = 150;
       GameInstance.saveGame();
 
-      const raw = localStorage.getItem('LegendOfUni_Save_autosave')!;
+      const raw = localStorage.getItem('Beyond-the-Light-Cone_Save_autosave')!;
       const parsed = JSON.parse(raw);
       // Tamper with data without updating signature
       parsed.data = parsed.data.replace('"economy":150', '"economy":99999');
-      localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify(parsed));
+      localStorage.setItem('Beyond-the-Light-Cone_Save_autosave', JSON.stringify(parsed));
 
       expect(() => GameInstance.loadGame()).toThrow();
     });
 
     it('缺少签名的旧存档应拒绝加载', () => {
-      localStorage.setItem('LegendOfUni_Save_autosave', JSON.stringify({ version: 3, timestamp: Date.now(), data: '{"year": 1}' }));
+      localStorage.setItem('Beyond-the-Light-Cone_Save_autosave', JSON.stringify({ version: 3, timestamp: Date.now(), data: '{"year": 1}' }));
       expect(() => GameInstance.loadGame()).toThrow();
     });
   });

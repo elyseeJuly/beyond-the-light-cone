@@ -697,7 +697,7 @@ export class SaveDataCorruptedError extends Error {
 }
 
 export class SaveManager {
-  private static readonly STORAGE_KEY = 'LegendOfUni_Save';
+  private static readonly STORAGE_KEY = 'Beyond-the-Light-Cone_Save';
   private static readonly SAVE_VERSION = 3;
 
   static save(game: any): void {

@@ -1,4 +1,4 @@
-# LegendOfUni Documentation Standard & Naming Specification
+# Beyond-the-Light-Cone Documentation Standard & Naming Specification
 > **Establishment Date**: 2026-05-19  
 > **Authoritative Version**: V1.0  
 > **Target Directory**: `02_Project_Documentation/`  
@@ -7,7 +7,7 @@
 
 ## 📖 1. Overview & Purpose
 
-As projects grow in complexity, keeping documentation organized is vital for rapid searching, context retrieval, and seamless AI handoffs. This document defines the **Date-Infused 5-Prefix Category System** for the *LegendOfUni* project. 
+As projects grow in complexity, keeping documentation organized is vital for rapid searching, context retrieval, and seamless AI handoffs. This document defines the **Date-Infused 5-Prefix Category System** for the *Beyond-the-Light-Cone* project. 
 
 By enforcing this standard, all documentation files will automatically sort by their functional category first, and then chronologically by their modification/creation date. This makes it instantly clear how requirements, specifications, audits, and plans have evolved over the project's life.
 
@@ -73,6 +73,7 @@ Documents defining features, architectures, and design directives.
 *   [SPEC_20260621_RESPONSIVE_LAYOUT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_RESPONSIVE_LAYOUT.md) — *Responsive layout and UI design specifications*
 *   [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) — *Master Art Generation Prompts Guide V2.0 (Consolidated 43 event CGs & 17 endings)*
 *   [SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_PWA_DEVELOPMENT_GUIDE.md) — *PWA development guide and multi-platform deployment specifications*
+*   [SPEC_20260701_MASTER_RESOURCE_INDEX.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260701_MASTER_RESOURCE_INDEX.md) — *Master index for all art (CGs, portraits) and music assets in the project*
 
 ### 4.2 Audits & Analyses (`AUDIT_`)
 Diagnostic reviews and balance reports.
@@ -186,4 +187,4 @@ When a developer or AI needs to generate a new document in the folder, follow th
 ---
 
 > [!TIP]
-> Keeping file naming consistent ensures a pleasant development flow, instant readability, and high cognitive speed. Let's maintain this discipline throughout the lifespan of the *LegendOfUni* project!
+> Keeping file naming consistent ensures a pleasant development flow, instant readability, and high cognitive speed. Let's maintain this discipline throughout the lifespan of the *Beyond-the-Light-Cone* project!

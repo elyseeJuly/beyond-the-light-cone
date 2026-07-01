@@ -1,9 +1,9 @@
-# LegendOfUni Art & Generation Prompts Guide
+# Beyond-the-Light-Cone Art & Generation Prompts Guide
 > **文档编号**: SPEC_20260622_ART_PROMPTS_GUIDE  
 > **更新日期**: 2026-06-22  
 > **分类前缀**: `SPEC_` (技术设计与美术规范)  
 > **文档版本**: V2.0  
-> **说明**: 本文档整理了《LegendOfUni》重构版所需的所有核心美术资源（包括人物立绘、43个历史纪元/剧情事件CG以及17个结局CG）的生成提示词（Prompts）。
+> **说明**: 本文档整理了《Beyond-the-Light-Cone》重构版所需的所有核心美术资源（包括人物立绘、43个历史纪元/剧情事件CG以及17个结局CG）的生成提示词（Prompts）。
 
 为了保证视觉的高度统一，本项目采用了双轨制美术风格：
 1. **人物立绘**：工笔赛博风 (Gongbi Cyberpunk) - 突出东方底蕴与科幻的结合。
@@ -36,7 +36,7 @@
 > Epic sci-fi concept art, a giant retro-style parabolic radar antenna dish towering over a snowy, windswept mountain peak in northeastern China. A dark night sky filled with stars. Volumetric mist, cold winter atmospheric lighting. Massive scale, macro vs micro. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
 
 #### 1.2 叶文洁发送信号 (`cg_yewenjie_signal.png`)
-> Epic sci-fi concept art, a lone female scientist standing in a massive, dimly lit control room, pressing a glowing red button. Outside the huge panoramic glass window, a colossal radar dish is emitting a faint beam of energy into the starry night sky. Dramatic shadow contrast, quiet determination. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, a lone EAST ASIAN CHINESE female scientist in her 40s, standing in a massive dimly lit control room, pressing a glowing red button. She has typical East Asian features: black hair, dark brown eyes, gentle but determined facial structure, not wearing glasses. Outside the panoramic window, a colossal radar dish emits energy into the starry night sky. Dramatic shadow contrast, quiet determination. Massive scale, macro vs micro. Minimalist composition, large blocks of color, expressive digital brushstrokes. Cinematic lighting. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.3 三体文明回复 (`cg_trisolaris_reply.png`)
 > Epic sci-fi concept art, a primitive alien communication terminal in a dusty room, displaying a repeating flashing signal: 'DO NOT ANSWER!'. Green phosphor monitor glow casting eerie shadows on a cluttered desk with papers. Suspenseful, claustrophobic atmosphere. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
@@ -51,22 +51,22 @@
 > Epic sci-fi concept art, a massive rusty oil tanker ship being sliced into perfectly parallel horizontal pieces by invisible strings, the hull sliding apart smoothly on the Panama Canal. Dense jungle environment, early morning mist. Tiny military helicopters hovering in the distance. Minimalist composition, expressive digital brushstrokes, dramatic tension, quiet destruction. Muted dark green and gray palette with subtle sparks of orange friction. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
 
 #### 1.7 杨冬自杀 (`cg_yangdong_suicide.png`)
-> Epic sci-fi concept art, a beautiful, tragic young woman sitting on the edge of a balcony under a starry sky, overlooking a dark, modern city. Next to her is a sheet of paper with the handwritten note: 'Physics has never existed.' Muted, cold color palette, deep shadows, melancholic atmosphere. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, a beautiful tragic EAST ASIAN CHINESE young woman physicist in her late 20s, sitting on the edge of a balcony under a starry sky. She has delicate East Asian features: long black hair, pale skin, melancholic dark eyes. Next to her is a note: 'Physics has never existed.' Muted cold color palette, deep shadows, melancholic atmosphere. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.8 汪淼幽灵倒计时 (`cg_ghost_countdown.png`)
-> Epic sci-fi concept art, a man looking at a wall in a dark room, seeing glowing, semi-transparent neon-red digits '1200:00:00' hovering in his field of vision. Eerie, paranoid atmosphere. Digital aberration, cold shadows. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, an EAST ASIAN CHINESE male scientist in his 40s, wearing glasses, looking at a wall in a dark room, seeing glowing neon-red digits '1200:00:00' hovering. He has typical East Asian features: short black hair, slim build, focused anxious expression. Eerie paranoid atmosphere, digital aberration, cold shadows. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.9 章北海刺杀老专家 (`cg_beihai_assassination.png`)
-> Epic sci-fi concept art, a silent silhouetted figure in a space suit floating in the vacuum outside a massive orbital space station, aiming a silent gas-propelled gun toward a distant shuttle window. Blinding sunlight reflected on metallic structures, deep space void in the background. Ruthless determination. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, a determined EAST ASIAN CHINESE male space officer in a futuristic white spacesuit, floating silently in vacuum outside a massive orbital station, aiming a gas-propelled gun toward a shuttle window. He has sharp resolute East Asian features visible through the helmet visor. Blinding sunlight on metallic structures, deep space void. Ruthless determination. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.10 希恩斯思想钢印 (`cg_thought_seal.png`)
-> Epic sci-fi concept art, a soldier strapped into a high-tech metallic chair in a dimly lit medical laboratory, with a massive cybernetic helmet emitting glowing golden holographic data streams directly into their eyes. Cold clinical lighting, volumetric fog. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, a soldier strapped into a high-tech metallic chair in a dimly lit medical laboratory, with a massive cybernetic helmet emitting golden holographic data streams into their eyes. Cold clinical lighting, volumetric fog. Minimalist composition, large blocks of color, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.11 泰勒破壁 (`cg_tyler_breached.png`)
-> Epic sci-fi concept art, a man sitting in despair on a desolate beach, looking at a transparent holographic projection of his wallfacer plan being crossed out in red. A colossal, silent three-body sophon eye pattern faintly glowing in the overcast sky. Cold gray sea, melancholic lighting. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, a WHITE WESTERN man in his 60s (Frederick Tyler, former US Secretary of Defense), sitting in despair on a desolate beach, looking at a holographic projection of his plan crossed out in red. He has Caucasian features: gray hair, sharp Western facial structure, wearing a dark business suit. Cold gray sea, melancholic lighting. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.12 雷迪亚兹破壁 (`cg_reydiaz_breached.png`)
-> Epic sci-fi concept art, a proud but broken military general standing in a massive underground bunker, surrounded by blueprints of giant hydrogen bombs. A holographic silhouette of a Wallbreaker pointing at him. High contrast dramatic lighting, deep shadows. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw
+> Epic sci-fi concept art, a proud but broken LATIN AMERICAN male military general (Manuel Rey Diaz, Venezuelan president) in his 50s, standing in a massive underground bunker surrounded by hydrogen bomb blueprints. He has Hispanic features: dark hair, olive skin, strong build, wearing a military uniform. A holographic Wallbreaker silhouette points at him. High contrast dramatic lighting. Minimalist composition, expressive digital brushstrokes. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0
 
 #### 1.13 月球危机 (`cg_moon_crisis.png`)
 > Epic sci-fi concept art, the moon breaking apart in Earth's orbit, massive rocky fragments with glowing orange cracks falling toward a dark Earth. Earth's surface covered with giant glowing cyan planetary defense antenna grids emitting holographic scan lines into the sky. Massive scale, cosmic disaster, dramatic contrast between dark space and warm debris fire. Masterpiece, Craig Mullins style. --ar 21:9 --style raw

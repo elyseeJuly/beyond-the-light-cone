@@ -315,7 +315,7 @@ export class GameEventManager {
         "系统初始化完成",
         0, 0, "模拟器叙事系统已就绪。",
         0,
-        [{ speakerName: "系统 AI", content: "欢迎来到《LegendOfUni》模拟器。当前叙事引擎已由于数据缺失进入紧急备用模式。", avatarUrl: getImageUrl("character_default.png") }]
+        [{ speakerName: "系统 AI", content: "欢迎来到《Beyond-the-Light-Cone》模拟器。当前叙事引擎已由于数据缺失进入紧急备用模式。", avatarUrl: getImageUrl("character_default.png") }]
       ));
     }
   }

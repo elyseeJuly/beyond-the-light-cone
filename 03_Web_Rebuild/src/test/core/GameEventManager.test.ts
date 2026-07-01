@@ -165,7 +165,7 @@ describe('GameEventManager', () => {
           '系统初始化完成',
           0, 0, '模拟器叙事系统已就绪。',
           0,
-          [{ speakerName: '系统 AI', content: '欢迎来到《LegendOfUni》模拟器。', avatarUrl: '' }]
+          [{ speakerName: '系统 AI', content: '欢迎来到《Beyond-the-Light-Cone》模拟器。', avatarUrl: '' }]
         ));
       }
     };

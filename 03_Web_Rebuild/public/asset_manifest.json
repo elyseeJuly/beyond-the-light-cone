@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "gameVersion": "1.0.0",
-  "generatedAt": 1782724123272,
+  "generatedAt": 1782887969896,
   "core": [
     {
       "id": "character_default",
@@ -239,9 +239,9 @@
           "crisis_era"
         ],
         "era": "crisis_era",
-        "size": 118005,
+        "size": 867034,
         "displayName": "beihai_assassination",
-        "hash": "7e2dbeee",
+        "hash": "759a5337",
         "isDefault": false
       },
       {
@@ -434,9 +434,9 @@
           "crisis_era"
         ],
         "era": "crisis_era",
-        "size": 92004,
+        "size": 718667,
         "displayName": "ghost_countdown",
-        "hash": "20fce3a",
+        "hash": "3c75ea3a",
         "isDefault": false
       },
       {
@@ -559,9 +559,9 @@
           "deterrence_era"
         ],
         "era": "deterrence_era",
-        "size": 130697,
+        "size": 805610,
         "displayName": "reydiaz_breached",
-        "hash": "772ef5d9",
+        "hash": "6b650b27",
         "isDefault": false
       },
       {
@@ -669,9 +669,9 @@
           "crisis_era"
         ],
         "era": "crisis_era",
-        "size": 108570,
+        "size": 820357,
         "displayName": "thought_seal",
-        "hash": "46b68b0e",
+        "hash": "52c0fbb8",
         "isDefault": false
       },
       {
@@ -725,9 +725,9 @@
           "deterrence_era"
         ],
         "era": "deterrence_era",
-        "size": 119496,
+        "size": 790505,
         "displayName": "tyler_breached",
-        "hash": "15759369",
+        "hash": "201f4e7d",
         "isDefault": false
       },
       {
@@ -780,9 +780,9 @@
           "cg",
           "unknown"
         ],
-        "size": 93547,
+        "size": 792478,
         "displayName": "yangdong_suicide",
-        "hash": "15d94274",
+        "hash": "5dc77511",
         "isDefault": false
       },
       {
@@ -794,9 +794,9 @@
           "crisis_era"
         ],
         "era": "crisis_era",
-        "size": 119323,
+        "size": 821946,
         "displayName": "yewenjie_signal",
-        "hash": "32a41890",
+        "hash": "26a7a0e7",
         "isDefault": false
       },
       {
@@ -1711,7 +1711,7 @@
         "name": "crisis era Pack",
         "description": "crisis era 资源包",
         "type": "era_pack",
-        "totalSize": 46232268,
+        "totalSize": 49022370,
         "assetIds": [
           "ending_ghost_in_the_quantum",
           "era_crisis",
@@ -1739,7 +1739,7 @@
         "name": "deterrence era Pack",
         "description": "deterrence era 资源包",
         "type": "era_pack",
-        "totalSize": 69696665,
+        "totalSize": 71042587,
         "assetIds": [
           "era_bunker",
           "era_deterrence",
@@ -1790,7 +1790,7 @@
         "name": "uncategorized Pack",
         "description": "uncategorized 资源包",
         "type": "era_pack",
-        "totalSize": 150629758,
+        "totalSize": 151328689,
         "assetIds": [
           "README",
           "ending_death_of_the_light_cone",
@@ -1887,7 +1887,7 @@
         "name": "cg Pack",
         "description": "全部cg资源",
         "type": "cg_pack",
-        "totalSize": 158724816,
+        "totalSize": 163559771,
         "assetIds": [
           "cg_australia_migration",
           "cg_beihai_assassination",

@@ -1,6 +1,12 @@
 # 变更日志 (CHANGELOG)
 
 本项目遵循 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/) 规范。
+关于版本发布流程及变更日志的书写标准，请参考：[GitHub Release 及版本控制计划规范](02_Project_Documentation/SPEC_20260702_GITHUB_RELEASE_PLAN.md)。
+
+> ⚠️ **注意**: 每次更新版本都**必须**在此文档中按照格式添加相应的发布更新说明。
+
+## [Unreleased]
+*(下个即将发布的版本内容，请在开发过程中将更新记录于此，正式发布时修改为具体版本号)*
 
 ## [v0.9.0-beta] - 2026-06-21
 

@@ -142,7 +142,7 @@ function main() {
   if (failCount > 0) {
     console.log('\n💡 提示: ');
     console.log('   - 文件<3MB说明可能仍是低质量占位符，需要用Midjourney重绘');
-    console.log('   - 参考 CG_REGEN_PROMPTS_20260629.md 中的提示词进行生成');
+    console.log('   - 参考 ASSET_20260629_CG_REGEN_PROMPTS.md 中的提示词进行生成');
     console.log('   - 生成后请确保文件名为PNG格式并覆盖到 public/images/ 目录');
   } else {
     console.log('\n🎉 所有CG质量达标！可以构建部署。');

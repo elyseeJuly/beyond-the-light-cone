@@ -531,7 +531,7 @@
 
 ## 第八阶段：修复方案优先级总览
 
-> 完整修复方案详见同目录 [RPLAN_20260612_CYCLE_OPTIMIZATION.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/RPLAN_20260612_CYCLE_OPTIMIZATION.md)
+> 完整修复方案详见同目录 [PLAN_20260612_CYCLE_OPTIMIZATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/PLAN_20260612_CYCLE_OPTIMIZATION.md)
 
 | 优先级 | 问题 | 影响 | 方案复杂度 |
 |--------|------|------|-----------|

@@ -3,7 +3,7 @@
 **状态:** 已完成并验证
 
 ## 1. 概述
-根据联合审计报告（`AUDIT_20260612_CYCLE_AUDIT_V2.md` 与 `AUDIT_20260612_CYCLE_SYSTEM_V2.md`）及优化计划书（`RPLAN_20260612_CYCLE_OPTIMIZATION.md` 与 `implementation_plan.md`），我们实施了 P0 级至 P3 级的所有核心机制修复与闭环构建。此文档为执行总结，用以记录详细修改和验收测试指引。
+根据联合审计报告（`AUDIT_20260612_CYCLE_AUDIT_V2.md` 与 `AUDIT_20260612_CYCLE_SYSTEM_V2.md`）及优化计划书（`PLAN_20260612_CYCLE_OPTIMIZATION.md` 与 `implementation_plan.md`），我们实施了 P0 级至 P3 级的所有核心机制修复与闭环构建。此文档为执行总结，用以记录详细修改和验收测试指引。
 
 ## 2. 核心修改项清单
 

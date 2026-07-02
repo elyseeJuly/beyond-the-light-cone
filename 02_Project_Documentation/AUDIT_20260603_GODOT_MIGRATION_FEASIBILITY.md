@@ -59,5 +59,5 @@ graph TD
 目前 Web 版本底层逻辑链已基本打通，且拥有健全的覆盖率守卫（Vitest）。现阶段移植 Godot 不仅不能直接提升核心玩法乐趣，反而会因为“翻译代码”产生几个月的开发真空期，并面临逻辑失真和测试缺失的风险。
 
 **后续路线建议**：
-1.  优先按照 [RPLAN_20260602_COMPREHENSIVE_REMEDIATION.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/RPLAN_20260602_COMPREHENSIVE_REMEDIATION.md) 完成剩余阶段的修复与内容填充（如外交系统独立 UI、行星发动机子系统等）。
+1.  优先按照 [PLAN_20260602_COMPREHENSIVE_REMEDIATION.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/PLAN_20260602_COMPREHENSIVE_REMEDIATION.md) 完成剩余阶段的修复与内容填充（如外交系统独立 UI、行星发动机子系统等）。
 2.  在游戏内容丰满后，引入 **Tauri** 建立桌面版工程，作为未来上架 Steam 的技术储备。

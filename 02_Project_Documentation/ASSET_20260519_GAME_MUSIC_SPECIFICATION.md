@@ -86,7 +86,7 @@
 由于本轮会话中云端图片生成接口暂时触发了平台每小时的配额频控（429 Too Many Requests），本轮无法直接将图片文件写盘。
 
 不过请不用担心！所有的 **9 张结局场景宽幅配图** 和 **10 张 NPC 职业分类头像** 的生成 Prompts 及技术规格我们已经整理并输出到了最详细的本地文档中：
-👉 [SPEC_20260519_ENDING_ART_REQUIREMENTS.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260519_ENDING_ART_REQUIREMENTS.md)
+👉 [ASSET_20260519_ENDING_ART_REQUIREMENTS.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/ASSET_20260519_ENDING_ART_REQUIREMENTS.md)
 
 您可以直接根据此文档的 Prompt 将描述输入到 AI 生成工具中。生成完毕后，按照文档要求直接将图片放入 `public/images/` 即可。
 

@@ -12,7 +12,7 @@ This plan details the steps taken to rename the OST planning document according 
 Rename the OST planning document in `02_Project_Documentation` to follow the standard category-date-name naming formula:
 
 - **From**: `02_Project_Documentation/《光锥之外：纪元往事》OST企划书(V1.3).md`
-- **To**: `02_Project_Documentation/SPEC_20260615_EPOCH_CHRONICLES_OST.md`
+- **To**: `02_Project_Documentation/ASSET_20260615_EPOCH_CHRONICLES_OST.md`
 
 Update the master inventory list in [SPEC_20260519_DOCUMENTATION_STANDARDS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260519_DOCUMENTATION_STANDARDS.md) to register this new specification file.
 

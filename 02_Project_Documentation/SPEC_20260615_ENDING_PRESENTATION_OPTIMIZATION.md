@@ -3,7 +3,7 @@
 > 版本：v1.0  
 > 日期：2026-06-15  
 > 前置依赖：`SPEC_20260615_ENDING_CONDITIONS_REDESIGN.md`（条件逻辑）  
-> 参考文档：`SPEC_20260519_ENDING_ART_REQUIREMENTS.md`（美术基线）
+> 参考文档：`ASSET_20260519_ENDING_ART_REQUIREMENTS.md`（美术基线）
 
 ---
 

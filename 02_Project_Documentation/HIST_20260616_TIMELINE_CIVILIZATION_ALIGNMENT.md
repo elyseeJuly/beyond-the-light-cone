@@ -33,7 +33,7 @@
     > “其他没生成的 cg 也这么处理，直到你生成图片的额度耗尽为止。…… 剩余的 cg 给出提示词，之前的 cg 提示词也一并附上，形成文档保存至本地。”
     > “cg 已经完全实装了。其他任务你需要继续完成”
 *   **AI 助手**：
-    > “我们在生成了 10 张大事件插画后，触发了底层图像生成模型的单日额度限制。我们将剩下的 10 多个 CG 提示词和先前的提示词一并编写为本地 [SPEC_20260616_TIMELINE_CG_PROMPTS_SPEC.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260616_TIMELINE_CG_PROMPTS_SPEC.md) 文档进行归档。
+    > “我们在生成了 10 张大事件插画后，触发了底层图像生成模型的单日额度限制。我们将剩下的 10 多个 CG 提示词和先前的提示词一并编写为本地 [ASSET_20260616_TIMELINE_CG_PROMPTS_SPEC.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ASSET_20260616_TIMELINE_CG_PROMPTS_SPEC.md) 文档进行归档。
     > 随后，执政官在外部利用提示词完美生成并放置了剩余的 21:9 宽幅 CG 大图（`3168x1344`）。我们随即修改了 [GameEventManager.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/GameEventManager.ts#L42) 的底层路由映射，将‘末日之战’等关键事件直接路由到这些高清 21:9 大图，实现了 CG 美术的 100% 完整实装。”
 
 ---

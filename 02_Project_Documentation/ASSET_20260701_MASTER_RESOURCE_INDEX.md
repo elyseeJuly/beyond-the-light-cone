@@ -1,6 +1,6 @@
 # Beyond-the-Light-Cone Master Resource Index | 《光锥之外：纪元往事》美术与音乐资源总索引
 
-> **文档编号**: SPEC_20260701_MASTER_RESOURCE_INDEX  
+> **文档编号**: ASSET_20260701_MASTER_RESOURCE_INDEX  
 > **制定日期**: 2026-07-01  
 > **分类前缀**: `SPEC_` (技术设计与美术规范)  
 > **文档版本**: V1.0  
@@ -62,7 +62,7 @@
 | `cg_reydiaz_breached.png` | 面壁者雷迪亚兹在地下被破壁 | 雷迪亚兹 (拉美裔)| `Epic sci-fi concept art, a proud but broken Latin American male military general (Manuel Rey Diaz) in his 50s, standing in a massive underground bunker surrounded by blueprints of giant hydrogen bombs. Hispanic features: dark curly hair, olive skin, strong muscular build. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0` |
 | `cg_thought_seal.png` | 希恩斯思想钢印机启动测试 | 军人 / 受试者 | `Epic sci-fi concept art, a male soldier strapped into a neural chair in a dimly lit medical laboratory, with a massive cybernetic helmet device emitting glowing golden holographic data streams directly into their eyes. Cold clinical blue-white lighting, volumetric fog. Masterpiece, Craig Mullins style. --ar 21:9 --style raw --v 6.0` |
 
-*(其余 36 张场景类及中/低风险剧情 CG 的提示词，详见专述文档 [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md))*
+*(其余 36 张场景类及中/低风险剧情 CG 的提示词，详见专述文档 [ASSET_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ASSET_20260622_ART_PROMPTS_GUIDE.md))*
 
 ---
 

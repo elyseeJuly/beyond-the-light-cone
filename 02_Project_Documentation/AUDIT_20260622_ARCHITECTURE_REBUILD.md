@@ -4,7 +4,7 @@
 > **生成日期**: 2026-06-22  
 > **分类前缀**: `AUDIT_` (审计、分析与报告)  
 > **关联计划**: [PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md)  
-> **关联规格**: [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md)  
+> **关联规格**: [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md)  
 > **前版审计**: [AUDIT_20260621_ARCHITECTURE_REBUILD.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260621_ARCHITECTURE_REBUILD.md)  
 
 ---
@@ -254,4 +254,4 @@ cargo tauri build --target aarch64-apple-darwin
 
 > **文档状态**: 已归档  
 > **下次审查**: Tauri 安装包完整构建完成后  
-> **编制依据**: PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md + SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md + SPEC_20260621_RESOURCE_LAYERING.md + SPEC_20260621_RESPONSIVE_LAYOUT.md + SPEC_20260519_DOCUMENTATION_STANDARDS.md
+> **编制依据**: PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md + ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md + SPEC_20260621_RESOURCE_LAYERING.md + SPEC_20260621_RESPONSIVE_LAYOUT.md + SPEC_20260519_DOCUMENTATION_STANDARDS.md

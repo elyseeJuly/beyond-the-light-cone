@@ -2,7 +2,7 @@
 > **Date**: 2026-06-21  
 > **Status**: Completed  
 > **Category**: Specification (`SPEC_`)
-> **依赖项**: `AUDIT_20260612_CYCLE_AUDIT_V2.md`, `SPEC_20260615_EPOCH_CHRONICLES_OST.md`
+> **依赖项**: `AUDIT_20260612_CYCLE_AUDIT_V2.md`, `ASSET_20260615_EPOCH_CHRONICLES_OST.md`
 
 本文档记录了基于前期叙事审计报告，在当前已修复的结局系统中补充的**新中性结局（Neutral Endings）**，以及配套的音乐与 CG 风格要求。这些结局旨在填补“非胜非败”的游戏结算状态，完善玩家未能达成特定胜利或失败条件时的叙事闭环。
 
@@ -44,7 +44,7 @@
 
 ## 二、结局 CG 与音乐要求补充
 
-由于大结局 CG 已经在美术团队的推进中，为了保证视听一致性，这里参考 `SPEC_20260615_EPOCH_CHRONICLES_OST.md` 中的“纯器乐、无残响”原则，为两个新增结局补充具体的音乐需求。
+由于大结局 CG 已经在美术团队的推进中，为了保证视听一致性，这里参考 `ASSET_20260615_EPOCH_CHRONICLES_OST.md` 中的“纯器乐、无残响”原则，为两个新增结局补充具体的音乐需求。
 
 ### 1. 《Endless Drifting》（无尽漂流） —— 对应【永恒的流亡】结局
 * **配置路径**：`/audio/ending_neutral_eternal_exile.mp3`

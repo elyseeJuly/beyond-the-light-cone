@@ -4,7 +4,7 @@
 > **生成日期**: 2026-06-21  
 > **分类前缀**: `AUDIT_` (审计、分析与报告)  
 > **关联计划**: [PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md)  
-> **关联规格**: [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md)  
+> **关联规格**: [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md)  
 
 ---
 
@@ -28,7 +28,7 @@
 
 ### 2.1 依赖注入与全局单例解耦
 
-依据 [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第四章设计，完成以下改造：
+依据 [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第四章设计，完成以下改造：
 
 - **新增 `DIContainer.ts`**：轻量级 IoC 容器，支持 `register` / `registerFactory` / `resolve` / `has` / `remove` / `clear`，并提供全局 `AppContainer` 与标准 `ServiceKeys`。
 - **新增 `EventBus.ts`**：模块间事件总线，实现 `on` / `off` / `emit` / `emitToWindow` / `clear`，并定义 `GameEvents` 标准事件常量；异常隔离机制确保单个监听器报错不会阻塞其他监听器。
@@ -90,7 +90,7 @@ if (matched !== undefined && matched.epoch > this.epoch) {
 
 ### 2.5 测试体系革新
 
-依据计划 2.3 节与 [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第七章，完成测试分层与扩展：
+依据计划 2.3 节与 [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第七章，完成测试分层与扩展：
 
 - **新增测试文件**：
   - [EventBus.test.ts](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/test/core/EventBus.test.ts)
@@ -205,7 +205,7 @@ files generated
 - 无 `.eslintrc.*` 或 `eslint.config.*` 文件；
 - `devDependencies` 未包含 `eslint` 及相关插件。
 
-建议后续按 [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第十章红线要求补充 ESLint 配置。
+建议后续按 [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第十章红线要求补充 ESLint 配置。
 
 ---
 
@@ -255,7 +255,7 @@ files generated
 
 ## 6. 未完成的后续工作
 
-虽然本次迭代完成了 P0/P1 风险的主体修复，但依据 [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 的长期规划，以下工作仍需后续阶段推进：
+虽然本次迭代完成了 P0/P1 风险的主体修复，但依据 [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 的长期规划，以下工作仍需后续阶段推进：
 
 | 优先级 | 工作项 | 当前状态 | 阻塞/说明 |
 |--------|--------|----------|-----------|
@@ -276,10 +276,10 @@ files generated
 2. **质量层面**：TypeScript 零错误、810 个测试 100% 通过、覆盖率超过当前配置阈值、生产构建成功。
 3. **风险层面**：纪元切换、交接突袭、胜利/失败互斥、存档降级等关键缺陷已修复并覆盖测试。
 
-建议在下一迭代中优先处理 `GameLoopCoordinator` 拆分与 ESLint 配置，以完全满足 [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第十章的完整红线要求。
+建议在下一迭代中优先处理 `GameLoopCoordinator` 拆分与 ESLint 配置，以完全满足 [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 第十章的完整红线要求。
 
 ---
 
 > **文档状态**: 已归档  
 > **下次审查**: GameLoopCoordinator 拆分完成后  
-> **编制依据**: PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md + SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md + TEST_20260621_REPORT.md + TEST_20260621_CODE_CHANGES_REPORT.md + SPEC_20260519_DOCUMENTATION_STANDARDS.md
+> **编制依据**: PLAN_20260621_ITERATION_REPAIR_PART1_ARCH.md + ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md + REPORT_20260621_REPORT.md + REPORT_20260621_CODE_CHANGES_REPORT.md + SPEC_20260519_DOCUMENTATION_STANDARDS.md

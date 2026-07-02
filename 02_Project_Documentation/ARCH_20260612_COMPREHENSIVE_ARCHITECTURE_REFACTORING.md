@@ -1,6 +1,6 @@
 # 宇宙群英传 完整代码架构重构方案
 
-> **文档编号**: SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING
+> **文档编号**: ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING
 > **制定日期**: 2026-06-12
 > **分类前缀**: `SPEC_` (规格说明与架构蓝图)
 > **基于基线**: 267 测试全量通过 | 分支覆盖率 > 60% | 阶段 A/B/C 已完成

@@ -71,7 +71,7 @@
 
 ### 2.2 三个 AI 模式
 
-不是8个独立角色，是同一个AI的3种工作状态。对应的 Prompt 模板见 [Prompt 字典 V1.1](file:///Users/quantumrose/Documents/Emberois/emberois-dev-standards/specifications/SPEC_20260626_PROMPT_DICTIONARY.md)。
+不是8个独立角色，是同一个AI的3种工作状态。对应的 Prompt 模板见 [Prompt 字典 V1.1](file:///Users/quantumrose/Documents/Emberois/emberois-dev-standards/specifications/DICT_20260626_PROMPT_DICTIONARY.md)。
 
 | 模式 | 合并自（SOP V2.0 角色） | 职责 | 触发词 |
 | :--- | :--- | :--- | :--- |

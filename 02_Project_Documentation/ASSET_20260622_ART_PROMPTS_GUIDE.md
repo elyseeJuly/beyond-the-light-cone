@@ -1,5 +1,5 @@
 # Beyond-the-Light-Cone Art & Generation Prompts Guide
-> **文档编号**: SPEC_20260622_ART_PROMPTS_GUIDE  
+> **文档编号**: ASSET_20260622_ART_PROMPTS_GUIDE  
 > **更新日期**: 2026-06-22  
 > **分类前缀**: `SPEC_` (技术设计与美术规范)  
 > **文档版本**: V2.0  

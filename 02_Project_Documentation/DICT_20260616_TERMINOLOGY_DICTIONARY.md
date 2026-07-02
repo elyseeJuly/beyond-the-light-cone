@@ -665,7 +665,7 @@
 | The Last Archive（最后的档案） | 纯器乐 | 文明自然衰亡 | `OST_LAST_ARCHIVE` |
 | A Past Within the Light Cone（光锥之内的往事） | 含人声 | Fate Beyond the Light Cone 结局 | `OST_LIGHTCONE_PAST` |
 
-- **首次出现**: `SPEC_20260615_EPOCH_CHRONICLES_OST.md`
+- **首次出现**: `ASSET_20260615_EPOCH_CHRONICLES_OST.md`
 
 ### 15.3 音乐设计原则
 - **纯器乐原则**：游戏推进及常规/失败结局均为 Instrumental

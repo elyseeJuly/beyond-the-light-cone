@@ -85,7 +85,7 @@
 #### 1.2.5 同周内完全矛盾
 
 - [AUDIT_20260605_REVISED_ITERATION_STATUS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260605_REVISED_ITERATION_STATUS.md)：四大阶段"全部未开始"
-- 同周 [SPEC_20260612](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md)：A/B/C 已完成
+- 同周 [SPEC_20260612](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md)：A/B/C 已完成
 
 ### 1.3 一致性判定
 

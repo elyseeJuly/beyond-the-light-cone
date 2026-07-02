@@ -8,7 +8,7 @@
 
 ## 执行总览
 
-依据 [SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 完成了全部 **7 个阶段、28 项任务**的架构重构。以下是完整的执行报告。
+依据 [ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/ARCH_20260612_COMPREHENSIVE_ARCHITECTURE_REFACTORING.md) 完成了全部 **7 个阶段、28 项任务**的架构重构。以下是完整的执行报告。
 
 ---
 

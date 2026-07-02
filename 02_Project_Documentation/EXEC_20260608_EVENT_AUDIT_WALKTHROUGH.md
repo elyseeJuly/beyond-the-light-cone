@@ -7,7 +7,7 @@ We have successfully completed a comprehensive audit and overhaul of all game ev
 ### 1. Documented Audit Reports & History
 - Created the detailed local audit report: [AUDIT_20260608_EVENT_TIMELINE_AUDIT.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/AUDIT_20260608_EVENT_TIMELINE_AUDIT.md) mapping character lifetimes, sequence-based trigger conditions, and bidirectional feedback loops.
 - Saved the untracked visual unification history document: [HIST_20260525_ART_UI_UNIFICATION.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/HIST_20260525_ART_UI_UNIFICATION.md).
-- Created the local specification for supplementary CG assets: [SPEC_20260608_SUPPLEMENTARY_CG_PROMPTS_SPEC.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/SPEC_20260608_SUPPLEMENTARY_CG_PROMPTS_SPEC.md).
+- Created the local specification for supplementary CG assets: [ASSET_20260608_SUPPLEMENTARY_CG_PROMPTS_SPEC.md](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/02_Project_Documentation/ASSET_20260608_SUPPLEMENTARY_CG_PROMPTS_SPEC.md).
 
 ### 2. Expanded Fixed Timeline Events
 - **Expanded [events.json](file:///Users/quantumrose/Documents/Emberois/LengendOfUni-rebuild/03_Web_Rebuild/src/data/events.json)**:

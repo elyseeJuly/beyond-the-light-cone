@@ -307,7 +307,7 @@ beyond-the-light-cone/
    npm run test        # 单元测试全部通过
    ```
 3. 新增功能 / 修复 Bug 时，请**同步补充对应 Vitest 用例**，并在 commit message 中简短说明。
-4. 美术资源（CG / 立绘 / 音乐）请严格遵循 [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) 的统一 Craig Mullins 画风视觉规范。
+4. 美术资源（CG / 立绘 / 音乐）请严格遵循 [ASSET_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ASSET_20260622_ART_PROMPTS_GUIDE.md) 的统一 Craig Mullins 画风视觉规范。
 5. 提交 PR 后，GitHub Actions CI 会自动运行 typecheck / lint / test / build，通过后维护者将 Review。
 
 ---
@@ -320,7 +320,7 @@ beyond-the-light-cone/
 | :--- | :--- |
 | [AUDIT_20260622_ARCHITECTURE_REBUILD.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_ARCHITECTURE_REBUILD.md) | v1.0 完整架构重构审计 |
 | [SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_ENDING_TRIGGER_PATHS_REDESIGN.md) | 12 种结局触发路径设计 |
-| [SPEC_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260622_ART_PROMPTS_GUIDE.md) | 美术资源提示词统一规范 |
+| [ASSET_20260622_ART_PROMPTS_GUIDE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ASSET_20260622_ART_PROMPTS_GUIDE.md) | 美术资源提示词统一规范 |
 | [EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260621_CG_ASSETS_COMPLETION_REPORT.md) | CG 重绘与结局视觉补全报告 |
 | [AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/AUDIT_20260622_EVENT_CAUSALITY_ANALYSIS.md) | 事件因果链完整分析 |
 | [SPEC_20260621_PWA_UPGRADE.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260621_PWA_UPGRADE.md) | PWA 升级与离线缓存设计 |

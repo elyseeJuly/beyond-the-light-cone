@@ -49,7 +49,7 @@ To integrate new music into the game, simply place your audio files in `03_Web_R
 
 According to the **Global Development & Archive Standard (V1.0)**:
 1. `《光锥之外：纪元往事》OST企划书(V1.3).md` has been successfully renamed to:
-   [SPEC_20260615_EPOCH_CHRONICLES_OST.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260615_EPOCH_CHRONICLES_OST.md)
+   [ASSET_20260615_EPOCH_CHRONICLES_OST.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/ASSET_20260615_EPOCH_CHRONICLES_OST.md)
 2. Registered the new specification document under Section 4.1 in:
    [SPEC_20260519_DOCUMENTATION_STANDARDS.md](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/SPEC_20260519_DOCUMENTATION_STANDARDS.md)
 

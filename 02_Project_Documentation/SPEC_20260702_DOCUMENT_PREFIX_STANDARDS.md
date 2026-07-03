@@ -54,6 +54,11 @@
     *   **用途**：专门用于会议纪要、讨论结论、头脑风暴记录等。
     *   **示例**：`MEET_20260702_TEAM_SYNC_NOTES.md`
 
+### 2.5 发布与交付类
+*   **RELEASE_ (Release / 发布)** *(新增)*
+    *   **用途**：用于版本发布说明（Release Notes）、更新日志、交付清单等。必须在 `_registry.md` 全绿状态下生成。
+    *   **示例**：`RELEASE_20260702_V1.0.0.md`, `RELEASE_20260702_BETA_UPDATE.md`
+
 ## 3. 特殊例外：活文档与 Registry 体系 (Living Documents)
 
 依据全局开发规范，以下特殊文件属于 **“活文档 (Living Documents)”**。它们**不遵循** `[PREFIX]_[YYYYMMDD]_[NAME].md` 的命名与归档规范，而是直接存放在源代码/测试目录下，原地持续更新：
@@ -80,3 +85,49 @@
 ## 5. 落地要求
 *   新建任何工程文档时，必须从此规范中挑选最符合的前缀。
 *   AI 助手在规划（Planning Mode）和执行（Execution）生成诸如 `walkthrough.md`，`implementation_plan.md`，`task.md` 时，如果要将其长期落盘保存，也应加上 `EXEC_`，`PLAN_` 等标准前缀和日期。
+
+## 6. 文档与开发流转关系 (Documentation Lifecycle Workflow)
+
+通过活文档体系（Living Documents）与版本发布文档（RELEASE），形成了一套闭环的 AI 驱动开发工作流。
+
+```mermaid
+graph TD
+    %% 阶段定义
+    subgraph Phase 1: 规划与设计 [Planning & Design]
+        SPEC[SPEC_ / PLAN_ / ARCH_<br/>制定标准、计划、架构]
+    end
+
+    subgraph Phase 2: 开发与执行 [Execution]
+        EXEC[EXEC_ / ASSET_<br/>开发执行记录、资产引入]
+    end
+
+    subgraph Phase 3: 活文档与测试 [Living Documents]
+        REG["_registry.md<br/>(测试场景注册表)"]
+        HEALTH["_health.md<br/>(项目健康度追踪)"]
+    end
+
+    subgraph Phase 4: 发布与交付 [Release & Archive]
+        RELEASE[RELEASE_<br/>版本发布说明]
+        HIST[HIST_<br/>旧版本与日志归档]
+    end
+
+    %% 流程连接
+    SPEC -->|指导开发| EXEC
+    EXEC -->|完成开发, 跑通测试| REG
+    EXEC -->|架构偏离或技术债| HEALTH
+
+    %% Registry 的状态循环
+    REG -->|状态 RED: 触发修复| EXEC
+    
+    %% Release 门禁
+    REG -->|状态 ALL GREEN: 满足发布条件| RELEASE
+    
+    %% 归档
+    RELEASE -->|版本封版| HIST
+    
+    %% 样式调整
+    style REG fill:#10B981,stroke:#047857,stroke-width:2px,color:white
+    style RELEASE fill:#3B82F6,stroke:#1D4ED8,stroke-width:2px,color:white
+```
+
+在这个循环中，**`_registry.md` 是核心的枢纽（Gatekeeper）**：只有当 `_registry.md` 中的所有测试条目均变为 GREEN 时，才能触发 `RELEASE_` 文档的编写和正式版本的发布。

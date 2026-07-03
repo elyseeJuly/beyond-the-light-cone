@@ -1,7 +1,8 @@
 {
   "name": "beyond-the-light-cone",
-  "compatibility_date": "2026-06-22",
+  "compatibility_date": "2026-07-03",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
   }
 }

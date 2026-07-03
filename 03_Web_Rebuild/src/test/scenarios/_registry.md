@@ -2,7 +2,7 @@
 > 最后更新：2026-07-03
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 13 总计）
+## 发布状态：🟢 就绪（0 RED / 14 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -20,8 +20,10 @@
 | **SCEN-ASSET-MANIFEST-GEN** | Feature | 资源清单精准分类生成 | `asset_manifest.json` 应将游戏资源准确归类至各纪元包或按类型包，消除大规模 `uncategorized` 包 | 🟢 GREEN | `generate-manifest.mjs` detectEra算法重构：人物立绘归characters包、结局CG归endings包、扩展7纪元关键词，uncategorized从41%降至0.7% | AssetDownload.scenario.test.ts |
 | **SCEN-FLAG-MANAGER** | Design | Flag 状态标记管理器解耦 | Game.flags Set<string> 的公开暴露改用 FlagManager 封装，提供 isSet/set/unset API | 🟢 GREEN | Game.ts 中 flags 直接暴露为 Set<string>，外部模块可直接操作 | FlagManager.ts / Game.ts |
 | **SCEN-RELEASE-PIPELINE** | DevOps | Tag-Driven Release 自动化流水线 | 推送 v* tag 自动触发 CI 门禁 + 多平台构建 + GitHub Release 发布 | 🟢 GREEN | 0 自动化，发版完全手动 | .github/workflows/release.yml |
+| **SCEN-DESIGN-DRIFT** | Design | 设计偏离修复验证 | 验证 7 大设计决策与 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 一致：7纪元系统、文化公式、年份递增、纪元溢出保护、AI智脑默认关闭、地球初始建筑、思想钢印权重 | 🟢 GREEN | 原始 SPEC 与实际代码存在 3 处设计偏离 (D01-D03)，已创建权威 SPEC 并编写验证测试 | DesignDrift.scenario.test.ts |
 
 ## 变更日志
+- 2026-07-03: 设计偏离修复验证——新增 SCEN-DESIGN-DRIFT 场景测试（17 项），验证 7 大设计决策与权威 SPEC 一致。同时创建 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 作为权威设计基准，取代原始 SPEC 中过时的 5 纪元枚举定义。全量测试通过。
 - 2026-07-03: 遗留债务修复——Flag 系统解耦：新增 FlagManager 封装 Game.flags Set<string>，提供 isSet/set/unset 类型安全 API，与 flags Set 共享引用实现 100% 存档兼容。Release 流水线：新建 .github/workflows/release.yml（Tag-Driven 4 Job 流水线）、tools/extract-changelog.sh、tools/sync-version.sh。Game.ts 拆分：提取存档序列化系统至 GameSerializer.ts（268行），Game.ts 从 1900 行降至 1721 行。新增 SCEN-FLAG-MANAGER 和 SCEN-RELEASE-PIPELINE 条目均为 GREEN。全量 886 测试通过。
 - 2026-07-03: SCEN-ASSET-DOWNLOAD-LOOP 从 RED 变 GREEN（Game.ts updateEpoch 接入 assetLoader.downloadEraPack + preloadNextEra，fire-and-forget 不阻塞主循环）+ SCEN-ASSET-MANIFEST-GEN 从 RED 变 GREEN（detectEra 算法重构：人物立绘归 characters 包、结局 CG 归 endings 包、扩展 7 纪元关键词覆盖，uncategorized 从 41% 降至 0.7%）。新增 AssetDownload.scenario.test.ts 11 项测试。版本号硬编码修复：SettingsModal.tsx + generate-manifest.mjs 统一从 package.json 读取。发布状态恢复就绪。
 - 2026-07-03: 审核「分模块下载功能」状态，发现架构脱节。新增 SCEN-ASSET-DOWNLOAD-LOOP 和 SCEN-ASSET-MANIFEST-GEN 均设为 🔴 RED 状态。发布状态变为未就绪。

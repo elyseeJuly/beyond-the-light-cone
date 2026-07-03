@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "gameVersion": "1.0.0",
-  "generatedAt": 1783090858582,
+  "generatedAt": 1783092378279,
   "core": [
     {
       "id": "character_default",
@@ -52,6 +52,62 @@
         "size": 4343237,
         "displayName": "death_of_the_light_cone",
         "hash": "28d17bf7",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_dimension_strike",
+        "path": "audio/ending_defeat_dimension_strike.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 4284935,
+        "displayName": "defeat_dimension_strike",
+        "hash": "71119960",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_extinction",
+        "path": "audio/ending_defeat_extinction.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 3104409,
+        "displayName": "defeat_extinction",
+        "hash": "6b188a6c",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_helium_flash",
+        "path": "audio/ending_defeat_helium_flash.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 1398509,
+        "displayName": "defeat_helium_flash",
+        "hash": "6bb42cc4",
+        "isDefault": false
+      },
+      {
+        "id": "ending_defeat_treachery",
+        "path": "audio/ending_defeat_treachery.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 4297474,
+        "displayName": "defeat_treachery",
+        "hash": "7247d06",
         "isDefault": false
       },
       {
@@ -150,6 +206,20 @@
         "size": 4362672,
         "displayName": "the_last_archive",
         "hash": "5ec6955",
+        "isDefault": false
+      },
+      {
+        "id": "ending_wandering",
+        "path": "audio/ending_wandering.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 3851720,
+        "displayName": "wandering",
+        "hash": "242c71f5",
         "isDefault": false
       },
       {
@@ -1988,10 +2058,14 @@
         "name": "结局 CG 包",
         "description": "全部结局插画资源",
         "type": "cg_pack",
-        "totalSize": 131469308,
+        "totalSize": 148406355,
         "assetIds": [
           "ending_conquest",
           "ending_death_of_the_light_cone",
+          "ending_defeat_dimension_strike",
+          "ending_defeat_extinction",
+          "ending_defeat_helium_flash",
+          "ending_defeat_treachery",
           "ending_deterrence",
           "ending_fate_beyond_the_light_cone",
           "ending_ghost_in_the_quantum",
@@ -1999,6 +2073,7 @@
           "ending_neutral_eternal_exile",
           "ending_stardust_exodus",
           "ending_the_last_archive",
+          "ending_wandering",
           "ending_conquest",
           "ending_dark_domain",
           "ending_defeat_dimension_strike",

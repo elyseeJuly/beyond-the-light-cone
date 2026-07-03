@@ -31,22 +31,33 @@ const TopHUDStatItem: React.FC<TopHUDStatItemProps> = ({ icon, label, value, col
 export const TopHUD: React.FC = () => {
   const [showStabilityDropdown, setShowStabilityDropdown] = useState(false);
   const [showDeterrenceDropdown, setShowDeterrenceDropdown] = useState(false);
-  const [, forceUpdate] = useState({});
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const deterrenceDropdownRef = useRef<HTMLDivElement>(null);
 
+  // ── 双保险更新机制：轮询兜底 + 事件加速 ──
+  const [tick, setTick] = useState(0);
+
+  // 保险 1：每 500ms 定时轮询，无论事件链是否中断都能刷新
   useEffect(() => {
-    const update = () => forceUpdate({});
-    window.addEventListener('game-turn-complete', update);
-    window.addEventListener('game-state-changed', update);
-    window.addEventListener('ap-changed', update);
-    window.addEventListener('ai-brain-toggled', update);
+    const interval = setInterval(() => {
+      setTick(t => t + 1);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 保险 2：事件驱动立即刷新（比轮询更快响应，0~500ms 的感知差）
+  useEffect(() => {
+    const immediate = () => setTick(t => t + 1);
+    window.addEventListener('game-turn-complete', immediate);
+    window.addEventListener('game-state-changed', immediate);
+    window.addEventListener('ap-changed', immediate);
+    window.addEventListener('ai-brain-toggled', immediate);
     return () => {
-      window.removeEventListener('game-turn-complete', update);
-      window.removeEventListener('game-state-changed', update);
-      window.removeEventListener('ap-changed', update);
-      window.removeEventListener('ai-brain-toggled', update);
+      window.removeEventListener('game-turn-complete', immediate);
+      window.removeEventListener('game-state-changed', immediate);
+      window.removeEventListener('ap-changed', immediate);
+      window.removeEventListener('ai-brain-toggled', immediate);
     };
   }, []);
 
@@ -151,7 +162,7 @@ export const TopHUD: React.FC = () => {
   };
 
   return (
-    <header data-tutorial-id="top-hud" className="h-[56px] md:h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-3 md:px-6 z-[1010] select-none relative shrink-0">
+    <header data-tutorial-id="top-hud" data-tick={tick} className="h-[56px] md:h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-3 md:px-6 z-[1010] select-none relative shrink-0">
       {/* Dynamic scanline overlay for Top HUD */}
       <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent" />
 

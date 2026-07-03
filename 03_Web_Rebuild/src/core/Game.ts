@@ -331,7 +331,7 @@ export class Game {
     this.turnHistory.push(JSON.stringify(this, (key, val) => {
       if (key === 'currentEvent' || key === 'eventQueue' || key === 'isProcessing' || key === '_rngProvider' || key === 'turnHistory' ||
           key === 'eventSystem' || key === 'economySystem' || key === 'populationSystem' || key === 'game' ||
-          key === '_hadRunError' || key === '_yearJustAdvanced') {
+          key === '_hadRunError' || key === '_yearJustAdvanced' || key === 'flagManager') {
         return undefined;
       }
       if (val instanceof Map) {

@@ -1,7 +1,7 @@
 {
-  "version": "0.9.0-beta",
-  "gameVersion": "0.9.0-beta",
-  "generatedAt": 1783054124172,
+  "version": "1.0.0",
+  "gameVersion": "1.0.0",
+  "generatedAt": 1783090858582,
   "core": [
     {
       "id": "character_default",
@@ -27,6 +27,20 @@
         "isDefault": false
       },
       {
+        "id": "ending_conquest",
+        "path": "audio/ending_conquest.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 4167697,
+        "displayName": "conquest",
+        "hash": "71c8451c",
+        "isDefault": false
+      },
+      {
         "id": "ending_death_of_the_light_cone",
         "path": "audio/ending_death_of_the_light_cone.mp3",
         "type": "music",
@@ -38,6 +52,20 @@
         "size": 4343237,
         "displayName": "death_of_the_light_cone",
         "hash": "28d17bf7",
+        "isDefault": false
+      },
+      {
+        "id": "ending_deterrence",
+        "path": "audio/ending_deterrence.mp3",
+        "type": "music",
+        "tags": [
+          "music",
+          "endings"
+        ],
+        "era": "endings",
+        "size": 4004693,
+        "displayName": "deterrence",
+        "hash": "3c69ba99",
         "isDefault": false
       },
       {
@@ -1960,9 +1988,11 @@
         "name": "结局 CG 包",
         "description": "全部结局插画资源",
         "type": "cg_pack",
-        "totalSize": 123296918,
+        "totalSize": 131469308,
         "assetIds": [
+          "ending_conquest",
           "ending_death_of_the_light_cone",
+          "ending_deterrence",
           "ending_fate_beyond_the_light_cone",
           "ending_ghost_in_the_quantum",
           "ending_neutral_cosmic_silence",

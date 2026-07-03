@@ -23,6 +23,7 @@
 | **SCEN-DESIGN-DRIFT** | Design | 设计偏离修复验证 | 验证 7 大设计决策与 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 一致：7纪元系统、文化公式、年份递增、纪元溢出保护、AI智脑默认关闭、地球初始建筑、思想钢印权重 | 🟢 GREEN | 原始 SPEC 与实际代码存在 3 处设计偏离 (D01-D03)，已创建权威 SPEC 并编写验证测试 | DesignDrift.scenario.test.ts |
 
 ## 变更日志
+- 2026-07-03: TopHUD 更新机制重构——用「500ms 轮询兜底 + 事件加速」双保险模式替换纯事件驱动的 forceUpdate 模式，彻底消除因 Game.ts 事件链中断导致状态栏"固定死"的系统性问题。同时修复 Game.ts runARound 的 JSON.stringify replacer 遗留 flagManager 字段的问题。
 - 2026-07-03: 设计偏离修复验证——新增 SCEN-DESIGN-DRIFT 场景测试（17 项），验证 7 大设计决策与权威 SPEC 一致。同时创建 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 作为权威设计基准，取代原始 SPEC 中过时的 5 纪元枚举定义。全量测试通过。
 - 2026-07-03: 遗留债务修复——Flag 系统解耦：新增 FlagManager 封装 Game.flags Set<string>，提供 isSet/set/unset 类型安全 API，与 flags Set 共享引用实现 100% 存档兼容。Release 流水线：新建 .github/workflows/release.yml（Tag-Driven 4 Job 流水线）、tools/extract-changelog.sh、tools/sync-version.sh。Game.ts 拆分：提取存档序列化系统至 GameSerializer.ts（268行），Game.ts 从 1900 行降至 1721 行。新增 SCEN-FLAG-MANAGER 和 SCEN-RELEASE-PIPELINE 条目均为 GREEN。全量 886 测试通过。
 - 2026-07-03: SCEN-ASSET-DOWNLOAD-LOOP 从 RED 变 GREEN（Game.ts updateEpoch 接入 assetLoader.downloadEraPack + preloadNextEra，fire-and-forget 不阻塞主循环）+ SCEN-ASSET-MANIFEST-GEN 从 RED 变 GREEN（detectEra 算法重构：人物立绘归 characters 包、结局 CG 归 endings 包、扩展 7 纪元关键词覆盖，uncategorized 从 41% 降至 0.7%）。新增 AssetDownload.scenario.test.ts 11 项测试。版本号硬编码修复：SettingsModal.tsx + generate-manifest.mjs 统一从 package.json 读取。发布状态恢复就绪。

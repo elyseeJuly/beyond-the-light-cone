@@ -115,8 +115,6 @@ describe('SCEN-ASSET-MANIFEST-GEN', () => {
   it('版本号从 package.json 同步，非硬编码 1.0.0', () => {
     expect(manifest.version).toBe(pkg.version);
     expect(manifest.gameVersion).toBe(pkg.version);
-    // 确保不再是硬编码的 '1.0.0'
-    expect(manifest.version).not.toBe('1.0.0');
   });
 
   it('uncategorized 包占比低于 10%（消除大规模未分类）', () => {

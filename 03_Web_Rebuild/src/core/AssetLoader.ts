@@ -117,12 +117,16 @@ export class AssetLoader {
 
   /**
    * 预加载下一纪元资源
-   * 在当前纪元末尾触发，提前下载 30%
+   * 在当前纪元末尾触发，提前下载下一纪元资源包
+   * 支持完整 7 纪元序列：黄金 → 危机 → 威慑 → 广播 → 掩体 → 银河 → 星屑
    */
   async preloadNextEra(currentEra: string): Promise<void> {
     if (!this.manifest) return;
 
-    const eraOrder = ['crisis_era', 'deterrence_era', 'broadcast_era', 'stardust_era'];
+    const eraOrder = [
+      'golden_era', 'crisis_era', 'deterrence_era', 'broadcast_era',
+      'bunker_era', 'galaxy_era', 'stardust_era',
+    ];
     const currentIdx = eraOrder.indexOf(currentEra);
     if (currentIdx < 0 || currentIdx >= eraOrder.length - 1) return;
 

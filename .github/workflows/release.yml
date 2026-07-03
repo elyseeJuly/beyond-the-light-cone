@@ -1,0 +1,202 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  gate:
+    name: CI Gate (TypeCheck + Test + Build + E2E)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 03_Web_Rebuild
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 03_Web_Rebuild/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify version consistency
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "❌ Version mismatch: tag=v${TAG_VERSION} vs package.json=${PKG_VERSION}"
+            exit 1
+          fi
+          echo "✅ Version consistent: v${TAG_VERSION}"
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Run all tests
+        run: npx vitest run
+
+      - name: Run tests with coverage
+        run: npx vitest run --coverage
+
+      - name: Build for production
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: 03_Web_Rebuild/dist/
+          retention-days: 1
+
+  build-web:
+    name: Build Web Archive
+    runs-on: ubuntu-latest
+    needs: gate
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Create web archive
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          cd dist
+          zip -r "../beyond-the-light-cone-${VERSION}-web.zip" .
+          cd ..
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-release
+          path: beyond-the-light-cone-*.zip
+          retention-days: 1
+
+  build-tauri:
+    name: Build Tauri (${{ matrix.platform }})
+    needs: gate
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-x64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - platform: macos-arm64
+            os: macos-latest
+            target: aarch64-apple-darwin
+
+    defaults:
+      run:
+        working-directory: 03_Web_Rebuild
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: 03_Web_Rebuild/dist/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 03_Web_Rebuild/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli@latest
+
+      - name: Build Tauri
+        run: npx tauri build --target ${{ matrix.target }}
+
+      - name: Upload Tauri artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-${{ matrix.platform }}
+          path: |
+            03_Web_Rebuild/src-tauri/target/${{ matrix.target }}/release/bundle/**/*
+          retention-days: 1
+
+  publish-release:
+    name: Publish GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-web, build-tauri]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Normalize artifacts
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          mkdir -p release-assets
+
+          # Web archive
+          find artifacts/web-release -name "*.zip" -exec cp {} "release-assets/beyond-the-light-cone-${VERSION}-web.zip" \;
+
+          # Tauri: copy all installer files
+          find artifacts/tauri-windows-x64 -type f \( -name "*.msi" -o -name "*.exe" \) -exec cp {} release-assets/ \;
+          find artifacts/tauri-macos-arm64 -type f -name "*.dmg" -exec cp {} release-assets/ \;
+
+          ls -la release-assets/
+
+      - name: Extract release notes
+        id: changelog
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          NOTES=$(bash tools/extract-changelog.sh "$VERSION")
+          if [ -z "$NOTES" ]; then
+            NOTES="Release ${VERSION}"
+          fi
+          # Write to file to avoid escaping issues
+          echo "$NOTES" > /tmp/release_notes.md
+          echo "notes_file=/tmp/release_notes.md" >> $GITHUB_OUTPUT
+
+      - name: Determine pre-release status
+        id: prerelease
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          if echo "$VERSION" | grep -qE 'alpha|beta|rc|pre'; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+            echo "🏷️ Marked as pre-release"
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+            echo "🏷️ Marked as stable release"
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "${{ github.ref_name }}"
+          body_path: "/tmp/release_notes.md"
+          prerelease: ${{ steps.prerelease.outputs.prerelease == 'true' }}
+          files: release-assets/*
+          generate_release_notes: true
+          fail_on_unmatched_files: false

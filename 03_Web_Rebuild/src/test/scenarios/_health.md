@@ -1,18 +1,23 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-06-29
+> 最后审视：2026-07-03
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟡（1 🔴 / 1 🟡 / 2 🟢）
+## 总体健康：🟢（0 🔴 / 2 🟡 / 4 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
-| 架构 | 单文件最大行数 | 🟡 | Game.ts 1599行 | 超过1000行，后续建议合理拆分子系统 |
-| 架构 | Flag 系统耦合度 | 🔴 | 23个模块引用 flags | 考虑引入统一的 Flag Manager 进行解耦 |
+| 架构 | 单文件最大行数 | 🟡 | Game.ts 1721行（+GameSerializer.ts 268行） | 从1900行降至1721行，提取了存档序列化系统；后续可继续拆分子系统 |
+| 架构 | Flag 系统耦合度 | 🟢 | FlagManager 封装 | FlagManager 包装 flags Set，提供 isSet/set/unset API，与原始 Set 共享引用，100% 存档兼容 |
 | 性能 | 1000事件压力测试 | 🟢 | 通过 | 持续关注长局内存与性能表现 |
 | 内容 | 设计文档 vs 代码一致性 | 🟡 | 3处偏离 | 年份/文化/纪元系统实现与原始 SPEC 存在小幅偏移，已登记 |
 | 文档 | 文档总数 | 🔴 | 184份 | 停止为简单 bug 编写冗长文档，推行"测试代替文档交接" |
+| DevOps | Release流水线 | 🟢 | Tag-Driven 自动化 | .github/workflows/release.yml（4Job：gate→build-web+build-tauri→publish-release）+ tools/extract-changelog.sh + tools/sync-version.sh |
+| 架构 | 资产按需下载功能 | 🟢 | 已接入主循环 | AssetLoader.downloadEraPack + preloadNextEra 已接入 Game.ts 纪元更替生命周期；manifest 分类覆盖率 99.3%（uncategorized 从 41% 降至 0.7%） |
 
 ## 审视日志
+- 2026-07-03: 三项遗留债务修复——①Flag 系统解耦（FlagManager 封装 flags Set，共享引用实现 100% 存档兼容）；②Release 流水线（.github/workflows/release.yml + tools/extract-changelog.sh + tools/sync-version.sh）；③Game.ts 拆分（提取 GameSerializer.ts 268行，Game.ts 从 1900→1721 行）。Flag 耦合和 Release 流水线从 🔴 转 🟢。总体健康 🔴→🟢（0🔴/2🟡/4🟢）。文档膨胀 🔴 仍为唯一遗留项（按用户指示不处理游戏文档）。
+- 2026-07-03: 资产按需下载功能从 🔴 修复为 🟢。Game.ts updateEpoch 接入 assetLoader.downloadEraPack + preloadNextEra（fire-and-forget）；generate-manifest.mjs detectEra 算法重构，人物立绘归 characters 包、结局 CG 归 endings 包、扩展 7 纪元关键词覆盖，uncategorized 从 41% 降至 0.7%；版本号硬编码统一从 package.json 读取。新增 AssetDownload.scenario.test.ts 11 项测试，全量 886 项测试通过。总体健康从 🔴 转为 🟡。
+- 2026-07-03: 新增两项重大技术债：1. 缺乏 GitHub Release 自动化部署流水线；2. 资产分模块下载系统处于骨架完备但零接入游戏循环的状态。总体健康转为 🔴。
 - 2026-06-29: 取消 TopHUD 核心指标的响应式隐藏，在所有分辨率下常驻显示稳定度、人口、资源、军力、威慑度（解决部分面板显示空缺问题）。解耦文明博物馆与岁月史书，主页封面显示文明博物馆，游戏操作内独立渲染岁月史书双轨时间轴面板。通过全量 875 项自动化测试验证。
 - 2026-06-29: 按照 SPEC_20260621_RESPONSIVE_LAYOUT.md 4.1 节规范重新实现 TopHUD 响应式布局：h-[56px] md:h-[72px]，Tailwind 断点控制（hidden md:block / hidden lg:block），移动端隐藏人口/资源/军力，平板显示人口，桌面全密度。SCEN-HUD-RESPONSIVE 测试更新为双断点（mobile 375px + desktop 1280px）验证。Registry 描述更新为与共识一致。
 - 2026-06-29: 修复教程侧边栏重复类别按钮（v3）— 根本原因：reduce 按连续步骤分组，'基础操作' 在步骤0-2和10-11出现两次导致同名按钮。修复：改为按 unique name 去重（Set/find 模式）。同时恢复 TopHUD 原始设计：添加 CivLevel 显示、固定 h-[72px]、恢复 z-50、稳定度公式加入 popFactor、6纪元恢复、下拉菜单恢复人口基数。

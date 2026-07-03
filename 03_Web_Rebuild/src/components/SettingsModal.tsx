@@ -3,6 +3,7 @@ import { GameInstance } from '../core/Game';
 import { Volume2, Globe, Monitor, Zap, Save, HelpCircle, Users, X, Database, MessageSquare } from 'lucide-react';
 import { setLanguage, getLanguage } from '../utils/i18n';
 import { assetLoader } from '../core/AssetLoader';
+import { GAME_VERSION } from '../utils/version';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -399,7 +400,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                   <p>美术定位总监：银河文明全息档案馆</p>
                   <p>架构重构团队：Google DeepMind - Antigravity</p>
                   <p>编译调试与高阶审美校对：Gemini 3.5 Pro & Flash</p>
-                  <p className="mt-2 text-[var(--color-primary)]">当前版本：v0.9.0-beta</p>
+                  <p className="mt-2 text-[var(--color-primary)]">当前版本：v{GAME_VERSION}</p>
                   <p className="text-[9px] text-[var(--text-secondary)] mt-6">
                     © 2026 EMBEROIS GAME STUDIO. ALL RIGHTS RESERVED.
                   </p>

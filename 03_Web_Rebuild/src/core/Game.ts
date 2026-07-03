@@ -5,8 +5,6 @@ import { WeaponManager } from "./WeaponManager";
 import { GameEventManager } from "./GameEventManager";
 import { EarthCivilization } from "./EarthCivilization";
 import { AlienCiviManager, AlienCivilization } from "./AlienCivilization";
-import { TecTreeManager } from "./TecTreeManager";
-import { TecTree } from "./TecTree";
 import { GameEventPayload, VictoryCondition, FilteredEventPayload } from "../types/narrative";
 import { createGameEvent } from "./GameEvent";
 import epochsData from "../data/epochs.json";
@@ -21,33 +19,22 @@ import { AtmosphereEngine } from "./AtmosphereEngine";
 import { HistoryGenerator } from "./HistoryGenerator";
 import { SliceNarrativeEngine } from "./SliceNarrativeEngine";
 import { EventBus } from "./EventBus";
-import { SaveManager, SaveDataCorruptedError } from "./SaveManager";
+import { SaveManager } from "./SaveManager";
 import { AudioManager } from "./AudioManager";
 import { StatisticsManager } from "./StatisticsManager";
 import { AppContainer, ServiceKeys } from "./DIContainer";
 import { EventSystem } from "./subsystems/EventSystem";
 import { EconomySystem } from "./subsystems/EconomySystem";
 import { PopulationSystem } from "./subsystems/PopulationSystem";
+import { assetLoader } from "./AssetLoader";
+import { FlagManager } from "./FlagManager";
+import {
+  gameReplacer,
+  serializeAndSave, loadAndDeserialize, rollbackToFateDivergence,
+} from "./GameSerializer";
 
 export interface RngProvider {
   random(): number;
-}
-
-/**
- * Game JSON replacer - handles Map/Set serialization for saves
- */
-function gameReplacer(_key: string, value: any) {
-  if (_key === 'currentEvent' || _key === 'eventQueue' || _key === 'isProcessing' || _key === '_rngProvider' || _key === 'turnHistory' ||
-      _key === 'eventSystem' || _key === 'economySystem' || _key === 'populationSystem' || _key === 'game' ||
-      _key === '_hadRunError' || _key === '_yearJustAdvanced') {
-    return undefined;
-  }
-  if (value instanceof Map) {
-    return { dataType: 'Map', value: Array.from(value.entries()) };
-  } else if (value instanceof Set) {
-    return { dataType: 'Set', value: Array.from(value) };
-  }
-  return value;
 }
 
 export class Game {
@@ -105,6 +92,7 @@ export class Game {
   public turnHistory: string[] = [];
 
   public flags: Set<string> = new Set();
+  public flagManager: FlagManager = new FlagManager(this.flags);
   public filteredEvents: FilteredEventPayload[] = [];
   public loreMode: LoreMode = 'strict_three_body';
 
@@ -184,16 +172,16 @@ export class Game {
   }
 
   public addFlag(flag: string): void {
-    this.flags.add(flag);
+    this.flagManager.set(flag);
     console.log("[Flag] Activated:", flag);
   }
 
   public hasFlag(flag: string): boolean {
-    return this.flags.has(flag);
+    return this.flagManager.isSet(flag);
   }
 
   public removeFlag(flag: string): void {
-    this.flags.delete(flag);
+    this.flagManager.unset(flag);
   }
 
   public isSophonBlocked(): boolean {
@@ -656,8 +644,8 @@ export class Game {
         }
 
         // 2. 黑暗森林遗迹事件（检测跨周目数据）
-        if (this.year === 50 && !this.flags.has("ruins_checked")) {
-          this.flags.add("ruins_checked");
+        if (this.year === 50 && !this.flagManager.isSet("ruins_checked")) {
+          this.flagManager.set("ruins_checked");
           let ruins: Array<{ year: number; culture: number; techCount: number; timestamp: number }> = [];
           try {
             const raw = localStorage.getItem('Beyond-the-Light-Cone_RuinHistory');
@@ -761,29 +749,45 @@ export class Game {
     }
     if (matched !== undefined && matched.epoch > this.epoch) {
       let allowed = true;
-      if (matched.epoch === EpochType.DETERRENCE && !this.flags.has('deterrence_established')) allowed = false;
-      if (matched.epoch === EpochType.BROADCAST && !this.flags.has('coordinates_broadcasted')) allowed = false;
-      if (matched.epoch === EpochType.BUNKER && !this.flags.has('bunker_world_completed')) allowed = false;
-      if (matched.epoch === EpochType.GALAXY && (!this.flags.has('galaxy_exodus_seen') && !this.flags.has('dimensional_strike'))) allowed = false;
-      if (matched.epoch === EpochType.STARDUST && !this.flags.has('stardust_era_declared') && !this.flags.has('stardust_era_seen') && !this.flags.has('zero_homer_contacted')) allowed = false;
+      if (matched.epoch === EpochType.DETERRENCE && !this.flagManager.isSet('deterrence_established')) allowed = false;
+      if (matched.epoch === EpochType.BROADCAST && !this.flagManager.isSet('coordinates_broadcasted')) allowed = false;
+      if (matched.epoch === EpochType.BUNKER && !this.flagManager.isSet('bunker_world_completed')) allowed = false;
+      if (matched.epoch === EpochType.GALAXY && (!this.flagManager.isSet('galaxy_exodus_seen') && !this.flagManager.isSet('dimensional_strike'))) allowed = false;
+      if (matched.epoch === EpochType.STARDUST && !this.flagManager.isSet('stardust_era_declared') && !this.flagManager.isSet('stardust_era_seen') && !this.flagManager.isSet('zero_homer_contacted')) allowed = false;
 
       if (allowed) {
         this.epoch = matched.epoch;
       } else {
         // 如果文化达标但关键事件未触发，可给予一些提示或轻微停滞惩罚
-        if (!this.flags.has('epoch_stalled')) {
+        if (!this.flagManager.isSet('epoch_stalled')) {
           this.addHistory("【文明停滞】人类的文化底蕴已经足以进入下一个时代，但缺少关键的历史契机或技术突破，时代演进被阻滞了。");
-          this.flags.add('epoch_stalled');
+          this.flagManager.set('epoch_stalled');
         }
       }
     }
 
     if (prevEpoch !== this.epoch) {
-      this.flags.delete('epoch_stalled');
+      this.flagManager.unset('epoch_stalled');
       const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
       const epochName = epochNames[this.epoch];
       this.addHistory(`【纪元更替】进入${epochName}！`);
       this.playerTimeline.push({ year: this.year, event: `【纪元更替】人类正式进入${epochName}` });
+
+      // 纪元资产按需下载：进入新纪元时自动触发当前纪元资源包下载，并预加载下一纪元
+      // 玩到哪下到哪，不阻塞游戏主循环（fire-and-forget）
+      const epochEraKeyMap: Record<number, string> = {
+        0: 'golden_era', 1: 'crisis_era', 2: 'deterrence_era', 3: 'broadcast_era',
+        4: 'bunker_era', 5: 'galaxy_era', 6: 'stardust_era',
+      };
+      const currentEraKey = epochEraKeyMap[this.epoch];
+      if (currentEraKey) {
+        assetLoader.downloadEraPack(currentEraKey).catch(err => {
+          console.warn(`[Game] 纪元资源包下载失败 (${currentEraKey}):`, err);
+        });
+        assetLoader.preloadNextEra(currentEraKey).catch(err => {
+          console.warn(`[Game] 下一纪元预加载失败 (${currentEraKey}):`, err);
+        });
+      }
 
       // 时间线锚点：从 timeline.json 注入底部资讯滚动播报
       const timelineEntry = timelineData.find(t => t.epoch === epochName || 
@@ -909,7 +913,7 @@ export class Game {
           label: "死神永生 · 小宇宙",
           year: this.year,
           epoch: this.epoch,
-          keyFlags: Array.from(this.flags),
+          keyFlags: this.flagManager.getSnapshot(),
           timestamp: Date.now()
         });
         this.tagManager.applyWorldTag('victory_hidden', 100, 'game:ending', this.year);
@@ -923,7 +927,7 @@ export class Game {
           label: "文明灭绝",
           year: this.year,
           epoch: this.epoch,
-          keyFlags: Array.from(this.flags),
+          keyFlags: this.flagManager.getSnapshot(),
           timestamp: Date.now()
         });
         
@@ -1080,7 +1084,7 @@ export class Game {
           label: cond.label,
           year: this.year,
           epoch: this.epoch,
-          keyFlags: Array.from(this.flags).filter(f => ['wandering_completed', 'digital_ark_upgrade', 'swordholder_appointed', 'wallfacer_project', 'galaxy_exodus_seen', 'alien_alliance'].includes(f)),
+          keyFlags: this.flagManager.getSnapshot().filter(f => ['wandering_completed', 'digital_ark_upgrade', 'swordholder_appointed', 'wallfacer_project', 'galaxy_exodus_seen', 'alien_alliance'].includes(f)),
           timestamp: Date.now()
         });
         this.tagManager.applyWorldTag(`victory_${cond.type.toLowerCase()}`, 100, 'game:ending', this.year);
@@ -1105,7 +1109,7 @@ export class Game {
       SaveManager.recordEnding({
         victoryType: null, defeatType: null, neutralType: this.neutralType,
         label: "永恒的流亡",
-        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+        year: this.year, epoch: this.epoch, keyFlags: this.flagManager.getSnapshot(), timestamp: Date.now()
       });
       SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
       window.dispatchEvent(new CustomEvent('game-over'));
@@ -1124,7 +1128,7 @@ export class Game {
       SaveManager.recordEnding({
         victoryType: null, defeatType: null, neutralType: this.neutralType,
         label: "宇宙静默",
-        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+        year: this.year, epoch: this.epoch, keyFlags: this.flagManager.getSnapshot(), timestamp: Date.now()
       });
       SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
       window.dispatchEvent(new CustomEvent('game-over'));
@@ -1138,7 +1142,7 @@ export class Game {
       this.playerTimeline.push({ year: this.year, event: '【终结】逃亡主义吞噬了文明最后的秩序' });
       SaveManager.recordEnding({
         victoryType: null, defeatType: this.defeatType, label: "逃亡主义崩溃",
-        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+        year: this.year, epoch: this.epoch, keyFlags: this.flagManager.getSnapshot(), timestamp: Date.now()
       });
       // 结局前自动存档
       SaveManager.autoSave(() => JSON.stringify(this, gameReplacer));
@@ -1153,7 +1157,7 @@ export class Game {
       this.playerTimeline.push({ year: this.year, event: '【终结】最后的人类在沉默中消逝' });
       SaveManager.recordEnding({
         victoryType: null, defeatType: this.defeatType, label: "文明灭绝",
-        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+        year: this.year, epoch: this.epoch, keyFlags: this.flagManager.getSnapshot(), timestamp: Date.now()
       });
       
       let finishedTechs = 0;
@@ -1199,7 +1203,7 @@ export class Game {
       }
       SaveManager.recordEnding({
         victoryType: null, defeatType: this.defeatType, label: this.dimensionStrikeTriggered || this.loreMode === 'strict_three_body' ? "二向箔打击" : "太阳氦闪",
-        year: this.year, epoch: this.epoch, keyFlags: Array.from(this.flags), timestamp: Date.now()
+        year: this.year, epoch: this.epoch, keyFlags: this.flagManager.getSnapshot(), timestamp: Date.now()
       });
       
       let finishedTechs = 0;
@@ -1679,197 +1683,26 @@ export class GameInstance {
 
   public static saveGame(): void {
     if (!this.instance) return;
-    if (this.instance.historyGenerator) {
-      this.instance.historyGenerator.prune(500);
-    }
-    this.instance.addHistory("游戏已保存到本地存储。");
-    SaveManager.save(() => JSON.stringify(this.instance, gameReplacer));
+    serializeAndSave(this.instance);
   }
 
   public static loadGame(): boolean {
-    try {
-      const dataStr = SaveManager.load();
-      if (!dataStr) return false;
-
-      const parsedData = JSON.parse(dataStr, this.reviver);
-      this.instance = new Game();
-
-      Object.assign(this.instance, parsedData);
-
-      this.restorePrototypes();
-
-      this.instance.currentEvent = null;
-      this.instance.eventQueue = [];
-      this.instance.isProcessing = false;
-
-      if (!this.validateSaveIntegrity()) {
-        console.error("Save data integrity check failed, resetting game.");
-        this.reset();
-        return false;
-      }
-
-      this.instance.addHistory("【系统】游戏读取成功。");
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('game-loaded'));
-        window.dispatchEvent(new CustomEvent('ticker-message-added'));
-      }
+    const result = loadAndDeserialize(Game);
+    if (result) {
+      this.instance = result;
       return true;
-    } catch (e) {
-      if (e instanceof SaveDataCorruptedError) {
-        if (e.message.includes("无效的 JSON 格式")) {
-          console.error("Save load failed with invalid JSON format:", e.message);
-          return false;
-        }
-        console.error("Save corruption detected:", e.message);
-        throw e;
-      }
-      console.error("Failed to load game:", e);
-      return false;
     }
-  }
-
-  private static restorePrototypes(): void {
-    const inst = this.instance!;
-    const safeSP = (obj: any, proto: any) => { if (obj) Object.setPrototypeOf(obj, proto); };
-
-    safeSP(inst.earthCivi, EarthCivilization.prototype);
-    safeSP(inst.alienCiviManager, AlienCiviManager.prototype);
-    safeSP(inst.earthCivi.tecTreeManager, TecTreeManager.prototype);
-    safeSP(inst.starManager, StarManager.prototype);
-    safeSP(inst.personManager, PersonManager.prototype);
-    safeSP(inst.eventManager, GameEventManager.prototype);
-    safeSP(inst.planetEngine, PlanetEngine.prototype);
-    safeSP(inst.digitalLife, DigitalLife.prototype);
-
-    // UEE 新模块原型恢复
-    safeSP(inst.tagManager, TagManager.prototype);
-    safeSP(inst.ecologyChain, EcologyChain.prototype);
-    safeSP(inst.relationNetwork, RelationNetwork.prototype);
-    safeSP(inst.atmosphereEngine, AtmosphereEngine.prototype);
-    safeSP(inst.historyGenerator, HistoryGenerator.prototype);
-    safeSP(inst.sliceNarrativeEngine, SliceNarrativeEngine.prototype);
-    safeSP(inst.eventBus, EventBus.prototype);
-
-    if (inst.digitalLife) {
-      if (inst.digitalLife.resurrectedPersons && !(inst.digitalLife.resurrectedPersons instanceof Set)) {
-        inst.digitalLife.resurrectedPersons = new Set(inst.digitalLife.resurrectedPersons);
-      }
-    }
-
-    if (inst.eventManager && (!inst.eventManager.events || inst.eventManager.events.length === 0)) {
-      const savedCounts = inst.eventManager.randomEventTriggerCounts;
-      const savedFilteredIds = inst.eventManager.triggeredFilteredIds;
-      const savedLaneYears = inst.eventManager.lastLaneTriggeredYear;
-      const savedTagYears = inst.eventManager.lastTagTriggeredYear;
-      const savedAnyYear = inst.eventManager.lastAnyEventYear;
-      inst.eventManager.init();
-      if (savedCounts) inst.eventManager.randomEventTriggerCounts = savedCounts;
-      if (savedFilteredIds) inst.eventManager.triggeredFilteredIds = savedFilteredIds;
-      if (savedLaneYears) inst.eventManager.lastLaneTriggeredYear = savedLaneYears;
-      if (savedTagYears) inst.eventManager.lastTagTriggeredYear = savedTagYears;
-      if (savedAnyYear !== undefined) inst.eventManager.lastAnyEventYear = savedAnyYear;
-    }
-    if (inst.eventManager) {
-      if (!(inst.eventManager.lastLaneTriggeredYear instanceof Map)) {
-        inst.eventManager.lastLaneTriggeredYear = new Map(Object.entries(inst.eventManager.lastLaneTriggeredYear || {})) as Map<import('../types/enums').EventLane, number>;
-      }
-      if (!(inst.eventManager.randomEventTriggerCounts instanceof Map)) {
-        inst.eventManager.randomEventTriggerCounts = new Map(Object.entries(inst.eventManager.randomEventTriggerCounts || {}));
-      }
-      if (!(inst.eventManager.lastTagTriggeredYear instanceof Map)) {
-        inst.eventManager.lastTagTriggeredYear = new Map(Object.entries(inst.eventManager.lastTagTriggeredYear || {}));
-      }
-      if (inst.eventManager.triggeredFilteredIds && !(inst.eventManager.triggeredFilteredIds instanceof Set)) {
-        inst.eventManager.triggeredFilteredIds = new Set(inst.eventManager.triggeredFilteredIds);
-      }
-    }
-
-    if (inst.earthCivi?.tecTreeManager?.trees) {
-      for (const tree of inst.earthCivi.tecTreeManager.trees.values()) {
-        safeSP(tree, TecTree.prototype);
-      }
-    }
-
-    if (inst.alienCiviManager?.aliens) {
-      for (const alien of inst.alienCiviManager.aliens.values()) {
-        safeSP(alien, AlienCivilization.prototype);
-      }
-    }
-
-    if (inst.earthCivi?.departments) {
-      // Departments are standard objects, do not cast to Map.prototype
-    }
-
-    if (inst.starManager?.stars) {
-      for (const star of inst.starManager.stars.values()) {
-        if (star && !(star as any).buildingProgress) {
-          (star as any).buildingProgress = null;
-        }
-      }
-    }
-
-    if (inst.earthCivi?.fleets) {
-      for (const fleet of inst.earthCivi.fleets) {
-        if (fleet && !fleet.weapons) {
-          fleet.weapons = [];
-        }
-      }
-    }
-  }
-
-  static validateSaveIntegrity(): boolean {
-    const inst = this.instance!;
-    if (!inst.earthCivi || typeof inst.earthCivi.population !== 'number') return false;
-    if (!inst.starManager || !inst.starManager.stars) return false;
-    if (!inst.personManager) return false;
-    return true;
-  }
-
-  private static reviver(_key: string, value: any) {
-    if (typeof value === 'object' && value !== null) {
-      if (value.dataType === 'Map') {
-        return new Map(value.value);
-      }
-      if (value.dataType === 'Set') {
-        return new Set(value.value);
-      }
-    }
-    return value;
+    return false;
   }
 
   public static rollbackToFateDivergence(): boolean {
     if (!this.instance || !this.instance.turnHistory || this.instance.turnHistory.length === 0) return false;
-    try {
-      const dataStr = this.instance.turnHistory[0]; // 回滚到10回合前（或者是最久远的一个快照）
-      const parsedData = JSON.parse(dataStr, this.reviver);
-      
-      const carryOverHistory = [...this.instance.turnHistory];
-      carryOverHistory.shift(); // 移除最老的一个快照，防止死循环
-      
-      this.instance = new Game();
-      Object.assign(this.instance, parsedData);
-      this.restorePrototypes();
-      
-      this.instance.turnHistory = carryOverHistory;
-      this.instance.isGameOver = false;
-      this.instance.victoryType = null;
-      this.instance.defeatType = null;
-      this.instance.gameOverReason = "";
-      this.instance.isProcessing = false;
-      this.instance.currentEvent = null;
-      this.instance.eventQueue = [];
-      this.instance.isObserverMode = false;
-      
-      this.instance.addHistory("【系统】时间线已回溯至分歧点（约 10 回合前）。");
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('game-loaded'));
-        window.dispatchEvent(new CustomEvent('ticker-message-added'));
-      }
+    const result = rollbackToFateDivergence(Game, this.instance.turnHistory);
+    if (result) {
+      this.instance = result;
       return true;
-    } catch (e) {
-      console.error("Failed to rollback to fate divergence:", e);
-      return false;
     }
+    return false;
   }
 }
 

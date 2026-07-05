@@ -17,6 +17,7 @@
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 
 ## 审视日志
+- 2026-07-05: Release 流水线三阻塞修复——诊断 v1.0.0 Release 仅有源码压缩包的原因：① publish-release 依赖 build-tauri 成功 → Tauri 失败时 Web 发布被阻塞；② 缺少 permissions: contents: write → GITHUB_TOKEN 无法创建 Release；③ Gate 的 TS 编译错误（已修复）。修复后 publish-release 仅依赖 build-web，Tauri 产物条件下载，工作流级 contents: write 权限。Release 流水线从 🔴 转 🟢。
 - 2026-07-05: 三项修复核实与 Release 流水线修复——核实 SCEN-EVENT-FREEZE、SCEN-TOPHUD-ZINDEX、SCEN-EVENTBUS-COMPAT 三项修复与 5 项审计修复无冲突、互为补充。修复 Release 流水线阻塞：9 个 TS 编译错误（未使用变量/类型不匹配）+ 3 个测试运行时错误（EventBus.emit 防御性 handlers 初始化 + GameInstance.reset() setTimeout 空值守卫）。全量 1045 测试 0 错误通过。
 - 2026-07-05: EventBus 兼容性断裂修复——emitLegacy 改为同时派发新旧事件名，修复 App.tsx 所有旧监听器失效（教程不弹、下一回合无反应、科技研发异常）。新增 emitToWindow 别名。同步修复 TopHUD z-index（z-1010 降回 z-50）和 StoryModal 冻结（直接入队事件 choice 补 applyEventEffect）。新增 SCEN-EVENT-FREEZE、SCEN-TOPHUD-ZINDEX、SCEN-EVENTBUS-COMPAT 三个场景条目。"EventBus 兼容性"和"弹窗层叠秩序"维度新增为 🟢。全量 936 测试通过。
 - 2026-07-03: 设计偏离修复——原 3 处偏离 (D01-D03: 文化公式、纪元扩展、年份递增) 已通过创建 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 确认为权威设计基准。新增 SCEN-DESIGN-DRIFT 场景测试（17 项）验证 7 大设计决策一致性。"设计文档 vs 代码一致性"从 🟡 转 🟢。总体健康 🟢（0🔴/1🟡/5🟢）。

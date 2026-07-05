@@ -1,8 +1,8 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-03
+> 最后更新：2026-07-05
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 14 总计）
+## 发布状态：🟢 就绪（0 RED / 19 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -21,8 +21,21 @@
 | **SCEN-FLAG-MANAGER** | Design | Flag 状态标记管理器解耦 | Game.flags Set<string> 的公开暴露改用 FlagManager 封装，提供 isSet/set/unset API | 🟢 GREEN | Game.ts 中 flags 直接暴露为 Set<string>，外部模块可直接操作 | FlagManager.ts / Game.ts |
 | **SCEN-RELEASE-PIPELINE** | DevOps | Tag-Driven Release 自动化流水线 | 推送 v* tag 自动触发 CI 门禁 + 多平台构建 + GitHub Release 发布 | 🟢 GREEN | 0 自动化，发版完全手动 | .github/workflows/release.yml |
 | **SCEN-DESIGN-DRIFT** | Design | 设计偏离修复验证 | 验证 7 大设计决策与 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 一致：7纪元系统、文化公式、年份递增、纪元溢出保护、AI智脑默认关闭、地球初始建筑、思想钢印权重 | 🟢 GREEN | 原始 SPEC 与实际代码存在 3 处设计偏离 (D01-D03)，已创建权威 SPEC 并编写验证测试 | DesignDrift.scenario.test.ts |
+| **SCEN-STRICT-MODE** | Infrastructure | 严格模式禁止吞异常 | Game.strictMode 静态开关：开启时子系统异常（7 个 catch 块 + 外层核心崩溃）直接向上抛出，测试中不再被静默吞没；关闭时按原有逻辑记录为 [警告] 历史日志 | 🟢 GREEN | 异常被系统性吞掉导致 Autoplay500 测试全绿但 bug 存在；测试无法发现真实运行时错误 | StrictMode.scenario.test.ts |
+| **SCEN-FLAG-TYPED** | Infrastructure | Flag 类型化消灭魔法字符串 | 创建 FLAG 常量对象（40+ 个已知 flag）、GameFlag 联合类型；GameEvent 新增 grantsFlags 字段替代文案字符串匹配；纪元推进/结局判定/外星接触等所有 flag 字符串字面量替换为 FLAG.* 常量 | 🟢 GREEN | 用显示文本的字符串匹配驱动游戏逻辑（文案修改静默改变解锁链）；Flag 拼写错误无编译期检查 | FlagTyped.scenario.test.ts |
+| **SCEN-EVENTBUS-MIGRATION** | Infrastructure | 事件总线迁移 | EventBus 类型化重建（37 个事件类型）、emitLegacy 桥接层（37 个旧事件名映射）、核心文件全部迁移（Game.ts/EventSystem/EarthCivilization 等 9 个文件）、UI 组件保持 window 监听兼容 | 🟢 GREEN | EventBus 是摆设，真实事件流走裸 window.dispatchEvent；两套平行词汇表（game-turn-complete vs game:turn:complete） | EventBusMigration.scenario.test.ts |
+| **SCEN-SERIALIZATION** | Infrastructure | 序列化路径统一 | 内联 replacer 统一为 gameReplacer（消除两套排除列表漂移风险）；Map/Set 序列化格式验证；restorePrototypes 往返测试；FlagManager 引用别名修复验证 | 🟢 GREEN | 回溯快照和自动存档使用两套不同的 exclude 列表，注定漂移；FlagManager 在反序列化后攥着旧 Set 引用 | Serialization.scenario.test.ts |
+| **SCEN-ENDING-CONDITIONS** | Infrastructure | 结局条件数据化 | getVictoryConditions() 单一数据源（check+progress 同源）；getEndingForecast 从 conditions 派生进度；VictoryCondition 新增 progress/isThreat 字段；消除判定与预报的重复逻辑 | 🟢 GREEN | 结局判定与预报是两套手写逻辑（黑域判定看黑域生成，预报看光速飞船推进器）；进度条 100% 但不触发结局 | EndingConditions.scenario.test.ts |
+| **SCEN-EVENT-FREEZE** | BugFix | 直接入队事件关闭后 StoryModal 卡死修复 | enqueueAlienEvent / ruinsEvent 的 choice 补 applyEventEffect(NONE)，App.tsx onClose 末尾同步 React 状态，确保直接入队事件作为最后一个事件时 StoryModal 正确关闭 | 🟢 GREEN | 外星发现/接触事件弹窗关闭后 StoryModal 不消失导致画面冻结（间歇性 bug） | EventFreeze.scenario.test.ts |
+| **SCEN-TOPHUD-ZINDEX** | BugFix | TopHUD z-index 过高覆盖所有弹窗 | TopHUD z-index 从 z-[1010] 降回 z-50，不再覆盖封面(z-150)、事件弹窗(z-100)、设置弹窗(z-200)；教程 SVG 镂空机制不依赖 z-index 提升 | 🟢 GREEN | 状态栏一直展示在游戏页面顶部，盖住封面和所有弹窗 | TopHUD.tsx |
+| **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-05: 基础设施全面加固——完成 5 项审计修复：严格模式、Flag 类型化、EventBus 迁移、序列化统一、结局条件数据化。新增 3 个场景测试（EventBusMigration/Serialization/EndingConditions），Registry 16→19 条目。全量 1045 测试通过。
+- 2026-07-05: EventBus 兼容性断裂修复——新增 SCEN-EVENTBUS-COMPAT：emitLegacy 修复为同时派发新旧事件名（旧监听器全部失效导致教程不弹、下一回合无反应）；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用。同步修复 TopHUD z-index（新增 SCEN-TOPHUD-ZINDEX）：z-[1010] 降回 z-50，不再覆盖封面和弹窗。全量 936 测试通过。
+- 2026-07-05: StoryModal 冻结修复——新增 SCEN-EVENT-FREEZE 场景测试（5 项）：enqueueAlienEvent / ruinsEvent 的 choice 补 applyEventEffect(NONE) 确保事件收尾链路完整；App.tsx onClose 末尾同步 React 状态作为兜底。修复外星发现/接触事件作为最后一个事件时 StoryModal 不消失导致画面冻结的间歇性 bug。
+- 2026-07-05: 基础设施加固——新增 SCEN-STRICT-MODE 场景测试（8 项）：Game.strictMode 静态开关，替换 runARound 中 9 个 catch 块为 handleSubsystemError()，strict 模式下异常直接抛出。同步修复 getEndingForecast 黑域进度误查技术（光速飞船推进器→黑域生成）。Autoplay500 新增 assertNoWarnings() + 100 回合 strict mode 专用测试。
+- 2026-07-05: Flag 类型化——新增 SCEN-FLAG-TYPED 场景测试（17 项）：创建 GameFlags.ts（FLAG 常量对象 40+ 个 flag、GameFlag 联合类型）；GameEvent 接口新增 grantsFlags 字段；文案匹配块改为 grantsFlags 优先 + 遗留 fallback；Game.ts/PlanetEngine.ts/DigitalLife.ts/AlienCivilization.ts 全部 flag 字符串字面量替换为 FLAG.* 常量。全量 928 测试通过。
 - 2026-07-03: TopHUD 更新机制重构——用「500ms 轮询兜底 + 事件加速」双保险模式替换纯事件驱动的 forceUpdate 模式，彻底消除因 Game.ts 事件链中断导致状态栏"固定死"的系统性问题。同时修复 Game.ts runARound 的 JSON.stringify replacer 遗留 flagManager 字段的问题。
 - 2026-07-03: 设计偏离修复验证——新增 SCEN-DESIGN-DRIFT 场景测试（17 项），验证 7 大设计决策与权威 SPEC 一致。同时创建 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 作为权威设计基准，取代原始 SPEC 中过时的 5 纪元枚举定义。全量测试通过。
 - 2026-07-03: 遗留债务修复——Flag 系统解耦：新增 FlagManager 封装 Game.flags Set<string>，提供 isSet/set/unset 类型安全 API，与 flags Set 共享引用实现 100% 存档兼容。Release 流水线：新建 .github/workflows/release.yml（Tag-Driven 4 Job 流水线）、tools/extract-changelog.sh、tools/sync-version.sh。Game.ts 拆分：提取存档序列化系统至 GameSerializer.ts（268行），Game.ts 从 1900 行降至 1721 行。新增 SCEN-FLAG-MANAGER 和 SCEN-RELEASE-PIPELINE 条目均为 GREEN。全量 886 测试通过。

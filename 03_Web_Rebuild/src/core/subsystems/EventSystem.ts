@@ -17,7 +17,7 @@ export class EventSystem {
   public processNextEvent(): void {
     if (this.game.eventQueue.length > 0 && !this.game.currentEvent) {
       this.game.currentEvent = this.game.eventQueue.shift() || null;
-      window.dispatchEvent(new CustomEvent('game-event-triggered'));
+      this.game.eventBus.emitLegacy('game-event-triggered');
     }
   }
 
@@ -57,14 +57,14 @@ export class EventSystem {
     }
     this.game.currentEvent = null;
     if (isInteractive) {
-      window.dispatchEvent(new CustomEvent('game-event-triggered'));
+      this.game.eventBus.emitLegacy('game-event-triggered');
       this.processNextEvent();
       if (this.game.eventQueue.length === 0 && !this.game.currentEvent && !this.game._yearJustAdvanced) {
         this.game.year++;
         this.game.updateEpoch();
         this.game.checkVictoryConditions();
         this.game.addHistory(`回合推进完成：${this.game.year - 1} -> ${this.game.year} (存活异星文明: ${this.game.alienCiviManager.aliens.size}, 待处理事件: ${this.game.eventQueue.length})`);
-        window.dispatchEvent(new CustomEvent('game-turn-complete'));
+        this.game.eventBus.emitLegacy('game-turn-complete');
       }
       this.game._yearJustAdvanced = false;
     }
@@ -220,7 +220,7 @@ export class EventSystem {
           person.deathYear = this.game.year;
           this.game.addHistory(`【讣告】${eff.target} 于 ${this.game.year} 年逝世。`);
           this.game.tickerMessages.push(`讣告：${eff.target} 逝世。`);
-          window.dispatchEvent(new CustomEvent('ticker-message-added'));
+          this.game.eventBus.emitLegacy('ticker-message-added');
         }
       }
     });
@@ -279,7 +279,7 @@ export class EventSystem {
       this.game.addHistory(`【系统提醒】面壁者 ${target} 已自动列入宇宙社会学-面壁计划执行名单。`);
     }
 
-    window.dispatchEvent(new CustomEvent('ticker-message-added'));
-    window.dispatchEvent(new CustomEvent('game-state-changed'));
+    this.game.eventBus.emitLegacy('ticker-message-added');
+    this.game.eventBus.emitLegacy('game-state-changed');
   }
 }

@@ -29,6 +29,7 @@ import { SliceNarrativeEngine } from "./SliceNarrativeEngine";
 import { EventBus } from "./EventBus";
 import { SaveManager, SaveDataCorruptedError } from "./SaveManager";
 import { FlagManager } from "./FlagManager";
+import { GameInstance } from "./Game";
 import type { Game } from "./Game";
 
 /**
@@ -206,8 +207,8 @@ export function loadAndDeserialize(
 
     inst.addHistory("【系统】游戏读取成功。");
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('game-loaded'));
-      window.dispatchEvent(new CustomEvent('ticker-message-added'));
+      GameInstance.get().eventBus.emitLegacy('game-loaded');
+      GameInstance.get().eventBus.emitLegacy('ticker-message-added');
     }
     onSuccess?.();
     return inst;
@@ -258,8 +259,8 @@ export function rollbackToFateDivergence(
 
     inst.addHistory("【系统】时间线已回溯至分歧点（约 10 回合前）。");
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('game-loaded'));
-      window.dispatchEvent(new CustomEvent('ticker-message-added'));
+      GameInstance.get().eventBus.emitLegacy('game-loaded');
+      GameInstance.get().eventBus.emitLegacy('ticker-message-added');
     }
     return inst;
   } catch (e) {

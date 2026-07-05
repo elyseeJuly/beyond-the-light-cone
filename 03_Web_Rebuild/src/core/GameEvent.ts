@@ -36,6 +36,8 @@ export interface GameEvent {
   choices?: GameEventChoice[];
   effects?: any[];
   cadenceMeta?: EventCadenceMeta;
+  /** 事件触发时自动授予的 flag 列表（替代文案字符串匹配） */
+  grantsFlags?: string[];
 }
 
 export function createGameEvent(

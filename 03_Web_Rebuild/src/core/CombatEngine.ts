@@ -174,7 +174,7 @@ export class CombatEngine {
     };
 
     (game as any).lastBattleReport = report;
-    window.dispatchEvent(new CustomEvent('battle-triggered'));
+    GameInstance.get().eventBus.emitLegacy('battle-triggered');
 
     return win;
   }
@@ -314,7 +314,7 @@ export class CombatEngine {
     };
 
     (game as any).lastBattleReport = report;
-    window.dispatchEvent(new CustomEvent('battle-triggered'));
+    GameInstance.get().eventBus.emitLegacy('battle-triggered');
 
     return win;
   }

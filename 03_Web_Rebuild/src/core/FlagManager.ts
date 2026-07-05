@@ -8,6 +8,8 @@
  * 统一通过此管理器读写，避免外部模块直接操作原始 Set。
  */
 
+import { GameFlag, DynamicGameFlag } from "./GameFlags";
+
 export class FlagManager {
   private flags: Set<string>;
 
@@ -24,17 +26,17 @@ export class FlagManager {
   }
 
   /** 检查标记是否已设置 */
-  isSet(flag: string): boolean {
+  isSet(flag: GameFlag | DynamicGameFlag | string): boolean {
     return this.flags.has(flag);
   }
 
   /** 设置标记 */
-  set(flag: string): void {
+  set(flag: GameFlag | DynamicGameFlag | string): void {
     this.flags.add(flag);
   }
 
   /** 移除标记 */
-  unset(flag: string): void {
+  unset(flag: GameFlag | DynamicGameFlag | string): void {
     this.flags.delete(flag);
   }
 

@@ -5,6 +5,8 @@
  * 6 种氛围状态通过 CSS 变量和 Canvas 覆盖层实现视觉反馈。
  */
 
+import { GameInstance } from "./Game";
+
 export type AtmosphereState =
   | 'NORMAL'        // 正常
   | 'TENSE'         // 紧张
@@ -124,9 +126,9 @@ export class AtmosphereEngine {
     this.currentState = newState;
 
     try {
-      window.dispatchEvent(new CustomEvent('game:atmosphere:changed', {
-        detail: { state: newState, config: this.getConfig() }
-      }));
+      GameInstance.get().eventBus.emitLegacy('game:atmosphere:changed', {
+        state: newState, config: this.getConfig()
+      });
     } catch { /* ignore */ }
 
     return true;

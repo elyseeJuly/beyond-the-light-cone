@@ -6,6 +6,7 @@ import type { Game } from "./Game";
 import { getImageUrl } from "../utils/assetUrl";
 import { normalizeEventMeta, pickWeightedEvent, isEventEligible } from "./EventCadence";
 import { EventLane } from "../types/enums";
+import { GameInstance } from "./Game";
 
 export class GameEventManager {
   public events: GameEvent[] = [];
@@ -1113,7 +1114,7 @@ if (import.meta.hot) {
     if (game && game.eventManager) {
       game.eventManager.events = game.eventManager.parseEventData(newModule ? newModule.default : null);
       game.eventManager.events = game.eventManager.events.map(e => normalizeEventMeta(e));
-      window.dispatchEvent(new CustomEvent('game-loaded'));
+      GameInstance.get().eventBus.emitLegacy('game-loaded');
     }
   });
 
@@ -1123,7 +1124,7 @@ if (import.meta.hot) {
     if (game && game.eventManager) {
       game.eventManager.randomEvents = game.eventManager.parseEventData(newModule ? newModule.default : null);
       game.eventManager.randomEvents = game.eventManager.randomEvents.map(e => normalizeEventMeta(e));
-      window.dispatchEvent(new CustomEvent('game-loaded'));
+      GameInstance.get().eventBus.emitLegacy('game-loaded');
     }
   });
 }

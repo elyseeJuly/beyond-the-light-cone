@@ -5,9 +5,9 @@ import { DepartmentType, TecTreeType } from "../types/enums";
 import { CombatEngine } from "./CombatEngine";
 import { createBarback } from "./Barback";
 import type { Game, RngProvider } from "./Game";
+import { GameInstance } from "./Game";
 import { STAR_INDEX } from "../config/starIndices";
 import wallfacersData from "../data/wallfacers.json";
-import { GameEvents } from "./EventBus";
 
 const MAX_ECONOMY = 999999;
 const MAX_POPULATION_MULTIPLIER = 3;
@@ -56,9 +56,9 @@ export class EarthCivilization extends Civilization {
   public spendAP(cost: number): boolean {
     if (!this.canSpendAP(cost)) {
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('ap-insufficient', {
-          detail: { required: cost, current: this.apCurrent }
-        }));
+        GameInstance.get().eventBus.emitLegacy('ap-insufficient', {
+          required: cost, current: this.apCurrent
+        });
       }
       return false;
     }
@@ -68,7 +68,7 @@ export class EarthCivilization extends Civilization {
       this.apCurrent = Math.max(0, this.apCurrent - Math.floor(cost * 0.5));
     }
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('ap-changed'));
+      GameInstance.get().eventBus.emitLegacy('ap-changed');
     }
     return true;
   }
@@ -80,7 +80,7 @@ export class EarthCivilization extends Civilization {
     const cultureBonus = Math.floor(this.culture / 100);
     this.apCurrent = Math.min(this.apMax, this.apCurrent + baseRecovery + departmentBonus + cultureBonus);
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('ap-changed'));
+      GameInstance.get().eventBus.emitLegacy('ap-changed');
     }
   }
 
@@ -294,7 +294,7 @@ export class EarthCivilization extends Civilization {
 
           game.addHistory(`【破壁人降临】三体智子与破壁人正式识破了面壁者 ${targetWallfacer} 的「${plan.planName}」计划！该计划宣告破产，${targetWallfacer} 承受巨大心理打击退场。`);
           game.tickerMessages.push(`👥 [战略公报] 面壁者 ${targetWallfacer} 被破壁！其秘密计划「${plan.planName}」已被识破并宣告失败。`);
-          window.dispatchEvent(new CustomEvent('ticker-message-added'));
+          GameInstance.get().eventBus.emitLegacy('ticker-message-added');
         }
       }
     }
@@ -641,7 +641,7 @@ export class EarthCivilization extends Civilization {
             node.inResearch = false;
             game.addHistory(`科技研发完成: ${node.name}`);
             StatisticsManager.recordTechUnlock(node.name);
-            game.eventBus.emitToWindow(GameEvents.TECH_COMPLETED, { techName: node.name, treeType });
+            game.eventBus.emitLegacy('game:tech:completed', { techName: node.name, treeType });
           }
         }
       }

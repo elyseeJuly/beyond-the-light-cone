@@ -451,6 +451,7 @@ export const App: React.FC = () => {
                 onClose={() => {
                   GameInstance.get().currentEvent = null;
                   GameInstance.get().processNextEvent();
+                  setCurrentEvent(GameInstance.get().currentEvent);
                 }}
               />
             )}

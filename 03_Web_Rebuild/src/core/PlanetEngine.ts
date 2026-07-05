@@ -1,4 +1,5 @@
 import { GameInstance } from "./Game";
+import { FLAG } from "./GameFlags";
 
 export class PlanetEngine {
   public totalEngines: number = 12000; // Original wandering earth requires 12000 engines
@@ -47,7 +48,7 @@ export class PlanetEngine {
     const game = GameInstance.get();
     this.status = 'FLIGHT';
     this.thrustLevel = 100;
-    game.addFlag('wandering_earth_started');
+    game.addFlag(FLAG.WANDERING_EARTH_STARTED);
     game.addHistory("【启航】地球发动机全功率启动！巨大的等离子蓝色尾焰直冲云霄，地球正式脱离太阳轨道，向比邻星启航！");
     return "地球发动机全力启动，变轨逃逸计划正式执行！";
   }
@@ -63,7 +64,7 @@ export class PlanetEngine {
 
       if (this.currentDistanceTravelled >= this.targetDistance) {
         this.status = 'COMPLETED';
-        game.addFlag('wandering_completed');
+        game.addFlag(FLAG.WANDERING_COMPLETED);
         game.addHistory("【抵达】人类文明经历了漫长的流浪，地球终于滑入了比邻星引力轨道，流浪地球计划大获成功！");
       }
     }

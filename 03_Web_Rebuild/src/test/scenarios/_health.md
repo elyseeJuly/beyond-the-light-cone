@@ -1,8 +1,8 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-07-03
+> 最后审视：2026-07-05
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 5 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 6 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
@@ -13,8 +13,11 @@
 | 文档 | 文档总数 | 🔴 | 184份 | 停止为简单 bug 编写冗长文档，推行"测试代替文档交接" |
 | DevOps | Release流水线 | 🟢 | Tag-Driven 自动化 | .github/workflows/release.yml（4Job：gate→build-web+build-tauri→publish-release）+ tools/extract-changelog.sh + tools/sync-version.sh |
 | 架构 | 资产按需下载功能 | 🟢 | 已接入主循环 | AssetLoader.downloadEraPack + preloadNextEra 已接入 Game.ts 纪元更替生命周期；manifest 分类覆盖率 99.3%（uncategorized 从 41% 降至 0.7%） |
+| 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
+| UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 
 ## 审视日志
+- 2026-07-05: EventBus 兼容性断裂修复——emitLegacy 改为同时派发新旧事件名，修复 App.tsx 所有旧监听器失效（教程不弹、下一回合无反应、科技研发异常）。新增 emitToWindow 别名。同步修复 TopHUD z-index（z-1010 降回 z-50）和 StoryModal 冻结（直接入队事件 choice 补 applyEventEffect）。新增 SCEN-EVENT-FREEZE、SCEN-TOPHUD-ZINDEX、SCEN-EVENTBUS-COMPAT 三个场景条目。"EventBus 兼容性"和"弹窗层叠秩序"维度新增为 🟢。全量 936 测试通过。
 - 2026-07-03: 设计偏离修复——原 3 处偏离 (D01-D03: 文化公式、纪元扩展、年份递增) 已通过创建 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 确认为权威设计基准。新增 SCEN-DESIGN-DRIFT 场景测试（17 项）验证 7 大设计决策一致性。"设计文档 vs 代码一致性"从 🟡 转 🟢。总体健康 🟢（0🔴/1🟡/5🟢）。
 - 2026-07-03: 三项遗留债务修复——①Flag 系统解耦（FlagManager 封装 flags Set，共享引用实现 100% 存档兼容）；②Release 流水线（.github/workflows/release.yml + tools/extract-changelog.sh + tools/sync-version.sh）；③Game.ts 拆分（提取 GameSerializer.ts 268行，Game.ts 从 1900→1721 行）。Flag 耦合和 Release 流水线从 🔴 转 🟢。总体健康 🔴→🟢（0🔴/2🟡/4🟢）。文档膨胀 🔴 仍为唯一遗留项（按用户指示不处理游戏文档）。
 - 2026-07-03: 资产按需下载功能从 🔴 修复为 🟢。Game.ts updateEpoch 接入 assetLoader.downloadEraPack + preloadNextEra（fire-and-forget）；generate-manifest.mjs detectEra 算法重构，人物立绘归 characters 包、结局 CG 归 endings 包、扩展 7 纪元关键词覆盖，uncategorized 从 41% 降至 0.7%；版本号硬编码统一从 package.json 读取。新增 AssetDownload.scenario.test.ts 11 项测试，全量 886 项测试通过。总体健康从 🔴 转为 🟡。

@@ -10,6 +10,8 @@
  * - 角色标签不建立"好感度矩阵"，仅标记"角色与人类社会的宏观关系"
  */
 
+import { GameInstance } from "./Game";
+
 // ===== 类型定义 =====
 
 export interface WorldTag {
@@ -304,9 +306,9 @@ export class TagManager {
 
   private emitTagChange(tagId: string, applied: boolean): void {
     try {
-      window.dispatchEvent(new CustomEvent('game:tag:changed', {
-        detail: { tagId, applied, intensity: this.getTagIntensity(tagId) }
-      }));
+      GameInstance.get().eventBus.emitLegacy('game:tag:changed', {
+        tagId, applied, intensity: this.getTagIntensity(tagId)
+      });
     } catch { /* ignore */ }
   }
 }

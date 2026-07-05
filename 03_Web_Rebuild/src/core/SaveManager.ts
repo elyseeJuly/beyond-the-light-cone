@@ -2,6 +2,7 @@ import { VictoryType, DefeatType, EpochType, NeutralType } from "../types/enums"
 import { storage } from "./IndexedDBStorage";
 import { StatisticsManager } from "./StatisticsManager";
 import { validateSavePackage, validateSaveIndex, validateSaveMeta } from "./SaveSchema";
+import { GameInstance } from "./Game";
 
 /**
  * SaveManager - 独立存档管理器 (IndexedDB 单一数据源)
@@ -226,9 +227,9 @@ export class SaveManager {
       storage.setSlot(slotId, savePackage).catch(err => {
         console.error(`SaveManager: IndexedDB write failed for slot ${slotId}:`, err);
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('save-storage-warning', {
-            detail: { slotId, message: '存档持久化存储写入失败，数据已暂存于浏览器本地缓存。' }
-          }));
+          GameInstance.get().eventBus.emitLegacy('save-storage-warning', {
+            slotId, message: '存档持久化存储写入失败，数据已暂存于浏览器本地缓存。'
+          });
         }
       });
 

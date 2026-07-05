@@ -1,9 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
 import { EpochType, EventEffect } from '../../types/enums';
 
 /**
- * Setup a fresh game instance with deterministic RNG
+ * Setup a fresh game instance with deterministic RNG and strict mode enabled.
+ * strictMode ensures that subsystem errors are thrown rather than silently
+ * swallowed into historyLogs, making Autoplay a real mine detector.
  */
 function setupGame(): Game {
   GameInstance.reset();
@@ -70,8 +72,32 @@ function runTurns(game: Game, turns: number): number {
   return game.year - startYear;
 }
 
+/**
+ * Assert that no subsystem errors were silently swallowed into historyLogs.
+ * In strictMode, exceptions should throw — but if any did slip through
+ * (e.g. in non-strict paths), this catches them.
+ */
+function assertNoWarnings(game: Game): void {
+  const warnings = game.historyLogs.filter(
+    l => l.includes('[警告]') || l.includes('[UEE警告]')
+  );
+  if (warnings.length > 0) {
+    // Log them for debugging, then fail
+    console.error('Subsystem warnings found in historyLogs:', warnings);
+  }
+  expect(warnings).toEqual([]);
+}
+
 describe('E2E 自动回合模拟', () => {
   let game: Game;
+
+  beforeAll(() => {
+    Game.strictMode = true;
+  });
+
+  afterAll(() => {
+    Game.strictMode = false;
+  });
 
   beforeEach(() => {
     game = setupGame();
@@ -91,6 +117,7 @@ describe('E2E 自动回合模拟', () => {
     // Year should have advanced at least 10 (might be more due to event handling)
     expect(yearsAdvanced).toBeGreaterThanOrEqual(10);
     expect(game.isGameOver).toBe(false);
+    assertNoWarnings(game);
   });
 
   it('运行多回合后游戏状态保持一致（资源非负、人口非负）', () => {
@@ -108,6 +135,7 @@ describe('E2E 自动回合模拟', () => {
     // Game must not have crashed or ended prematurely
     expect(game.year).toBeGreaterThanOrEqual(20);
     expect(Number.isFinite(game.earthCivi.population)).toBe(true);
+    assertNoWarnings(game);
   });
 
   it('事件系统在 20 回合内至少触发一个事件', () => {
@@ -120,6 +148,7 @@ describe('E2E 自动回合模拟', () => {
       || game.tickerMessages.length > 0
       || game.historyGenerator.entries.length > 0;
     expect(eventsTriggered).toBe(true);
+    assertNoWarnings(game);
   });
 
   it('科技研究在回合推进中逐步进展', () => {
@@ -176,5 +205,15 @@ describe('E2E 自动回合模拟', () => {
     game.addFlag('galaxy_exodus_seen');
     runSingleTurn(game);
     expect(game.epoch).toBeGreaterThanOrEqual(EpochType.GALAXY);
+    assertNoWarnings(game);
+  });
+
+  it('strictMode: 100回合内historyLogs无任何子系统警告', () => {
+    // This is the key test: strictMode is on, so any subsystem error
+    // would have thrown. But we also verify that no warnings were
+    // logged to historyLogs (which would indicate a catch block
+    // that bypassed strictMode).
+    runTurns(game, 100);
+    assertNoWarnings(game);
   });
 });

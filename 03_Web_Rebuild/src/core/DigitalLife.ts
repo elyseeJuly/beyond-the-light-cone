@@ -1,4 +1,5 @@
 import { GameInstance } from "./Game";
+import { FLAG } from "./GameFlags";
 
 export class DigitalLife {
   public uploadPercentage: number = 0; // 0 to 100% of global population
@@ -50,7 +51,7 @@ export class DigitalLife {
     game.addHistory(`【数字永生】${uploadAmount.toFixed(1)} 亿人口选择放弃三维肉身，意识正式上传至数字太空方舟！`);
     
     if (this.uploadPercentage >= 95) {
-      game.addFlag('digital_singularity_reached');
+      game.addFlag(FLAG.DIGITAL_SINGULARITY_REACHED);
       game.addHistory("【数字天国】超过95%的人类意识已上传，人类文明进入超维数字演化形态！");
     }
 

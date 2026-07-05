@@ -3,8 +3,10 @@ import { AiPersonality, EpochType, FriendshipType } from "../types/enums";
 import { createFleet } from "./Fleet";
 import { CombatEngine } from "./CombatEngine";
 import { createBarback } from "./Barback";
+import { FLAG } from "./GameFlags";
 import aliensData from "../data/aliens.json";
 import type { Game, RngProvider } from "./Game";
+import { GameInstance } from "./Game";
 import diplomacyData from "../data/diplomacy.json";
 
 export class AlienCivilization extends Civilization {
@@ -131,7 +133,7 @@ export class AlienCivilization extends Civilization {
       event: msg
     });
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('play-game-sound', { detail: { type: 'alert' } }));
+      GameInstance.get().eventBus.emitLegacy('play-game-sound', { type: 'alert' });
     }
 
     const targetIdx = 3;
@@ -321,7 +323,7 @@ export class AlienCivilization extends Civilization {
       } else {
         game.addHistory(`【高维坍缩】二向箔最终降临太阳系！三维空间以光速坍塌至二维！`);
         const tm = game.earthCivi.tecTreeManager;
-        const survives = tm.isTecFinishedAnywhere("黑域生成") || tm.isTecFinishedAnywhere("数字方舟") || game.hasFlag("galaxy_exodus_seen") || game.hasFlag("wandering_completed");
+        const survives = tm.isTecFinishedAnywhere("黑域生成") || tm.isTecFinishedAnywhere("数字方舟") || game.hasFlag(FLAG.GALAXY_EXODUS_SEEN) || game.hasFlag(FLAG.WANDERING_COMPLETED);
         
         if (survives) {
           game.addHistory(`【生存奇迹】由于已构建光速安全声明/数字意识备份，人类文明的部分火种在坍缩中逃逸生存！`);

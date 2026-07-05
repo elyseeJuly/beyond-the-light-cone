@@ -113,4 +113,8 @@ export interface VictoryCondition {
   minYear?: number;
   maxYear?: number;
   check: () => boolean;
+  /** 进度计算（0-100），与 check 同源，用于结局预报 */
+  progress?: () => number;
+  /** 是否为威胁（失败结局），默认 false */
+  isThreat?: boolean;
 }

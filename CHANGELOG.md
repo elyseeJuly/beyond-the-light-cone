@@ -8,6 +8,12 @@
 ## [Unreleased]
 *(下个即将发布的版本内容，请在开发过程中将更新记录于此，正式发布时修改为具体版本号)*
 
+### 修复 (Fixed)
+
+- 修复 Release 流水线阻塞：9 个 TypeScript 编译错误（未使用变量/类型不匹配）+ 3 个测试运行时错误（EventBus.emit 防御性 handlers 初始化、GameInstance.reset() setTimeout 空值守卫）
+- 核实三项 Bug 修复（SCEN-EVENT-FREEZE / SCEN-TOPHUD-ZINDEX / SCEN-EVENTBUS-COMPAT）与 5 项审计修复无冲突
+- 全量测试 1045 通过，0 错误
+
 ## [v1.0.0] - 2026-07-03
 
 《光锥之外：纪元往事》正式版。自 Beta 以来历经大规模功能扩充、全面移动端适配与系统级深度打磨，正式达到 1.0 完整体验标准。

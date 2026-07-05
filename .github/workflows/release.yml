@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   gate:
     name: CI Gate (TypeCheck + Test + Build + E2E)
@@ -144,14 +147,30 @@ jobs:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
     needs: [build-web, build-tauri]
+    if: always() && needs.build-web.result == 'success'
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download all artifacts
+      - name: Download web artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts/
+          name: web-release
+          path: artifacts/web-release/
+
+      - name: Download Tauri artifacts (Windows)
+        if: needs.build-tauri.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: tauri-windows-x64
+          path: artifacts/tauri-windows-x64/
+
+      - name: Download Tauri artifacts (macOS)
+        if: needs.build-tauri.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: tauri-macos-arm64
+          path: artifacts/tauri-macos-arm64/
 
       - name: Normalize artifacts
         run: |

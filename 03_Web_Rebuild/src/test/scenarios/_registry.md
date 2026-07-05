@@ -31,6 +31,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-05: 三项修复核实与 Release 流水线修复——核实 SCEN-EVENT-FREEZE（5/5 通过）、SCEN-TOPHUD-ZINDEX（z-50 确认）、SCEN-EVENTBUS-COMPAT（65/65 通过）三项由其他 AI 完成的修复，确认与 5 项审计修复无冲突、互为补充。修复 Release 流水线阻塞：9 个 TS 编译错误（未使用变量/类型不匹配）+ 3 个测试运行时错误（EventBus.emit 防御性 handlers 初始化 + GameInstance.reset() setTimeout 空值守卫）。全量 1045 测试 0 错误通过。
 - 2026-07-05: 基础设施全面加固——完成 5 项审计修复：严格模式、Flag 类型化、EventBus 迁移、序列化统一、结局条件数据化。新增 3 个场景测试（EventBusMigration/Serialization/EndingConditions），Registry 16→19 条目。全量 1045 测试通过。
 - 2026-07-05: EventBus 兼容性断裂修复——新增 SCEN-EVENTBUS-COMPAT：emitLegacy 修复为同时派发新旧事件名（旧监听器全部失效导致教程不弹、下一回合无反应）；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用。同步修复 TopHUD z-index（新增 SCEN-TOPHUD-ZINDEX）：z-[1010] 降回 z-50，不再覆盖封面和弹窗。全量 936 测试通过。
 - 2026-07-05: StoryModal 冻结修复——新增 SCEN-EVENT-FREEZE 场景测试（5 项）：enqueueAlienEvent / ruinsEvent 的 choice 补 applyEventEffect(NONE) 确保事件收尾链路完整；App.tsx onClose 末尾同步 React 状态作为兜底。修复外星发现/接触事件作为最后一个事件时 StoryModal 不消失导致画面冻结的间歇性 bug。

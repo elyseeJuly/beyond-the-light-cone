@@ -1730,10 +1730,10 @@ export class GameInstance {
     }
 
     setTimeout(() => {
-      if (typeof window !== 'undefined') {
-        this.instance!.eventBus.emitLegacy('open-tutorial');
+      if (typeof window !== 'undefined' && this.instance) {
+        this.instance.eventBus.emitLegacy('open-tutorial');
         if (endingHistory.length > 0) {
-          this.instance!.eventBus.emitLegacy('new-game-plus-activated', { endings: endingHistory.length, unlocked: Array.from(unlocked) });
+          this.instance.eventBus.emitLegacy('new-game-plus-activated', { endings: endingHistory.length, unlocked: Array.from(unlocked) });
         }
       }
     }, 500);

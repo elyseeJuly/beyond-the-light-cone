@@ -90,7 +90,7 @@ describe('SCEN-EVENT-FREEZE', () => {
 
       // 直接调用 runARound 以确保遗迹事件入队
       // 但 runARound 会跑完整回合，这里我们手动模拟
-      game.flagManager.set('RUINS_CHECKED', false as any);
+      game.flagManager.unset('RUINS_CHECKED');
 
       // 检查 flag 是否未设置（runARound 内部会检测 year===50 且 flag 未设置）
       // 手动推入遗迹事件模拟

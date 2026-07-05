@@ -165,6 +165,9 @@ export class EventBus {
 
   /** 触发事件（同时向 bus 内部订阅者和 window 派发） */
   emit<K extends GameEventName>(event: K, payload?: GameEventMap[K]): void {
+    // 防御性初始化：反序列化后 handlers 可能为 undefined
+    if (!this.handlers) this.handlers = new Map();
+
     // 内部订阅者
     this.handlers.get(event)?.forEach(handler => {
       try {

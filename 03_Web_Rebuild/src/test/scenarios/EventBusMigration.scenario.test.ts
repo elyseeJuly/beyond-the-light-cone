@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { EventBus, GameEvents } from '../../core/EventBus';
-import { Game, GameInstance } from '../../core/Game';
+import { GameInstance } from '../../core/Game';
 
 /**
  * SCEN-EVENTBUS-MIGRATION: 统一事件通道 — EventBus 迁移验证
@@ -178,14 +178,6 @@ describe('SCEN-EVENTBUS-MIGRATION', () => {
 
       // emitLegacy 被 Game 内部调用（如 ticker-message-added, game-turn-complete, game-state-changed 等）
       expect(emitLegacySpy).toHaveBeenCalled();
-
-      // 验证 window.dispatchEvent 的调用全部来自 EventBus 内部（通过 emitLegacy），
-      // 而非 Game.ts 直接调用：所有 dispatchEvent 调用都应带有 emitLegacy 旧事件名
-      const dispatchesFromGame = dispatchSpy.mock.calls.filter(
-        ([event]) => event instanceof CustomEvent
-      );
-      // 如果 Game.ts 仍直接调用 window.dispatchEvent，事件类型会不同
-      // 这里只需确认 emitLegacy 被调用即可
 
       emitLegacySpy.mockRestore();
       dispatchSpy.mockRestore();

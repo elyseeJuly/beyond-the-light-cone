@@ -251,7 +251,7 @@ describe('SCEN-SERIALIZATION', () => {
       restorePrototypes(restored);
 
       expect(restored.eventManager.lastLaneTriggeredYear).toBeInstanceOf(Map);
-      expect(restored.eventManager.lastLaneTriggeredYear.get('military')).toBe(2020);
+      expect(restored.eventManager.lastLaneTriggeredYear.get('military' as any)).toBe(2020);
     });
 
     it('eventManager 中的 Set 字段被正确恢复', () => {

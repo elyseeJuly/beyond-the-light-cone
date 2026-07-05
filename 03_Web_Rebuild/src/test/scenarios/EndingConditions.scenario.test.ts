@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
-import { EpochType, TecTreeType } from '../../types/enums';
+import { TecTreeType } from '../../types/enums';
 import { FLAG } from '../../core/GameFlags';
 
 /**

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
-import { FLAG, GameFlag } from '../../core/GameFlags';
+import { FLAG } from '../../core/GameFlags';
 import { FlagManager } from '../../core/FlagManager';
 import { EventEffect, EventType } from '../../types/enums';
 import { createGameEvent } from '../../core/GameEvent';

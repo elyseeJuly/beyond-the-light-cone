@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
 
 /**
@@ -88,8 +88,6 @@ describe('SCEN-STRICT-MODE', () => {
 
     it('strictMode 是静态属性，跨实例共享', () => {
       Game.strictMode = true;
-      const game1 = new Game();
-      const game2 = new Game();
       expect(Game.strictMode).toBe(true);
       Game.strictMode = false;
     });

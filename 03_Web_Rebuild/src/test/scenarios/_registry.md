@@ -31,6 +31,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-05: Release 流水线修复（续）——发现 v1.0.1 Gate 仍失败，根因 asset_manifest.json 硬编码版本 1.0.0 与 package.json 1.0.1 不一致，AssetDownload 测试断言失败。重新生成 manifest 同步版本号，删除旧标签并重新推送 v1.0.1。全量 1045 测试通过。
 - 2026-07-05: Release 流水线三阻塞修复——诊断 Release 仅有源码压缩包无构建产物的根因：publish-release 依赖 build-tauri 成功导致 Tauri 失败时 Web 发布也被阻塞；缺少 permissions: contents: write 导致 GITHUB_TOKEN 无法创建 Release；Gate 的 TS 编译错误（已修复）。修复后 publish-release 改为仅依赖 build-web + Tauri 产物条件下载，添加工作流级 contents: write 权限。
 - 2026-07-05: 三项修复核实与 Release 流水线修复——核实 SCEN-EVENT-FREEZE（5/5 通过）、SCEN-TOPHUD-ZINDEX（z-50 确认）、SCEN-EVENTBUS-COMPAT（65/65 通过）三项由其他 AI 完成的修复，确认与 5 项审计修复无冲突、互为补充。修复 Release 流水线阻塞：9 个 TS 编译错误（未使用变量/类型不匹配）+ 3 个测试运行时错误（EventBus.emit 防御性 handlers 初始化 + GameInstance.reset() setTimeout 空值守卫）。全量 1045 测试 0 错误通过。
 - 2026-07-05: 基础设施全面加固——完成 5 项审计修复：严格模式、Flag 类型化、EventBus 迁移、序列化统一、结局条件数据化。新增 3 个场景测试（EventBusMigration/Serialization/EndingConditions），Registry 16→19 条目。全量 1045 测试通过。

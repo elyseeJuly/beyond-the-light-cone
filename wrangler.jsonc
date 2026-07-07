@@ -1,0 +1,8 @@
+{
+  "name": "beyond-the-light-cone",
+  "compatibility_date": "2026-07-03",
+  "assets": {
+    "directory": "./03_Web_Rebuild/dist",
+    "not_found_handling": "single-page-application"
+  }
+}

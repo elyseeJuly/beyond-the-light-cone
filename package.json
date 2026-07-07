@@ -1,0 +1,11 @@
+{
+  "name": "beyond-the-light-cone",
+  "type": "module",
+  "scripts": {
+    "build": "cd 03_Web_Rebuild && npm ci && npm run build:cf",
+    "deploy:cf": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.10.0"
+  }
+}

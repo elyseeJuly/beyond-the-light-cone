@@ -105,8 +105,8 @@ test.describe('Guided Tutorial E2E Flow', () => {
     await nextBtn.click();
     await page.waitForTimeout(200);
 
-    // ===== 第 6 步：政府管理 =====
-    await expect(page.locator('text=内阁政府管理中枢')).toBeVisible();
+    // ===== 第 6 步：外交中心 =====
+    await expect(page.locator('text=深空外交监测网络')).toBeVisible();
     await nextBtn.click();
     await page.waitForTimeout(200);
 
@@ -115,13 +115,13 @@ test.describe('Guided Tutorial E2E Flow', () => {
     await nextBtn.click();
     await page.waitForTimeout(200);
 
-    // ===== 第 8 步：面壁者/执剑人威慑 =====
-    await expect(page.locator('text=黑暗森林防备体系')).toBeVisible();
+    // ===== 第 8 步：政府管理 =====
+    await expect(page.locator('text=内阁政府管理中枢')).toBeVisible();
     await nextBtn.click();
     await page.waitForTimeout(200);
 
-    // ===== 第 9 步：外交中心 =====
-    await expect(page.locator('text=深空外交监测网络')).toBeVisible();
+    // ===== 第 9 步：面壁者/执剑人威慑 =====
+    await expect(page.locator('text=黑暗森林防备体系')).toBeVisible();
     await nextBtn.click();
     await page.waitForTimeout(200);
 

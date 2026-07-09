@@ -133,7 +133,8 @@ test.describe('Guided Tutorial E2E Flow', () => {
     // ===== 第 11 步：生存守则与开始游戏 =====
     await expect(page.locator('text=授权通过：执政官生存法则')).toBeVisible();
     
-    const startBtn = page.locator('button:has-text("确认授权并开始")');
+    const isMobile = page.viewportSize()?.width ? page.viewportSize()!.width < 768 : false;
+    const startBtn = page.locator(isMobile ? 'button:has-text("开始")' : 'button:has-text("确认授权并开始")').last();
     await expect(startBtn).toBeVisible();
     await startBtn.click();
 

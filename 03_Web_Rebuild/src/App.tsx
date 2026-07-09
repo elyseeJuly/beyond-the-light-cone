@@ -30,7 +30,9 @@ const TechUnlockModal = lazy(() => import('./components/TechUnlockModal').then(m
 const SettingsModal = lazy(() => import('./components/SettingsModal').then(m => ({ default: m.SettingsModal })));
 const OrientationPrompt = lazy(() => import('./components/OrientationPrompt').then(m => ({ default: m.OrientationPrompt })));
 const GameCoverScreen = lazy(() => import('./components/GameCoverScreen').then(m => ({ default: m.GameCoverScreen })));
+const AssetDownloadPromptModal = lazy(() => import('./components/AssetDownloadPromptModal').then(m => ({ default: m.AssetDownloadPromptModal })));
 import { SaveManager } from './core/SaveManager';
+import { assetLoader } from './core/AssetLoader';
 
 const LazyFallback: React.FC = () => (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#070B14]/80" />
@@ -60,6 +62,8 @@ export const App: React.FC = () => {
   const [unlockedTech, setUnlockedTech] = useState<{ name: string; treeType: string } | null>(null);
   const [currentEpoch, setCurrentEpoch] = useState(0);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [showDownloadPrompt, setShowDownloadPrompt] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'audio' | 'storage'>('audio');
 
   const atmosphereEngineRef = useRef<any>(null);
   const bp = useBreakpoint();
@@ -427,6 +431,12 @@ export const App: React.FC = () => {
                   GameInstance.get().earthCivi.isAiBrainEnabled = enableAiBrain;
                   if (!withTutorial) {
                     localStorage.setItem('game-tutorial-seen', 'true');
+                    const stats = assetLoader.getStats();
+                    const hasPending = stats.pendingPacks.length > 0;
+                    const seenPrompt = localStorage.getItem('game-assets-prompt-seen') === 'true';
+                    if (hasPending && !seenPrompt) {
+                      setShowDownloadPrompt(true);
+                    }
                   } else {
                     localStorage.removeItem('game-tutorial-seen');
                   }
@@ -455,13 +465,42 @@ export const App: React.FC = () => {
                 }}
               />
             )}
-            {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
+            {showTutorial && (
+              <Tutorial 
+                onComplete={() => {
+                  setShowTutorial(false);
+                  const stats = assetLoader.getStats();
+                  const hasPending = stats.pendingPacks.length > 0;
+                  const seenPrompt = localStorage.getItem('game-assets-prompt-seen') === 'true';
+                  if (hasPending && !seenPrompt) {
+                    setShowDownloadPrompt(true);
+                  }
+                }} 
+              />
+            )}
             {unlockedTech && <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />}
             {showFleetModal && <FleetModal onClose={() => setShowFleetModal(false)} />}
             {showBattleScreen && <BattleScreen onClose={() => setShowBattleScreen(false)} />}
             {isGameOver && <EndGameScreen />}
             {showMuseum && <MuseumGallery onClose={() => setShowMuseum(false)} />}
-            {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+            {showSettings && (
+              <SettingsModal 
+                initialTab={settingsInitialTab} 
+                onClose={() => {
+                  setShowSettings(false);
+                  setSettingsInitialTab('audio');
+                }} 
+              />
+            )}
+            {showDownloadPrompt && (
+              <AssetDownloadPromptModal
+                onClose={() => setShowDownloadPrompt(false)}
+                onOpenSettings={() => {
+                  setSettingsInitialTab('storage');
+                  setShowSettings(true);
+                }}
+              />
+            )}
           </Suspense>
 
           {/* PWA Components */}

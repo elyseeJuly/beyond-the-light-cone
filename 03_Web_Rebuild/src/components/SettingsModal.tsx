@@ -7,12 +7,13 @@ import { GAME_VERSION } from '../utils/version';
 
 interface SettingsModalProps {
   onClose: () => void;
+  initialTab?: SettingsTab;
 }
 
 type SettingsTab = 'audio' | 'lang' | 'display' | 'perf' | 'save' | 'help' | 'credits' | 'storage';
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<SettingsTab>('audio');
+export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTab }) => {
+  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab || 'audio');
   
   // Storage states
   const [assetStats, setAssetStats] = useState(() => assetLoader.getStats());

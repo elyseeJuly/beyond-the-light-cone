@@ -17,6 +17,7 @@
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 
 ## 审视日志
+- 2026-07-10: 修复 E2E 测试与 Cloudflare 部署反复失败故障 —— ① E2E 测试修复：修正 `core-flow.spec.ts` 归档视图标题断言为 `"岁月史书"`；修正 `tutorial-guided.spec.ts` 移动端教程结束按钮文本断言为 `"开始"`（自适应屏幕尺寸）。② 修复 `AssetDownload.scenario.test.ts` 版本号一致性断言：因本地版本号升至 `1.0.2` 时未重新生成 `asset_manifest.json`，导致 CI 测试中发生版本号冲突失败，通过重新运行 `npm run generate-manifest` 刷新清单并提交解决。③ Cloudflare 部署修复：定位到纯静态 assets 托管模式下 Cloudflare Pages 跳过 `build.command` 的免构建陷阱，通过在根目录引入最小 Worker 代理 `src/worker.js` 并配置 `"main": "src/worker.js"` 强制激活云端 Vite 编译，打通 Cloudflare Pages/Workers CI/CD 流水线。
 - 2026-07-05: Release 流水线修复（续）——v1.0.1 Gate 因 asset_manifest.json 硬编码版本 1.0.0 与 package.json 1.0.1 不一致而失败，AssetDownload 场景测试断言 manifest.version === pkg.version 未通过。重新生成 manifest 同步版本号，删除旧标签重新推送 v1.0.1。建议：版本号来源统一为 package.json，manifest 生成应纳入 CI 构建步骤。
 - 2026-07-05: Release 流水线三阻塞修复——诊断 v1.0.0 Release 仅有源码压缩包的原因：① publish-release 依赖 build-tauri 成功 → Tauri 失败时 Web 发布被阻塞；② 缺少 permissions: contents: write → GITHUB_TOKEN 无法创建 Release；③ Gate 的 TS 编译错误（已修复）。修复后 publish-release 仅依赖 build-web，Tauri 产物条件下载，工作流级 contents: write 权限。Release 流水线从 🔴 转 🟢。
 - 2026-07-05: 三项修复核实与 Release 流水线修复——核实 SCEN-EVENT-FREEZE、SCEN-TOPHUD-ZINDEX、SCEN-EVENTBUS-COMPAT 三项修复与 5 项审计修复无冲突、互为补充。修复 Release 流水线阻塞：9 个 TS 编译错误（未使用变量/类型不匹配）+ 3 个测试运行时错误（EventBus.emit 防御性 handlers 初始化 + GameInstance.reset() setTimeout 空值守卫）。全量 1045 测试 0 错误通过。

@@ -1,6 +1,7 @@
 {
   "name": "beyond-the-light-cone",
   "compatibility_date": "2026-07-03",
+  "main": "src/worker.js",
   "build": {
     "command": "npm run build",
     "cwd": "."

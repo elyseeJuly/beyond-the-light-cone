@@ -200,14 +200,21 @@ export const RightInspector: React.FC = () => {
                             </span>
                             <span className={`font-bold font-data ${miningShortage ? 'text-orange-400' : 'text-[var(--color-primary)]'}`}>{earth.miningWorkers}万人</span>
                           </div>
-                          <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            value={earth.miningRatio} 
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={earth.miningRatio}
                             onChange={(ev) => {
-                              earth.miningRatio = parseInt(ev.target.value, 10);
-                              earth.allocateWorkers();
+                              const newVal = parseInt(ev.target.value, 10);
+                              const delta = newVal - earth.miningRatio;
+                              if (delta !== 0) {
+                                if (earth.adjustWorkerRatio('mining', delta)) {
+                                  // AP 消耗成功，比例已调整
+                                } else {
+                                  // AP 不足：回滚滑块视觉
+                                }
+                              }
                               forceUpdate(n => n + 1);
                             }}
                             className={`w-full h-1 rounded appearance-none cursor-pointer ${miningShortage ? 'bg-orange-950 accent-orange-500' : 'bg-cyan-950 accent-[var(--color-primary)]'}`}
@@ -222,14 +229,17 @@ export const RightInspector: React.FC = () => {
                             </span>
                             <span className={`font-bold font-data ${factoryShortage ? 'text-orange-400' : 'text-emerald-400'}`}>{earth.factoryWorkers}万人</span>
                           </div>
-                          <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            value={earth.factoryRatio} 
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={earth.factoryRatio}
                             onChange={(ev) => {
-                              earth.factoryRatio = parseInt(ev.target.value, 10);
-                              earth.allocateWorkers();
+                              const newVal = parseInt(ev.target.value, 10);
+                              const delta = newVal - earth.factoryRatio;
+                              if (delta !== 0) {
+                                earth.adjustWorkerRatio('factory', delta);
+                              }
                               forceUpdate(n => n + 1);
                             }}
                             className={`w-full h-1 rounded appearance-none cursor-pointer ${factoryShortage ? 'bg-orange-950 accent-orange-500' : 'bg-emerald-950 accent-emerald-400'}`}
@@ -241,14 +251,17 @@ export const RightInspector: React.FC = () => {
                             <span className="text-[var(--text-secondary)]">文化占比: {earth.cultureRatio}% (实际: {actualCulturePct}%)</span>
                             <span className="font-bold text-amber-400 font-data">{earth.cultureWorkers}万人</span>
                           </div>
-                          <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            value={earth.cultureRatio} 
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={earth.cultureRatio}
                             onChange={(ev) => {
-                              earth.cultureRatio = parseInt(ev.target.value, 10);
-                              earth.allocateWorkers();
+                              const newVal = parseInt(ev.target.value, 10);
+                              const delta = newVal - earth.cultureRatio;
+                              if (delta !== 0) {
+                                earth.adjustWorkerRatio('culture', delta);
+                              }
                               forceUpdate(n => n + 1);
                             }}
                             className="w-full h-1 bg-amber-950 rounded appearance-none cursor-pointer accent-amber-400"

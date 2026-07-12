@@ -351,7 +351,10 @@ export class StarMapRenderer {
         const dx = screenX - rawX;
         const dy = screenY - rawY;
         const visualRadius = rs.radius * this.zoomLevel;
-        if (dx * dx + dy * dy <= visualRadius * visualRadius * 4 + 100) {
+        // 与移动端 hit test 公式对齐：最小 44px 命中半径，地球(index===3)给 60px 更大点击区
+        const minHit = rs.star.index === 3 ? 60 : 44;
+        const hitRadius = Math.max(visualRadius * 4 + 100, minHit);
+        if (dx * dx + dy * dy <= hitRadius * hitRadius) {
           this.hoveredStar = rs;
           break;
         }

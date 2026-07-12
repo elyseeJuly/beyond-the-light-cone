@@ -227,36 +227,36 @@ export class Game {
     const civi = this.earthCivi;
     const actions: string[] = [];
 
-    if (civi.isResearchIdle() && civi.apCurrent >= 10) {
+    if (civi.isResearchIdle() && civi.canSpendAP(10)) {
       const best = civi.pickBestResearch();
       if (best) {
         civi.setResearchTarget(best.tree, best.node, false);
-        civi.apCurrent = Math.max(0, civi.apCurrent - 10);
+        civi.spendAP(10);  // AI 模式自动半价 = 5
         actions.push(`🤖 [AI智脑] 已自动将科研重心转移至『${best.node}』`);
       }
     }
 
-    if (civi.resource < 50 && civi.miningRatio < 60 && civi.apCurrent >= 5) {
+    if (civi.resource < 50 && civi.miningRatio < 60 && civi.canSpendAP(5)) {
       const available = 100 - civi.miningRatio - civi.factoryRatio - civi.cultureRatio;
       const boost = Math.min(10, Math.max(0, available));
       if (boost > 0) {
         civi.miningRatio += boost;
         const reduce = Math.min(boost, civi.cultureRatio);
         civi.cultureRatio -= reduce;
-        civi.apCurrent = Math.max(0, civi.apCurrent - 5);
+        civi.spendAP(5);  // AI 模式自动半价 = 2
         civi.allocateWorkers();
         actions.push(`🤖 [AI智脑] 资源紧张，已自动将采矿比例提升至 ${civi.miningRatio}%`);
       }
     }
 
-    if (civi.economy < 50 && civi.factoryRatio < 50 && civi.apCurrent >= 5) {
+    if (civi.economy < 50 && civi.factoryRatio < 50 && civi.canSpendAP(5)) {
       const available = 100 - civi.miningRatio - civi.factoryRatio - civi.cultureRatio;
       const boost = Math.min(10, Math.max(0, available));
       if (boost > 0) {
         civi.factoryRatio += boost;
         const reduce = Math.min(boost, civi.cultureRatio);
         civi.cultureRatio -= reduce;
-        civi.apCurrent = Math.max(0, civi.apCurrent - 5);
+        civi.spendAP(5);  // AI 模式自动半价 = 2
         civi.allocateWorkers();
         actions.push(`🤖 [AI智脑] 经济低迷，已自动将工厂比例提升至 ${civi.factoryRatio}%`);
       }
@@ -266,9 +266,9 @@ export class Game {
     for (const dept of civi.departments.values()) {
       if (!dept.leaderName) { hasEmptyDept = true; break; }
     }
-    if (hasEmptyDept && civi.apCurrent >= 5) {
+    if (hasEmptyDept && civi.canSpendAP(5)) {
       civi.autoAssignMinisters(this);
-      civi.apCurrent = Math.max(0, civi.apCurrent - 5);
+      civi.spendAP(5);  // AI 模式自动半价 = 2
       actions.push(`🤖 [AI智脑] 已自动补全部门首长空缺`);
     }
 
@@ -298,7 +298,7 @@ export class Game {
     }
   }
 
-  /** 获取手动模式下的回合阻断原因列表 */
+  /** 获取手动模式下的回合阻断原因列表（依据 SPEC_20260712_AP_SYSTEM_REDESIGN） */
   public getTurnBlockers(): string[] {
     const blockers: string[] = [];
     const civi = this.earthCivi;
@@ -309,12 +309,28 @@ export class Game {
     if (civi.economy <= 10) {
       blockers.push('经济危机：经济产出濒临崩溃');
     }
+    // 补回：科研停滞阻断
+    if (civi.isResearchIdle()) {
+      blockers.push('科研停滞：未指派任何研究项目');
+    }
+    // 补回：部门首长空缺阻断
+    let hasEmptyDept = false;
+    for (const dept of civi.departments.values()) {
+      if (!dept.leaderName) { hasEmptyDept = true; break; }
+    }
+    if (hasEmptyDept) {
+      blockers.push('行政瘫痪：存在部门首长空缺');
+    }
 
     return blockers;
   }
 
   public runARound(): void {
     if (this.isGameOver && !this.isObserverMode) return;
+
+    // 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：AP 恢复提前到回合入口，
+    // 保证被硬阻断时玩家仍有 AP 可用解除阻断
+    this.earthCivi.recoverAP();
 
     if (this.currentEvent || this.eventQueue.length > 0) {
       if (this.earthCivi.isAiBrainEnabled) {

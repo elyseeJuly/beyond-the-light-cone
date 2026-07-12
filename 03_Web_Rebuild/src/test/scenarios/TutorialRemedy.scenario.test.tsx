@@ -181,7 +181,26 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     game.earthCivi.resource = 100;
     game.earthCivi.economy = 100;
     game.earthCivi.apCurrent = 100;
-    
+    // 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：补齐科研停滞和行政瘫痪两项阻断器
+    // 消除"科研停滞"：在某棵科技树中找一个未完成节点标记为研究中
+    if (game.earthCivi.isResearchIdle && game.earthCivi.isResearchIdle()) {
+      for (const tree of game.earthCivi.tecTreeManager.trees.values()) {
+        for (const node of tree.nodes.values()) {
+          if (!node.finished) {
+            node.inResearch = true;
+            break;
+          }
+        }
+        if (!game.earthCivi.isResearchIdle()) break;
+      }
+    }
+    // 消除"行政瘫痪"：给所有空缺部门任命首长
+    for (const dept of game.earthCivi.departments.values()) {
+      if (!dept.leaderName) {
+        dept.leaderName = '__test_auto_appointed__';
+      }
+    }
+
     // Blocker list should now be empty
     expect(game.getTurnBlockers().length).toBe(0);
     

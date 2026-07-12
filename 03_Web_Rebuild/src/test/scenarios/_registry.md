@@ -1,5 +1,5 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-05
+> 最后更新：2026-07-12
 > 发布条件：所有条目为 GREEN
 
 ## 发布状态：🟢 就绪（0 RED / 19 总计）
@@ -11,7 +11,7 @@
 | SCEN-TUTORIAL-BLOCKER | 交互 | 教程期间"下一回合"点击突破阻断 | 教程未完成时，AI脑关闭，存在阻断时，"下一回合"不被禁用且能推进回合 | 🟢 GREEN | 2. 下一回合按钮失踪（教程期间禁用阻断） | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-CLICK-THROUGH | 交互 | 教程高亮抠孔点击穿透 | 教程高亮特定元素时，点击抠孔可以触发底层按钮（如AI脑），点击遮罩其他地方无效 | 🟢 GREEN | 4. ai智脑托管按钮不能点击 | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-STEPS-MATCH | 设计偏离 | 教程步骤分类对齐 | 教程分类为教程内部组织标签（基础操作/战略星图/情报中心/科技研发/政府管理），不与 LeftHub 导航项强制 1:1 对应。基础操作为教程专属分类。 | 🟢 GREEN | 教程分类语义不匹配（基础操作→岁月史书→战略星图 回归） | TutorialRemedy.scenario.test.tsx |
-| SCEN-MANUAL-BLOCKER | 交互 | 手动模式阻断与消除 | 非教程期间，手动模式下存在阻断时按钮禁用显示"有阻断"，阻断消除后恢复可用 | 🟢 GREEN | 手动模式回合阻断与指示器显示问题 | TutorialRemedy.scenario.test.tsx |
+| SCEN-MANUAL-BLOCKER | 交互 | 手动模式阻断与消除 | 非教程期间，手动模式下存在阻断时按钮禁用显示"有阻断"，阻断消除后恢复可用。依据 SPEC_20260712_AP_SYSTEM_REDESIGN：阻断器扩展为 4 项（资源崩盘/经济危机/科研停滞/行政瘫痪），测试已补齐新增阻断项的解除逻辑 | 🟢 GREEN | 手动模式回合阻断与指示器显示问题；AP 系统重设计补全阻断器 | TutorialRemedy.scenario.test.tsx |
 | REG-BUILD-CLEAN | Regression | 编译构建无警告 | 本地与 CI 环境构建无 TypeScript 未使用变量警告/错误，打包流程正常 | 🟢 GREEN | GitHub Pages 编译失败与未引用变量报错 | package.json (npm run build) |
 | REG-PWA-FREEZE | Regression | PWA 更新卡住修复 | 修复 GitHub Pages 下使用相对路径导致 Service Worker 更新及页面刷新卡死的问题 | 🟢 GREEN | 立即更新按钮点击卡住/白屏 | vite.config.ts |
 | **SCEN-TIMELINE-COMPARE** | Feature | 岁月史书双轨时间轴对比 | 岁月史书集成小说原版时间线与当前时间线对比，提供双轨历史命运对比分析功能 | 🟢 GREEN | 岁月史书缺失小说原版时间线与当前时间线对比 | ChroniclesModal.tsx |
@@ -31,6 +31,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-12: AP 系统重设计与回路闭合——依据 SPEC_20260712_AP_SYSTEM_REDESIGN：基础恢复从 30 降至 5，AP 不累加跨回合，新增纪元加成（危机+10/威慑+20/掩体-10）；recoverAP 提前至 Game.runARound 入口避免阻断死锁；getTurnBlockers 补全科研停滞和行政瘫痪两项阻断器；runAIBrain 4 处直接赋值改走 spendAP 享受半价；UI 层 RightInspector 3 处滑块和 TecTreeView 科研指派接入 AP 消耗。同步修复星图地球点击命中半径（桌面端从 15.6px 提升至 60px）和军事部增加星舰建造入口。SCEN-MANUAL-BLOCKER 测试用例补齐新增阻断器解除逻辑。全量 1045 测试通过。
 - 2026-07-05: Release 流水线修复（续）——发现 v1.0.1 Gate 仍失败，根因 asset_manifest.json 硬编码版本 1.0.0 与 package.json 1.0.1 不一致，AssetDownload 测试断言失败。重新生成 manifest 同步版本号，删除旧标签并重新推送 v1.0.1。全量 1045 测试通过。
 - 2026-07-05: Release 流水线三阻塞修复——诊断 Release 仅有源码压缩包无构建产物的根因：publish-release 依赖 build-tauri 成功导致 Tauri 失败时 Web 发布也被阻塞；缺少 permissions: contents: write 导致 GITHUB_TOKEN 无法创建 Release；Gate 的 TS 编译错误（已修复）。修复后 publish-release 改为仅依赖 build-web + Tauri 产物条件下载，添加工作流级 contents: write 权限。
 - 2026-07-05: 三项修复核实与 Release 流水线修复——核实 SCEN-EVENT-FREEZE（5/5 通过）、SCEN-TOPHUD-ZINDEX（z-50 确认）、SCEN-EVENTBUS-COMPAT（65/65 通过）三项由其他 AI 完成的修复，确认与 5 项审计修复无冲突、互为补充。修复 Release 流水线阻塞：9 个 TS 编译错误（未使用变量/类型不匹配）+ 3 个测试运行时错误（EventBus.emit 防御性 handlers 初始化 + GameInstance.reset() setTimeout 空值守卫）。全量 1045 测试 0 错误通过。

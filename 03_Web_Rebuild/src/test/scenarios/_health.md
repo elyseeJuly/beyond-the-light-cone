@@ -1,22 +1,23 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-07-05
+> 最后审视：2026-07-12
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 6 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 7 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
-| 架构 | 单文件最大行数 | 🟡 | Game.ts 1721行（+GameSerializer.ts 268行） | 从1900行降至1721行，提取了存档序列化系统；后续可继续拆分子系统 |
+| 架构 | 单文件最大行数 | 🟡 | Game.ts 约1740行（+GameSerializer.ts 268行） | AP 系统改动小幅增加行数，后续可继续拆分子系统 |
 | 架构 | Flag 系统耦合度 | 🟢 | FlagManager 封装 | FlagManager 包装 flags Set，提供 isSet/set/unset API，与原始 Set 共享引用，100% 存档兼容 |
+| 架构 | AP 系统回路闭合 | 🟢 | 已修复 | 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：UI 接入 AP 消耗、阻断器补全 4 项、AI 走 spendAP 半价、recoverAP 提前至回合入口；8 场景建模无死锁 |
+| 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
 | 性能 | 1000事件压力测试 | 🟢 | 通过 | 持续关注长局内存与性能表现 |
 | 内容 | 设计文档 vs 代码一致性 | 🟢 | 已解决 | 原 3 处偏离 (D01-D03) 已通过 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 确认为权威设计，并编写 SCEN-DESIGN-DRIFT 17 项验证测试 |
-| 文档 | 文档总数 | 🔴 | 184份 | 停止为简单 bug 编写冗长文档，推行"测试代替文档交接" |
 | DevOps | Release流水线 | 🟢 | Tag-Driven 自动化 | .github/workflows/release.yml（4Job：gate→build-web+build-tauri→publish-release）+ tools/extract-changelog.sh + tools/sync-version.sh |
 | 架构 | 资产按需下载功能 | 🟢 | 已接入主循环 | AssetLoader.downloadEraPack + preloadNextEra 已接入 Game.ts 纪元更替生命周期；manifest 分类覆盖率 99.3%（uncategorized 从 41% 降至 0.7%） |
-| 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 
 ## 审视日志
+- 2026-07-12: AP 系统回路闭合 + 星图点击 + 军事部星舰入口 —— 依据 SPEC_20260712_AP_SYSTEM_REDESIGN 完成 AP 系统重设计：基础恢复 30→5、AP 不累加跨回合、新增纪元加成（危机+10/威慑+20/掩体-10）；recoverAP 提前至 Game.runARound 入口避免阻断死锁；getTurnBlockers 补全科研停滞和行政瘫痪两项阻断器；runAIBrain 4 处直接赋值改走 spendAP 半价；UI 层 RightInspector 3 处滑块和 TecTreeView 科研指派接入 AP 消耗。同步修复星图地球点击命中半径（桌面端从 15.6px 提升至 60px，与移动端对齐）和军事部增加星舰建造入口（与地球 FleetModal 打通）。8 场景建模验证无死锁，全量 1045 测试通过。"AP 系统回路闭合"维度新增为 🟢。总体健康 🟢（0🔴/1🟡/7🟢）。
 - 2026-07-10: 修复 E2E 测试与 Cloudflare 部署反复失败故障 —— ① E2E 测试修复：修正 `core-flow.spec.ts` 归档视图标题断言为 `"岁月史书"`；修正 `tutorial-guided.spec.ts` 移动端教程结束按钮文本断言为 `"开始"`（自适应屏幕尺寸）。② 修复 `AssetDownload.scenario.test.ts` 版本号一致性断言：因本地版本号升至 `1.0.2` 时未重新生成 `asset_manifest.json`，导致 CI 测试中发生版本号冲突失败，通过重新运行 `npm run generate-manifest` 刷新清单并提交解决。③ Cloudflare 部署修复：定位到纯静态 assets 托管模式下 Cloudflare Pages 跳过 `build.command` 的免构建陷阱，通过在根目录引入最小 Worker 代理 `src/worker.js` 并配置 `"main": "src/worker.js"` 强制激活云端 Vite 编译，打通 Cloudflare Pages/Workers CI/CD 流水线。
 - 2026-07-05: Release 流水线修复（续）——v1.0.1 Gate 因 asset_manifest.json 硬编码版本 1.0.0 与 package.json 1.0.1 不一致而失败，AssetDownload 场景测试断言 manifest.version === pkg.version 未通过。重新生成 manifest 同步版本号，删除旧标签重新推送 v1.0.1。建议：版本号来源统一为 package.json，manifest 生成应纳入 CI 构建步骤。
 - 2026-07-05: Release 流水线三阻塞修复——诊断 v1.0.0 Release 仅有源码压缩包的原因：① publish-release 依赖 build-tauri 成功 → Tauri 失败时 Web 发布被阻塞；② 缺少 permissions: contents: write → GITHUB_TOKEN 无法创建 Release；③ Gate 的 TS 编译错误（已修复）。修复后 publish-release 仅依赖 build-web，Tauri 产物条件下载，工作流级 contents: write 权限。Release 流水线从 🔴 转 🟢。

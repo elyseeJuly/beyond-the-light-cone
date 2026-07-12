@@ -170,13 +170,22 @@ export const GovManagement: React.FC = () => {
                 </div>
               </div>
               
-              <button 
-                onClick={() => openLegacyDept(DepartmentType.ARMY, "军事部")}
-                data-tutorial-id="btn-gov-military-dept"
-                className="w-full py-2.5 rounded border border-orange-500 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
-              >
-                进入联合作战值班室
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-fleet-modal'))}
+                  data-tutorial-id="btn-gov-fleet-build"
+                  className="w-full py-2.5 rounded border border-cyan-500 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
+                >
+                  星舰建造与舰队编成
+                </button>
+                <button
+                  onClick={() => openLegacyDept(DepartmentType.ARMY, "军事部")}
+                  data-tutorial-id="btn-gov-military-dept"
+                  className="w-full py-2.5 rounded border border-orange-500 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
+                >
+                  进入联合作战值班室
+                </button>
+              </div>
             </div>
           )}
 

@@ -73,15 +73,28 @@ export class EarthCivilization extends Civilization {
     return true;
   }
 
-  /** 回合开始时恢复 AP */
+  /** 回合开始时恢复 AP（不累加跨回合剩余，每回合重置为恢复值） */
   public recoverAP(): void {
-    const baseRecovery = 30;
+    // 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：基础恢复 5 + 部长加成 + 文化加成 + 纪元加成
+    const baseRecovery = 5;
     const departmentBonus = this.getDepartmentBonus();
     const cultureBonus = Math.floor(this.culture / 100);
-    this.apCurrent = Math.min(this.apMax, this.apCurrent + baseRecovery + departmentBonus + cultureBonus);
+    const epochBonus = this.getEpochAPBonus();
+    const recovery = baseRecovery + departmentBonus + cultureBonus + epochBonus;
+    // 不累加上回合剩余：直接重置为恢复值（上限 100）
+    this.apCurrent = Math.min(this.apMax, Math.max(0, recovery));
     if (typeof window !== 'undefined') {
       GameInstance.get().eventBus.emitLegacy('ap-changed');
     }
+  }
+
+  /** 获取当前纪元的 AP 加成（依据 SPEC_20260712_AP_SYSTEM_REDESIGN） */
+  public getEpochAPBonus(): number {
+    // epoch 索引：0=黄金 1=危机 2=威慑 3=广播 4=掩体 5=银河 6=星屑
+    const epochBonusMap = [0, 10, 20, 0, -10, 0, 0];
+    const game = GameInstance.get();
+    const epoch = game.epoch;
+    return epochBonusMap[epoch] ?? 0;
   }
 
   public setResearchTarget(treeType: TecTreeType, nodeName: string, costAP: boolean = true): boolean {
@@ -236,7 +249,7 @@ export class EarthCivilization extends Civilization {
       return;
     }
 
-    this.recoverAP();
+    // recoverAP() 已提前至 Game.runARound() 入口，避免被阻断器拦截
     this.allocateWorkers();
 
     // 每回合减少工种比例锁的剩余回合数

@@ -74,6 +74,12 @@ export class TecTreeView {
     // 开始研发
     if (!node.inResearch) {
       if (game.earthCivi.economy >= node.cost) {
+        // 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：指派科研消耗 20 AP（AI 模式半价）
+        const apOk = game.earthCivi.setResearchTarget(type, name, true);
+        if (!apOk) {
+          alert("执政指令点不足，无法启动新科研！");
+          return;
+        }
         game.earthCivi.economy -= node.cost;
         node.inResearch = true;
         this.render(this.container, type); // Re-render

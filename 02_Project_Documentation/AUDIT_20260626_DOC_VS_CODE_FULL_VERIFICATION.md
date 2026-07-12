@@ -129,3 +129,15 @@ All 15 fixes from `AUDIT_20260624_NARRATIVE_TIMELINE_FIX_REPORT.md` verified:
 1. **Verify Playwright tests pass** with corrected baseURL at `http://localhost:4173/`
 2. **Older documents (~100+) not audited** — pre-20260621 SPEC/EXEC/AUDIT documents may contain additional claims
 3. **Optional**: Source original audio for the 7 endings and replace the mapped fallbacks with dedicated tracks
+
+---
+
+## 20260712 跨纪元审计复核注释
+
+> 本节为 FIX-16 历史文档同步追加内容，不修改原文。
+
+**复核结论**：本文档中 epochDeathMap 相关的 PASS 声明需补充说明。
+
+- **AR-6 发现**：epochDeathMap 中伊文斯/章北海/丁仪三人的注释标注为"危机纪元"死亡，但实际死亡列表从 `DETERRENCE` 起标记（即这三人在 CRISIS 纪元仍存活，进入 DETERRENCE 纪元后才死亡）。注释与数据不一致。
+- **FIX-09 修复**：已将注释修正为"威慑纪元初古筝行动后死亡"等，与死亡列表数据一致。
+- **影响范围**：本文档原始 PASS 声明基于注释而非数据，实际数据逻辑正确，仅注释措辞误导。修复后注释与数据一致。

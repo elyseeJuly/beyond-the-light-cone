@@ -46,7 +46,6 @@ export const FLAG = {
 
   // === 剧情标记 ===
   WALLFACER_PROJECT: 'wallfacer_project',
-  DARK_FOREST_DETERRENCE: 'dark_forest_deterrence',
   DETERRENCE_BROKEN: 'deterrence_broken',
   FIRST_CONTACT_MADE: 'first_contact_made',
   DIPLOMACY_OPENED: 'diplomacy_opened',

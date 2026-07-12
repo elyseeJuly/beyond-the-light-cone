@@ -67,6 +67,17 @@ export class FlagManager {
     this.flags.clear();
   }
 
+  /**
+   * 清理指定的临时 FLAG（用于纪元切换时清理上一纪元的临时标记）
+   * 仅清理传入列表中的 FLAG，保留其他 FLAG
+   * @param transientFlags 需要清理的临时 FLAG 名称列表
+   */
+  clearTransientFlags(transientFlags: string[]): void {
+    for (const f of transientFlags) {
+      this.flags.delete(f);
+    }
+  }
+
   /** 序列化（用于 JSON.stringify） */
   toJSON(): string[] {
     return this.getSnapshot();

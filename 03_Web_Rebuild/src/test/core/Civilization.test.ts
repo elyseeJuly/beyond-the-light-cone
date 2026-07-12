@@ -53,6 +53,10 @@ describe('EarthCivilization', () => {
 
   it('runARound 推进文明回合', () => {
     game.rng = () => 0.9; // Disable random events to prevent test flakiness
+    // 预触发所有背景故事事件（inYear <= 0），避免它们作为交互事件阻塞年份推进
+    game.eventManager.events.forEach(e => {
+      if (e.inYear <= 0) e.hasTriggered = true;
+    });
     game.earthCivi.isAiBrainEnabled = true;
     game.runARound();
     if (game.currentEvent) {

@@ -192,7 +192,7 @@ export const RightInspector: React.FC = () => {
                     return (
                       <div className="space-y-3 bg-[#070B14]/40 p-3 rounded border border-[#243245]/30">
                         {/* Mining */}
-                        <div className={`space-y-1 p-1 rounded transition-colors ${miningShortage ? 'border border-orange-500/20 bg-orange-500/5' : ''}`}>
+                        <div data-tutorial-id="mining-ratio-section" className={`space-y-1 p-1 rounded transition-colors ${miningShortage ? 'border border-orange-500/20 bg-orange-500/5' : ''}`}>
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${miningShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
                               采矿占比: {earth.miningRatio}% (实际: {actualMiningPct}%)

@@ -486,7 +486,7 @@ export class GameEventManager {
         ],
         condition: { minYear: 70, epoch: "DETERRENCE", reqFlag: "swordholder_appointed", minDeterrence: 40 },
         choices: [
-          { label: "坚守威慑底线，增加投入", effects: [{ type: "flag", target: "deterrence_reinforced", value: 1 }, { type: "resource", target: "economy", value: -30 }] },
+          { label: "坚守威慑底线，增加投入", effects: [{ type: "resource", target: "economy", value: -30 }] },
           { label: "推行和平共处外交", effects: [{ type: "resource", target: "culture", value: 25 }, { type: "resource", target: "treachery", value: -5 }] }
         ]
       },
@@ -501,7 +501,7 @@ export class GameEventManager {
         condition: { minYear: 90, epoch: "DETERRENCE", reqTech: "曲率驱动理论", reqNotFlag: "lightspeed_project_approved" },
         choices: [
           { label: "秘密资助光速飞船研究", effects: [{ type: "flag", target: "lightspeed_project_approved", value: 1 }, { type: "resource", target: "economy", value: -50 }, { type: "resource", target: "prestige", value: 30 }] },
-          { label: "公开否决，维护威慑体系", effects: [{ type: "resource", target: "prestige", value: -15 }, { type: "flag", target: "lightspeed_rejected", value: 1 }] }
+          { label: "公开否决，维护威慑体系", effects: [{ type: "resource", target: "prestige", value: -15 }] }
         ]
       },
       {
@@ -515,7 +515,7 @@ export class GameEventManager {
         condition: { minYear: 120, epoch: "BROADCAST", reqNotFlag: "broadcast_dawn_seen" },
         choices: [
           { label: "加速建设掩体计划", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "economy", value: -40 }] },
-          { label: "全力发展逃亡科技", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "flag", target: "escape_tech_focus", value: 1 }, { type: "resource", target: "culture", value: -10 }] }
+          { label: "全力发展逃亡科技", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "culture", value: -10 }] }
         ]
       },
       {
@@ -528,11 +528,14 @@ export class GameEventManager {
         ],
         condition: { minYear: 150, epoch: "BROADCAST", reqFlag: "broadcast_dawn_seen" },
         choices: [
-          { label: "全面推行掩体计划", effects: [{ type: "flag", target: "bunker_project_active", value: 1 }, { type: "resource", target: "economy", value: -80 }, { type: "resource", target: "military", value: 5 }] },
-          { label: "掩体与光速飞船并行", effects: [{ type: "flag", target: "dual_strategy", value: 1 }, { type: "resource", target: "economy", value: -120 }, { type: "resource", target: "prestige", value: 20 }] }
+          { label: "全面推行掩体计划", effects: [{ type: "resource", target: "economy", value: -80 }, { type: "resource", target: "military", value: 5 }] },
+          { label: "掩体与光速飞船并行", effects: [{ type: "resource", target: "economy", value: -120 }, { type: "resource", target: "prestige", value: 20 }] }
         ]
       },
       {
+        // FIX-15 双写注释：dimensional_alert_seen 同时由 events.json year=340 事件写入。
+        // 设计意图：filteredEvent 提供条件性早期路径（minYear=180），events.json 提供固定里程碑（year=340）。
+        // reqNotFlag 保证幂等：任一路径写入后另一路径不再触发。
         id: "dimensional_threat_alert",
         title: "维度打击警报",
         tip: "深空探测器发现异常空间曲率波动——这可能意味着二向箔攻击正在逼近。",
@@ -585,8 +588,8 @@ export class GameEventManager {
         ],
         condition: { minYear: 280, epoch: "GALAXY", reqFlag: "galaxy_exodus_seen", minCulture: 80 },
         choices: [
-          { label: "全速返回太阳系", effects: [{ type: "flag", target: "return_to_home", value: 1 }, { type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "culture", value: 50 }] },
-          { label: "派遣探测器先行侦察", effects: [{ type: "flag", target: "cautious_return", value: 1 }, { type: "resource", target: "prestige", value: 30 }, { type: "resource", target: "military", value: 5 }] }
+          { label: "全速返回太阳系", effects: [{ type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "culture", value: 50 }] },
+          { label: "派遣探测器先行侦察", effects: [{ type: "resource", target: "prestige", value: 30 }, { type: "resource", target: "military", value: 5 }] }
         ]
       },
       {
@@ -613,8 +616,8 @@ export class GameEventManager {
         ],
         condition: { minYear: 260, epoch: "GALAXY", reqFlag: "galaxy_exodus_seen", minDeterrence: 70 },
         choices: [
-          { label: "全文明进入静默状态", effects: [{ type: "flag", target: "great_filter_silence", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -50 }] },
-          { label: "尝试建立联系", effects: [{ type: "flag", target: "great_filter_contact", value: 1 }, { type: "resource", target: "prestige", value: -30 }] }
+          { label: "全文明进入静默状态", effects: [{ type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -50 }] },
+          { label: "尝试建立联系", effects: [{ type: "resource", target: "prestige", value: -30 }] }
         ]
       },
 
@@ -663,6 +666,9 @@ export class GameEventManager {
         ]
       },
       {
+        // FIX-15 双写注释：zero_homer_contacted 同时由 events.json year=400 事件写入。
+        // 设计意图：filteredEvent 提供条件性早期路径（minYear=300, minCulture=80, minDeterrence=50），
+        // events.json 提供固定里程碑（year=400）。reqNotFlag 保证幂等。
         id: "zero_homer_contact_event",
         title: "归零者接触",
         tip: "一股来自宇宙深处的超维广播穿透了所有物理屏障——归零者向全宇宙发出了最后的讯息。",
@@ -677,6 +683,9 @@ export class GameEventManager {
         ]
       },
       {
+        // FIX-15 双写注释：mini_universe_built 同时由 events.json year=405 事件写入。
+        // 设计意图：filteredEvent 提供条件性早期路径（minYear=350, reqTech=宇宙重启理论, minCulture=90），
+        // events.json 提供固定里程碑（year=405）。reqNotFlag 保证幂等。
         id: "mini_universe_build_event",
         title: "小宇宙之门",
         tip: "归零者向人类提供了建造小宇宙的终极技术。一个独立于大宇宙的微型时空泡即将诞生。",
@@ -736,6 +745,9 @@ export class GameEventManager {
       }
 
       if (!this.checkFilterConditions(fev.condition)) continue;
+
+      // 检查事件中的人物是否已解锁且存活
+      if (!this.isEventCharactersUnlocked(fev)) continue;
 
       result.push(fev);
     }
@@ -927,6 +939,10 @@ export class GameEventManager {
             return; // Skip for now, will check again in future turns
           }
         }
+        // 检查事件中的人物是否已解锁且存活
+        if (!this.isEventCharactersUnlocked(e)) {
+          return; // 人物未就绪，等下一回合再检查
+        }
         e.hasTriggered = true;
         triggered.push(e);
       }
@@ -936,7 +952,7 @@ export class GameEventManager {
 
   public isPersonAliveInEpoch(personName: string, epochName: string): boolean {
     const epochDeathMap: Record<string, string[]> = {
-      // 危机纪元初古筝行动死亡
+      // 威慑纪元初古筝行动后死亡（死亡列表从 DETERRENCE 起标记）
       "伊文斯": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
       // 危机纪元球状闪电结局后量子态化/退场
       "林云": ["CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
@@ -948,9 +964,9 @@ export class GameEventManager {
       "希恩斯": ["BROADCAST", "BUNKER", "GALAXY"],
       // 掩体纪元末冥王星二维化死亡
       "罗辑": ["GALAXY"],
-      // 危机纪元末黑暗战役死亡
+      // 威慑纪元初黑暗战役后死亡（死亡列表从 DETERRENCE 起标记）
       "章北海": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
-      // 危机纪元末末日战役牺牲
+      // 威慑纪元初末日战役后牺牲（死亡列表从 DETERRENCE 起标记）
       "丁仪": ["DETERRENCE", "BROADCAST", "BUNKER", "GALAXY"],
       // 威慑纪元后隐退，视为广播纪元后不再活跃
       "庄颜": ["BROADCAST", "BUNKER", "GALAXY"],
@@ -991,7 +1007,7 @@ export class GameEventManager {
     return !(epochDeathMap[personName] || []).includes(epochName);
   }
 
-  private isEventCharactersUnlocked(e: GameEvent): boolean {
+  private isEventCharactersUnlocked(e: any): boolean {
     const game = this.#game;
     if (!game) return true;
 
@@ -1006,8 +1022,10 @@ export class GameEventManager {
     const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
     const currentEpoch = epochNames[game.epoch];
 
-    if (e.dialogNodes) {
-      for (const node of e.dialogNodes) {
+    // 兼容 dialogNodes（剧情事件）和 dialogQueue（filteredEvent）两种属性
+    const nodes = e.dialogNodes || e.dialogQueue;
+    if (nodes) {
+      for (const node of nodes) {
         const speaker = node.speakerName;
         if (speaker) {
           // Skip alive check for historical records/playbacks/inspections

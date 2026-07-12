@@ -298,10 +298,16 @@ export class Game {
     }
   }
 
+  /** 新游戏最初三个回合（year < 3）内，科研停滞与部门空缺降级为警告，不阻断推进 */
+  private isInGracePeriod(): boolean {
+    return this.year < 3;
+  }
+
   /** 获取手动模式下的回合阻断原因列表（依据 SPEC_20260712_AP_SYSTEM_REDESIGN） */
   public getTurnBlockers(): string[] {
     const blockers: string[] = [];
     const civi = this.earthCivi;
+    const grace = this.isInGracePeriod();
 
     if (civi.resource <= 10) {
       blockers.push('资源崩盘：资源储备即将耗尽');
@@ -309,20 +315,42 @@ export class Game {
     if (civi.economy <= 10) {
       blockers.push('经济危机：经济产出濒临崩溃');
     }
-    // 补回：科研停滞阻断
-    if (civi.isResearchIdle()) {
+    // 宽限期内科研停滞不阻断，仅作为警告
+    if (!grace && civi.isResearchIdle()) {
       blockers.push('科研停滞：未指派任何研究项目');
     }
-    // 补回：部门首长空缺阻断
+    // 宽限期内部门首长空缺不阻断，仅作为警告
+    if (!grace) {
+      let hasEmptyDept = false;
+      for (const dept of civi.departments.values()) {
+        if (!dept.leaderName) { hasEmptyDept = true; break; }
+      }
+      if (hasEmptyDept) {
+        blockers.push('行政瘫痪：存在部门首长空缺');
+      }
+    }
+
+    return blockers;
+  }
+
+  /** 获取宽限期内降级为警告的事项（不阻断回合推进） */
+  public getTurnWarnings(): string[] {
+    if (!this.isInGracePeriod()) return [];
+    const warnings: string[] = [];
+    const civi = this.earthCivi;
+
+    if (civi.isResearchIdle()) {
+      warnings.push('科研停滞：未指派任何研究项目');
+    }
     let hasEmptyDept = false;
     for (const dept of civi.departments.values()) {
       if (!dept.leaderName) { hasEmptyDept = true; break; }
     }
     if (hasEmptyDept) {
-      blockers.push('行政瘫痪：存在部门首长空缺');
+      warnings.push('行政瘫痪：存在部门首长空缺');
     }
 
-    return blockers;
+    return warnings;
   }
 
   public runARound(): void {
@@ -663,8 +691,8 @@ export class Game {
           this.handleSubsystemError("叙事片段生成异常", e);
         }
 
-        // 1. 更新威慑维持回合计数器
-        if (this.epoch >= EpochType.DETERRENCE && this.earthCivi.swordholder !== null) {
+        // 1. 更新威慑维持回合计数器（仅在威慑纪元累积，避免跨纪元死累积）
+        if (this.epoch === EpochType.DETERRENCE && this.earthCivi.swordholder !== null) {
           if (this.earthCivi.deterrenceValue >= 80) {
             this.deterrenceEnduranceRounds++;
           } else {
@@ -744,8 +772,11 @@ export class Game {
 
         this.year++;
         this._yearJustAdvanced = true;
-        this.updateEpoch();
+        // 先检查结局，再推进纪元，避免纪元推进覆盖应触发的结局
         this.checkVictoryConditions();
+        if (!this.isGameOver) {
+          this.updateEpoch();
+        }
         this.processNextEvent();
         this.addHistory(`回合推进完成：${this.year - 1} -> ${this.year} (存活异星文明: ${this.alienCiviManager.aliens.size}, 待处理事件: ${this.eventQueue.length})`);
         this.eventBus.emitLegacy('game-turn-complete');
@@ -804,6 +835,19 @@ export class Game {
 
     if (prevEpoch !== this.epoch) {
       this.flagManager.unset(FLAG.EPOCH_STALLED);
+      // 清理上一纪元的临时 FLAG（仅清理已确认的临时标记，保留跨纪元持久 FLAG）
+      const transientFlagsToClean = [
+        'dark_forest_deterrence',
+        'deterrence_era_declared', 'swordholder_handover', 'tech_exchange_started',
+        'chengxin_swordholder', 'deterrence_reinforced', 'lightspeed_rejected', 'dark_battle',
+        'trisolaris_fleet_escaped', 'broadcast_era_declared', 'escape_tech_focus',
+        'bunker_project_active', 'dual_strategy', 'tianming_fairy_tales', 'staircase_data',
+        'bunker_era_declared', 'pluto_museum', 'solar_system_flattened',
+        'wade_coup', 'wade_executed', 'wade_succeeded',
+        'galaxy_era_declared', 'return_to_home', 'cautious_return',
+        'great_filter_silence', 'great_filter_contact',
+      ];
+      this.flagManager.clearTransientFlags(transientFlagsToClean);
       const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
       const epochName = epochNames[this.epoch];
       this.addHistory(`【纪元更替】进入${epochName}！`);
@@ -904,7 +948,6 @@ export class Game {
           label: `进入${newEpochName}`,
           action: () => {
             if (this.epoch === EpochType.STARDUST) {
-              this.addFlag(FLAG.STARDUST_ERA_ACTIVE);
               this.earthCivi.culture += 300;
               this.addHistory("【星屑遗泽】步入最后的纪元，古老的火种在灰烬中复燃，文化产出大幅提升！");
             }

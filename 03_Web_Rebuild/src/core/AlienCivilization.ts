@@ -332,6 +332,8 @@ export class AlienCivilization extends Civilization {
         } else {
           game.dimensionStrikeTriggered = true;
           game.dimensionStrikeYear = game.year;
+          // 同步设置 dimensional_strike FLAG，统一双系统（FLAG 用于事件/纪元门控，字段用于结局判定）
+          game.addFlag(FLAG.DIMENSIONAL_STRIKE);
         }
       }
     }

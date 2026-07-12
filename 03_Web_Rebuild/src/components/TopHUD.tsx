@@ -78,6 +78,7 @@ export const TopHUD: React.FC = () => {
   const isAiBrainEnabled = earth.isAiBrainEnabled;
   const isTutorialActive = typeof window !== 'undefined' && (window as any).isTutorialActive;
   const turnBlockers = (isAiBrainEnabled || isTutorialActive) ? [] : game.getTurnBlockers();
+  const turnWarnings = (isAiBrainEnabled || isTutorialActive) ? [] : game.getTurnWarnings();
 
   // Dynamic Stability calculation
   let finishedTechs = 0;
@@ -120,6 +121,7 @@ export const TopHUD: React.FC = () => {
     apCurrent,
     isAiBrainEnabled,
     turnBlockers,
+    turnWarnings,
     civiLevel: earth.civiLevel,
     civiLevelLabel: earth.getCiviLevelLabel(),
     stability,
@@ -305,16 +307,21 @@ export const TopHUD: React.FC = () => {
         </button>
 
         {/* Next Turn Button — always visible */}
-        <button 
-          onClick={handleNextTurn} 
+        <button
+          onClick={handleNextTurn}
           disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0)}
           data-tutorial-id="btn-next-turn"
           className={`btn-next-turn flex items-center gap-1 md:gap-2 text-[10px] md:text-xs ${
             (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0))
               ? 'opacity-40 cursor-not-allowed pointer-events-none'
-              : 'cursor-pointer'
+              : stats.turnWarnings.length > 0
+                ? 'cursor-pointer text-amber-400 animate-pulse'
+                : 'cursor-pointer'
           }`}
-          title={!stats.isAiBrainEnabled && stats.turnBlockers.length > 0 ? stats.turnBlockers[0] : ''}
+          title={
+            !stats.isAiBrainEnabled && stats.turnBlockers.length > 0 ? stats.turnBlockers[0] :
+            !stats.isAiBrainEnabled && stats.turnWarnings.length > 0 ? stats.turnWarnings[0] : ''
+          }
         >
           <span className="font-title font-bold tracking-wider">
             {stats.hasEvent ? "同步逻辑中" : (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) ? "有阻断" : "下一回合"}

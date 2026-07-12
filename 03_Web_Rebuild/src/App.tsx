@@ -19,6 +19,8 @@ import { preloadCoreImages } from './utils/assetUrl';
 import { UpdatePrompt } from './components/UpdatePrompt';
 import { useBreakpoint } from './hooks/useBreakpoint';
 import { Toast } from './components/common/Toast';
+import { ContextualTips } from './components/ContextualTips';
+import { BeginnerTasks } from './components/BeginnerTasks';
 
 // 重型模态组件按路由/交互懒加载，降低首屏 index chunk 体积
 const StoryModal = lazy(() => import('./components/StoryModal').then(m => ({ default: m.StoryModal })));
@@ -509,6 +511,8 @@ export const App: React.FC = () => {
             <OrientationPrompt />
           </Suspense>
           <Toast />
+          <ContextualTips />
+          {!showTutorial && !showCoverScreen && localStorage.getItem('game-tutorial-seen') === 'true' && <BeginnerTasks />}
 
           {/* Legacy Modal System Bridge */}
           <div id="modal-container" className="modal-overlay hidden">

@@ -6034,11 +6034,6 @@
         "label": "支持程心接任执剑人，顺应民意。(威慑值大幅下降，文明轨道改写)",
         "effects": [
           {
-            "type": "flag",
-            "target": "chengxin_swordholder",
-            "value": 1
-          },
-          {
             "type": "resource",
             "target": "prestige",
             "value": 5
@@ -6502,11 +6497,6 @@
       {
         "label": "全力解读并应用童话中的科技隐喻。获得光速飞船研究关键。",
         "effects": [
-          {
-            "type": "flag",
-            "target": "tianming_fairy_tales",
-            "value": 1
-          },
           {
             "type": "resource",
             "target": "culture",
@@ -7049,11 +7039,6 @@
       {
         "label": "全力下载，不顾智子可能的监听。获取三体科技核心。",
         "effects": [
-          {
-            "type": "flag",
-            "target": "staircase_data",
-            "value": 1
-          },
           {
             "type": "resource",
             "target": "culture",

@@ -80,3 +80,26 @@ if (fullText.includes("歌者") || fullText.includes("光粒")) {
 5. 结局条件数据化，判定/预报同源（两天）
 
 做完 1 和 2，我预计你的 bug 复发率就会有肉眼可见的下降——因为它们分别堵住了"bug 不被发现"和"bug 被静默引入"两个口子。第 1 项今天就能做：全局搜 `catch (e`,加 rethrow 开关，跑一次 Autoplay500，把炸出来的东西列个清单——那份清单大概率就是你这两个月一直在追的那些幽灵的老巢。
+
+---
+
+## 20260712 跨纪元审计复核注释
+
+> 本节为 FIX-16 历史文档同步追加内容，不修改原文。
+
+**复核结论**：本文档中提出的问题已在 20260712 跨纪元审计中逐一复核。
+
+### 发现四（FlagManager 引用别名陷阱）
+
+- **FIX-11 复核结果**：`GameSerializer.ts:76-78` 中 `restorePrototypes` 已显式重建 `new FlagManager(inst.flags)`，确保 FlagManager 与 flags Set 共享引用。经代码确认，反序列化后 FlagManager 行为一致，引用漂移风险已消除。
+- **dark_domain_decision / black_domain_decision 漂移**：FIX-02 已修正，events.json 中黑域决策事件原写入 `black_domain_decision`（错误名称），胜利判定读取 `dark_domain_decision`。已统一为 `dark_domain_decision`。
+
+### 发现五（结局判定与预报两套手写逻辑）
+
+- **FIX-14 复核结果**：确认为 P3 问题，判定（`checkVictoryConditions`）与预报（`getEndingForecast`）仍为两套独立手写逻辑。因重构涉及全部结局条件数据化，风险高、收益低，**暂不修复但记录**。待后续版本结局系统重构时统一处理。
+
+### 其他速记复核
+
+- **strictMode**：已实现（`Game.strictMode`），测试和开发构建开启。
+- **FLAG 类型化**：`GameFlags.ts` 中 `FLAG` 常量已定义，但文案字符串匹配（`grantsFlags` legacy fallback）仍存在于 `Game.ts:494-524`，待后续迁移。
+- **统一序列化路径**：`gameReplacer` 已统一使用，但 `turnHistory` 仍用内联 replacer，待后续统一。

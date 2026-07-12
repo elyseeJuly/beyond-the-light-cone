@@ -76,6 +76,15 @@ export enum EpochType {
 | 银河纪元 | `galaxy_exodus_seen` 或 `dimensional_strike` | 银河远行或二向箔打击 |
 | 星屑纪元 | `stardust_era_declared` 或 `stardust_era_seen` 或 `zero_homer_contacted` | 星屑时代宣告或归零者接触 |
 
+> **FIX-01 (20260712)**: 写入入口门控 FLAG 的事件，其 `triggerCondition.epoch` 必须标注为**当前纪元**（FLAG 写入时所在的纪元），而非目标纪元。否则会形成循环依赖：当前纪元无法触发事件 → FLAG 永不写入 → 下一纪元无法进入。
+> - `eto_founded` 由 CRISIS 纪元 year=-27 事件写入
+> - `coordinates_broadcasted` 由 DETERRENCE 纪元事件写入（罗辑/程心路线）
+> - `bunker_world_completed` 由 BROADCAST 纪元 year=280 事件写入
+
+> **FIX-04 (20260712)**: 纪元切换时自动清理上一纪元的临时 FLAG（`FlagManager.clearTransientFlags`），避免跨纪元污染。入口门控 FLAG（如 `deterrence_established`）不在清理列表中，保持跨纪元持久。
+
+> **FIX-13 (20260712)**: `runARound` 中 `checkVictoryConditions()` 先于 `updateEpoch()` 调用，确保同回合同时满足结局条件和纪元推进时，结局优先触发。
+
 **实现位置**: [Game.ts updateEpoch()](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/03_Web_Rebuild/src/core/Game.ts#L738-L803)
 
 ### 2.4 纪元溢出保护
@@ -319,6 +328,7 @@ earth.hasFactory = true;  // 工厂
 | 日期 | 版本 | 变更内容 |
 |------|------|---------|
 | 2026-07-03 | V1.0 | 初始创建，以当前实现为权威基准，整合原始 SPEC、迭代计划、审计修复中的所有设计变更 |
+| 2026-07-12 | V1.1 | 追加 FIX-01/FIX-04/FIX-13 审计修复注释：FLAG 门控事件 epoch 标注规则、临时 FLAG 清理机制、checkVictoryConditions 与 updateEpoch 调用顺序 |
 
 ---
 

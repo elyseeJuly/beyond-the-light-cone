@@ -19,7 +19,7 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "GOLDEN",
+      "epoch": "CRISIS",
       "minYear": -58
     }
   },
@@ -44,7 +44,7 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "GOLDEN",
+      "epoch": "CRISIS",
       "minYear": -36,
       "reqFlag": "red_shore_base_established"
     }
@@ -70,7 +70,7 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "GOLDEN",
+      "epoch": "CRISIS",
       "minYear": -28,
       "reqFlag": "signal_sent_to_trisolaris"
     }
@@ -100,7 +100,7 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "GOLDEN",
+      "epoch": "CRISIS",
       "minYear": -27,
       "reqFlag": "trisolaris_reply_received"
     }
@@ -178,8 +178,7 @@
     ],
     "triggerCondition": {
       "epoch": "CRISIS",
-      "minYear": 1,
-      "reqFlag": "sophon_blockade_confirmed"
+      "minYear": 1
     }
   },
   {
@@ -685,10 +684,6 @@
     "talk0_content": "【威慑纪元·纪元宣告】今日，人类正式迈入威慑纪元。罗辑博士以黑暗森林法则为剑，迫使三体世界坐在了谈判桌前。这是人类历史上第一次与高等外星文明达成战略平衡——我们不再是被猎杀的羔羊，而是持剑的猎人。愿威慑恒久，愿和平永驻。",
     "effects": [
       {
-        "type": "flag",
-        "target": "deterrence_era_declared"
-      },
-      {
         "type": "resource",
         "target": "culture",
         "value": 30
@@ -710,10 +705,6 @@
     "talk0_talker": "章北海",
     "talk0_content": "【黑暗战役】在末日之战的余波中，逃亡舰队之间爆发了黑暗战役。为了争夺有限的资源，'蓝色空间'号向'自然选择'号发起了攻击。这就是黑暗森林法则在人类内部的体现。",
     "effects": [
-      {
-        "type": "flag",
-        "target": "dark_battle"
-      },
       {
         "type": "resource",
         "target": "military",
@@ -783,10 +774,6 @@
     "talk0_content": "三体文明愿意与地球进行技术交流。我们将分享基础科学之外的应用技术，帮助你们重建文明。但请记住，这一切都是建立在威慑平衡之上的。",
     "effects": [
       {
-        "type": "flag",
-        "target": "tech_exchange_started"
-      },
-      {
         "type": "resource",
         "target": "culture",
         "value": 20
@@ -845,7 +832,6 @@
         "effects": [
           { "type": "unlock_person", "target": "程心", "value": 0 },
           { "type": "unlock_person", "target": "艾AA", "value": 0 },
-          { "type": "flag", "target": "swordholder_handover", "value": 0 },
           { "type": "flag", "target": "swordholder_chengxin", "value": 0 },
           { "type": "resource", "target": "prestige", "value": 20 },
           { "type": "resource", "target": "treachery", "value": 10 }
@@ -854,7 +840,6 @@
       {
         "label": "罗辑连任执剑人，继续威慑",
         "effects": [
-          { "type": "flag", "target": "swordholder_handover", "value": 0 },
           { "type": "flag", "target": "swordholder_luoji_retained", "value": 0 },
           { "type": "resource", "target": "prestige", "value": 40 },
           { "type": "resource", "target": "deterrenceValue", "value": 30 },
@@ -978,7 +963,7 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "BROADCAST",
+      "epoch": "DETERRENCE",
       "minYear": 230,
       "reqFlag": "australia_migration"
     }
@@ -1061,10 +1046,6 @@
     "talk0_content": "三体第二舰队已经启动光速引擎，逃离了太阳系。他们要去寻找新的家园。而我，将继续留在地球，见证人类文明的最终命运。",
     "effects": [
       {
-        "type": "flag",
-        "target": "trisolaris_fleet_escaped"
-      },
-      {
         "type": "resource",
         "target": "prestige",
         "value": 10
@@ -1120,10 +1101,6 @@
     "talk0_content": "【广播纪元·纪元宣告】三体星系的毁灭已经被全宇宙观测到。人类亲手按下了引力波广播按钮，将两个世界的坐标送入了黑暗森林。从今天起，我们不再是宇宙中默默无闻的文明——我们的存在已经被所有人知晓。这是广播纪元，一个暴露于全宇宙目光下的时代。",
     "effects": [
       {
-        "type": "flag",
-        "target": "broadcast_era_declared"
-      },
-      {
         "type": "resource",
         "target": "culture",
         "value": 40
@@ -1167,7 +1144,7 @@
       }
     ],
     "triggerCondition": {
-      "epoch": "BUNKER",
+      "epoch": "BROADCAST",
       "minYear": 280
     }
   },
@@ -1181,10 +1158,6 @@
     "talk0_talker": "联合政府",
     "talk0_content": "【掩体纪元·纪元宣告】黑暗森林打击的阴影笼罩着太阳系，但人类没有坐以待毙。今天，我们正式宣布进入掩体纪元——木星、土星、天王星与海王星背后的太空城将成为人类文明的堡垒。无论宇宙多么黑暗，只要还有一个掩体在，人类就还有未来。",
     "effects": [
-      {
-        "type": "flag",
-        "target": "bunker_era_declared"
-      },
       {
         "type": "resource",
         "target": "culture",
@@ -1214,7 +1187,7 @@
     "effects": [
       {
         "type": "flag",
-        "target": "black_domain_decision"
+        "target": "dark_domain_decision"
       },
       {
         "type": "resource",
@@ -1266,7 +1239,6 @@
         "label": "支持维德，全力推进光速飞船",
         "effects": [
           { "type": "flag", "target": "supported_wade", "value": 0 },
-          { "type": "flag", "target": "wade_coup", "value": 0 },
           { "type": "resource", "target": "military", "value": 50 },
           { "type": "resource", "target": "prestige", "value": -30 },
           { "type": "resource", "target": "treachery", "value": 30 },
@@ -1277,7 +1249,6 @@
         "label": "阻止维德，维护联合政府权威",
         "effects": [
           { "type": "flag", "target": "wade_opposed", "value": 0 },
-          { "type": "flag", "target": "wade_coup", "value": 0 },
           { "type": "resource", "target": "military", "value": -100 },
           { "type": "resource", "target": "prestige", "value": -20 },
           { "type": "resource", "target": "treachery", "value": 10 }
@@ -1300,7 +1271,6 @@
     "talk0_talker": "维德",
     "talk0_content": "我遵守了承诺。当我重新获得对星环集团的控制权时，我把它交还给了程心。现在，联合政府要处决我。没关系，至少我为人类争取了更多的时间...",
     "effects": [
-      { "type": "flag", "target": "wade_executed", "value": 0 },
       { "type": "resource", "target": "prestige", "value": -15 },
       { "type": "resource", "target": "treachery", "value": 5 },
       { "type": "resource", "target": "culture", "value": 5 }
@@ -1321,7 +1291,6 @@
     "talk0_talker": "维德",
     "talk0_content": "【光速飞船量产】执政官，感谢你当初的信任。星环集团已经掌握了成熟的曲率驱动技术，第一批量产型光速飞船——星环号系列——已经正式下线。我们为人类文明争得了逃亡的船票。",
     "effects": [
-      { "type": "flag", "target": "wade_succeeded", "value": 0 },
       { "type": "resource", "target": "military", "value": 100 },
       { "type": "resource", "target": "economy", "value": -200 },
       { "type": "resource", "target": "culture", "value": 30 },
@@ -1335,6 +1304,7 @@
   },
   {
     "name": 340,
+    "_comment": "FIX-15 双写注释：dimensional_alert_seen 同时由 filteredEvent(dimensional_threat_alert, minYear=180) 写入。本事件为固定里程碑，filteredEvent 为条件性早期路径，reqNotFlag 保证幂等。",
     "eventtype": 0,
     "eventeffect": 0,
     "eventvalue": 0,
@@ -1409,10 +1379,6 @@
     "talk0_content": "【冥王星博物馆】我守护着人类文明最后的纪念碑。冥王星已经开始二维化，但我要留在这里，直到最后一刻。把文明的种子带走吧，让它在银河系的某处重新发芽。",
     "effects": [
       {
-        "type": "flag",
-        "target": "pluto_museum"
-      },
-      {
         "type": "resource",
         "target": "culture",
         "value": 50
@@ -1439,10 +1405,6 @@
     "talk0_talker": "艾AA",
     "talk0_content": "太阳系...消失了。从三维变成了二维，像一幅永远不会褪色的画。但人类还没有灭绝——星环号带着文明的火种，飞向了银河系的深处。",
     "effects": [
-      {
-        "type": "flag",
-        "target": "solar_system_flattened"
-      },
       {
         "type": "resource",
         "target": "culture",
@@ -1507,6 +1469,7 @@
   },
   {
     "name": 400,
+    "_comment": "FIX-15 双写注释：zero_homer_contacted 同时由 filteredEvent(zero_homer_contact_event, minYear=300) 写入。本事件为固定里程碑，filteredEvent 为条件性早期路径，reqNotFlag 保证幂等。",
     "eventtype": 0,
     "eventeffect": 0,
     "eventvalue": 0,
@@ -1532,6 +1495,7 @@
   },
   {
     "name": 405,
+    "_comment": "FIX-15 双写注释：mini_universe_built 同时由 filteredEvent(mini_universe_build_event, minYear=350) 写入。本事件为固定里程碑，filteredEvent 为条件性早期路径，reqNotFlag 保证幂等。",
     "eventtype": 0,
     "eventeffect": 0,
     "eventvalue": 0,
@@ -1619,10 +1583,6 @@
     "talk0_content": "【银河纪元·纪元宣告】太阳系已经成为一幅悬挂在宇宙中的二维画卷，而我们——星环号上的人类，是旧时代最后的见证者。从今天起，人类正式进入银河纪元。我们将以星舰为家，以星辰为路，在银河系中重新点燃文明的火焰。旧神已死，新纪已至。",
     "effects": [
       {
-        "type": "flag",
-        "target": "galaxy_era_declared"
-      },
-      {
         "type": "resource",
         "target": "culture",
         "value": 60
@@ -1690,6 +1650,32 @@
       "epoch": "CRISIS",
       "minYear": 30,
       "reqNotFlag": "mars_rebellion_quelled"
+    }
+  },
+  {
+    "name": 370,
+    "eventtype": 0,
+    "eventeffect": 0,
+    "eventvalue": 0,
+    "talkcount": 1,
+    "talk0_pic": "event_galaxy_era.png",
+    "talk0_talker": "刘慈欣",
+    "talk0_content": "在这个银河纪元，人类的火种已经散布在浩瀚星海之中。作为一名记录者，我将用文字铭记这段波澜壮阔的文明史诗。",
+    "effects": [
+      {
+        "type": "unlock_person",
+        "target": "刘慈欣"
+      },
+      {
+        "type": "resource",
+        "target": "culture",
+        "value": 20
+      }
+    ],
+    "triggerCondition": {
+      "epoch": "GALAXY",
+      "minYear": 370,
+      "reqFlag": "galaxy_exodus_seen"
     }
   }
 ]

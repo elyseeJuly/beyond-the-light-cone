@@ -49,6 +49,9 @@ export class StarMapRenderer {
 
   public onStarClick: ((star: Star) => void) | null = null;
 
+  // Tutorial pulse ring state — when set, draws a glowing pulse around a target star
+  public tutorialPulseStarIndex: number | null = null;
+
   // Touch interaction state
   private touch: TouchState = {
     active: false,
@@ -146,6 +149,48 @@ export class StarMapRenderer {
     this.emitZoomChanged();
   }
 
+  /**
+   * 教程专用：将指定星球居中到屏幕中央并自动缩放。
+   * 替代教程第 1 步中"玩家找不到地球"的问题。
+   * @param starIndex 目标星球索引（如 STAR_INDEX.EARTH）
+   * @param targetZoom 目标缩放系数，默认 1.5（让地球视觉更大、更易点击）
+   * @param ensureActiveArea 是否强制切换到包含该星球的区域，默认 true
+   */
+  public focusOnStar(starIndex: number, targetZoom: number = 1.5, ensureActiveArea: boolean = true): boolean {
+    const rs = this.renderStarMap.get(starIndex);
+    if (!rs) return false;
+
+    // 强制切换到包含目标星球的星区
+    if (ensureActiveArea) {
+      const idx = rs.star.index;
+      let targetArea = this.activeArea;
+      if (idx <= 10) targetArea = StarArea.SOLARSYSTEM;
+      else if (idx <= 100) targetArea = StarArea.LIGHTYEAR_50;
+      else if (idx <= 200) targetArea = StarArea.LIGHTYEAR_1W;
+      else targetArea = StarArea.GALAXY;
+      if (targetArea !== this.activeArea) {
+        this.activeArea = targetArea;
+        this.emitZoomChanged();
+      }
+    }
+
+    // 限制缩放范围
+    const clamped = Math.min(3.0, Math.max(0.3, targetZoom));
+
+    // 居中：将 rs.x 映射到 width/2
+    this.panX = this.width / 2 - rs.x;
+    this.panY = this.height / 2 - rs.y;
+    this.zoomLevel = clamped;
+    this.hoveredStar = null;
+    this.emitZoomChanged();
+    return true;
+  }
+
+  /** 设置/清除教程脉冲指示（围绕指定星球的呼吸光环） */
+  public setTutorialPulse(starIndex: number | null): void {
+    this.tutorialPulseStarIndex = starIndex;
+  }
+
   /** Emit a custom event so React can read current zoom level */
   private emitZoomChanged(): void {
     window.dispatchEvent(new CustomEvent('starmap-zoom-changed', {
@@ -161,6 +206,13 @@ export class StarMapRenderer {
     this.activeArea = area;
     this.hoveredStar = null;
     this.selectedStar = null;
+    // 切换星区时清除教程脉冲，避免在错的星区仍然显示
+    if (this.tutorialPulseStarIndex !== null) {
+      const rs = this.renderStarMap.get(this.tutorialPulseStarIndex);
+      if (!rs || !this.isStarInActiveArea(rs.star)) {
+        this.tutorialPulseStarIndex = null;
+      }
+    }
     
     if (area === StarArea.SOLARSYSTEM) {
       this.zoomLevel = 1.0;
@@ -768,7 +820,34 @@ export class StarMapRenderer {
       }
     }
 
-    // 5. Fleets
+    // 5. Tutorial pulse ring — drawn after stars but before fleets so it sits "on top"
+    if (this.tutorialPulseStarIndex !== null) {
+      const pulseRs = this.renderStarMap.get(this.tutorialPulseStarIndex);
+      if (pulseRs && this.isStarInActiveArea(pulseRs.star)) {
+        const baseRadius = pulseRs.radius * 1.5 + 12;
+        const t = Date.now() * 0.003;
+        for (let i = 0; i < 3; i++) {
+          const phase = (t + i * 0.66) % 2;
+          const r = baseRadius + phase * 28;
+          const alpha = (1 - phase / 2) * 0.7;
+          this.ctx.beginPath();
+          this.ctx.arc(pulseRs.x, pulseRs.y, r, 0, Math.PI * 2);
+          this.ctx.strokeStyle = `rgba(0, 229, 255, ${alpha})`;
+          this.ctx.lineWidth = 2.5;
+          this.ctx.stroke();
+        }
+        // Static inner solid ring for clear "this is the target" indication
+        this.ctx.beginPath();
+        this.ctx.arc(pulseRs.x, pulseRs.y, baseRadius, 0, Math.PI * 2);
+        this.ctx.strokeStyle = "rgba(0, 229, 255, 0.9)";
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([4, 3]);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+      }
+    }
+
+    // 6. Fleets
     const game = GameInstance.get();
     const allFleets: any[] = [];
     if (game.earthCivi && game.earthCivi.fleets) {

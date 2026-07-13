@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { X, ChevronRight, Flag } from 'lucide-react';
+import { X, ChevronRight, Flag, Sparkles } from 'lucide-react';
 import { ActiveViewType } from './LeftHub';
 import { GameInstance } from '../core/Game';
 import { STAR_INDEX } from '../config/starIndices';
 
-interface SimplifiedTutorialStep {
+interface TutorialStep {
   id: string;
   title: string;
   description: string;
@@ -12,14 +12,33 @@ interface SimplifiedTutorialStep {
   activeView: ActiveViewType;
   inspectorTab?: 'overview' | 'build' | 'fleet' | 'history';
   cardPosition?: 'left' | 'right' | 'top' | 'bottom' | 'center';
+  /** 是否为教程聚焦星（启用 StarMapRenderer.pulse + 强制居中） */
+  focusStar?: number;
+  /** 自定义高亮框尺寸（覆盖默认），用于不规则命中区 */
+  highlightSize?: number;
+  /** 是否允许"宽容点击"：高亮框内任意点击都算完成本步（不依赖真实命中） */
+  forgivingClick?: boolean;
 }
 
 /**
- * 简化后的强制教程：四步，每步文案 ≤ 25 汉字。
- * 步骤 1（资源生产）根据开局是否已有采矿场动态切换文案与高亮目标。
+ * 重设计后的新手教程：5 步（欢迎 + 4 步核心操作）。
+ * 每步文案 ≤ 25 汉字。
+ * 核心修复：
+ *  - 步骤 1 启动时自动将地球居中并放大（focusOnStar），杜绝"找不到地球"
+ *  - 步骤 1 高亮框扩大到 110×110px，覆盖 StarMapRenderer 60px 实际命中区
+ *  - 步骤 1 启用 forgivingClick + StarMapRenderer pulse 环，引导玩家视线
+ *  - 用单一可点击 hotspot 替换 4 块分块遮罩，消除接缝漏点
+ *  - 增加欢迎页（1.5s 自动过渡或点击"开始"），给玩家仪式感与思考空间
  */
-function buildSteps(hasStope: boolean): SimplifiedTutorialStep[] {
+function buildSteps(hasStope: boolean): TutorialStep[] {
   return [
+    {
+      id: 'welcome',
+      title: '欢迎',
+      description: '文明的故事，从这里开始。',
+      activeView: 'starmap',
+      cardPosition: 'center',
+    },
     {
       id: 'click-earth',
       title: '选中家园',
@@ -27,6 +46,9 @@ function buildSteps(hasStope: boolean): SimplifiedTutorialStep[] {
       highlightTarget: 'earth-star',
       activeView: 'starmap',
       cardPosition: 'left',
+      focusStar: STAR_INDEX.EARTH,
+      highlightSize: 110,
+      forgivingClick: true,
     },
     {
       id: 'resource-production',
@@ -59,7 +81,10 @@ function buildSteps(hasStope: boolean): SimplifiedTutorialStep[] {
 }
 
 /** 保留导出以兼容旧测试引用，默认走"无采矿场"路径 */
-export const TUTORIAL_STEPS: SimplifiedTutorialStep[] = buildSteps(false);
+export const TUTORIAL_STEPS: TutorialStep[] = buildSteps(false);
+
+/** 欢迎页自动过渡时长（毫秒） */
+const WELCOME_AUTO_ADVANCE_MS = 1500;
 
 export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const game = GameInstance.get();
@@ -106,6 +131,13 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     }
     return () => {
       (window as any).isTutorialActive = false;
+      // 退出教程时清除星图上的 pulse
+      try {
+        const renderer = (window as any).activeStarMapRenderer;
+        if (renderer && typeof renderer.setTutorialPulse === 'function') {
+          renderer.setTutorialPulse(null);
+        }
+      } catch (_) { /* ignore */ }
       try {
         const g = GameInstance.get();
         g.earthCivi.isAiBrainEnabled = previousAiState;
@@ -117,6 +149,19 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     };
   }, []);
 
+  // ── 移动端 landscape 缩放系数（用于 hotspot 物理像素换算） ──
+  const getScaleFactor = useCallback((): number => {
+    try {
+      const el = document.querySelector('.mobile-landscape-scale');
+      if (el) {
+        const style = window.getComputedStyle(el);
+        const matrix = new DOMMatrixReadOnly(style.transform);
+        if (matrix.a !== 1) return matrix.a;
+      }
+    } catch (_) { /* ignore */ }
+    return 1;
+  }, []);
+
   // ── 高亮坐标追踪（requestAnimationFrame 循环） ──
   useEffect(() => {
     if (!current) return;
@@ -124,19 +169,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     if (!targetId) { setHighlightRect(null); return; }
 
     let active = true;
-    const stepStartTime = Date.now();
-
-    const getScaleFactor = (): number => {
-      try {
-        const el = document.querySelector('.mobile-landscape-scale');
-        if (el) {
-          const style = window.getComputedStyle(el);
-          const matrix = new DOMMatrixReadOnly(style.transform);
-          if (matrix.a !== 1) return matrix.a;
-        }
-      } catch (_) { /* ignore */ }
-      return 1;
-    };
 
     const updateRect = () => {
       if (!active) return;
@@ -146,8 +178,12 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         if (renderer) {
           const coords = renderer.getStarScreenCoords(STAR_INDEX.EARTH);
           if (coords) {
+            const size = current.highlightSize || 110;
             setHighlightRect({
-              top: coords.y - 20, left: coords.x - 20, width: 40, height: 40,
+              top: coords.y - size / 2,
+              left: coords.x - size / 2,
+              width: size,
+              height: size,
             });
             return;
           }
@@ -162,9 +198,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       }
 
       if (element) {
-        if (Date.now() - stepStartTime < 1000) {
-          element.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
-        }
         const rect = element.getBoundingClientRect();
         const scaleFactor = getScaleFactor();
         const correctedRect = scaleFactor !== 1 ? {
@@ -199,9 +232,9 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       window.removeEventListener('change-active-view', updateRect);
       window.removeEventListener('tutorial:set-tab', updateRect);
     };
-  }, [step, current]);
+  }, [step, current, getScaleFactor]);
 
-  // ── 视图/Tab 同步 ──
+  // ── 视图/Tab 同步 + 教程聚焦星（核心：自动居中地球） ──
   useEffect(() => {
     if (!current) return;
     if (current.activeView) {
@@ -216,6 +249,33 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       const modal = document.getElementById('modal-container');
       if (modal) modal.classList.add('hidden');
     } catch (e) { /* ignore */ }
+
+    // 教程聚焦星：自动居中 + 开启 pulse
+    if (current.focusStar !== undefined) {
+      // 等待一帧让 StarMap 完成 render；极端情况下 renderer 还没挂载则轮询等待
+      let attempts = 0;
+      const tryFocus = () => {
+        attempts++;
+        try {
+          const renderer = (window as any).activeStarMapRenderer;
+          if (renderer) {
+            renderer.focusOnStar(current.focusStar!, 1.5, true);
+            renderer.setTutorialPulse(current.focusStar!);
+            return;
+          }
+        } catch (e) { /* ignore */ }
+        if (attempts < 20) requestAnimationFrame(tryFocus);
+      };
+      requestAnimationFrame(tryFocus);
+    } else {
+      // 非聚焦步骤关闭 pulse
+      try {
+        const renderer = (window as any).activeStarMapRenderer;
+        if (renderer && typeof renderer.setTutorialPulse === 'function') {
+          renderer.setTutorialPulse(null);
+        }
+      } catch (_) { /* ignore */ }
+    }
   }, [current]);
 
   // ── 完成当前步骤（防重复） ──
@@ -227,11 +287,43 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       // 最后一步完成 → 结束教程
       setExiting(true);
       localStorage.setItem('game-tutorial-seen', 'true');
+      // 退出时清掉 pulse
+      try {
+        const renderer = (window as any).activeStarMapRenderer;
+        if (renderer && typeof renderer.setTutorialPulse === 'function') {
+          renderer.setTutorialPulse(null);
+        }
+      } catch (_) { /* ignore */ }
       window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
       setTimeout(onComplete, 400);
       return s;
     });
   }, [steps.length, onComplete]);
+
+  // ── 欢迎页：1.5s 自动过渡 ──
+  useEffect(() => {
+    if (current?.id !== 'welcome') return;
+    stepCompletedRef.current = false;
+    const timer = setTimeout(() => {
+      completeStep();
+    }, WELCOME_AUTO_ADVANCE_MS);
+    return () => clearTimeout(timer);
+    // completeStep 已用 ref 化的 stepCompletedRef 防止重入
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current?.id]);
+
+  // ── 步骤 1 高亮框点击 = 选中地球（宽容点击，杜绝"明明在框内却没反应"） ──
+  const handleEarthHotspotClick = useCallback(() => {
+    if (current?.id !== 'click-earth') return;
+    if (stepCompletedRef.current) return;
+    const g = GameInstance.get();
+    const earth = g.starManager.getStar(STAR_INDEX.EARTH);
+    if (earth) {
+      window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
+      earthSelectedRef.current = true;
+      completeStep();
+    }
+  }, [current?.id, completeStep]);
 
   // ── 每步验证逻辑 ──
   useEffect(() => {
@@ -239,7 +331,10 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     if (!current) return;
     const stepId = current.id;
 
-    // 步骤 0：监听 star-selected 事件
+    // 欢迎页不需验证
+    if (stepId === 'welcome') return;
+
+    // 步骤 click-earth：监听 star-selected 事件（hotspot 主动派发 + 用户直接点击均生效）
     if (stepId === 'click-earth') {
       const handler = (e: Event) => {
         const star = (e as CustomEvent).detail;
@@ -252,7 +347,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       return () => window.removeEventListener('star-selected', handler);
     }
 
-    // 步骤 3：监听 game-turn-complete 事件
+    // 步骤 next-turn：监听 game-turn-complete 事件
     if (stepId === 'next-turn') {
       const handler = () => {
         turnCompleteRef.current = true;
@@ -262,7 +357,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       return () => window.removeEventListener('game-turn-complete', handler);
     }
 
-    // 步骤 1 & 2：轮询验证
+    // 步骤 resource-production & start-research：轮询验证
     const checkCondition = (): boolean => {
       const g = GameInstance.get();
       switch (stepId) {
@@ -287,7 +382,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       }
     };
 
-    // 首次检查（可能进入步骤时条件已满足）
     if (checkCondition()) {
       completeStep();
       return;
@@ -306,6 +400,12 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const handleSkip = useCallback(() => {
     setExiting(true);
     localStorage.setItem('game-tutorial-seen', 'true');
+    try {
+      const renderer = (window as any).activeStarMapRenderer;
+      if (renderer && typeof renderer.setTutorialPulse === 'function') {
+        renderer.setTutorialPulse(null);
+      }
+    } catch (_) { /* ignore */ }
     window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
     setTimeout(onComplete, 400);
   }, [onComplete]);
@@ -321,9 +421,14 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
   const progress = ((step + 1) / steps.length) * 100;
   const showHighlight = highlightRect !== null;
+  const isWelcome = current?.id === 'welcome';
+  const isEarthStep = current?.id === 'click-earth';
 
   // ── 卡片定位（避免遮挡高亮目标） ──
   const getCardStyle = (): React.CSSProperties => {
+    if (isWelcome) {
+      return { position: 'relative', maxWidth: '520px', width: windowWidth < 768 ? 'calc(100% - 24px)' : '100%' };
+    }
     if (!showHighlight || !highlightRect) {
       return { position: 'relative', maxWidth: '480px', width: windowWidth < 768 ? 'calc(100% - 24px)' : '100%' };
     }
@@ -356,30 +461,40 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
   return (
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
-      {/* 高亮遮罩 */}
-      {showHighlight && highlightRect ? (
-        <div className="absolute inset-0 pointer-events-none z-[1000]">
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-[999]">
-            <defs>
-              <mask id="tutorial-mask">
-                <rect width="100%" height="100%" fill="white" />
-                <rect x={highlightRect.left} y={highlightRect.top} width={highlightRect.width} height={highlightRect.height} rx="8" ry="8" fill="black" style={{ transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)' }} />
-              </mask>
-            </defs>
-            <rect width="100%" height="100%" fill="#050810" fillOpacity="0.65" mask="url(#tutorial-mask)" />
-          </svg>
-          {(['top', 'bottom', 'left', 'right'] as const).map(side => {
-            const styles: Record<string, React.CSSProperties> = {
-              top: { top: 0, left: 0, right: 0, height: `${highlightRect.top}px` },
-              bottom: { top: `${highlightRect.top + highlightRect.height}px`, left: 0, right: 0, bottom: 0 },
-              left: { top: `${highlightRect.top}px`, height: `${highlightRect.height}px`, left: 0, width: `${highlightRect.left}px` },
-              right: { top: `${highlightRect.top}px`, height: `${highlightRect.height}px`, left: `${highlightRect.left + highlightRect.width}px`, right: 0 },
+      {/* 欢迎页：全屏遮罩（暗化但不阻塞鼠标） */}
+      {isWelcome ? (
+        <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/80 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
+      ) : showHighlight && highlightRect ? (
+        <>
+          {/* 全屏暗化层（不接收事件，避免吞掉 hotspot 外的合法点击） */}
+          <div className="absolute inset-0 bg-[#050810]/65 pointer-events-none z-[1000]" />
+          {/* 高亮遮罩：4 块拼接以提供"高亮区通透 + 其他区域接收事件"的视觉感受。
+              分块 div 接收事件的目的：阻止玩家误触其他 UI 元素。
+              注意：分块 div 的内边正好与 highlightRect 接缝对齐为 hotspot，让 hotspot 独占点击。 */}
+          {(() => {
+            // 把分块内边各让出 2px（向 highlight 中心收缩），让 hotspot 区域独占点击无接缝
+            const r = highlightRect;
+            const shrink = 2;
+            const inner = {
+              left: r.left + shrink,
+              top: r.top + shrink,
+              right: r.left + r.width - shrink,
+              bottom: r.top + r.height - shrink,
             };
-            return (
-              <div key={side} data-testid={`tutorial-overlay-${side}`} className="absolute bg-transparent pointer-events-auto transition-all duration-300" style={styles[side]} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
-            );
-          })}
-        </div>
+            const blocks: React.CSSProperties[] = [
+              { top: 0, left: 0, right: 0, height: `${Math.max(0, inner.top)}px` },
+              { top: `${inner.bottom}px`, left: 0, right: 0, bottom: 0 },
+              { top: `${inner.top}px`, height: `${Math.max(0, inner.bottom - inner.top)}px`, left: 0, width: `${Math.max(0, inner.left)}px` },
+              { top: `${inner.top}px`, height: `${Math.max(0, inner.bottom - inner.top)}px`, left: `${inner.right}px`, right: 0 },
+            ];
+            return blocks.map((style, i) => (
+              <div key={i} data-testid={`tutorial-overlay-${['top', 'bottom', 'left', 'right'][i]}`}
+                className="absolute bg-transparent pointer-events-auto transition-all duration-300"
+                style={style}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
+            ));
+          })()}
+        </>
       ) : (
         <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/85 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
       )}
@@ -387,7 +502,30 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       {/* 高亮边框 */}
       {showHighlight && highlightRect && (
         <div className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none rounded-lg"
-          style={{ top: `${highlightRect.top}px`, left: `${highlightRect.left}px`, width: `${highlightRect.width}px`, height: `${highlightRect.height}px`, transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)', boxShadow: '0 0 15px rgba(0,229,255,0.4), inset 0 0 15px rgba(0,229,255,0.15)', animation: 'border-pulse 2s infinite alternate' }} />
+          style={{
+            top: `${highlightRect.top}px`, left: `${highlightRect.left}px`,
+            width: `${highlightRect.width}px`, height: `${highlightRect.height}px`,
+            transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+            boxShadow: '0 0 15px rgba(0,229,255,0.4), inset 0 0 15px rgba(0,229,255,0.15)',
+            animation: 'border-pulse 2s infinite alternate',
+          }} />
+      )}
+
+      {/* 步骤 1：地球专属 hotspot —— 单一可点击按钮，彻底消除 4 块遮罩的接缝漏点 */}
+      {isEarthStep && highlightRect && (
+        <button
+          type="button"
+          data-testid="tutorial-earth-hotspot"
+          aria-label="点击选中地球"
+          onClick={handleEarthHotspotClick}
+          className="absolute z-[1003] cursor-pointer bg-transparent border-0 p-0"
+          style={{
+            top: `${highlightRect.top}px`,
+            left: `${highlightRect.left}px`,
+            width: `${highlightRect.width}px`,
+            height: `${highlightRect.height}px`,
+          }}
+        />
       )}
 
       {/* 指引箭头 */}
@@ -395,7 +533,15 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         const pointFromBelow = highlightRect.top <= 60;
         return (
           <div className="absolute z-[1002] pointer-events-none transition-all duration-300 animate-bounce"
-            style={{ top: pointFromBelow ? `${highlightRect.top + highlightRect.height + 4}px` : `${highlightRect.top - 20}px`, left: `${highlightRect.left + highlightRect.width / 2 - 10}px`, width: 0, height: 0, borderLeft: '10px solid transparent', borderRight: '10px solid transparent', ...(pointFromBelow ? { borderBottom: '10px solid var(--color-primary)' } : { borderTop: '10px solid var(--color-primary)' }), filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))', transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)' }} />
+            style={{
+              top: pointFromBelow ? `${highlightRect.top + highlightRect.height + 4}px` : `${highlightRect.top - 20}px`,
+              left: `${highlightRect.left + highlightRect.width / 2 - 10}px`,
+              width: 0, height: 0,
+              borderLeft: '10px solid transparent', borderRight: '10px solid transparent',
+              ...(pointFromBelow ? { borderBottom: '10px solid var(--color-primary)' } : { borderTop: '10px solid var(--color-primary)' }),
+              filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
+              transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+            }} />
         );
       })()}
 
@@ -432,9 +578,9 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           {/* 步骤内容 */}
           <div className="flex flex-col gap-3 z-10 mt-4">
             <div className="flex items-center gap-2">
-              <Flag className="w-3 h-3 text-[var(--color-primary)]/60" />
+              {isWelcome ? <Sparkles className="w-3 h-3 text-[var(--color-primary)]/60" /> : <Flag className="w-3 h-3 text-[var(--color-primary)]/60" />}
               <div className="text-[9px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">
-                步骤 {step + 1} / {steps.length}
+                {isWelcome ? '序幕' : `步骤 ${step} / ${steps.length - 1}`}
               </div>
             </div>
             <h2 className="text-base font-title font-black text-white tracking-widest leading-none drop-shadow-md">
@@ -445,10 +591,18 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
                 {current.description}
               </p>
             </div>
-            <div className="flex items-center gap-2 text-[10px] text-amber-500/70">
-              <ChevronRight size={12} className="animate-pulse" />
-              <span>完成操作后自动进入下一步</span>
-            </div>
+            {!isWelcome && (
+              <div className="flex items-center gap-2 text-[10px] text-amber-500/70">
+                <ChevronRight size={12} className="animate-pulse" />
+                <span>完成操作后自动进入下一步</span>
+              </div>
+            )}
+            {isWelcome && (
+              <div className="flex items-center gap-2 text-[10px] text-[var(--color-primary)]/70">
+                <ChevronRight size={12} className="animate-pulse" />
+                <span>{Math.ceil(WELCOME_AUTO_ADVANCE_MS / 1000)} 秒后自动开始</span>
+              </div>
+            )}
           </div>
 
           {/* 底部控制栏：只有跳过教程 */}

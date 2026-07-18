@@ -1,8 +1,14 @@
 {
   "version": "1.0.3",
   "gameVersion": "1.0.3",
-  "generatedAt": 1783912913476,
+  "generatedAt": 1784355075449,
   "core": [
+    {
+      "id": "distribution",
+      "path": "distribution.json",
+      "type": "json",
+      "size": 23
+    },
     {
       "id": "character_default",
       "path": "images/character_default.png",

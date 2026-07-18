@@ -35,6 +35,8 @@ const GameCoverScreen = lazy(() => import('./components/GameCoverScreen').then(m
 const AssetDownloadPromptModal = lazy(() => import('./components/AssetDownloadPromptModal').then(m => ({ default: m.AssetDownloadPromptModal })));
 import { SaveManager } from './core/SaveManager';
 import { assetLoader } from './core/AssetLoader';
+import { shouldPromptForAssetDownload } from './core/AssetDownloadPolicy';
+import { supportsSegmentedAssetDownloads } from './core/DistributionChannel';
 
 const LazyFallback: React.FC = () => (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#070B14]/80" />
@@ -65,6 +67,14 @@ export const App: React.FC = () => {
   const [currentEpoch, setCurrentEpoch] = useState(0);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [showDownloadPrompt, setShowDownloadPrompt] = useState(false);
+
+  const remindAssetDownloadIfNeeded = () => {
+    const stats = assetLoader.getStats();
+    const promptSeen = localStorage.getItem('game-assets-prompt-seen') === 'true';
+    if (shouldPromptForAssetDownload(stats.pendingPacks.length, promptSeen)) {
+      setShowDownloadPrompt(true);
+    }
+  };
   const [settingsInitialTab, setSettingsInitialTab] = useState<'audio' | 'storage'>('audio');
 
   const atmosphereEngineRef = useRef<any>(null);
@@ -433,12 +443,7 @@ export const App: React.FC = () => {
                   GameInstance.get().earthCivi.isAiBrainEnabled = enableAiBrain;
                   if (!withTutorial) {
                     localStorage.setItem('game-tutorial-seen', 'true');
-                    const stats = assetLoader.getStats();
-                    const hasPending = stats.pendingPacks.length > 0;
-                    const seenPrompt = localStorage.getItem('game-assets-prompt-seen') === 'true';
-                    if (hasPending && !seenPrompt) {
-                      setShowDownloadPrompt(true);
-                    }
+                    remindAssetDownloadIfNeeded();
                   } else {
                     localStorage.removeItem('game-tutorial-seen');
                   }
@@ -448,6 +453,7 @@ export const App: React.FC = () => {
                   const success = GameInstance.loadGame();
                   if (success) {
                     setShowCoverScreen(false);
+                    remindAssetDownloadIfNeeded();
                   } else {
                     alert('无法读取存档！');
                   }
@@ -471,12 +477,7 @@ export const App: React.FC = () => {
               <Tutorial 
                 onComplete={() => {
                   setShowTutorial(false);
-                  const stats = assetLoader.getStats();
-                  const hasPending = stats.pendingPacks.length > 0;
-                  const seenPrompt = localStorage.getItem('game-assets-prompt-seen') === 'true';
-                  if (hasPending && !seenPrompt) {
-                    setShowDownloadPrompt(true);
-                  }
+                  remindAssetDownloadIfNeeded();
                 }} 
               />
             )}
@@ -506,7 +507,7 @@ export const App: React.FC = () => {
           </Suspense>
 
           {/* PWA Components */}
-          <UpdatePrompt />
+          {supportsSegmentedAssetDownloads() && <UpdatePrompt />}
           <Suspense fallback={null}>
             <OrientationPrompt />
           </Suspense>

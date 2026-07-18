@@ -77,6 +77,7 @@ jobs:
       - name: Create web archive
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
+          printf '{"channel":"release"}\n' > dist/distribution.json
           cd dist
           zip -r "../beyond-the-light-cone-${VERSION}-web.zip" .
           cd ..

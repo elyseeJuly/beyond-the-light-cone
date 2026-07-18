@@ -1,8 +1,8 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-13
+> 最后更新：2026-07-18
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 22 总计）
+## 发布状态：🟢 就绪（0 RED / 23 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -23,6 +23,7 @@
 | **SCEN-ALIEN-CONTACT** | Feature | 外星文明接触事件弹窗 | 外星文明从发现到建立通信分为两阶段，首次发现/首次接触均触发 ticker 消息与事件弹窗 | 🟢 GREEN | 外星文明已显示在外交列表但没有接触事件弹窗 | AlienContact.scenario.test.ts |
 | **SCEN-ASSET-DOWNLOAD-LOOP** | Feature | 纪元资产按需下载与预加载 | 进入新纪元时自动触发当前纪元包下载，纪元末预加载下一纪元，并在核心渲染逻辑中接入资产就绪拦截 | 🟢 GREEN | 分模块下载引擎(AssetLoader)已接入Game.ts纪元更替生命周期，downloadEraPack + preloadNextEra fire-and-forget | AssetDownload.scenario.test.ts |
 | **SCEN-ASSET-MANIFEST-GEN** | Feature | 资源清单精准分类生成 | `asset_manifest.json` 应将游戏资源准确归类至各纪元包或按类型包，消除大规模 `uncategorized` 包 | 🟢 GREEN | `generate-manifest.mjs` detectEra算法重构：人物立绘归characters包、结局CG归endings包、扩展7纪元关键词，uncategorized从41%降至0.7% | AssetDownload.scenario.test.ts |
+| **SCEN-DISTRIBUTION-ASSET-POLICY** | Regression | Release/PWA 资源交付分流 | PWA 首次进入游戏时对未缓存资源显示下载提醒；Web/Tauri Release 将随包资源视为已安装，不弹窗且不重复 fetch | 🟢 GREEN | Release 与 PWA 共用 IndexedDB 下载状态，导致完整桌面包仍提示下载约 370MB | DistributionChannel.scenario.test.ts |
 | **SCEN-FLAG-MANAGER** | Design | Flag 状态标记管理器解耦 | Game.flags Set<string> 的公开暴露改用 FlagManager 封装，提供 isSet/set/unset API | 🟢 GREEN | Game.ts 中 flags 直接暴露为 Set<string>，外部模块可直接操作 | FlagManager.ts / Game.ts |
 | **SCEN-RELEASE-PIPELINE** | DevOps | Tag-Driven Release 自动化流水线 | 推送 v* tag 自动触发 CI 门禁 + 多平台构建 + GitHub Release 发布 | 🟢 GREEN | 0 自动化，发版完全手动 | .github/workflows/release.yml |
 | **SCEN-DESIGN-DRIFT** | Design | 设计偏离修复验证 | 验证 7 大设计决策与 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 一致：7纪元系统、文化公式、年份递增、纪元溢出保护、AI智脑默认关闭、地球初始建筑、思想钢印权重 | 🟢 GREEN | 原始 SPEC 与实际代码存在 3 处设计偏离 (D01-D03)，已创建权威 SPEC 并编写验证测试 | DesignDrift.scenario.test.ts |
@@ -36,6 +37,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-18: Release/PWA 资源交付分流——新增 `distribution.json` 渠道标记与 Tauri 运行时识别；完整资源 Release 将全部扩展包报告为已安装并短路下载队列，PWA 保留分段下载。下载提醒统一覆盖无教程新游戏、教程完成和继续存档三条进入路径，且仅在 PWA 存在待下载包、尚未处理提醒时弹出。新增 SCEN-DISTRIBUTION-ASSET-POLICY 4 项回归测试，Registry 22→23 条目。全量 1078 项测试与生产构建通过；Chromium 实测 PWA 显示提醒、Release 不显示提醒。
 - 2026-07-13: 新手教程误触修复与重设计——教程从 12 步精简为 4 步核心操作 + 1 步欢迎页（5 步架构）。新增 5 个场景测试条目：SCEN-TUTORIAL-WELCOME（欢迎页 1.5s 自动过渡）、SCEN-TUTORIAL-STEP1-HOTSPOT（110px 高亮框 + 单一 hotspot 防误触）、SCEN-TUTORIAL-STEP1-FOCUS-EARTH（focusOnStar 自动居中地球）、SCEN-GRACE-PERIOD-BLOCKERS（前 3 回合宽限期）、SCEN-GRACE-PERIOD-EXPIRY（宽限期到期恢复正常阻断）。StarMapRenderer 新增 focusOnStar() 和 setTutorialPulse() 公共方法。同步实现阻断器宽限期（getTurnWarnings()）、一次性情境提示（ContextualTips）、可选新手任务清单（BeginnerTasks）。全量 1074 测试通过。Registry 19→22 条目。
 - 2026-07-12: AP 系统重设计与回路闭合——依据 SPEC_20260712_AP_SYSTEM_REDESIGN：基础恢复从 30 降至 5，AP 不累加跨回合，新增纪元加成（危机+10/威慑+20/掩体-10）；recoverAP 提前至 Game.runARound 入口避免阻断死锁；getTurnBlockers 补全科研停滞和行政瘫痪两项阻断器；runAIBrain 4 处直接赋值改走 spendAP 享受半价；UI 层 RightInspector 3 处滑块和 TecTreeView 科研指派接入 AP 消耗。同步修复星图地球点击命中半径（桌面端从 15.6px 提升至 60px）和军事部增加星舰建造入口。SCEN-MANUAL-BLOCKER 测试用例补齐新增阻断器解除逻辑。全量 1045 测试通过。
 - 2026-07-05: Release 流水线修复（续）——发现 v1.0.1 Gate 仍失败，根因 asset_manifest.json 硬编码版本 1.0.0 与 package.json 1.0.1 不一致，AssetDownload 测试断言失败。重新生成 manifest 同步版本号，删除旧标签并重新推送 v1.0.1。全量 1045 测试通过。

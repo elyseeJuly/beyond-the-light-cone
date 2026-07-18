@@ -52,6 +52,8 @@ export default defineConfig({
       workbox: {
         // 核心资源：预缓存所有 JS/CSS/HTML/字体/UI图标
         globPatterns: ['**/*.{js,css,html,json,woff2,woff,ttf,eot,svg}'],
+        // 发行渠道标记必须直接读取部署产物，不能被 PWA 构建时的默认值覆盖
+        globIgnores: ['distribution.json'],
         // 扩展资源：图片和音频使用 StaleWhileRevalidate 策略（懒加载优先缓存）
         // ==========================================================
         // 三层缓存策略

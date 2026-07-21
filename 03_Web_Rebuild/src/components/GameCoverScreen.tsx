@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Play, SkipForward, Landmark, Shield, Cpu, Info } from 'lucide-react';
+import { Play, SkipForward, Landmark, Shield, Brain, Info } from 'lucide-react';
 import { getImageUrl } from '../utils/assetUrl';
+import { AdvisorPanel } from './AdvisorPanel';
 
 interface GameCoverScreenProps {
   hasSave: boolean;
@@ -9,7 +10,7 @@ interface GameCoverScreenProps {
   onOpenMuseum: () => void;
 }
 
-type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'archive' | null;
+type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'advisor' | 'archive' | null;
 
 export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   hasSave,
@@ -20,7 +21,8 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
   const [hoveredOption, setHoveredOption] = useState<MenuOption>(null);
   const [rendered, setRendered] = useState(false);
-  const [enableAiBrain, setEnableAiBrain] = useState(false); // Default off per project constraint
+  const [enableAiBrain] = useState(false); // Default off per project constraint
+  const [showAdvisor, setShowAdvisor] = useState(false);
 
   // Handle responsive background image
   useEffect(() => {
@@ -37,14 +39,25 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleStartNewGame = (withTutorial: boolean) => {
+    if (typeof window !== 'undefined') {
+      Object.keys(localStorage)
+        .filter(key => key.startsWith('session:'))
+        .forEach(key => localStorage.removeItem(key));
+    }
+    onStartNewGame(withTutorial, enableAiBrain);
+  };
+
   const getOptionDescription = (opt: MenuOption) => {
     switch (opt) {
       case 'continue':
         return '读取最近的历史节点，继续您的文明演进与黑暗森林法则对抗之旅。';
       case 'new_tutorial':
-        return '重构文明时间线。推荐新手玩家使用，本引导包含手把手战略和内政基础操作指南。';
+        return '重构文明时间线。推荐新手玩家使用，智脑辅助系统将带您完成校准与基础规划。';
       case 'new_free':
         return '跳过初级引导系统，直接以最高统帅身份跨入冷酷的宇宙博弈。';
+      case 'advisor':
+        return '唤醒智脑战术数据百科。可查阅三维资源链、AP机制、面壁者策略与完整结局路线图。';
       case 'archive':
         return '查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。';
       default:
@@ -138,22 +151,22 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
 
             {/* Option 2: New Game with Tutorial */}
             <button
-              onClick={() => onStartNewGame(true, enableAiBrain)}
+              onClick={() => handleStartNewGame(true)}
               onMouseEnter={() => setHoveredOption('new_tutorial')}
               onMouseLeave={() => setHoveredOption(null)}
-              className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
+              className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 hover:shadow-[0_0_20px_rgba(0,184,255,0.3)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
             >
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
-              <Cpu size={16} className="text-[var(--color-primary)]" />
+              <Shield size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">开始新游戏 (启用引导)</div>
+                <div className="text-sm font-bold tracking-widest font-title text-[var(--color-primary)]">重新构想 (开启引导)</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">NEW GAME WITH TUTORIAL</div>
               </div>
             </button>
 
             {/* Option 3: New Game Free Exploration */}
             <button
-              onClick={() => onStartNewGame(false, enableAiBrain)}
+              onClick={() => handleStartNewGame(false)}
               onMouseEnter={() => setHoveredOption('new_free')}
               onMouseLeave={() => setHoveredOption(null)}
               className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
@@ -166,25 +179,22 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               </div>
             </button>
 
-            {/* AI Brain Toggle */}
-            <div className="flex items-center justify-between px-4 py-2 border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/3 rounded">
-              <div className="flex items-center gap-2">
-                <Cpu size={14} className={enableAiBrain ? 'text-[var(--color-primary)]' : 'text-slate-500'} />
-                <span className="text-[11px] text-[var(--text-secondary)] font-mono tracking-wider">AI 智脑托管</span>
+            {/* AI Advisor Button */}
+            <button
+              onClick={() => setShowAdvisor(true)}
+              onMouseEnter={() => setHoveredOption('advisor')}
+              onMouseLeave={() => setHoveredOption(null)}
+              className="w-full group flex items-center gap-4 px-4 py-3 border border-cyan-500/40 hover:border-cyan-400 bg-cyan-950/20 hover:bg-cyan-500/10 text-cyan-200 transition-all duration-300 relative overflow-hidden text-left cursor-pointer rounded"
+            >
+              <Brain size={16} className="text-cyan-400" />
+              <div className="flex-grow">
+                <div className="text-xs font-bold tracking-widest font-title text-cyan-200 flex items-center justify-between">
+                  <span>智脑顾问 · 战术百科</span>
+                  <span className="text-[9px] px-1.5 py-0.5 bg-cyan-500/20 rounded font-mono text-cyan-300">HELP</span>
+                </div>
+                <div className="text-[9px] opacity-70 mt-0.5 font-mono">TACTICAL ENCYCLOPEDIA & ADVISOR</div>
               </div>
-              <button
-                onClick={() => setEnableAiBrain(!enableAiBrain)}
-                className={`relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer ${
-                  enableAiBrain ? 'bg-[var(--color-primary)]/40' : 'bg-slate-700'
-                }`}
-              >
-                <div
-                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
-                    enableAiBrain ? 'left-5' : 'left-0.5'
-                  }`}
-                />
-              </button>
-            </div>
+            </button>
 
             {/* Option 4: View Museum (Civilization Museum) */}
             <button
@@ -221,6 +231,9 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
           <span>系统重构：Google DeepMind - Antigravity</span>
         </div>
       </footer>
+
+      {/* Advisor Panel Modal */}
+      <AdvisorPanel isOpen={showAdvisor} onClose={() => setShowAdvisor(false)} />
 
       {/* Custom keyframe styles for scanning */}
       <style>{`

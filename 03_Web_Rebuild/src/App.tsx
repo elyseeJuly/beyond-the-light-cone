@@ -21,6 +21,7 @@ import { useBreakpoint } from './hooks/useBreakpoint';
 import { Toast } from './components/common/Toast';
 import { ContextualTips } from './components/ContextualTips';
 import { BeginnerTasks } from './components/BeginnerTasks';
+import { AdvisorPanel } from './components/AdvisorPanel';
 
 // 重型模态组件按路由/交互懒加载，降低首屏 index chunk 体积
 const StoryModal = lazy(() => import('./components/StoryModal').then(m => ({ default: m.StoryModal })));
@@ -513,6 +514,7 @@ export const App: React.FC = () => {
           </Suspense>
           <Toast />
           <ContextualTips />
+          <AdvisorPanel />
           {!showTutorial && !showCoverScreen && localStorage.getItem('game-tutorial-seen') === 'true' && <BeginnerTasks />}
 
           {/* Legacy Modal System Bridge */}

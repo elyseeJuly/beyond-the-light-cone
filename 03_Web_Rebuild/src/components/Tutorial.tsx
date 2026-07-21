@@ -18,6 +18,8 @@ interface TutorialStep {
   highlightSize?: number;
   /** 是否允许"宽容点击"：高亮框内任意点击都算完成本步（不依赖真实命中） */
   forgivingClick?: boolean;
+  /** 是否需要手动点击「下一步」推进（纯阅读或阶段谢幕步骤） */
+  requiresManualAdvance?: boolean;
 }
 
 /**
@@ -34,15 +36,15 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
   return [
     {
       id: 'welcome',
-      title: '欢迎',
-      description: '文明的故事，从这里开始。',
+      title: '智脑辅助校准',
+      description: '公元 2009 年，三体舰队启航。智脑战略系统初始化完成，即将开始校准。',
       activeView: 'starmap',
       cardPosition: 'center',
     },
     {
       id: 'click-earth',
-      title: '选中家园',
-      description: '点击地球，选中你的家园。',
+      title: '选中家园星系',
+      description: '点击地球坐标。这颗蓝色行星是我们在这片暗黑森林中唯一的基石。',
       highlightTarget: 'earth-star',
       activeView: 'starmap',
       cardPosition: 'left',
@@ -51,31 +53,65 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
       forgivingClick: true,
     },
     {
-      id: 'resource-production',
-      title: '资源生产',
+      id: 'read-status',
+      title: '监控三维产出',
+      description: '查看右侧面板。矿产维持工业、经济驱动发展、文化决定科研速率。',
+      highlightTarget: 'right-inspector-panel',
+      activeView: 'starmap',
+      inspectorTab: 'overview',
+      cardPosition: 'left',
+      requiresManualAdvance: true,
+    },
+    {
+      id: 'build-stope',
+      title: '建设矿业基础',
       description: hasStope
-        ? '拖动采矿滑块，调整一次劳动力分配。'
-        : '点击建造采矿场，开始生产矿产。',
-      highlightTarget: hasStope ? 'mining-ratio-section' : 'btn-build-stope',
+        ? '检查建好的采矿场。工业与太空防线的建立离不开资源供应。'
+        : '切换至建造面板，在地球轨道新建一座采矿场，奠定工业基础。',
+      highlightTarget: hasStope ? 'btn-inspect-stope' : 'btn-build-stope',
       activeView: 'starmap',
       inspectorTab: hasStope ? 'overview' : 'build',
       cardPosition: 'left',
     },
     {
+      id: 'resource-production',
+      title: '调配劳力分配',
+      description: '拖动采矿比例滑块。劳动资源有限，需根据战略重心合理取舍。',
+      highlightTarget: 'mining-ratio-section',
+      activeView: 'starmap',
+      inspectorTab: 'overview',
+      cardPosition: 'left',
+    },
+    {
       id: 'start-research',
-      title: '启动科研',
-      description: '启动一项科研，让文明继续进步。',
+      title: '启动科技演进',
+      description: '进入科技树面板，点击选择「天文观测」节点启动首项研究。',
       highlightTarget: 'tech-node-天文观测',
       activeView: 'techtree',
       cardPosition: 'right',
     },
     {
       id: 'next-turn',
-      title: '推进回合',
-      description: '点击下一回合，看看发生了什么。',
+      title: '执行首回合决策',
+      description: '点击「下一回合」。时间将向前推移，智脑将演算各部门运转效果。',
       highlightTarget: 'btn-next-turn',
       activeView: 'starmap',
       cardPosition: 'bottom',
+    },
+    {
+      id: 'resolve-event',
+      title: '应对突发危机',
+      description: '智脑推演到危机事件。每一个抉择都将深刻书写文明的生存命运。',
+      activeView: 'starmap',
+      cardPosition: 'center',
+      requiresManualAdvance: true,
+    },
+    {
+      id: 'tutorial-end',
+      title: '智脑校准完毕',
+      description: '校准完成！局势目标面板与智脑战术顾问已解锁，愿文明薪火永存。',
+      activeView: 'starmap',
+      cardPosition: 'center',
     },
   ];
 }
@@ -357,17 +393,45 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       return () => window.removeEventListener('game-turn-complete', handler);
     }
 
-    // 步骤 resource-production & start-research：轮询验证
+    // 步骤 resolve-event：注入并监听危机事件
+    if (stepId === 'resolve-event') {
+      const g = GameInstance.get();
+      const TUTORIAL_EVENT_ID = 'event_tutorial_eto_test';
+      const hasExistingEvent = g.currentEvent || g.eventQueue.length > 0;
+      if (!hasExistingEvent) {
+        const alreadyQueued = g.eventQueue.some(e => e.id === TUTORIAL_EVENT_ID);
+        if (!alreadyQueued) {
+          g.eventQueue.push({
+            id: TUTORIAL_EVENT_ID,
+            title: '【智脑测试】拦截 ETO 异常信号',
+            dialogQueue: [
+              {
+                speakerName: '智脑系统',
+                content: '监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。'
+              }
+            ],
+            choices: [
+              { label: '发布戒严警告（社会稳定 -5）', action: () => {} },
+              { label: '暗中排查跟踪（积累情报）', action: () => {} }
+            ]
+          });
+          window.dispatchEvent(new CustomEvent('game-state-changed'));
+        }
+      }
+    }
+
+    // 轮询验证逻辑
     const checkCondition = (): boolean => {
       const g = GameInstance.get();
       switch (stepId) {
+        case 'build-stope': {
+          const star = g.starManager.getStar(STAR_INDEX.EARTH);
+          return !!star?.hasStope || !!star?.buildingProgress?.stope;
+        }
         case 'resource-production': {
           const star = g.starManager.getStar(STAR_INDEX.EARTH);
           if (!star) return false;
-          if (initialHasStope) {
-            return g.earthCivi.miningRatio !== initialMiningRatio;
-          }
-          return !!star.buildingProgress?.stope || !!star.hasStope;
+          return g.earthCivi.miningRatio !== initialMiningRatio || !!star.hasStope;
         }
         case 'start-research': {
           for (const tree of g.earthCivi.tecTreeManager.trees.values()) {
@@ -377,7 +441,15 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           }
           return false;
         }
+        case 'welcome':
+        case 'click-earth':
+        case 'read-status':
+        case 'next-turn':
+        case 'resolve-event':
+        case 'tutorial-end':
+          return false; // 由定时器、特定事件监听或手动「下一步」按钮驱动
         default:
+          console.error(`[Tutorial] 警告：步骤 "${stepId}" 未配置 checkCondition 验证规则，可能导致死锁。`);
           return false;
       }
     };
@@ -591,7 +663,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
                 {current.description}
               </p>
             </div>
-            {!isWelcome && (
+            {!isWelcome && !current.requiresManualAdvance && (
               <div className="flex items-center gap-2 text-[10px] text-amber-500/70">
                 <ChevronRight size={12} className="animate-pulse" />
                 <span>完成操作后自动进入下一步</span>
@@ -605,11 +677,30 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
             )}
           </div>
 
-          {/* 底部控制栏：只有跳过教程 */}
-          <div className="flex items-center justify-end pt-3 border-t border-[#243245]/40 z-10">
-            <button onClick={handleSkip} className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white">
-              跳过教程 <ChevronRight size={12} />
+          {/* 底部控制栏：统一三态按钮逻辑 */}
+          <div className="flex items-center justify-between pt-3 border-t border-[#243245]/40 z-10">
+            <button
+              onClick={handleSkip}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
+            >
+              跳过教程
             </button>
+
+            {step === steps.length - 1 ? (
+              <button
+                onClick={completeStep}
+                className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/60 rounded text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all cursor-pointer animate-pulse"
+              >
+                完成校准 <ChevronRight size={14} />
+              </button>
+            ) : current?.requiresManualAdvance ? (
+              <button
+                onClick={completeStep}
+                className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/30 border border-[var(--color-primary)]/60 rounded text-cyan-200 shadow-[0_0_12px_rgba(0,184,255,0.2)] transition-all cursor-pointer"
+              >
+                下一步 <ChevronRight size={14} />
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

@@ -289,18 +289,28 @@ export const TopHUD: React.FC = () => {
           </div>
         </div>
 
+        {/* AI Advisor Button — always visible */}
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-advisor-panel'))}
+          data-tutorial-id="btn-ai-advisor"
+          className="flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-500/20 text-cyan-300 text-[10px] md:text-xs transition-colors cursor-pointer"
+          title="打开智脑顾问与战术百科"
+        >
+          <Brain className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5] text-cyan-400" />
+          <span className="font-title font-bold hidden md:inline">智脑顾问</span>
+        </button>
+
         {/* AI Brain Toggle — always visible */}
         <button
           onClick={toggleAiBrain}
           data-tutorial-id="btn-ai-brain"
-          className={`flex items-center gap-1 px-1.5 md:px-3 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors cursor-pointer ${
+          className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors cursor-pointer ${
             stats.isAiBrainEnabled
-              ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300'
+              ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
               : 'bg-gray-800/50 border-gray-600/50 text-gray-400'
           }`}
           title={stats.isAiBrainEnabled ? 'AI智脑托管中 - 点击切换手动模式' : '手动模式 - 点击切换AI托管'}
         >
-          <Brain className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5]" />
           <span className="font-title font-bold hidden md:inline">
             {stats.isAiBrainEnabled ? '智脑托管' : '手动'}
           </span>

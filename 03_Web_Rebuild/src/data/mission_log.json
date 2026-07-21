@@ -1,0 +1,105 @@
+{
+  "epochs": [
+    {
+      "epochIndex": 0,
+      "epochName": "危机纪元",
+      "subtitle": "生存基础与防线部署",
+      "missions": [
+        {
+          "id": "has-stope",
+          "label": "建设矿业基础",
+          "description": "拥有至少 1 个采矿场，确保原材料持续开采。",
+          "tip": "矿产流向加工厂产生经济，这是文明运转的基础链条。",
+          "navigateTo": "starmap",
+          "reward": { "type": "resource", "amount": 50, "text": "矿产 +50" }
+        },
+        {
+          "id": "has-factory",
+          "label": "建立加工工业",
+          "description": "拥有至少 1 个加工厂，将矿产转化为经济价值。",
+          "tip": "加工厂是维持国家经济健康与稳定度的核心设施。",
+          "navigateTo": "starmap",
+          "reward": { "type": "economy", "amount": 30, "text": "经济 +30" }
+        },
+        {
+          "id": "finish-tech",
+          "label": "启动科技演进",
+          "description": "完成第一项科技研究（如天文观测或基础物理）。",
+          "tip": "优先研究基础科技，为后期深空工程与兵器突破奠定基础。",
+          "navigateTo": "techtree",
+          "reward": { "type": "culture", "amount": 25, "text": "文化 +25" }
+        },
+        {
+          "id": "appoint-minister",
+          "label": "组建执政内阁",
+          "description": "任命至少 1 位政府部门部长。",
+          "tip": "部长能提升对应部门效率，并增加每回合 AP（执政指令点）恢复量。",
+          "navigateTo": "government",
+          "reward": { "type": "ap", "amount": 10, "text": "AP 上限提升" }
+        },
+        {
+          "id": "resolve-event",
+          "label": "应对危机抉择",
+          "description": "处理并解决至少 1 次剧情事件。",
+          "tip": "每一个事件抉择都会深刻影响文明的道德、叛变度与资源存量。",
+          "navigateTo": "starmap",
+          "reward": { "type": "culture", "amount": 30, "text": "文化 +30" }
+        }
+      ]
+    },
+    {
+      "epochIndex": 1,
+      "epochName": "威慑纪元",
+      "subtitle": "黑暗森林威慑与战略制衡",
+      "missions": [
+        {
+          "id": "reach-deterrence",
+          "label": "建立威慑体系",
+          "description": "使战略威慑度达到 50 以上。",
+          "tip": "威慑度是和平的保障。它每回合自然衰减，需通过面壁者与军队维持。",
+          "navigateTo": "starmap",
+          "reward": { "type": "culture", "amount": 50, "text": "文化 +50" }
+        },
+        {
+          "id": "appoint-wallfacer",
+          "label": "启动面壁计划",
+          "description": "指定至少 1 位面壁者展开秘密战略工程。",
+          "tip": "面壁者的计划一旦达到 100% 进度，将带来巨大的战略威慑加成。",
+          "navigateTo": "government",
+          "reward": { "type": "army", "amount": 50, "text": "军事 +50" }
+        },
+        {
+          "id": "appoint-swordholder",
+          "label": "任命终极执剑人",
+          "description": "选拔并任命一位高威慑掌控度的执剑人。",
+          "tip": "执剑人掌握引力波广播触发权，其个人素质直接决定威慑衰减速率。",
+          "navigateTo": "government",
+          "reward": { "type": "culture", "amount": 40, "text": "文化 +40" }
+        }
+      ]
+    },
+    {
+      "epochIndex": 2,
+      "epochName": "广播与掩体纪元",
+      "subtitle": "宇宙逃亡与终局抉择",
+      "missions": [
+        {
+          "id": "tier4-tech",
+          "label": "突破终极科技",
+          "description": "研究至少 1 项 4 阶及以上的核心科技。",
+          "tip": "高级科技决定文明终局路线：曲率驱动、行星发动机或意识上传。",
+          "navigateTo": "techtree",
+          "reward": { "type": "economy", "amount": 100, "text": "经济 +100" }
+        },
+        {
+          "id": "resource-reserve",
+          "label": "末日战备物资",
+          "description": "积累人口 ≥ 100 且 矿产 ≥ 300。",
+          "tip": "执行黑域、流浪地球或数字方舟等终局工程需要极为庞大的资源储备。",
+          "navigateTo": "starmap",
+          "reward": { "type": "resource", "amount": 150, "text": "矿产 +150" }
+        }
+      ]
+    }
+  ]
+}

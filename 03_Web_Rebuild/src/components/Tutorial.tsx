@@ -23,8 +23,7 @@ interface TutorialStep {
 }
 
 /**
- * 重设计后的新手教程：5 步（欢迎 + 4 步核心操作）。
- * 每步文案 ≤ 25 汉字。
+ * 重设计后的新手教程：9 步（欢迎、核心操作与智脑校准收尾）。
  * 核心修复：
  *  - 步骤 1 启动时自动将地球居中并放大（focusOnStar），杜绝"找不到地球"
  *  - 步骤 1 高亮框扩大到 110×110px，覆盖 StarMapRenderer 60px 实际命中区
@@ -429,9 +428,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           return !!star?.hasStope || !!star?.buildingProgress?.stope;
         }
         case 'resource-production': {
-          const star = g.starManager.getStar(STAR_INDEX.EARTH);
-          if (!star) return false;
-          return g.earthCivi.miningRatio !== initialMiningRatio || !!star.hasStope;
+          return g.earthCivi.miningRatio !== initialMiningRatio;
         }
         case 'start-research': {
           for (const tree of g.earthCivi.tecTreeManager.trees.values()) {

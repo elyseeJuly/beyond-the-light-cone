@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
+import { getAssetUrl } from '../utils/assetUrl';
+import { GAME_VERSION } from '../utils/version';
 
 interface UpdatePromptProps {
   // No props needed - reads from SW registration
@@ -13,6 +15,7 @@ interface UpdatePromptProps {
  * 符合 Update-1 规范：禁止强制刷新页面。
  */
 export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
+  const [availableVersion, setAvailableVersion] = useState<string | null>(null);
   const {
     offlineReady: [, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -31,6 +34,26 @@ export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
     setNeedRefresh(false);
   };
 
+  useEffect(() => {
+    if (!needRefresh) return;
+
+    let cancelled = false;
+    fetch(getAssetUrl('asset_manifest.json'), { cache: 'no-store' })
+      .then(response => response.ok ? response.json() : null)
+      .then((manifest: { version?: unknown } | null) => {
+        if (!cancelled && typeof manifest?.version === 'string') {
+          setAvailableVersion(manifest.version);
+        }
+      })
+      .catch(() => {
+        // 更新仍可继续；版本号仅用于帮助玩家确认将切换到的构建。
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [needRefresh]);
+
   // 离线就绪提示可以考虑做成 Toast，这里为了简单起见，我们主要关注更新提示
   // 如果需要离线提示，也可以在这里实现
 
@@ -46,8 +69,10 @@ export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#DDEEFF]">发现新版本</p>
-            <p className="text-xs text-[#8899BB] mt-1">游戏有可用更新，是否立即更新？</p>
+            <p className="text-sm font-medium text-[#DDEEFF]">发现新版本{availableVersion ? ` v${availableVersion}` : ''}</p>
+            <p className="text-xs text-[#8899BB] mt-1">
+              将从 v{GAME_VERSION} 更新{availableVersion ? `至 v${availableVersion}` : ''}，是否立即更新？
+            </p>
           </div>
         </div>
         <div className="flex gap-2 mt-3 justify-end">

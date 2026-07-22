@@ -12,14 +12,15 @@
 | 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
 | 性能 | 1000事件压力测试 | 🟢 | 通过 | 持续关注长局内存与性能表现 |
 | 内容 | 设计文档 vs 代码一致性 | 🟢 | 已解决 | 原 3 处偏离 (D01-D03) 已通过 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 确认为权威设计，并编写 SCEN-DESIGN-DRIFT 17 项验证测试 |
-| DevOps | Release流水线 | 🟢 | Tag-Driven 自动化 | .github/workflows/release.yml（4Job：gate→build-web+build-tauri→publish-release）+ tools/extract-changelog.sh + tools/sync-version.sh |
+| DevOps | PWA/Release发布流水线 | 🟢 | main 自动发布 PWA，v* tag 自动发布下载版 | static.yml 构建并校验 PWA bundle、部署后在线核验 manifest；release.yml（gate→build-web+build-tauri→publish-release）仅由 v* tag 触发 |
 | 架构 | 资产按需下载功能 | 🟢 | 已接入主循环 | AssetLoader.downloadEraPack + preloadNextEra 已接入 Game.ts 纪元更替生命周期；manifest 分类覆盖率 99.3%（uncategorized 从 41% 降至 0.7%） |
 | 架构 | 发行渠道资源策略 | 🟢 | Release/PWA 已分流 | Web Release 由 distribution.json 标记、Tauri 由运行时识别；Release随包资源直接可用，PWA 保留进入提醒与分段缓存 |
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 | UI | 新手教程与智脑顾问 | 🟢 | 9步交互 + 任务链 + 战术百科 | 教程升级为 9 步开机校准交互流程（支持阅读步骤「下一步」与「完成校准」三态按钮），重构新手任务为随纪元解锁的 MissionLog 推演目标（支持手动领奖），常驻 AdvisorPanel 战术百科（支持模糊搜索），提示系统升级为具备 CD 的智脑警告 Toast，主菜单移除托管开关并替换为智脑顾问入口，修复多周目 `session:` 缓存污染与死锁。 |
 
 ## 审视日志
-- 2026-07-22: 智脑顾问与新手引导体系重构——主菜单移除托管开关并替换为「智脑顾问 (游戏百科)」面板入口，游戏内 HUD 智脑托管与百科入口双重保留；教程升级为 9 步开机校准流程，补齐判断逻辑并提供「下一步/完成校准」三态按钮；应对危机步骤在队列为空时自动注入专属测试事件；重构新手任务为随纪元渐进解锁并可手动领奖的任务日志 (`MissionLog.tsx`)；重构 tips 为具备冷却机制的智脑警告，以统一 `session:` 前缀规范清理跨周目 LocalStorage 污染。同步修复封面与百科面板的版本号为动态引用。全量 734 项单元测试通过。
+- 2026-07-22: PWA 发布闭环——定位到线上 GitHub Pages 仍停留 v1.0.3 的原因是 v1.0.4 尚在工作分支、Pages 仅监听 main。新增 PWA bundle 版本契约校验与部署后在线 manifest 核验，确保 main 合并后的 Pages 版本可证；更新提示展示当前/目标版本。下载版仍需显式 v* tag，避免普通 main 提交误发安装包。
+- 2026-07-22: 智脑顾问与新手引导体系重构——主菜单移除托管开关并替换为「智脑顾问 (游戏百科)」面板入口，游戏内 HUD 智脑托管与百科入口双重保留；教程升级为 9 步开机校准流程，补齐判断逻辑并提供「下一步/完成校准」三态按钮；应对危机步骤在队列为空时自动注入专属测试事件；重构新手任务为随纪元渐进解锁并可手动领奖的任务日志 (`MissionLog.tsx`)；重构 tips 为具备冷却机制的智脑警告，以统一 `session:` 前缀规范清理跨周目 LocalStorage 污染。同步修复封面与百科面板的版本号为动态引用，以及采矿场完成后教程未等待实际劳力调配便跳过步骤的回归。全量 1069 项单元测试通过。
 - 2026-07-18: Release/PWA 资源交付策略修复——完整资源 Web/Tauri Release 不再沿用 PWA 的 IndexedDB 下载判定，不显示约 370MB 伪下载提示，不重复 fetch 随包资源；PWA 在无教程新游戏、教程完成或继续存档进入时统一检查并提醒尚未缓存的扩展包。Service Worker 排除发行渠道标记缓存，防止 Release 被构建期默认值误判。Tauri 版本同步至 1.0.3。新增 SCEN-DISTRIBUTION-ASSET-POLICY 4 项回归测试；全量 1078 项测试、生产构建与 Chromium 双渠道实测通过。总体健康保持 🟢（0🔴/1🟡/9🟢）。
 - 2026-07-13: 新手教程误触修复与重设计——教程从 12 步精简为 4 步核心操作 + 1 步欢迎页（5 步架构）。修复 5 个误触根因：①教程高亮框 40px 扩大到 110px 覆盖 StarMapRenderer 60px 命中区；②步骤 1 用单一 `<button>` hotspot 替代 4 块分块遮罩消除接缝漏点；③StarMapRenderer 新增 `focusOnStar()` 自动居中地球到屏幕中央并缩放 1.5x；④StarMapRenderer 新增 `setTutorialPulse()` 呼吸光环视觉引导；⑤移动端 landscape 缩放纳入 hotspot 物理像素换算。同步实现阻断器 3 回合宽限期（前 3 回合科研停滞与部门空缺降级为警告不阻断）、一次性情境提示（ContextualTips 组件）、可选新手任务清单（BeginnerTasks 组件）。新增 SCEN-TUTORIAL-WELCOME/SCEN-TUTORIAL-STEP1-HOTSPOT/SCEN-TUTORIAL-STEP1-FOCUS-EARTH 三个场景测试。全量 1074 测试通过。"新手教程可用性"维度新增为 🟢。总体健康 🟢（0🔴/1🟡/8🟢）。
 - 2026-07-12: AP 系统回路闭合 + 星图点击 + 军事部星舰入口 —— 依据 SPEC_20260712_AP_SYSTEM_REDESIGN 完成 AP 系统重设计：基础恢复 30→5、AP 不累加跨回合、新增纪元加成（危机+10/威慑+20/掩体-10）；recoverAP 提前至 Game.runARound 入口避免阻断死锁；getTurnBlockers 补全科研停滞和行政瘫痪两项阻断器；runAIBrain 4 处直接赋值改走 spendAP 半价；UI 层 RightInspector 3 处滑块和 TecTreeView 科研指派接入 AP 消耗。同步修复星图地球点击命中半径（桌面端从 15.6px 提升至 60px，与移动端对齐）和军事部增加星舰建造入口（与地球 FleetModal 打通）。8 场景建模验证无死锁，全量 1045 测试通过。"AP 系统回路闭合"维度新增为 🟢。总体健康 🟢（0🔴/1🟡/7🟢）。

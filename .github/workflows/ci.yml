@@ -38,6 +38,9 @@ jobs:
       - name: Build for production
         run: npm run build
 
+      - name: Verify PWA release bundle
+        run: npm run verify:pwa-release
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 

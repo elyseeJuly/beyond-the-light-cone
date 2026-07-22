@@ -181,7 +181,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
+      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
       role="dialog"
       aria-modal="true"
     >
@@ -192,7 +192,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
       {/* Main card box (820px width, 520px height) */}
       <div 
-        className={`relative w-[820px] h-[520px] ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
+        className={`relative z-20 w-full max-w-[820px] h-[90vh] md:h-[520px] ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-col md:flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
       >
         {/* CG Full-bleed background layer */}
         {currentNode.isCG && (
@@ -222,7 +222,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
         {/* Left Panel: Speaker Portrait (split layout) - Hidden during CG events */}
         {hasSpeaker && !currentNode.isCG && (
-          <div className="w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex flex-col justify-end items-center relative overflow-hidden group z-10">
+          <div className="hidden md:flex w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex-col justify-end items-center relative overflow-hidden group z-10">
             {/* Holographic scanner grids */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-primary),transparent_1px),linear-gradient(to_bottom,var(--color-primary),transparent_1px)] bg-[size:16px_16px] opacity-[0.03]" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070B14]/90 via-transparent to-transparent z-10" />

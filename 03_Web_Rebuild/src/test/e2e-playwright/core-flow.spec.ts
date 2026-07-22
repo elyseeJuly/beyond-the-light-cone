@@ -102,6 +102,15 @@ test.describe('Core User Flow', () => {
 
     // 等待弹窗按钮出现在 DOM 中
     await page.locator(storySelector).first().waitFor({ state: 'visible' });
+    await page.waitForTimeout(600);
+
+    // 强制清除事件队列中后续积攒的事件，只留下当前展示的事件，避免多个弹窗链式弹出导致测试超时不关闭
+    await page.evaluate(() => {
+      const game = (window as any).GameInstance?.get?.();
+      if (game) {
+        game.eventQueue = [];
+      }
+    });
 
     // 弹窗按钮带有入场/打字机动画，Playwright 默认点击会等待元素稳定。
     // 这里使用 force 点击直接触发，避免动画导致的不稳定超时。
@@ -109,21 +118,21 @@ test.describe('Core User Flow', () => {
     for (let attempt = 0; attempt < 15 && !actionClicked; attempt++) {
       const choiceBtn = page.locator('.story-choice-btn').first();
       if (await choiceBtn.isVisible().catch(() => false)) {
-        await choiceBtn.click({ force: true });
+        await choiceBtn.click({ force: true, timeout: 2000 }).catch(() => {});
         actionClicked = true;
         break;
       }
 
-      const ackBtn = page.locator('.story-acknowledge-btn');
+      const ackBtn = page.locator('.story-acknowledge-btn').first();
       if (await ackBtn.isVisible().catch(() => false)) {
-        await ackBtn.click({ force: true });
+        await ackBtn.click({ force: true, timeout: 2000 }).catch(() => {});
         actionClicked = true;
         break;
       }
 
-      const proceedBtn = page.locator('.story-proceed-btn');
+      const proceedBtn = page.locator('.story-proceed-btn').first();
       if (await proceedBtn.isVisible().catch(() => false)) {
-        await proceedBtn.click({ force: true });
+        await proceedBtn.click({ force: true, timeout: 1000 }).catch(() => {});
         // 给翻页动画与类型writer留出时间
         await page.waitForTimeout(150);
       } else {

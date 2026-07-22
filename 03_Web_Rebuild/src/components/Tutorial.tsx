@@ -124,8 +124,8 @@ const WELCOME_AUTO_ADVANCE_MS = 1500;
 export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const game = GameInstance.get();
   const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
-  const initialHasStope = !!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope;
-  const initialMiningRatio = game.earthCivi.miningRatio;
+  const initialHasStope = useRef(!!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope).current;
+  const initialMiningRatio = useRef(game.earthCivi.miningRatio).current;
 
   const steps = useRef(buildSteps(initialHasStope)).current;
   const [step, setStep] = useState(0);
@@ -396,26 +396,27 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     if (stepId === 'resolve-event') {
       const g = GameInstance.get();
       const TUTORIAL_EVENT_ID = 'event_tutorial_eto_test';
-      const hasExistingEvent = g.currentEvent || g.eventQueue.length > 0;
-      if (!hasExistingEvent) {
-        const alreadyQueued = g.eventQueue.some(e => e.id === TUTORIAL_EVENT_ID);
-        if (!alreadyQueued) {
-          g.eventQueue.push({
-            id: TUTORIAL_EVENT_ID,
-            title: '【智脑测试】拦截 ETO 异常信号',
-            dialogQueue: [
-              {
-                speakerName: '智脑系统',
-                content: '监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。'
-              }
-            ],
-            choices: [
-              { label: '发布戒严警告（社会稳定 -5）', action: () => {} },
-              { label: '暗中排查跟踪（积累情报）', action: () => {} }
-            ]
-          });
-          window.dispatchEvent(new CustomEvent('game-state-changed'));
-        }
+      const isAlreadyInjected = g.currentEvent?.id === TUTORIAL_EVENT_ID || g.eventQueue.some(e => e.id === TUTORIAL_EVENT_ID);
+      if (!isAlreadyInjected) {
+        // 强制清除推进回合产生的随机事件，防止教程死锁
+        g.currentEvent = null;
+        g.eventQueue = [];
+        g.eventQueue.push({
+          id: TUTORIAL_EVENT_ID,
+          title: '【智脑测试】拦截 ETO 异常信号',
+          dialogQueue: [
+            {
+              speakerName: '智脑系统',
+              content: '监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。'
+            }
+          ],
+          choices: [
+            { label: '发布戒严警告（社会稳定 -5）', action: () => {} },
+            { label: '暗中排查跟踪（积累情报）', action: () => {} }
+          ]
+        });
+        g.processNextEvent();
+        window.dispatchEvent(new CustomEvent('game-state-changed'));
       }
     }
 

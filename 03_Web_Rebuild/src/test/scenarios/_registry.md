@@ -1,5 +1,5 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-18
+> 最后更新：2026-07-22
 > 发布条件：所有条目为 GREEN
 
 ## 发布状态：🟢 就绪（0 RED / 23 总计）
@@ -37,6 +37,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-22: 智脑顾问与新手引导体系重构——新手教程升级为 9 步交互序章，引入手动推进与完成校准按钮；重构新手任务清单为跟随纪元分阶段解锁的推演目标 MissionLog 且支持手动领奖；智脑常驻顾问百科面板上线，支持全局搜索；提示系统升级为具备冷却的智脑警告。修复多周目 LocalStorage session 前缀污染与教程死锁、幽灵事件。封面与百科版本号实现动态绑定。
 - 2026-07-18: Release/PWA 资源交付分流——新增 `distribution.json` 渠道标记与 Tauri 运行时识别；完整资源 Release 将全部扩展包报告为已安装并短路下载队列，PWA 保留分段下载。下载提醒统一覆盖无教程新游戏、教程完成和继续存档三条进入路径，且仅在 PWA 存在待下载包、尚未处理提醒时弹出。新增 SCEN-DISTRIBUTION-ASSET-POLICY 4 项回归测试，Registry 22→23 条目。全量 1078 项测试与生产构建通过；Chromium 实测 PWA 显示提醒、Release 不显示提醒。
 - 2026-07-13: 新手教程误触修复与重设计——教程从 12 步精简为 4 步核心操作 + 1 步欢迎页（5 步架构）。新增 5 个场景测试条目：SCEN-TUTORIAL-WELCOME（欢迎页 1.5s 自动过渡）、SCEN-TUTORIAL-STEP1-HOTSPOT（110px 高亮框 + 单一 hotspot 防误触）、SCEN-TUTORIAL-STEP1-FOCUS-EARTH（focusOnStar 自动居中地球）、SCEN-GRACE-PERIOD-BLOCKERS（前 3 回合宽限期）、SCEN-GRACE-PERIOD-EXPIRY（宽限期到期恢复正常阻断）。StarMapRenderer 新增 focusOnStar() 和 setTutorialPulse() 公共方法。同步实现阻断器宽限期（getTurnWarnings()）、一次性情境提示（ContextualTips）、可选新手任务清单（BeginnerTasks）。全量 1074 测试通过。Registry 19→22 条目。
 - 2026-07-12: AP 系统重设计与回路闭合——依据 SPEC_20260712_AP_SYSTEM_REDESIGN：基础恢复从 30 降至 5，AP 不累加跨回合，新增纪元加成（危机+10/威慑+20/掩体-10）；recoverAP 提前至 Game.runARound 入口避免阻断死锁；getTurnBlockers 补全科研停滞和行政瘫痪两项阻断器；runAIBrain 4 处直接赋值改走 spendAP 享受半价；UI 层 RightInspector 3 处滑块和 TecTreeView 科研指派接入 AP 消耗。同步修复星图地球点击命中半径（桌面端从 15.6px 提升至 60px）和军事部增加星舰建造入口。SCEN-MANUAL-BLOCKER 测试用例补齐新增阻断器解除逻辑。全量 1045 测试通过。

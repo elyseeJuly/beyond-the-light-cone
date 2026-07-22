@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Brain, Database, Shield, Compass, BookOpen, ChevronRight, Search } from 'lucide-react';
 import advisorData from '../data/advisor_entries.json';
+import { GAME_VERSION } from '../utils/version';
 
 interface AdvisorPanelProps {
   isOpen?: boolean;
@@ -62,7 +63,7 @@ export const AdvisorPanel: React.FC<AdvisorPanelProps> = ({ isOpen: externalIsOp
               <h2 className="text-base font-title font-bold text-white tracking-widest flex items-center gap-2">
                 智脑顾问 · 战术数据百科
                 <span className="text-[10px] px-2 py-0.5 bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30 rounded font-mono">
-                  v1.0.4
+                  v{GAME_VERSION}
                 </span>
               </h2>
               <p className="text-[11px] text-[var(--text-secondary)]">

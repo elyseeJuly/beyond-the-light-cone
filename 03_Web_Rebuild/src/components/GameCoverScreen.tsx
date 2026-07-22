@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, SkipForward, Landmark, Shield, Brain, Info } from 'lucide-react';
 import { getImageUrl } from '../utils/assetUrl';
 import { AdvisorPanel } from './AdvisorPanel';
+import { GAME_VERSION } from '../utils/version';
 
 interface GameCoverScreenProps {
   hasSave: boolean;
@@ -93,7 +94,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
           </span>
         </div>
         <div className="text-[10px] text-right text-[var(--text-secondary)]/60 font-mono">
-          SYSTEM VERSION: V0.9.0-BETA // SECURE
+          SYSTEM VERSION: V{GAME_VERSION} // SECURE
         </div>
       </header>
 

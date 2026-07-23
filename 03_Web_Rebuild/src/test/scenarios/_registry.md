@@ -1,5 +1,5 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-22
+> 最后更新：2026-07-23
 > 发布条件：所有条目为 GREEN
 
 ## 发布状态：🟢 就绪（0 RED / 23 总计）
@@ -37,6 +37,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-23: 教程防卡死优化与主界面国际化适配——新手教程第一步「选中地球」重构为自动选中，消除 Canvas 偏置卡死隐患并改用「下一步」按钮推进；`TopHUD.tsx` 与 `GameCoverScreen.tsx` 关键说明文本和指标名称引入 `useTranslation` 进行 i18n 翻译，支持按中英文语言自适应格式化纪元年份显示。
 - 2026-07-22: PWA/Release 自动发布闭环——`main` 自动发布 GitHub Pages PWA；构建后校验 package.json、public/dist manifest、distribution 标记和 Service Worker 更新契约一致，部署完成后重试在线读取 manifest，确保线上版本已切换。v* tag 保持为下载包与 GitHub Release 的唯一触发器。更新提示显示当前版本与待切换版本，避免“更新后看似仍为旧版”的歧义。
 - 2026-07-22: 智脑顾问与新手引导体系重构——新手教程升级为 9 步交互序章，引入手动推进与完成校准按钮；重构新手任务清单为跟随纪元分阶段解锁的推演目标 MissionLog 且支持手动领奖；智脑常驻顾问百科面板上线，支持全局搜索；提示系统升级为具备冷却的智脑警告。修复多周目 LocalStorage session 前缀污染与教程死锁、幽灵事件、资源已建成即跳过劳力调配步骤的回归；封面与百科版本号实现动态绑定。
 - 2026-07-18: Release/PWA 资源交付分流——新增 `distribution.json` 渠道标记与 Tauri 运行时识别；完整资源 Release 将全部扩展包报告为已安装并短路下载队列，PWA 保留分段下载。下载提醒统一覆盖无教程新游戏、教程完成和继续存档三条进入路径，且仅在 PWA 存在待下载包、尚未处理提醒时弹出。新增 SCEN-DISTRIBUTION-ASSET-POLICY 4 项回归测试，Registry 22→23 条目。全量 1078 项测试与生产构建通过；Chromium 实测 PWA 显示提醒、Release 不显示提醒。

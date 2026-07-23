@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Map, Cpu, Landmark, Archive, Radio, AlertTriangle, Settings } from 'lucide-react';
 import { GameInstance } from '../core/Game';
-import { t } from '../utils/i18n';
+import { useTranslation } from '../utils/i18n';
 import { BgmPlayer } from './BgmPlayer';
 
 interface NavItemProps {
@@ -31,6 +31,7 @@ interface LeftHubProps {
 }
 
 export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) => {
+  const { t } = useTranslation();
   const [sophonBlocked, setSophonBlocked] = useState(false);
   const [diversity, setDiversity] = useState({ triggered: 0, total: 0, percentage: 0 });
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -84,7 +85,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         
         <NavItem 
           icon={<Map size={18} className="stroke-[1.5]" />} 
-          label="战略星图" 
+          label={t("战略星图")} 
           active={activeView === 'starmap'} 
           onClick={() => setActiveView('starmap')}
           tutorialId="nav-starmap"
@@ -92,7 +93,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         
         <NavItem 
           icon={<Radio size={18} className="stroke-[1.5]" />} 
-          label="情报中心" 
+          label={t("情报中心")} 
           active={activeView === 'intelligence'} 
           onClick={() => setActiveView('intelligence')}
           tutorialId="nav-intelligence"
@@ -100,7 +101,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         
         <NavItem 
           icon={<Cpu size={18} className="stroke-[1.5]" />} 
-          label="科技研发" 
+          label={t("科技研发")} 
           active={activeView === 'techtree'} 
           onClick={() => setActiveView('techtree')}
           tutorialId="nav-techtree"
@@ -108,7 +109,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         
         <NavItem 
           icon={<Landmark size={18} className="stroke-[1.5]" />} 
-          label="政府管理" 
+          label={t("政府管理")} 
           active={activeView === 'government'} 
           onClick={() => setActiveView('government')}
           tutorialId="nav-government"
@@ -116,7 +117,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
         
         <NavItem 
           icon={<Archive size={18} className="stroke-[1.5] text-cyan-400" />} 
-          label="岁月史书" 
+          label={t("岁月史书")} 
           active={activeView === 'archive'} 
           onClick={() => setActiveView('archive')}
           tutorialId="nav-archive"
@@ -143,7 +144,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
                 <div className="h-full bg-[var(--color-primary)] transition-all duration-500" style={{ width: `${diversity.percentage}%` }} />
               </div>
               <div className="flex justify-between text-[9px] text-[var(--text-secondary)] font-mono">
-                <span>存档已读取比例</span>
+                <span>{t("档案已读取比例")}</span>
                 <span>{diversity.percentage}%</span>
               </div>
             </div>
@@ -155,9 +156,9 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           <div className="mt-2 bg-red-500/10 border border-red-500/35 p-3 rounded flex gap-2.5 items-start">
             <AlertTriangle className="text-red-400 shrink-0 stroke-[1.5]" size={16} />
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider font-title">智子干扰中</span>
+              <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider font-title">{t("智子干扰中")}</span>
               <p className="text-[9px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                基础物理研究已被锁定，科研产出效率衰减 40%。
+                {t("基础物理研究已被锁定，科研产出效率衰减 40%。")}
               </p>
             </div>
           </div>
@@ -171,7 +172,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
             <button 
               onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))} 
               className="p-2 hover:bg-white/5 rounded text-[var(--text-secondary)] hover:text-white cursor-pointer transition-colors"
-              title="系统设置"
+              title={t("系统设置")}
             >
               <Settings size={15} />
             </button>
@@ -181,3 +182,4 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
     </aside>
   );
 };
+

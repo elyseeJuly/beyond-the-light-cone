@@ -16,11 +16,21 @@ describe('Appendix B Improvements tests', () => {
       expect(getLanguage()).toBe('zh');
       expect(t('game_title')).toBe('光锥之外：纪元往事');
       expect(t('next_turn')).toBe('下一回合');
+      expect(t('战略星图')).toBe('战略星图');
 
       setLanguage('en');
       expect(getLanguage()).toBe('en');
       expect(t('game_title')).toBe('Beyond the Light Cone: Epoch Chronicles');
       expect(t('next_turn')).toBe('Next Turn');
+      expect(t('战略星图')).toBe('Star Map');
+      expect(t('情报中心')).toBe('Intel Center');
+      expect(t('科技研发')).toBe('Tech Tree');
+      expect(t('稳定度')).toBe('Stability');
+      expect(t('人口')).toBe('Population');
+      expect(t('资源')).toBe('Resources');
+      expect(t('军力')).toBe('Military');
+      expect(t('威慑度')).toBe('Deterrence');
+      expect(t('地球防卫理事会最高指挥中心')).toBe('PDC Supreme Command Center');
     });
 
     it('should support placeholder substitution', () => {

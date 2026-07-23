@@ -3,6 +3,7 @@ import { Play, SkipForward, Landmark, Shield, Brain, Info } from 'lucide-react';
 import { getImageUrl } from '../utils/assetUrl';
 import { AdvisorPanel } from './AdvisorPanel';
 import { GAME_VERSION } from '../utils/version';
+import { useTranslation } from '../utils/i18n';
 
 interface GameCoverScreenProps {
   hasSave: boolean;
@@ -19,6 +20,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   onContinueGame,
   onOpenMuseum,
 }) => {
+  const { t } = useTranslation();
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
   const [hoveredOption, setHoveredOption] = useState<MenuOption>(null);
   const [rendered, setRendered] = useState(false);
@@ -52,17 +54,17 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   const getOptionDescription = (opt: MenuOption) => {
     switch (opt) {
       case 'continue':
-        return '读取最近的历史节点，继续您的文明演进与黑暗森林法则对抗之旅。';
+        return t('读取最近的历史节点，继续您的文明演进与黑暗森林法则对抗之旅。');
       case 'new_tutorial':
-        return '重构文明时间线。推荐新手玩家使用，智脑辅助系统将带您完成校准与基础规划。';
+        return t('重构文明时间线。推荐新手玩家使用，智脑辅助系统将带您完成校准与基础规划。');
       case 'new_free':
-        return '跳过初级引导系统，直接以最高统帅身份跨入冷酷的宇宙博弈。';
+        return t('跳过初级引导系统，直接以最高统帅身份跨入冷酷的宇宙博弈。');
       case 'advisor':
-        return '唤醒智脑战术数据百科。可查阅三维资源链、AP机制、面壁者策略与完整结局路线图。';
+        return t('唤醒智脑战术数据百科。可查阅三维资源链、AP机制、面壁者策略与完整结局路线图。');
       case 'archive':
-        return '查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。';
+        return t('查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。');
       default:
-        return '请选择操作指令。作为执政官，您在黑暗森林法则下的每一个决策都将书写人类文明的历史。';
+        return t('请选择操作指令。作为执政官，您在黑暗森林法则下的每一个决策都将书写人类文明的历史。');
     }
   };
 
@@ -104,19 +106,19 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
         <div className="flex-1 flex flex-col justify-center text-center md:text-left">
           <div className="inline-flex items-center justify-center md:justify-start gap-2 text-[var(--color-primary)] mb-2 tracking-[0.3em] text-xs font-bold">
             <Shield size={14} className="animate-pulse" />
-            地球防卫理事会最高指挥中心
+            {t("地球防卫理事会最高指挥中心")}
           </div>
           <h1 
             className="text-4xl sm:text-6xl font-black font-title tracking-[0.2em] text-white leading-tight drop-shadow-[0_0_20px_rgba(0,184,255,0.5)] uppercase"
             style={{ textShadow: '0 0 15px rgba(0, 184, 255, 0.4)' }}
           >
-            光锥之外
+            {t("光锥之外")}
           </h1>
           <h2 className="text-xl sm:text-2xl font-light text-[var(--color-primary)] tracking-[0.4em] mt-1 uppercase">
-            纪元往事
+            {t("纪元往事")}
           </h2>
           <div className="mt-6 text-xs text-[var(--text-secondary)]/80 leading-relaxed max-w-md hidden md:block">
-            在冷酷黑暗的宇宙森林深处，地球文明的坐标已经暴露，智子封锁着科学的边界。你将扮演人类最高执政官，引领文明跨越危机、威慑、广播、掩体及逃亡纪元，在毁灭与永恒的交织中为文明寻找一线生路。
+            {t("在冷酷黑暗的宇宙森林深处，地球文明的坐标已经暴露，智子封锁着科学的边界。你将扮演人类最高执政官，引领文明跨越危机、威慑、广播、掩体及逃亡纪元，在毁灭与永恒的交织中为文明寻找一线生路。")}
           </div>
         </div>
 
@@ -145,7 +147,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               )}
               <Play size={16} className={hasSave ? 'text-[var(--color-primary)]' : 'text-slate-500'} />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">继续我的文明</div>
+                <div className="text-sm font-bold tracking-widest font-title">{t("继续我的文明")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">CONTINUE EXISTENTIAL LOG</div>
               </div>
             </button>
@@ -160,7 +162,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <Shield size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title text-[var(--color-primary)]">重新构想 (开启引导)</div>
+                <div className="text-sm font-bold tracking-widest font-title text-[var(--color-primary)]">{t("重新构想 (开启引导)")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">NEW GAME WITH TUTORIAL</div>
               </div>
             </button>
@@ -175,7 +177,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <SkipForward size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">自由探索 (跳过引导)</div>
+                <div className="text-sm font-bold tracking-widest font-title">{t("自由探索 (跳过引导)")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">FREE EXPLORATION MODE</div>
               </div>
             </button>
@@ -190,7 +192,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <Brain size={16} className="text-cyan-400" />
               <div className="flex-grow">
                 <div className="text-xs font-bold tracking-widest font-title text-cyan-200 flex items-center justify-between">
-                  <span>智脑顾问 · 战术百科</span>
+                  <span>{t("智脑顾问 · 战术百科")}</span>
                   <span className="text-[9px] px-1.5 py-0.5 bg-cyan-500/20 rounded font-mono text-cyan-300">HELP</span>
                 </div>
                 <div className="text-[9px] opacity-70 mt-0.5 font-mono">TACTICAL ENCYCLOPEDIA & ADVISOR</div>
@@ -207,7 +209,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <Landmark size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">文明博物馆</div>
+                <div className="text-sm font-bold tracking-widest font-title">{t("文明博物馆")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">CIVILIZATION MUSEUM</div>
               </div>
             </button>
@@ -217,7 +219,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
           <div className="bg-[#070B14]/80 border border-slate-800 p-4 min-h-[90px] rounded flex gap-3 text-xs leading-relaxed text-[var(--text-secondary)]">
             <Info size={16} className="text-[var(--color-primary)] shrink-0 mt-0.5" />
             <div>
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">指令说明 / DECISION DESCRIPTION</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">{t("指令说明 / DECISION DESCRIPTION")}</div>
               <p className="transition-all duration-300">{getOptionDescription(hoveredOption)}</p>
             </div>
           </div>

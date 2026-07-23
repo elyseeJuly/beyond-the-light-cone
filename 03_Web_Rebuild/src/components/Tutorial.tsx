@@ -43,13 +43,11 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
     {
       id: 'click-earth',
       title: '选中家园星系',
-      description: '点击地球坐标。这颗蓝色行星是我们在这片暗黑森林中唯一的基石。',
-      highlightTarget: 'earth-star',
+      description: '已为您自动定位并选中地球坐标。这是我们在这片暗黑森林中唯一的基石。',
       activeView: 'starmap',
       cardPosition: 'left',
       focusStar: STAR_INDEX.EARTH,
-      highlightSize: 110,
-      forgivingClick: true,
+      requiresManualAdvance: true,
     },
     {
       id: 'read-status',
@@ -138,7 +136,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
   const current = steps[step];
   const stepCompletedRef = useRef(false);
-  const earthSelectedRef = useRef(false);
   const turnCompleteRef = useRef(false);
 
   // ── 窗口尺寸追踪 ──
@@ -275,9 +272,20 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     if (current.activeView) {
       window.dispatchEvent(new CustomEvent('change-active-view', { detail: current.activeView }));
     }
+    if (current.id === 'click-earth') {
+      try {
+        const g = GameInstance.get();
+        const earth = g.starManager.getStar(STAR_INDEX.EARTH);
+        if (earth) {
+          window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
+        }
+      } catch (e) {
+        console.error("Failed to auto-select Earth in tutorial:", e);
+      }
+    }
     if (current.inspectorTab) {
       window.dispatchEvent(new CustomEvent('tutorial:set-tab', { detail: current.inspectorTab }));
-    } else {
+    } else if (current.id !== 'click-earth') {
       window.dispatchEvent(new CustomEvent('tutorial:close-drawer'));
     }
     try {
@@ -348,18 +356,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   }, [current?.id]);
 
   // ── 步骤 1 高亮框点击 = 选中地球（宽容点击，杜绝"明明在框内却没反应"） ──
-  const handleEarthHotspotClick = useCallback(() => {
-    if (current?.id !== 'click-earth') return;
-    if (stepCompletedRef.current) return;
-    const g = GameInstance.get();
-    const earth = g.starManager.getStar(STAR_INDEX.EARTH);
-    if (earth) {
-      window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
-      earthSelectedRef.current = true;
-      completeStep();
-    }
-  }, [current?.id, completeStep]);
-
   // ── 每步验证逻辑 ──
   useEffect(() => {
     stepCompletedRef.current = false;
@@ -368,19 +364,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 
     // 欢迎页不需验证
     if (stepId === 'welcome') return;
-
-    // 步骤 click-earth：监听 star-selected 事件（hotspot 主动派发 + 用户直接点击均生效）
-    if (stepId === 'click-earth') {
-      const handler = (e: Event) => {
-        const star = (e as CustomEvent).detail;
-        if (star && (star.index === STAR_INDEX.EARTH || star.name === '地球')) {
-          earthSelectedRef.current = true;
-          completeStep();
-        }
-      };
-      window.addEventListener('star-selected', handler);
-      return () => window.removeEventListener('star-selected', handler);
-    }
 
     // 步骤 next-turn：监听 game-turn-complete 事件
     if (stepId === 'next-turn') {
@@ -492,7 +475,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const progress = ((step + 1) / steps.length) * 100;
   const showHighlight = highlightRect !== null;
   const isWelcome = current?.id === 'welcome';
-  const isEarthStep = current?.id === 'click-earth';
 
   // ── 卡片定位（避免遮挡高亮目标） ──
   const getCardStyle = (): React.CSSProperties => {
@@ -581,22 +563,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           }} />
       )}
 
-      {/* 步骤 1：地球专属 hotspot —— 单一可点击按钮，彻底消除 4 块遮罩的接缝漏点 */}
-      {isEarthStep && highlightRect && (
-        <button
-          type="button"
-          data-testid="tutorial-earth-hotspot"
-          aria-label="点击选中地球"
-          onClick={handleEarthHotspotClick}
-          className="absolute z-[1003] cursor-pointer bg-transparent border-0 p-0"
-          style={{
-            top: `${highlightRect.top}px`,
-            left: `${highlightRect.left}px`,
-            width: `${highlightRect.width}px`,
-            height: `${highlightRect.height}px`,
-          }}
-        />
-      )}
+
 
       {/* 指引箭头 */}
       {showHighlight && highlightRect && (() => {

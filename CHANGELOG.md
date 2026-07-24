@@ -8,6 +8,34 @@
 ## [Unreleased]
 *(下个即将发布的版本内容，请在开发过程中将更新记录于此，正式发布时修改为具体版本号)*
 
+## [v1.0.5] - 2026-07-24
+
+本次更新按 AUDIT_20260721 审计推荐顺序完成新手教程三阶段重构，系统性解决坐标系统不统一、教程通过旁路事件绕过真实交互、测试同样绕过真实交互、启动/提示/任务清单依赖共享布尔状态和延迟副作用、目标丢失时缺少恢复路径五大架构问题。
+
+### 新增 (Added)
+
+- **教程坐标几何模块 (tutorialGeometry.ts)**：抽出纯函数几何计算（高亮框、4块拼接遮罩、卡片定位、指引箭头），统一 DOM 与 Canvas 坐标转换，修复移动端横屏 0.85 缩放下双重错位。
+- **教程步骤配置模块 (tutorialSteps.ts)**：引入 `SemanticTutorialEvent` 枚举（8 类语义事件）替代字符串 stepId 分支，声明每个步骤的完成事件类型与可选即时校验函数。
+- **教程状态机模块 (tutorialMachine.ts)**：轻量状态机类封装 step 索引、语义事件派发、目标缺失超时恢复（3s + Toast），welcome 1.5s 自动过渡定时器由状态机内部管理避免 React effect 重跑重入。
+- **教程进度版本化模块 (tutorialProgress.ts)**：`game-tutorial-seen` 布尔值升级为 `{version, completedAt}` 结构，教程内容重大改版时递增 `TUTORIAL_PROGRESS_VERSION` 即可让老玩家自动重新触发新版教程，旧版记录自动迁移为 legacy。
+- **横屏坐标验证 E2E 测试 (tutorial-coordinates.spec.ts)**：6 用例覆盖横屏 DOM 高亮误差 ≤4px、地球点击命中、focusOnStar 居中、坐标互逆性、桌面端无缩放、旋转屏幕连续性。
+- **教程鲁棒性 E2E 测试 (tutorial-robustness.spec.ts)**：4 用例覆盖目标缺失时遮罩切换、UI 可点击性、教程卡片交互性、目标延迟挂载恢复。
+- **步骤成本提示 (costHint)**：build-stope / resource-production / start-research 步骤描述下方显示资源/AP 消耗（30 经济 / 10 AP / 20 AP），与核心层成本值一致。
+
+### 优化 (Optimized)
+
+- **教程真实用户交互 E2E**：重写 tutorial-guided.spec.ts 为真实点击/拖动操作，替换 `page.evaluate` 旁路修改状态，覆盖 click-earth 宽容点击、build-stope 真实建造、resolve-event StoryModal 真实选项。
+- **Tutorial.tsx 状态机驱动重写**：移除全部 `stepId === 'xxx'` 字符串分支与 300ms 轮询，改用状态机 `subscribe()` 驱动 React 重渲染，行数从 680 精简至 580。
+
+### 修复 (Fixed)
+
+- **P0-1 移动端横屏坐标双重错位**：建立唯一坐标转换层 `canvasToViewport` / `viewportToCanvas`，统一 DOM 元素与 Canvas 星球坐标计算，纳入 `transform: scale(0.85)` 缩放系数。
+- **P0-2 focusOnStar 居中公式不正确**：修正公式，地球缩放后正确居中到视口中央。
+- **P0-3 星图命中区域异常巨大**：重设计命中算法为 `Math.max(visualRadius * 4 + 100, 44)`，地球给 60px 命中区。
+- **P0-4 E2E 测试绕过真实交互**：重写测试为真实用户点击，替换 `page.evaluate` 旁路。
+- **目标缺失锁屏**：步骤配置 highlightTarget 但目标元素未渲染时，渲染 `tutorial-overlay-missing`（pointer-events-none）而非全屏拦截遮罩，玩家仍可操作游戏 UI。
+- **StoryModal 关闭后重新弹出的根因**：App.tsx 传递内联 `onComplete` 导致 Tutorial 组件 `completeStep` 依赖变化、`useEffect` 反复重跑重新注入测试事件；修复为用 `useCallback` 稳定回调 + ref 标记事件注入状态。
+
 ## [v1.0.4] - 2026-07-22
 
 本次更新对新手教程进行了全面重构，将其转型为“不太聪明但有用”的「智脑顾问」引导体系，保留游戏内的自动托管代打，同时彻底移除了主菜单上的托管开关。此外，也并入了 PWA 资源策略分流及跨周目状态清理的修复。

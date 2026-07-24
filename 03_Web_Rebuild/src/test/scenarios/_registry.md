@@ -2,7 +2,7 @@
 > 最后更新：2026-07-24
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 24 总计）
+## 发布状态：🟢 就绪（0 RED / 30 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -15,6 +15,12 @@
 | SCEN-TUTORIAL-WELCOME | UI/UX | 教程欢迎页自动过渡 | 教程启动时显示"序幕"欢迎页，1.5s 后自动进入步骤 1/4（点击地球），给玩家仪式感与思考空间 | 🟢 GREEN | 新手教程一进游戏就要求操作，缺少缓冲 | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-STEP1-HOTSPOT | 交互 | 教程步骤 1 防误触 hotspot | 步骤 1 高亮框扩大到 110×110px 覆盖 StarMapRenderer 60px 命中区；单一 `<button>` hotspot 替代 4 块分块遮罩消除接缝漏点；框内任意位置点击都算选中地球 | 🟢 GREEN | 新手教程点击地球经常会误触（高亮框 40px < 命中区 60px + 遮罩接缝漏点） | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-STEP1-FOCUS-EARTH | 交互 | 教程步骤 1 自动居中地球 | 步骤 1 启动时 StarMapRenderer.focusOnStar(3, 1.5, true) 自动将地球居中到屏幕中央并缩放 1.5x，无论玩家之前停留在哪个星区 | 🟢 GREEN | 新手教程找不到地球（玩家停留在银河系区域时地球不在视野内） | TutorialRemedy.scenario.test.tsx |
+| SCEN-TUTORIAL-COORDINATES | 交互 | 横屏坐标几何统一 | 移动端横屏 0.85 缩放下，教程高亮框中心与目标元素中心误差 ≤ 4px；坐标转换层 canvasToViewport/viewportToCanvas 互逆；地球点击命中区域正确 | 🟢 GREEN | P0-1 移动端横屏坐标双重错位（DOM 与 Canvas 各自为政） | tutorial-coordinates.spec.ts |
+| SCEN-TUTORIAL-ROBUSTNESS | 交互 | 教程目标缺失不锁屏 | 步骤配置 highlightTarget 但目标元素未渲染时，渲染 pointer-events-none 遮罩而非全屏拦截；游戏 UI 可点击；目标延迟挂载后自动恢复 | 🟢 GREEN | P0 流程故障 #2 目标缺失锁死整屏 | tutorial-robustness.spec.ts |
+| SCEN-TUTORIAL-STATE-MACHINE | 架构 | 教程状态机语义事件驱动 | Tutorial 流程由 tutorialMachine 驱动，stepId 字符串分支替换为 SemanticTutorialEvent 枚举（8 类）；welcome 1.5s 定时器由状态机内部管理；目标缺失 3s 超时自动跳过 + Toast | 🟢 GREEN | 教程依赖 300ms 轮询可变单例状态、启动依赖延迟副作用 | TutorialRemedy.scenario.test.tsx |
+| SCEN-TUTORIAL-REAL-E2E | 回归 | 教程真实用户交互 E2E | E2E 测试模拟真实点击/拖动而非 page.evaluate 旁路修改状态；覆盖 click-earth 宽容点击、build-stope 真实建造、resolve-event StoryModal 真实选项 | 🟢 GREEN | P0-4 E2E 测试绕过真实交互（与教程实现同源问题） | tutorial-guided.spec.ts |
+| SCEN-TUTORIAL-PROGRESS-VERSION | 持久化 | 教程进度版本化持久化 | game-tutorial-seen 布尔值升级为 {version, completedAt} 结构；TUTORIAL_PROGRESS_VERSION 变更时老玩家自动重新触发新版教程；旧版记录自动迁移为 legacy | 🟢 GREEN | game-tutorial-seen 单一布尔值无法区分教程版本，改版后老玩家不触发 | TutorialRemedy.scenario.test.tsx |
+| SCEN-TUTORIAL-COST-HINT | UI/UX | 教程步骤成本提示 | build-stope / resource-production / start-research 步骤描述下方显示资源/AP 消耗（30 经济 / 10 AP / 20 AP），与核心层成本值一致 | 🟢 GREEN | 教程未告知操作成本，玩家盲目点击 | tutorial-guided.spec.ts |
 | SCEN-GRACE-PERIOD-BLOCKERS | 交互 | 前 3 回合阻断器宽限期 | year < 3 时科研停滞与部门首长空缺降级为警告（不阻断回合推进），资源崩盘与经济危机仍阻断；getTurnWarnings() 返回警告列表 | 🟢 GREEN | 新玩家前几回合因不熟悉机制被反复阻断 | TutorialRemedy.scenario.test.tsx |
 | SCEN-GRACE-PERIOD-EXPIRY | 交互 | 宽限期到期恢复正常阻断 | year ≥ 3 后科研停滞与部门空缺恢复为硬阻断，getTurnWarnings() 返回空列表 | 🟢 GREEN | 宽限期到期后阻断器未恢复正常 | TutorialRemedy.scenario.test.tsx |
 | SCEN-MANUAL-BLOCKER | 交互 | 手动模式阻断与消除 | 非教程期间，手动模式下存在阻断时按钮禁用显示"有阻断"，阻断消除后恢复可用。依据 SPEC_20260712_AP_SYSTEM_REDESIGN：阻断器扩展为 4 项（资源崩盘/经济危机/科研停滞/行政瘫痪），测试已补齐新增阻断项的解除逻辑 | 🟢 GREEN | 手动模式回合阻断与指示器显示问题；AP 系统重设计补全阻断器 | TutorialRemedy.scenario.test.tsx |
@@ -38,7 +44,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
-- 2026-07-24: 全文本英文本地化实装（SCEN-I18N-FULL-EN）——全量接入 `useTranslation` 动态国际化引擎与《三体》英文原版（Ken Liu 译本）标准化词库。覆盖 TopHUD、LeftHub、RightInspector、TecTreeView、GovManagement、DiplomacyPanel、FleetModal、BattleScreen、WallfacerPanel、DepartmentPanel、PersonSelectPanel、AdvisorPanel、MuseumGallery、Tutorial、MissionLog、EndGameScreen 等 34 个 UI 组件与 32 个终局结局。通过 734 项单元测试与生产打包。
+- 2026-07-24: 新手教程三阶段重构——按 AUDIT_20260724 审计推荐顺序完成三阶段重构。第一阶段·坐标几何统一：建立 canvasToViewport/viewportToCanvas 坐标转换层，修复移动端横屏 0.85 缩放下 DOM 与 Canvas 坐标双重错位，新增 tutorial-coordinates.spec.ts（6 用例）验证横屏高亮误差 ≤4px。第二阶段·教程状态机重构：抽出 tutorialGeometry.ts/tutorialSteps.ts/tutorialMachine.ts 三模块，引入 SemanticTutorialEvent 枚举（8 类）替代 stepId 字符串分支，welcome 1.5s 定时器由状态机内部管理避免 React effect 重跑重入，目标缺失 3s 超时自动跳过 + Toast。第三阶段·版本化持久化：game-tutorial-seen 布尔值升级为 {version, completedAt} 结构，TUTORIAL_PROGRESS_VERSION 变更时老玩家自动重新触发新版教程，旧版记录自动迁移；给 build-stope/resource-production/start-research 步骤加 costHint 成本提示（30经济/10AP/20AP）。修复 StoryModal 关闭后重新弹出的根因（App.tsx useCallback 稳定 onComplete + Tutorial.tsx ref 标记事件注入状态）。Registry 24→30 条目，全量 1070 单元测试 + 24 E2E 测试通过。
 - 2026-07-23: 教程防卡死优化与主界面国际化适配——新手教程第一步「选中地球」重构为自动选中，消除 Canvas 偏置卡死隐患并改用「下一步」按钮推进；`TopHUD.tsx` 与 `GameCoverScreen.tsx` 关键说明文本和指标名称引入 `useTranslation` 进行 i18n 翻译，支持按中英文语言自适应格式化纪元年份显示。
 - 2026-07-22: PWA/Release 自动发布闭环——`main` 自动发布 GitHub Pages PWA；构建后校验 package.json、public/dist manifest、distribution 标记和 Service Worker 更新契约一致，部署完成后重试在线读取 manifest，确保线上版本已切换。v* tag 保持为下载包与 GitHub Release 的唯一触发器。更新提示显示当前版本与待切换版本，避免“更新后看似仍为旧版”的歧义。
 - 2026-07-22: 智脑顾问与新手引导体系重构——新手教程升级为 9 步交互序章，引入手动推进与完成校准按钮；重构新手任务清单为跟随纪元分阶段解锁的推演目标 MissionLog 且支持手动领奖；智脑常驻顾问百科面板上线，支持全局搜索；提示系统升级为具备冷却的智脑警告。修复多周目 LocalStorage session 前缀污染与教程死锁、幽灵事件、资源已建成即跳过劳力调配步骤的回归；封面与百科版本号实现动态绑定。

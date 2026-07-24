@@ -207,13 +207,13 @@ export const AssetDownloadPromptModal: React.FC<AssetDownloadPromptModalProps> =
                   onClick={handleCustomSettings}
                   className="py-2.5 rounded border border-[#243245] hover:border-cyan-400 bg-white/5 hover:bg-cyan-950/20 text-slate-300 hover:text-white text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5"
                 >
-                  <Settings size={12} /> 个性化选择
+                  <Settings size={12} /> {t("个性化选择")}
                 </button>
                 <button
                   onClick={handleDownloadOnDemand}
                   className="py-2.5 rounded border border-[#243245] hover:border-slate-400 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5"
                 >
-                  <Play size={12} /> 暂不下载，按需
+                  <Play size={12} /> {t("暂不下载，按需")}
                 </button>
               </div>
 
@@ -227,7 +227,7 @@ export const AssetDownloadPromptModal: React.FC<AssetDownloadPromptModalProps> =
                   className="w-3.5 h-3.5 accent-cyan-400 cursor-pointer"
                 />
                 <label htmlFor="chk-no-prompt" className="text-[10px] text-slate-400/80 cursor-pointer hover:text-slate-300 transition-colors select-none">
-                  下次启动不再显示此界面 (按需下载)
+                  {t("下次启动不再显示此界面 (按需下载)")}
                 </label>
               </div>
             </>
@@ -238,7 +238,7 @@ export const AssetDownloadPromptModal: React.FC<AssetDownloadPromptModalProps> =
               onClick={onClose}
               className="w-full py-3 rounded border border-cyan-500/50 bg-cyan-950/30 hover:bg-cyan-950/50 text-cyan-300 font-bold text-xs uppercase tracking-widest cursor-pointer transition-all flex items-center justify-center gap-2"
             >
-              后台运行并开始游戏
+              {t("后台运行并开始游戏")}
             </button>
           )}
 
@@ -247,7 +247,7 @@ export const AssetDownloadPromptModal: React.FC<AssetDownloadPromptModalProps> =
               onClick={onClose}
               className="w-full py-3 rounded border border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/25 text-white font-bold text-xs uppercase tracking-widest cursor-pointer transition-all flex items-center justify-center gap-2"
             >
-              <CheckCircle size={14} className="text-emerald-400" /> 进入游戏
+              <CheckCircle size={14} className="text-emerald-400" /> {t("进入游戏")}
             </button>
           )}
 
@@ -257,13 +257,13 @@ export const AssetDownloadPromptModal: React.FC<AssetDownloadPromptModalProps> =
                 onClick={handleStartSmartDownload}
                 className="py-2.5 rounded border border-cyan-500 bg-cyan-500/10 hover:bg-cyan-500/25 text-white text-xs font-bold cursor-pointer transition-all flex items-center justify-center gap-2"
               >
-                重新连接
+                {t("重新连接")}
               </button>
               <button
                 onClick={handleDownloadOnDemand}
                 className="py-2.5 rounded border border-[#243245] hover:border-white bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-bold cursor-pointer transition-all flex items-center justify-center gap-2"
               >
-                直接进入游戏
+                {t("直接进入游戏")}
               </button>
             </div>
           )}

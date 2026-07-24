@@ -94,7 +94,8 @@ export function buildSteps(hasStope: boolean, initialMiningRatio: number = NaN):
       description: t('公元 2009 年，三体舰队启航。智脑战略系统初始化完成，即将开始校准。'),
       activeView: 'starmap',
       cardPosition: 'center',
-      completionEvent: SemanticTutorialEvent.WELCOME_TIMEOUT,
+      requiresManualAdvance: true,
+      completionEvent: SemanticTutorialEvent.MANUAL_ADVANCE,
     },
     {
       id: 'click-earth',
@@ -131,7 +132,8 @@ export function buildSteps(hasStope: boolean, initialMiningRatio: number = NaN):
       activeView: 'starmap',
       inspectorTab: hasStope ? 'overview' : 'build',
       cardPosition: 'left',
-      completionEvent: SemanticTutorialEvent.AUTO_COMPLETE,
+      requiresManualAdvance: true,
+      completionEvent: SemanticTutorialEvent.MANUAL_ADVANCE,
       validate: (game) => {
         const star = game.starManager.getStar(STAR_INDEX.EARTH);
         return !!star?.hasStope || !!star?.buildingProgress?.stope;
@@ -146,7 +148,8 @@ export function buildSteps(hasStope: boolean, initialMiningRatio: number = NaN):
       activeView: 'starmap',
       inspectorTab: 'overview',
       cardPosition: 'left',
-      completionEvent: SemanticTutorialEvent.AUTO_COMPLETE,
+      requiresManualAdvance: true,
+      completionEvent: SemanticTutorialEvent.MANUAL_ADVANCE,
       validate: (game) => game.earthCivi.miningRatio !== initialMiningRatio,
     },
     {
@@ -157,7 +160,8 @@ export function buildSteps(hasStope: boolean, initialMiningRatio: number = NaN):
       highlightTarget: 'tech-node-天文观测',
       activeView: 'techtree',
       cardPosition: 'right',
-      completionEvent: SemanticTutorialEvent.AUTO_COMPLETE,
+      requiresManualAdvance: true,
+      completionEvent: SemanticTutorialEvent.MANUAL_ADVANCE,
       validate: (game) => {
         for (const tree of game.earthCivi.tecTreeManager.trees.values()) {
           for (const node of tree.nodes.values()) {

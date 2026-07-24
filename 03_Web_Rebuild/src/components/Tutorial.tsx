@@ -105,6 +105,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [highlightRect, setHighlightRect] = useState<HighlightRect | null>(null);
   const [exiting, setExiting] = useState(false);
+  const [actionValidated, setActionValidated] = useState(false);
 
   // ── 防御：resolve-event 步骤的事件注入标记，避免 effect 重跑后反复注入 ──
   const resolveEventInjectedRef = useRef(false);
@@ -118,6 +119,38 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  // ── 监听当前步骤验证条件 ──
+  useEffect(() => {
+    setActionValidated(false);
+    if (!current) return;
+
+    if (!current.validate) {
+      setActionValidated(true);
+      return;
+    }
+
+    const validate = current.validate;
+    const checkAndSet = () => {
+      try {
+        const g = GameInstance.get();
+        if (validate(g)) {
+          setActionValidated(true);
+        }
+      } catch (e) { /* ignore */ }
+    };
+    checkAndSet();
+
+    const handler = () => checkAndSet();
+    window.addEventListener('game-state-changed', handler);
+    window.addEventListener('ap-changed', handler);
+    const interval = setInterval(checkAndSet, 300);
+
+    return () => {
+      window.removeEventListener('game-state-changed', handler);
+      window.removeEventListener('ap-changed', handler);
+      clearInterval(interval);
+    };
+  }, [current]);
 
   // ── 教程启动时关闭 AI 智脑，退出时恢复 ──
   useEffect(() => {
@@ -337,29 +370,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
 
     const completionEvent = current.completionEvent;
 
-    // AUTO_COMPLETE 步骤：进入时立即 validate（若已满足条件直接完成）
-    // + 监听 game-state-changed 触发 validate（保留兜底轮询以防漏派发）
-    if (completionEvent === SemanticTutorialEvent.AUTO_COMPLETE && current.validate) {
-      const validate = current.validate;
-      const checkAndDispatch = () => {
-        try {
-          const g = GameInstance.get();
-          if (validate(g)) {
-            machine.dispatch(SemanticTutorialEvent.AUTO_COMPLETE);
-          }
-        } catch (e) { /* ignore */ }
-      };
-      checkAndDispatch();
-      const handler = () => checkAndDispatch();
-      window.addEventListener('game-state-changed', handler);
-      // 兜底轮询：某些状态变化可能未派发 game-state-changed（如 adjustWorkerRatio 直接修改字段）
-      // 用 300ms 兜底，避免因漏派发导致教程卡死
-      const interval = setInterval(checkAndDispatch, 300);
-      return () => {
-        window.removeEventListener('game-state-changed', handler);
-        clearInterval(interval);
-      };
-    }
+    // WELCOME_TIMEOUT 被移除，所有步骤现在直接监听对应推进事件
 
     // TURN_COMPLETE 步骤：监听 game-turn-complete
     if (completionEvent === SemanticTutorialEvent.TURN_COMPLETE) {
@@ -574,16 +585,18 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
                 </p>
               )}
             </div>
-            {!isWelcome && !current.requiresManualAdvance && (
-              <div className="flex items-center gap-2 text-[10px] text-amber-500/70">
-                <ChevronRight size={12} className="animate-pulse" />
-                <span>完成操作后自动进入下一步</span>
-              </div>
-            )}
-            {isWelcome && (
-              <div className="flex items-center gap-2 text-[10px] text-[var(--color-primary)]/70">
-                <ChevronRight size={12} className="animate-pulse" />
-                <span>{Math.ceil(WELCOME_AUTO_ADVANCE_MS / 1000)} 秒后自动开始</span>
+            {!isWelcome && current.validate && (
+              <div className="flex items-center gap-2 text-[10px] transition-colors duration-300">
+                {actionValidated ? (
+                  <span className="text-emerald-400 font-bold flex items-center gap-1">
+                    ✓ {t("已完成指引操作，可点击下一步")}
+                  </span>
+                ) : (
+                  <span className="text-amber-500/80 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+                    {t("等待指引操作完成...")}
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -594,22 +607,35 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
               onClick={handleSkip}
               className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer text-[var(--text-secondary)] hover:text-white"
             >
-              跳过教程
+              {t("跳过教程")}
             </button>
 
             {stepIndex === steps.length - 1 ? (
               <button
                 onClick={handleManualAdvance}
-                className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/60 rounded text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all cursor-pointer animate-pulse"
+                disabled={!actionValidated}
+                className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded transition-all ${
+                  actionValidated
+                    ? 'bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/60 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)] cursor-pointer animate-pulse'
+                    : 'bg-gray-800/20 border border-gray-700/40 text-gray-500 cursor-not-allowed opacity-50'
+                }`}
               >
-                完成校准 <ChevronRight size={14} />
+                {actionValidated ? t("完成校准") : t("请按指引操作")} <ChevronRight size={14} />
               </button>
             ) : current?.requiresManualAdvance ? (
               <button
                 onClick={handleManualAdvance}
-                className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/30 border border-[var(--color-primary)]/60 rounded text-cyan-200 shadow-[0_0_12px_rgba(0,184,255,0.2)] transition-all cursor-pointer"
+                disabled={!actionValidated}
+                className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded transition-all ${
+                  actionValidated
+                    ? 'bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/30 border border-[var(--color-primary)]/60 text-cyan-200 shadow-[0_0_12px_rgba(0,184,255,0.2)] cursor-pointer animate-pulse'
+                    : 'bg-gray-800/20 border border-gray-700/40 text-gray-500 cursor-not-allowed opacity-50'
+                }`}
               >
-                下一步 <ChevronRight size={14} />
+                {current.id === 'welcome' 
+                  ? t("开始校准")
+                  : (actionValidated ? t("下一步") : t("请按指引操作"))
+                } <ChevronRight size={14} />
               </button>
             ) : null}
           </div>

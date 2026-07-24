@@ -1,8 +1,10 @@
+import { useTranslation } from '../utils/i18n';
 import React, { useState, useEffect, useRef } from 'react';
 import { GameInstance } from '../core/Game';
 import { Terminal, Shield, Bell, Users, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const AnnouncementBoard: React.FC = () => {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,13 +41,13 @@ export const AnnouncementBoard: React.FC = () => {
   }, [messages]);
 
   const getIcon = (text: string) => {
-    if (text.includes('👥') || text.includes('人员') || text.includes('人物')) {
+    if (text.includes('👥') || text.includes('人员') || text.includes('人物') || text.includes('Personnel') || text.includes('Character')) {
       return <Users className="w-3.5 h-3.5 text-cyan-400 shrink-0" />;
     }
-    if (text.includes('警报') || text.includes('威胁') || text.includes('三体')) {
+    if (text.includes('警报') || text.includes('威胁') || text.includes('三体') || text.includes('Alert') || text.includes('Threat') || text.includes('Trisolaris')) {
       return <Shield className="w-3.5 h-3.5 text-red-400 shrink-0 animate-pulse" />;
     }
-    if (text.includes('大事记') || text.includes('更替')) {
+    if (text.includes('大事记') || text.includes('更替') || text.includes('Chronicle') || text.includes('Epoch')) {
       return <Bell className="w-3.5 h-3.5 text-amber-400 shrink-0" />;
     }
     return <Terminal className="w-3.5 h-3.5 text-emerald-400 shrink-0" />;
@@ -67,7 +69,7 @@ export const AnnouncementBoard: React.FC = () => {
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-3 bg-cyan-400 rounded-sm animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]"></div>
           <span className="text-cyan-400 text-xs font-bold font-mono tracking-widest uppercase">
-            PDC 战略防御指挥部 · 战术情报公告板
+            {t("PDC 战略防御指挥部 · 战术情报公告板")}
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -78,7 +80,7 @@ export const AnnouncementBoard: React.FC = () => {
           <button 
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-cyan-500 hover:text-cyan-300 transition-colors p-1 rounded hover:bg-cyan-900/30 cursor-pointer pointer-events-auto"
-            title={isExpanded ? "收起" : "展开"}
+            title={isExpanded ? t("收起") : t("展开")}
           >
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>

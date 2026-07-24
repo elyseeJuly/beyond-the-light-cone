@@ -141,7 +141,7 @@ export const MissionLog: React.FC = () => {
   if (dismissed) return null;
 
   return (
-    <div className="fixed bottom-14 left-4 z-40 w-72 md:w-80 select-none animate-slide-up">
+    <div className="fixed bottom-14 left-4 md:left-[256px] z-40 w-72 md:w-80 select-none animate-slide-up">
       <div className="bg-[#070B14]/95 border border-[var(--color-primary)]/40 rounded-lg shadow-[0_0_20px_rgba(0,184,255,0.15)] overflow-hidden backdrop-blur-md">
         
         <button

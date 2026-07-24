@@ -723,7 +723,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                 纪元历史浮光 (Major Event CG Gallery)
               </h3>
               <span className="text-[10px] text-white/40 font-mono">
-                已解锁 CG: {
+                {t("已解锁 CG")}: {
                   (() => {
                     const stats = StatisticsManager.getStats();
                     const unlockedCount = CG_EVENTS.filter(cg => {
@@ -787,7 +787,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                       
                       {/* Era badge */}
                       <span className="absolute top-2 left-2 text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-950/80 border border-white/10 text-white/60">
-                        {cg.era}
+                        {t(cg.era)}
                       </span>
                     </div>
 
@@ -795,10 +795,10 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                     <div className="p-3.5 flex-1 flex flex-col justify-between gap-2">
                       <div>
                         <h4 className={`text-xs font-bold ${isUnlocked ? 'text-white' : 'text-white/30 line-through'}`}>
-                          {isUnlocked ? cg.name : '【未探索大事件】'}
+                          {isUnlocked ? t(cg.name) : t('【未探索大事件】')}
                         </h4>
                         <p className={`text-[10px] leading-relaxed mt-1 font-light ${isUnlocked ? 'text-white/50' : 'text-white/20'}`}>
-                          {isUnlocked ? cg.description : `解锁线索: ${cg.hint}`}
+                          {isUnlocked ? t(cg.description) : `${t('解锁线索:')} ${t(cg.hint)}`}
                         </p>
                       </div>
                       

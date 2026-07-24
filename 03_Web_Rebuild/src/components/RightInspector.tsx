@@ -14,6 +14,32 @@ export const RightInspector: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [, forceUpdate] = useState(0);
 
+  const game = GameInstance.get();
+  // Local states for sliders to prevent continuous AP drain on drag
+  const [localMiningRatio, setLocalMiningRatio] = useState(game.earthCivi.miningRatio);
+  const [localFactoryRatio, setLocalFactoryRatio] = useState(game.earthCivi.factoryRatio);
+  const [localCultureRatio, setLocalCultureRatio] = useState(game.earthCivi.cultureRatio);
+
+  useEffect(() => {
+    setLocalMiningRatio(game.earthCivi.miningRatio);
+    setLocalFactoryRatio(game.earthCivi.factoryRatio);
+    setLocalCultureRatio(game.earthCivi.cultureRatio);
+  }, [game.earthCivi.miningRatio, game.earthCivi.factoryRatio, game.earthCivi.cultureRatio]);
+
+  const commitRatio = (type: 'mining' | 'factory' | 'culture', newVal: number) => {
+    const earth = game.earthCivi;
+    const currentVal = type === 'mining' ? earth.miningRatio : type === 'factory' ? earth.factoryRatio : earth.cultureRatio;
+    const delta = newVal - currentVal;
+    if (delta !== 0) {
+      const success = earth.adjustWorkerRatio(type, delta);
+      if (!success) {
+        setLocalMiningRatio(earth.miningRatio);
+        setLocalFactoryRatio(earth.factoryRatio);
+        setLocalCultureRatio(earth.cultureRatio);
+      }
+    }
+  };
+
   useEffect(() => {
     const handleStarSelect = (e: Event) => {
       const customEvent = e as CustomEvent<Star>;
@@ -41,7 +67,6 @@ export const RightInspector: React.FC = () => {
     };
   }, []);
 
-  const game = GameInstance.get();
   const star = selectedStar || (() => {
     const earth = game.starManager.getStar(STAR_INDEX.EARTH);
     return earth || null;
@@ -197,7 +222,7 @@ export const RightInspector: React.FC = () => {
                         <div data-tutorial-id="mining-ratio-section" className={`space-y-1 p-1 rounded transition-colors ${miningShortage ? 'border border-orange-500/20 bg-orange-500/5' : ''}`}>
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${miningShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
-                              {t("采矿占比")}: {earth.miningRatio}% ({t("实际")}: {actualMiningPct}%)
+                              {t("采矿占比")}: {localMiningRatio}% ({t("实际")}: {actualMiningPct}%)
                               {miningShortage && ` (${t("缺工")})`}
                             </span>
                             <span className={`font-bold font-data ${miningShortage ? 'text-orange-400' : 'text-[var(--color-primary)]'}`}>{earth.miningWorkers}{lang === 'en' ? 'M' : '万人'}</span>
@@ -206,15 +231,12 @@ export const RightInspector: React.FC = () => {
                             type="range"
                             min="0"
                             max="100"
-                            value={earth.miningRatio}
+                            value={localMiningRatio}
                             onChange={(ev) => {
-                              const newVal = parseInt(ev.target.value, 10);
-                              const delta = newVal - earth.miningRatio;
-                              if (delta !== 0) {
-                                earth.adjustWorkerRatio('mining', delta);
-                              }
-                              forceUpdate(n => n + 1);
+                              setLocalMiningRatio(parseInt(ev.target.value, 10));
                             }}
+                            onMouseUp={() => commitRatio('mining', localMiningRatio)}
+                            onTouchEnd={() => commitRatio('mining', localMiningRatio)}
                             className={`w-full h-1 rounded appearance-none cursor-pointer ${miningShortage ? 'bg-orange-950 accent-orange-500' : 'bg-cyan-950 accent-[var(--color-primary)]'}`}
                           />
                         </div>
@@ -222,7 +244,7 @@ export const RightInspector: React.FC = () => {
                         <div className={`space-y-1 p-1 rounded transition-colors ${factoryShortage ? 'border border-orange-500/20 bg-orange-500/5' : ''}`}>
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${factoryShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
-                              {t("加工占比")}: {earth.factoryRatio}% ({t("实际")}: {actualFactoryPct}%)
+                              {t("加工占比")}: {localFactoryRatio}% ({t("实际")}: {actualFactoryPct}%)
                               {factoryShortage && ` (${t("缺工")})`}
                             </span>
                             <span className={`font-bold font-data ${factoryShortage ? 'text-orange-400' : 'text-emerald-400'}`}>{earth.factoryWorkers}{lang === 'en' ? 'M' : '万人'}</span>
@@ -231,37 +253,31 @@ export const RightInspector: React.FC = () => {
                             type="range"
                             min="0"
                             max="100"
-                            value={earth.factoryRatio}
+                            value={localFactoryRatio}
                             onChange={(ev) => {
-                              const newVal = parseInt(ev.target.value, 10);
-                              const delta = newVal - earth.factoryRatio;
-                              if (delta !== 0) {
-                                earth.adjustWorkerRatio('factory', delta);
-                              }
-                              forceUpdate(n => n + 1);
+                              setLocalFactoryRatio(parseInt(ev.target.value, 10));
                             }}
+                            onMouseUp={() => commitRatio('factory', localFactoryRatio)}
+                            onTouchEnd={() => commitRatio('factory', localFactoryRatio)}
                             className={`w-full h-1 rounded appearance-none cursor-pointer ${factoryShortage ? 'bg-orange-950 accent-orange-500' : 'bg-emerald-950 accent-emerald-400'}`}
                           />
                         </div>
                         {/* Culture */}
                         <div className="space-y-1 p-1 rounded">
                           <div className="flex justify-between text-[11px] font-mono">
-                            <span className="text-[var(--text-secondary)]">{t("文化占比")}: {earth.cultureRatio}% ({t("实际")}: {actualCulturePct}%)</span>
+                            <span className="text-[var(--text-secondary)]">{t("文化占比")}: {localCultureRatio}% ({t("实际")}: {actualCulturePct}%)</span>
                             <span className="font-bold text-amber-400 font-data">{earth.cultureWorkers}{lang === 'en' ? 'M' : '万人'}</span>
                           </div>
                           <input
                             type="range"
                             min="0"
                             max="100"
-                            value={earth.cultureRatio}
+                            value={localCultureRatio}
                             onChange={(ev) => {
-                              const newVal = parseInt(ev.target.value, 10);
-                              const delta = newVal - earth.cultureRatio;
-                              if (delta !== 0) {
-                                earth.adjustWorkerRatio('culture', delta);
-                              }
-                              forceUpdate(n => n + 1);
+                              setLocalCultureRatio(parseInt(ev.target.value, 10));
                             }}
+                            onMouseUp={() => commitRatio('culture', localCultureRatio)}
+                            onTouchEnd={() => commitRatio('culture', localCultureRatio)}
                             className="w-full h-1 bg-amber-950 rounded appearance-none cursor-pointer accent-amber-400"
                           />
                         </div>

@@ -46,9 +46,11 @@ export class EarthCivilization extends Civilization {
     return bonus;
   }
 
-  /** 检查是否有足够 AP，AI 模式下始终返回 true */
+  /** 检查是否有足够 AP，AI 模式或新手教程激活下始终返回 true */
   public canSpendAP(cost: number): boolean {
     if (this.isAiBrainEnabled) return true;
+    const isTutorialActive = typeof window !== 'undefined' && (window as any).isTutorialActive;
+    if (isTutorialActive) return true;
     return this.apCurrent >= cost;
   }
 

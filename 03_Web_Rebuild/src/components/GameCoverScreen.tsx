@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, SkipForward, Landmark, Shield, Brain, Info } from 'lucide-react';
+import { Play, SkipForward, Landmark, Shield, Brain, Info, Settings } from 'lucide-react';
 import { getImageUrl } from '../utils/assetUrl';
 import { AdvisorPanel } from './AdvisorPanel';
 import { GAME_VERSION } from '../utils/version';
@@ -10,15 +10,17 @@ interface GameCoverScreenProps {
   onStartNewGame: (withTutorial: boolean, enableAiBrain: boolean) => void;
   onContinueGame: () => void;
   onOpenMuseum: () => void;
+  onOpenSettings: () => void;
 }
 
-type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'advisor' | 'archive' | null;
+type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'advisor' | 'archive' | 'settings' | null;
 
 export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   hasSave,
   onStartNewGame,
   onContinueGame,
   onOpenMuseum,
+  onOpenSettings,
 }) => {
   const { t } = useTranslation();
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
@@ -63,6 +65,8 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
         return t('唤醒智脑战术数据百科。可查阅三维资源链、AP机制、面壁者策略与完整结局路线图。');
       case 'archive':
         return t('查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。');
+      case 'settings':
+        return t('调整音频、显示模式与数据存储状态。您也可以在此处重置新手教程进度。');
       default:
         return t('请选择操作指令。作为执政官，您在黑暗森林法则下的每一个决策都将书写人类文明的历史。');
     }
@@ -211,6 +215,21 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="flex-grow">
                 <div className="text-sm font-bold tracking-widest font-title">{t("文明博物馆")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">CIVILIZATION MUSEUM</div>
+              </div>
+            </button>
+
+            {/* Option 5: Settings */}
+            <button
+              onClick={onOpenSettings}
+              onMouseEnter={() => setHoveredOption('settings')}
+              onMouseLeave={() => setHoveredOption(null)}
+              className="w-full group flex items-center gap-4 px-4 py-3.5 border border-slate-700/60 hover:border-slate-500 hover:bg-slate-800/20 text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer rounded"
+            >
+              <div className="absolute top-0 left-0 w-1 h-full bg-slate-500 transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
+              <Settings size={16} className="text-slate-400 group-hover:text-white transition-colors" />
+              <div className="flex-grow">
+                <div className="text-sm font-bold tracking-widest font-title">{t("游戏设置")}</div>
+                <div className="text-[9px] opacity-60 mt-0.5 font-mono">GAME SETTINGS</div>
               </div>
             </button>
           </div>

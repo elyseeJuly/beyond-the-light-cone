@@ -37,6 +37,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-24: 教程体验深度优化与主页设置实装——新增主菜单「游戏设置」入口；降低教程蒙版透明度，提高背景清晰度；重构占比滑块为拖动结束时单次扣除 AP，防止持续扣减 AP；教程下 `canSpendAP` 始终返回 `true`，且在启动科技研发前自动补足 50 AP，锁定并禁用非 `next-turn` 状态下的下一回合按钮，保障教程 100% 顺畅完成。
 - 2026-07-24: 全文本英文本地化全量实装——基于刘宇昆（Ken Liu）翻译的《三体》英文原版（The Three-Body Problem）译名规范，全面完成 `i18n.ts` 英文字典映射。覆涵盖主菜单、TopHUD、LeftHub、RightInspector、TecTreeView、GovManagement、IntelligenceCenter、DiplomacyPanel、FleetModal、BattleScreen、WallfacerPanel、DepartmentPanel、PersonSelectPanel、AdvisorPanel、MuseumGallery、ChroniclesModal、Tutorial、MissionLog、AssetDownloadPromptModal 与 CrisisWarningPanel 等全部 20+ 个核心组件及 32 个终局结局。通过全量 734 项单元测试与 TypeScript 0 报错验证。
 - 2026-07-23: 教程防卡死优化与主界面国际化适配——新手教程第一步「选中地球」重构为自动选中，消除 Canvas 偏置卡死隐患并改用「下一步」按钮推进；`TopHUD.tsx` 与 `GameCoverScreen.tsx` 关键说明文本和指标名称引入 `useTranslation` 进行 i18n 翻译，支持按中英文语言自适应格式化纪元年份显示。
 - 2026-07-22: PWA/Release 自动发布闭环——`main` 自动发布 GitHub Pages PWA；构建后校验 package.json、public/dist manifest、distribution 标记和 Service Worker 更新契约一致，部署完成后重试在线读取 manifest，确保线上版本已切换。v* tag 保持为下载包与 GitHub Release 的唯一触发器。更新提示显示当前版本与待切换版本，避免“更新后看似仍为旧版”的歧义。

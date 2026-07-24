@@ -79,6 +79,7 @@ export const TopHUD: React.FC = () => {
   const apCurrent = earth.apCurrent;
   const isAiBrainEnabled = earth.isAiBrainEnabled;
   const isTutorialActive = typeof window !== 'undefined' && (window as any).isTutorialActive;
+  const currentTutorialStepId = typeof window !== 'undefined' && (window as any).currentTutorialStepId;
   const turnBlockers = (isAiBrainEnabled || isTutorialActive) ? [] : game.getTurnBlockers();
   const turnWarnings = (isAiBrainEnabled || isTutorialActive) ? [] : game.getTurnWarnings();
 
@@ -318,10 +319,10 @@ export const TopHUD: React.FC = () => {
         {/* Next Turn Button — always visible */}
         <button
           onClick={handleNextTurn}
-          disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0)}
+          disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) || (isTutorialActive && currentTutorialStepId !== 'next-turn')}
           data-tutorial-id="btn-next-turn"
           className={`btn-next-turn flex items-center gap-1 md:gap-2 text-[10px] md:text-xs ${
-            (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0))
+            (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) || (isTutorialActive && currentTutorialStepId !== 'next-turn'))
               ? 'opacity-40 cursor-not-allowed pointer-events-none'
               : stats.turnWarnings.length > 0
                 ? 'cursor-pointer text-amber-400 animate-pulse'
@@ -329,7 +330,9 @@ export const TopHUD: React.FC = () => {
           }`}
         >
           <span className="font-title font-bold tracking-wider">
-            {stats.hasEvent ? t("同步逻辑中") : (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) ? t("有阻断") : t("下一回合")}
+            {stats.hasEvent ? t("同步逻辑中") : 
+             (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) ? t("有阻断") : 
+             (isTutorialActive && currentTutorialStepId !== 'next-turn') ? t("教程指引中") : t("下一回合")}
           </span>
           <SkipForward size={12} className="md:size-[14] stroke-[2.5]" />
         </button>

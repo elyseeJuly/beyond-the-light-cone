@@ -134,6 +134,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
     }
     return () => {
       (window as any).isTutorialActive = false;
+      (window as any).currentTutorialStepId = undefined;
       try {
         const renderer = (window as any).activeStarMapRenderer;
         if (renderer && typeof renderer.setTutorialPulse === 'function') {
@@ -159,6 +160,19 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
   // ── 高亮坐标追踪（requestAnimationFrame 循环 + 目标缺失通知状态机） ──
   useEffect(() => {
     if (!current) return;
+    (window as any).currentTutorialStepId = current.id;
+
+    // 防御：启动科技演进时，如果 AP 不足则强制赠予至少 50 AP，确保绝对不会因 AP 不足卡死
+    if (current.id === 'start-research') {
+      try {
+        const g = GameInstance.get();
+        if (g.earthCivi.apCurrent < 20) {
+          g.earthCivi.apCurrent = 50;
+          window.dispatchEvent(new CustomEvent('ap-changed'));
+        }
+      } catch (_) { /* ignore */ }
+    }
+
     const targetId = current.highlightTarget;
     if (!targetId) {
       setHighlightRect(null);
@@ -432,11 +446,11 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
       {/* 欢迎页：全屏遮罩（暗化但不阻塞鼠标） */}
       {isWelcome ? (
-        <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/80 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
+        <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/30 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
       ) : showHighlight && highlightRect ? (
         <>
           {/* 全屏暗化层（不接收事件，避免吞掉 hotspot 外的合法点击） */}
-          <div className="absolute inset-0 bg-[#050810]/65 pointer-events-none z-[1000]" />
+          <div className="absolute inset-0 bg-[#050810]/20 pointer-events-none z-[1000]" />
           {/* 高亮遮罩：4 块拼接以提供"高亮区通透 + 其他区域接收事件"的视觉感受。 */}
           {overlayBlocks.map((blockStyle, i) => (
             <div
@@ -466,10 +480,10 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
         // 目标缺失：步骤配置了 highlightTarget 但元素未渲染（highlightRect=null）。
         // 审计 P0 流程问题 #2 修复：不渲染全屏拦截遮罩，改为不拦截点击的轻微暗化层，
         // 玩家仍可操作游戏 UI，教程卡片（z-[1002]）保持可交互。
-        <div data-testid="tutorial-overlay-missing" className="absolute inset-0 bg-[#050810]/40 pointer-events-none z-[1000]" />
+        <div data-testid="tutorial-overlay-missing" className="absolute inset-0 bg-[#050810]/10 pointer-events-none z-[1000]" />
       ) : (
         // 无 highlightTarget 的纯展示步骤（如 resolve-event）：全屏聚焦遮罩
-        <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/85 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
+        <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/30 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
       )}
 
       {/* 高亮边框 */}

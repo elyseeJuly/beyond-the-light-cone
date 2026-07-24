@@ -471,6 +471,9 @@ export const App: React.FC = () => {
                 onOpenMuseum={() => {
                   setShowMuseum(true);
                 }}
+                onOpenSettings={() => {
+                  setShowSettings(true);
+                }}
               />
             )}
             {currentEvent && (

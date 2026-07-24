@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, CheckCircle2, Circle, Gift, Target } from 'luci
 import { GameInstance } from '../core/Game';
 import { STAR_INDEX } from '../config/starIndices';
 import missionData from '../data/mission_log.json';
+import { useTranslation } from '../utils/i18n';
 
 interface MissionDef {
   id: string;
@@ -18,6 +19,7 @@ interface MissionDef {
 }
 
 export const MissionLog: React.FC = () => {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [dismissed, setDismissed] = useState(() => localStorage.getItem('session:mission-log-dismissed') === 'true');
   const [claimedMissions, setClaimedMissions] = useState<string[]>(() => {
@@ -48,7 +50,6 @@ export const MissionLog: React.FC = () => {
   const currentEpochIndex = Math.min(game.epoch || 0, missionData.epochs.length - 1);
   const currentEpochMissions = missionData.epochs[currentEpochIndex] || missionData.epochs[0];
 
-  // Logic to evaluate whether a mission objective has been met
   const checkMissionCompleted = useCallback((id: string): boolean => {
     switch (id) {
       case 'has-stope': {
@@ -59,77 +60,65 @@ export const MissionLog: React.FC = () => {
         const star = game.starManager.getStar(STAR_INDEX.EARTH);
         return !!star?.hasFactory;
       }
-      case 'finish-tech': {
-        for (const tree of earth.tecTreeManager.trees.values()) {
-          for (const node of tree.nodes.values()) {
-            if (node.finished) return true;
+      case 'has-research-base': {
+        const star = game.starManager.getStar(STAR_INDEX.EARTH);
+        return !!star?.hasCity;
+      }
+      case 'has-first-tech': {
+        let count = 0;
+        if (earth.tecTreeManager?.trees) {
+          for (const tree of earth.tecTreeManager.trees.values()) {
+            for (const node of tree.nodes.values()) {
+              if (node.finished) count++;
+            }
           }
         }
-        return false;
+        return count >= 1;
       }
-      case 'appoint-minister': {
-        for (const dept of earth.departments.values()) {
-          if (dept.leaderName) return true;
-        }
-        return false;
+      case 'has-fleet': {
+        return (earth.fleets?.length || 0) >= 1;
       }
-      case 'resolve-event':
-        return game.playerTimeline.length > 0;
-      case 'reach-deterrence':
-        return earth.deterrenceValue >= 50;
-      case 'appoint-wallfacer':
-        return earth.wallfacers.size > 0;
-      case 'appoint-swordholder':
-        return !!earth.swordholder;
-      case 'tier4-tech': {
-        for (const tree of earth.tecTreeManager.trees.values()) {
-          for (const node of tree.nodes.values()) {
-            if (node.finished && ((node as any).tier >= 4 || node.cost >= 40)) return true;
+      case 'has-wallfacer': {
+        return (earth.wallfacers?.size || 0) >= 1;
+      }
+      case 'has-deterrence-tech': {
+        let count = 0;
+        if (earth.tecTreeManager?.trees) {
+          for (const tree of earth.tecTreeManager.trees.values()) {
+            for (const node of tree.nodes.values()) {
+              if (node.finished) count++;
+            }
           }
         }
-        return false;
+        return count >= 3;
       }
-      case 'resource-reserve':
-        return earth.population >= 100 && earth.resource >= 300;
       default:
         return false;
     }
-  }, [game, earth]);
+  }, [earth, game]);
 
-  // Claim reward for completed mission
+  const currentMissions: MissionDef[] = (currentEpochMissions.missions || []) as MissionDef[];
+  const completedCount = currentMissions.filter(m => checkMissionCompleted(m.id)).length;
+  const claimedCount = currentMissions.filter(m => claimedMissions.includes(m.id)).length;
+  const allClaimed = claimedCount >= currentMissions.length;
+
   const claimReward = (mission: MissionDef) => {
     if (claimedMissions.includes(mission.id)) return;
 
-    // Grant reward
-    const reward = mission.reward;
-    if (reward.type === 'resource' && reward.amount) {
-      earth.resource += reward.amount;
-    } else if (reward.type === 'economy' && reward.amount) {
-      earth.economy += reward.amount;
-    } else if (reward.type === 'culture' && reward.amount) {
-      earth.culture += reward.amount;
-    } else if (reward.type === 'army' && reward.amount) {
-      earth.army += reward.amount;
-    } else if (reward.type === 'ap' && reward.amount) {
-      earth.apMax += reward.amount;
-      earth.apCurrent += reward.amount;
+    if (mission.reward.amount) {
+      if (mission.reward.type === 'AP' || mission.reward.type === 'ap') {
+        earth.apCurrent = Math.min(earth.apMax, earth.apCurrent + mission.reward.amount);
+      } else if (mission.reward.type === 'MINERAL' || mission.reward.type === 'resource') {
+        earth.resource += mission.reward.amount;
+      } else if (mission.reward.type === 'CULTURE' || mission.reward.type === 'culture') {
+        earth.culture += mission.reward.amount;
+      }
     }
 
-    const updated = [...claimedMissions, mission.id];
-    setClaimedMissions(updated);
-    localStorage.setItem('session:mission-log-claimed', JSON.stringify(updated));
-
-    // Toast notification
-    window.dispatchEvent(new CustomEvent('game:toast:message', {
-      detail: { text: `智脑目标完成！解锁奖励：${reward.text}`, category: '【智脑重赏】' },
-    }));
-    window.dispatchEvent(new CustomEvent('game-state-changed'));
-  };
-
-  if (dismissed) return null;
-
-  const handleNavigate = (view: string) => {
-    window.dispatchEvent(new CustomEvent('change-active-view', { detail: view }));
+    const next = [...claimedMissions, mission.id];
+    setClaimedMissions(next);
+    localStorage.setItem('session:mission-log-claimed', JSON.stringify(next));
+    window.dispatchEvent(new Event('game-state-changed'));
   };
 
   const handleDismiss = () => {
@@ -137,16 +126,24 @@ export const MissionLog: React.FC = () => {
     localStorage.setItem('session:mission-log-dismissed', 'true');
   };
 
-  const currentMissions = currentEpochMissions.missions as MissionDef[];
-  const completedCount = currentMissions.filter(m => checkMissionCompleted(m.id)).length;
-  const claimedCount = currentMissions.filter(m => claimedMissions.includes(m.id)).length;
-  const allClaimed = claimedCount === currentMissions.length;
+  const handleNavigate = (target: string) => {
+    if (target === 'build-stope' || target === 'build-factory') {
+      window.dispatchEvent(new CustomEvent('ui-switch-view', { detail: { view: 'starmap', tab: 'build' } }));
+    } else if (target === 'techtree') {
+      window.dispatchEvent(new CustomEvent('ui-switch-view', { detail: { view: 'techtree' } }));
+    } else if (target === 'fleet') {
+      window.dispatchEvent(new CustomEvent('open-fleet-modal'));
+    } else if (target === 'wallfacer') {
+      window.dispatchEvent(new CustomEvent('open-wallfacer-panel'));
+    }
+  };
+
+  if (dismissed) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[500] w-72 max-w-[calc(100vw-32px)] select-none animate-fade-in">
-      <div className="bg-[#070B14]/95 backdrop-blur-md border border-[var(--color-primary)]/40 rounded-lg shadow-[0_0_25px_rgba(0,184,255,0.15)] overflow-hidden">
+    <div className="fixed bottom-14 left-4 z-40 w-72 md:w-80 select-none animate-slide-up">
+      <div className="bg-[#070B14]/95 border border-[var(--color-primary)]/40 rounded-lg shadow-[0_0_20px_rgba(0,184,255,0.15)] overflow-hidden backdrop-blur-md">
         
-        {/* Header */}
         <button
           onClick={() => setCollapsed(c => !c)}
           className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/15 border-b border-[var(--color-primary)]/20 transition-colors cursor-pointer"
@@ -155,10 +152,10 @@ export const MissionLog: React.FC = () => {
             <Target size={14} className="text-[var(--color-primary)] animate-pulse" />
             <div className="flex flex-col text-left">
               <span className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-wider">
-                智脑推演目标 · {currentEpochMissions.epochName}
+                {t("智脑推演目标")} · {t(currentEpochMissions.epochName)}
               </span>
               <span className="text-[9px] text-gray-400 font-mono">
-                完成: {completedCount}/{currentMissions.length} ({claimedCount}已领)
+                {t("完成")}: {completedCount}/{currentMissions.length} ({claimedCount}{t("已领")})
               </span>
             </div>
           </div>
@@ -168,7 +165,7 @@ export const MissionLog: React.FC = () => {
               <button
                 onClick={(e) => { e.stopPropagation(); handleDismiss(); }}
                 className="text-gray-400 hover:text-white text-xs px-1"
-                title="隐藏任务板"
+                title={t("隐藏任务板")}
               >
                 ✕
               </button>
@@ -177,7 +174,6 @@ export const MissionLog: React.FC = () => {
           </div>
         </button>
 
-        {/* Progress Bar */}
         <div className="h-1 bg-[#243245]/50 overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-[var(--color-primary)] to-cyan-300 transition-all duration-500 shadow-[0_0_10px_var(--color-primary)]"
@@ -185,11 +181,10 @@ export const MissionLog: React.FC = () => {
           />
         </div>
 
-        {/* Missions List */}
         {!collapsed && (
           <div className="flex flex-col gap-1.5 p-2.5 max-h-[280px] overflow-y-auto bg-black/30">
             <div className="text-[9px] font-mono text-cyan-400/80 px-1 mb-0.5">
-              {currentEpochMissions.subtitle}
+              {t(currentEpochMissions.subtitle)}
             </div>
 
             {currentMissions.map(mission => {
@@ -220,7 +215,7 @@ export const MissionLog: React.FC = () => {
                         <Circle size={14} className="text-gray-500 shrink-0 group-hover:text-[var(--color-primary)]" />
                       )}
                       <span className={`text-xs font-bold ${isClaimed ? 'text-emerald-400/80 line-through' : isDone ? 'text-amber-200' : 'text-gray-200 group-hover:text-white'}`}>
-                        {mission.label}
+                        {t(mission.label)}
                       </span>
                     </button>
 
@@ -229,22 +224,22 @@ export const MissionLog: React.FC = () => {
                         onClick={() => claimReward(mission)}
                         className="px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 rounded text-[10px] text-amber-300 font-bold tracking-wider animate-pulse cursor-pointer"
                       >
-                        领取奖励
+                        {t("领取奖励")}
                       </button>
                     ) : (
                       <span className="text-[9px] text-gray-400 font-mono">
-                        {mission.reward.text}
+                        {t(mission.reward.text)}
                       </span>
                     )}
                   </div>
 
                   <p className="text-[10px] text-gray-400 pl-5 leading-tight">
-                    {mission.description}
+                    {t(mission.description)}
                   </p>
 
                   {!isDone && (
                     <div className="text-[9px] text-cyan-300/70 pl-5 italic">
-                      智脑提示：{mission.tip}
+                      {t("智脑提示")}：{t(mission.tip)}
                     </div>
                   )}
                 </div>

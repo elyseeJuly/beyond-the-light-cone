@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { EpochType, TecTreeType } from '../types/enums';
+import { useTranslation, t } from '../utils/i18n';
 
 export const CrisisWarningPanel: React.FC = () => {
+  const { t: translate } = useTranslation();
   const [warnings, setWarnings] = useState<string[]>([]);
 
   const checkWarnings = () => {
@@ -16,12 +18,12 @@ export const CrisisWarningPanel: React.FC = () => {
 
     // Defeat Condition 1: Extinction (population <= 0)
     if (earth.population > 0 && earth.population <= 25) {
-      activeList.push(`⚠️ 人口危机：地球文明人口仅存 ${earth.population} 点！若人口归零将触发文明灭绝灭亡！`);
+      activeList.push(`⚠️ ${t("人口危机")}: ${t("地球文明人口仅存")} ${earth.population} ${t("点！若人口归零将触发文明灭绝！")}`);
     }
 
     // Defeat Condition 2: Treachery (treachery >= 100)
     if (earth.treachery >= 80) {
-      activeList.push(`⚠️ 逃亡失控：逃亡主义倾向已达 ${earth.treachery}%！达到 100% 将导致社会崩溃与灭亡！`);
+      activeList.push(`⚠️ ${t("逃亡失控")}: ${t("逃亡主义倾向已达")} ${earth.treachery}%！${t("达到 100% 将导致社会崩溃与灭亡！")}`);
     }
 
     // Defeat Condition 3: Helium Flash / Dimension Strike (year > 350)
@@ -33,7 +35,7 @@ export const CrisisWarningPanel: React.FC = () => {
       if (!isSafe) {
         const remaining = 350 - game.year;
         if (remaining > 0) {
-          activeList.push(`🚨 毁灭倒计时：距离氦闪/二向箔打击降临仅剩 ${remaining} 回合！需尽快完成“黑域”或“数字生命”！`);
+          activeList.push(`🚨 ${t("毁灭倒计时")}: ${t("距离氦闪/二向箔打击降临仅剩")} ${remaining} ${t("回合！需尽快完成“黑域”或“数字生命”！")}`);
         }
       }
     }
@@ -44,7 +46,7 @@ export const CrisisWarningPanel: React.FC = () => {
         if (alien.fleets) {
           alien.fleets.forEach((fleet: any) => {
             if (fleet.eta > 0 && fleet.eta <= 5) {
-              activeList.push(`🛸 警报：发现【${fleet.belongToCivi}】所属「${fleet.name}」正驶向太阳系，预计 ${fleet.eta} 回合后抵达！`);
+              activeList.push(`🛸 ${t("警报")}: ${t("发现")}【${t(fleet.belongToCivi)}】${t("所属")}「${t(fleet.name)}」${t("正驶向太阳系，预计")} ${fleet.eta} ${t("回合后抵达！")}`);
             }
           });
         }
@@ -56,17 +58,17 @@ export const CrisisWarningPanel: React.FC = () => {
     const hasEngine3 = tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型");
     const hasNewHome = tm.isTecFinished(TecTreeType.INTERSTELLAR, "新家园选址");
     if (hasEngine3 && !hasNewHome) {
-      activeList.push(`💡 流浪计划：行星发动机已建毕！请尽快完成‘新家园选址’科技以启航流浪！`);
+      activeList.push(`💡 ${t("流浪计划")}: ${t("行星发动机已建毕！请尽快完成‘新家园选址’科技以启航流浪！")}`);
     } else if (!hasEngine3 && hasNewHome) {
-      activeList.push(`💡 流浪计划：新星系移居地已锁定！请尽快完成‘行星发动机Ⅲ型’以逃离太阳系！`);
+      activeList.push(`💡 ${t("流浪计划")}: ${t("新星系移居地已锁定！请尽快完成‘行星发动机Ⅲ型’以逃离太阳系！")}`);
     }
 
     // Victory Condition 2: Deterrence Proximity
     if (game.epoch >= EpochType.DETERRENCE) {
       if (earth.swordholder === null) {
-        activeList.push(`🗡️ 威慑失效：威慑纪元已开启，但执剑人席位空缺！`);
+        activeList.push(`🗡️ ${t("威慑失效")}: ${t("威慑纪元已开启，但执剑人席位空缺！")}`);
       } else if (earth.deterrenceValue < 80) {
-        activeList.push(`🗡️ 威慑危机：执剑人 ${earth.swordholder} 在位，但当前威慑度仅 ${Math.floor(earth.deterrenceValue)}%，不足以维持和平（需 >=80%）！`);
+        activeList.push(`🗡️ ${t("威慑危机")}: ${t("执剑人")} ${t(earth.swordholder)} ${t("在位，但当前威慑度仅")} ${Math.floor(earth.deterrenceValue)}%，${t("不足以维持和平（需 >=80%）！")}`);
       }
     }
 
@@ -94,7 +96,7 @@ export const CrisisWarningPanel: React.FC = () => {
       <div className="flex items-center gap-2 text-red-400 border-b border-red-500/20 pb-1.5 shrink-0">
         <AlertTriangle className="w-4 h-4 animate-bounce" />
         <span className="text-xs font-black font-mono tracking-widest uppercase">
-          PDC CIVILIZATION RISK WARNING // 人类文明安全监视哨
+          PDC CIVILIZATION RISK WARNING // {translate("人类文明安全监视哨")}
         </span>
       </div>
 

@@ -3,6 +3,7 @@ import { X, ChevronRight, Flag, Sparkles } from 'lucide-react';
 import { ActiveViewType } from './LeftHub';
 import { GameInstance } from '../core/Game';
 import { STAR_INDEX } from '../config/starIndices';
+import { t } from '../utils/i18n';
 
 interface TutorialStep {
   id: string;
@@ -35,15 +36,15 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
   return [
     {
       id: 'welcome',
-      title: '智脑辅助校准',
-      description: '公元 2009 年，三体舰队启航。智脑战略系统初始化完成，即将开始校准。',
+      title: t('智脑辅助校准'),
+      description: t('公元 2009 年，三体舰队启航。智脑战略系统初始化完成，即将开始校准。'),
       activeView: 'starmap',
       cardPosition: 'center',
     },
     {
       id: 'click-earth',
-      title: '选中家园星系',
-      description: '已为您自动定位并选中地球坐标。这是我们在这片暗黑森林中唯一的基石。',
+      title: t('选中家园星系'),
+      description: t('已为您自动定位并选中地球坐标。这是我们在这片暗黑森林中唯一的基石。'),
       activeView: 'starmap',
       cardPosition: 'left',
       focusStar: STAR_INDEX.EARTH,
@@ -51,8 +52,8 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
     },
     {
       id: 'read-status',
-      title: '监控三维产出',
-      description: '查看右侧面板。矿产维持工业、经济驱动发展、文化决定科研速率。',
+      title: t('监控三维产出'),
+      description: t('查看右侧面板。矿产维持工业、经济驱动发展、文化决定科研速率。'),
       highlightTarget: 'right-inspector-panel',
       activeView: 'starmap',
       inspectorTab: 'overview',
@@ -61,10 +62,10 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
     },
     {
       id: 'build-stope',
-      title: '建设矿业基础',
+      title: t('建设矿业基础'),
       description: hasStope
-        ? '检查建好的采矿场。工业与太空防线的建立离不开资源供应。'
-        : '切换至建造面板，在地球轨道新建一座采矿场，奠定工业基础。',
+        ? t('检查建好的采矿场。工业与太空防线的建立离不开资源供应。')
+        : t('切换至建造面板，在地球轨道新建一座采矿场，奠定工业基础。'),
       highlightTarget: hasStope ? 'btn-inspect-stope' : 'btn-build-stope',
       activeView: 'starmap',
       inspectorTab: hasStope ? 'overview' : 'build',
@@ -72,8 +73,8 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
     },
     {
       id: 'resource-production',
-      title: '调配劳力分配',
-      description: '拖动采矿比例滑块。劳动资源有限，需根据战略重心合理取舍。',
+      title: t('调配劳力分配'),
+      description: t('拖动采矿比例滑块。劳动资源有限，需根据战略重心合理取舍。'),
       highlightTarget: 'mining-ratio-section',
       activeView: 'starmap',
       inspectorTab: 'overview',
@@ -81,8 +82,8 @@ function buildSteps(hasStope: boolean): TutorialStep[] {
     },
     {
       id: 'start-research',
-      title: '启动科技演进',
-      description: '进入科技树面板，点击选择「天文观测」节点启动首项研究。',
+      title: t('启动科技演进'),
+      description: t('进入科技树面板，点击选择「天文观测」节点启动首项研究。'),
       highlightTarget: 'tech-node-天文观测',
       activeView: 'techtree',
       cardPosition: 'right',
@@ -181,19 +182,6 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     };
   }, []);
 
-  // ── 移动端 landscape 缩放系数（用于 hotspot 物理像素换算） ──
-  const getScaleFactor = useCallback((): number => {
-    try {
-      const el = document.querySelector('.mobile-landscape-scale');
-      if (el) {
-        const style = window.getComputedStyle(el);
-        const matrix = new DOMMatrixReadOnly(style.transform);
-        if (matrix.a !== 1) return matrix.a;
-      }
-    } catch (_) { /* ignore */ }
-    return 1;
-  }, []);
-
   // ── 高亮坐标追踪（requestAnimationFrame 循环） ──
   useEffect(() => {
     if (!current) return;
@@ -230,21 +218,16 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       }
 
       if (element) {
+        // getBoundingClientRect() 已返回视口坐标，Tutorial 为 fixed 定位也在视口空间，无需再除缩放系数
         const rect = element.getBoundingClientRect();
-        const scaleFactor = getScaleFactor();
-        const correctedRect = scaleFactor !== 1 ? {
-          top: rect.top / scaleFactor, left: rect.left / scaleFactor,
-          width: rect.width / scaleFactor, height: rect.height / scaleFactor,
-        } : rect;
-
-        if (correctedRect.width === 0 || correctedRect.height === 0) {
+        if (rect.width === 0 || rect.height === 0) {
           setHighlightRect(null);
         } else {
           setHighlightRect({
-            top: Math.max(0, correctedRect.top - 4),
-            left: Math.max(0, correctedRect.left - 4),
-            width: correctedRect.width + 8,
-            height: correctedRect.height + 8,
+            top: Math.max(0, rect.top - 4),
+            left: Math.max(0, rect.left - 4),
+            width: rect.width + 8,
+            height: rect.height + 8,
           });
         }
       } else {
@@ -264,7 +247,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       window.removeEventListener('change-active-view', updateRect);
       window.removeEventListener('tutorial:set-tab', updateRect);
     };
-  }, [step, current, getScaleFactor]);
+  }, [step, current]);
 
   // ── 视图/Tab 同步 + 教程聚焦星（核心：自动居中地球） ──
   useEffect(() => {

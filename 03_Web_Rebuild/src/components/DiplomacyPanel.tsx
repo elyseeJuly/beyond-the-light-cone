@@ -61,12 +61,12 @@ export const DiplomacyPanel: React.FC = () => {
 
   const getFriendshipLabel = (type: number) => {
     switch (type) {
-      case FriendshipType.VERYFRIEND: return { text: "极度友好 (战略同盟)", color: "text-emerald-400 border-emerald-500/30 bg-emerald-950/20" };
-      case FriendshipType.FRIEND: return { text: "比较友好", color: "text-green-400 border-green-500/20 bg-green-950/10" };
-      case FriendshipType.NORMAL: return { text: "中立温和", color: "text-slate-400 border-slate-700 bg-slate-800/20" };
-      case FriendshipType.ANGRY: return { text: "警惕敌视", color: "text-amber-400 border-amber-500/20 bg-amber-950/10" };
-      case FriendshipType.VERYANGRY: return { text: "极度敌对 (全面交战)", color: "text-red-400 border-red-500/30 bg-red-950/20" };
-      default: return { text: "未知状态", color: "text-slate-500 border-slate-800" };
+      case FriendshipType.VERYFRIEND: return { text: t("极度友好 (战略同盟)"), color: "text-emerald-400 border-emerald-500/30 bg-emerald-950/20" };
+      case FriendshipType.FRIEND: return { text: t("比较友好"), color: "text-green-400 border-green-500/20 bg-green-950/10" };
+      case FriendshipType.NORMAL: return { text: t("中立温和"), color: "text-slate-400 border-slate-700 bg-slate-800/20" };
+      case FriendshipType.ANGRY: return { text: t("警惕敌视"), color: "text-amber-400 border-amber-500/20 bg-amber-950/10" };
+      case FriendshipType.VERYANGRY: return { text: t("极度敌对 (全面交战)"), color: "text-red-400 border-red-500/30 bg-red-950/20" };
+      default: return { text: t("未知状态"), color: "text-slate-500 border-slate-800" };
     }
   };
 
@@ -80,13 +80,13 @@ export const DiplomacyPanel: React.FC = () => {
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-cyan-400" />
           <span className="text-cyan-400 font-bold text-xs uppercase tracking-wider">
-            PDC 黑暗森林外交联络中心
+            {t("PDC 黑暗森林外交联络中心")}
           </span>
         </div>
         <button 
           onClick={loadDiplomacyState} 
           className="text-cyan-500/70 hover:text-cyan-400 cursor-pointer p-1 rounded transition-all hover:bg-cyan-950/40"
-          title="刷新数据"
+          title={t("刷新数据")}
         >
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
@@ -113,14 +113,14 @@ export const DiplomacyPanel: React.FC = () => {
               >
                 <div className="flex items-center justify-between w-full">
                   <span className="font-bold text-xs">
-                    {alien.name}
+                    {t(alien.name)}
                   </span>
                   {alien.isBund && <Handshake className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
                 </div>
                 <div className={`text-[10px] px-1.5 py-0.5 rounded border inline-block max-w-max font-bold ${
                   getFriendshipLabel(alien.friendship).color
                 }`}>
-                  {alien.isDead ? "文明已灭绝" : getFriendshipLabel(alien.friendship).text}
+                  {alien.isDead ? t("文明已灭绝") : getFriendshipLabel(alien.friendship).text}
                 </div>
               </button>
             );
@@ -133,16 +133,16 @@ export const DiplomacyPanel: React.FC = () => {
             <div className="flex-1 flex flex-col gap-3.5">
               <div className="bg-slate-950/60 border border-cyan-500/10 p-3 rounded flex flex-col gap-1">
                 <span className="text-[10px] text-slate-500 uppercase tracking-widest">CIVILIZATION TELEMETRY</span>
-                <span className="text-cyan-200 text-sm font-bold">{activeAlienData.name}</span>
+                <span className="text-cyan-200 text-sm font-bold">{t(activeAlienData.name)}</span>
                 <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
-                  <span>当前状态:</span>
+                  <span>{t("当前状态")}:</span>
                   <span className="font-bold text-slate-200">{getFriendshipLabel(activeAlienData.friendship).text}</span>
                 </div>
                  {activeAlienData.cooldown > 0 && (
                   <div className="mt-2 space-y-1.5 bg-amber-500/5 p-2 rounded border border-amber-500/10">
                     <div className="flex items-center gap-1.5 text-[10px] text-amber-500 font-bold uppercase">
                       <ShieldAlert className="w-3.5 h-3.5 animate-pulse" />
-                      {t('cooldown') || '外交冷却中'}: {t('wait_turns', { turns: activeAlienData.cooldown }) || `需等待 ${activeAlienData.cooldown} 回合`}
+                      {t('cooldown')}: {t('wait_turns', { turns: activeAlienData.cooldown })}
                     </div>
                     <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                       <div 
@@ -162,7 +162,7 @@ export const DiplomacyPanel: React.FC = () => {
                   className="p-2.5 bg-cyan-950/20 hover:bg-cyan-900/30 text-cyan-300 border border-cyan-500/20 hover:border-cyan-500/40 rounded transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <MessageSquare className="w-4 h-4 shrink-0" />
-                  战略外交谈判
+                  {t("战略外交谈判")}
                 </button>
                 
                 <button
@@ -171,7 +171,7 @@ export const DiplomacyPanel: React.FC = () => {
                   className="p-2.5 bg-cyan-950/20 hover:bg-cyan-900/30 text-cyan-300 border border-cyan-500/20 hover:border-cyan-500/40 rounded transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ArrowLeftRight className="w-4 h-4 shrink-0" />
-                  黑暗森林贸易 (-30金)
+                  {t("黑暗森林贸易 (-30金)")}
                 </button>
 
                 <button
@@ -180,7 +180,7 @@ export const DiplomacyPanel: React.FC = () => {
                   className="p-2.5 bg-red-950/20 hover:bg-red-900/30 text-red-400 border border-red-500/20 hover:border-red-500/40 rounded transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Flame className="w-4 h-4 shrink-0 animate-pulse" />
-                  广播坐标威慑
+                  {t("广播坐标威慑")}
                 </button>
 
                 <button
@@ -189,13 +189,13 @@ export const DiplomacyPanel: React.FC = () => {
                   className="p-2.5 bg-emerald-950/20 hover:bg-emerald-900/30 text-emerald-400 border border-emerald-500/20 hover:border-emerald-500/40 rounded transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Handshake className="w-4 h-4 shrink-0" />
-                  请求和平结盟
+                  {t("请求和平结盟")}
                 </button>
               </div>
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-slate-500 text-xs italic">
-              请选择一个有效的异星文明进行分析...
+              {t("请选择一个有效的异星文明进行分析...")}
             </div>
           )}
 
@@ -203,7 +203,7 @@ export const DiplomacyPanel: React.FC = () => {
           {feedback && (
             <div className="bg-slate-950 border border-cyan-500/10 p-2.5 rounded text-[11px] leading-relaxed text-cyan-400 flex items-start gap-2 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)] animate-fade-in">
               <ChevronRight className="w-3.5 h-3.5 text-cyan-500 shrink-0 mt-0.5" />
-              <div>{feedback}</div>
+              <div>{t(feedback)}</div>
             </div>
           )}
         </div>

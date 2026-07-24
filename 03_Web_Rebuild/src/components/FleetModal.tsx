@@ -4,12 +4,14 @@ import { GameInstance } from '../core/Game';
 import { createFleet, Fleet } from '../core/Fleet';
 import weaponsData from '../data/weapons.json';
 import { STAR_INDEX } from '../config/starIndices';
+import { useTranslation } from '../utils/i18n';
 
 interface FleetModalProps {
   onClose: () => void;
 }
 
 export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
+  const { t } = useTranslation();
   const [, forceUpdate] = useState(0);
   const game = GameInstance.get();
   const earth = game.earthCivi;
@@ -35,7 +37,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
       forceUpdate(n => n + 1);
       window.dispatchEvent(new CustomEvent('game-turn-complete'));
     } else {
-      alert("经济不足 100 点！");
+      alert(t("经济不足 100 点！"));
     }
   };
 
@@ -58,11 +60,11 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
         } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("99%光速飞船")) {
           baseEta = 2;
         } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("50%光速飞船")) {
-          baseEta = 4;
+          baseEta = 3;
         } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船")) {
-          baseEta = 8;
+          baseEta = 5;
         } else {
-          baseEta = 15;
+          baseEta = 8;
         }
       } else {
         // Intra-solar travel
@@ -134,7 +136,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
           <div className="flex items-center gap-3">
             <Rocket className="text-[var(--color-primary)]" size={20} />
             <div>
-              <h2 className="text-sm font-title font-bold text-white tracking-widest uppercase">地球联合舰队指挥与建造中心</h2>
+              <h2 className="text-sm font-title font-bold text-white tracking-widest uppercase">{t("地球联合舰队指挥与建造中心")}</h2>
               <div className="text-[10px] text-[var(--color-primary)]/60 font-mono uppercase tracking-widest mt-0.5">Fleet Command & Construction Archive</div>
             </div>
           </div>
@@ -146,14 +148,14 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
         {/* Action Bar */}
         <div className="px-6 py-4 border-b border-[#243245]/20 shrink-0 bg-[#070B14]/30 flex justify-between items-center">
           <div className="text-[10px] font-mono text-[var(--text-secondary)]">
-            可用拨款预算：<span className="text-white font-bold">{earth.economy} 经济单位</span>
+            {t("可用拨款预算")}：<span className="text-white font-bold">{earth.economy} {t("经济单位")}</span>
           </div>
           <button 
             onClick={handleBuildFleet}
             className="flex items-center gap-2 px-4 py-2 bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] border border-[var(--color-primary)]/40 rounded text-[var(--color-primary)] font-bold text-xs transition-all tracking-wider uppercase cursor-pointer"
           >
             <Zap size={14} />
-            建造恒星级战舰编队 (100 经济)
+            {t("建造恒星级战舰编队 (100 经济)")}
           </button>
         </div>
 
@@ -162,7 +164,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
           {earth.fleets.length === 0 ? (
             <div className="text-center py-20 text-white/20 border border-[#243245]/30 rounded border-dashed">
               <Shield size={36} className="mx-auto mb-3 opacity-20" />
-              <p className="tracking-wide">防空指挥部报告：当前星域内暂无现役舰队，请先建造。</p>
+              <p className="tracking-wide">{t("防空指挥部报告：当前星域内暂无现役舰队，请先建造。")}</p>
             </div>
           ) : (
             earth.fleets.map(fleet => {
@@ -177,20 +179,20 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                     {/* Left: Info */}
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
-                        <h3 className="text-sm font-bold text-white tracking-wider">{fleet.name}</h3>
+                        <h3 className="text-sm font-bold text-white tracking-wider">{t(fleet.name)}</h3>
                         {isTraveling ? (
                           <span className="px-2 py-0.5 rounded-[2px] text-[9px] font-bold bg-orange-500/10 text-orange-400 border border-orange-500/25">
-                            深空航行中
+                            {t("深空航行中")}
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 rounded-[2px] text-[9px] font-bold bg-green-500/10 text-green-400 border border-green-500/25">
-                            驻防中 · {source?.name || '未知'}
+                            {t("驻防中")} · {t(source?.name || '未知')}
                           </span>
                         )}
                       </div>
                       
                       <div className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)]">
-                        <span>指挥官：</span>
+                        <span>{t("指挥官")}：</span>
                         <select
                           value={fleet.leaderName || ''}
                           onChange={(e) => {

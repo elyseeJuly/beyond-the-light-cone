@@ -5,6 +5,7 @@ import { SaveManager } from '../core/SaveManager';
 import { getAssetUrl } from '../utils/assetUrl';
 import { GameInstance } from '../core/Game';
 import { StatisticsManager } from '../core/StatisticsManager';
+import { useTranslation } from '../utils/i18n';
 
 
 interface CgEvent {
@@ -429,6 +430,7 @@ const SOUNDTRACKS: Track[] = [
 ];
 
 export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation();
   const history = SaveManager.getEndingHistory();
   const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph'>('chronicles');
   const [selectedCg, setSelectedCg] = useState<CgEvent | null>(null);
@@ -568,10 +570,10 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
             </div>
             <div>
               <h1 className="text-3xl font-black tracking-widest text-white uppercase italic">
-                文明博物馆
+                {t("文明博物馆")}
               </h1>
               <p className="text-white/40 text-sm tracking-wide mt-1">
-                Museum Gallery // 记录平行宇宙中人类文明的纪元终章、属性馈赠与原声轨迹
+                Museum Gallery // {t("记录平行宇宙中人类文明的纪元终章、属性馈赠与原声轨迹")}
               </p>
             </div>
           </div>
@@ -594,7 +596,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                 : 'text-white/40 hover:text-white/80'
             }`}
           >
-            <span>星历终章</span>
+            <span>{t("星历终章")}</span>
             {activeTab === 'chronicles' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
             )}
@@ -609,7 +611,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
           >
             <span className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
-              纪元浮光 (CG图鉴)
+              {t("纪元浮光 (CG图鉴)")}
             </span>
             {activeTab === 'cgGallery' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
@@ -625,7 +627,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
           >
             <span className="flex items-center gap-2">
               <Music className="w-4 h-4" />
-              星海留声机
+              {t("星海留声机")}
             </span>
             {activeTab === 'phonograph' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />

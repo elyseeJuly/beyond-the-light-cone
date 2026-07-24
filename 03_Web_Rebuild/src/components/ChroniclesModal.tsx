@@ -1,12 +1,14 @@
 import React from 'react';
 import { BookOpen, X } from 'lucide-react';
 import { TimelineComparisonPanel } from './TimelineComparisonPanel';
+import { useTranslation } from '../utils/i18n';
 
 interface Props {
   onClose: () => void;
 }
 
 export const ChroniclesModal: React.FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation();
   return (
     <div className="fixed inset-0 z-[250] bg-slate-950/98 overflow-y-auto flex justify-center p-6 md:p-12 animate-in fade-in duration-300">
       {/* Background glow effects */}
@@ -25,10 +27,10 @@ export const ChroniclesModal: React.FC<Props> = ({ onClose }) => {
             </div>
             <div>
               <h1 className="text-3xl font-black tracking-widest text-white uppercase italic">
-                岁月史书
+                {t("岁月史书")}
               </h1>
               <p className="text-white/40 text-sm tracking-wide mt-1">
-                Chronicles of Time // 双轨纪元：原著编年史与本局真实发展履历对照
+                Chronicles of Time // {t("双轨纪元：原著编年史与本局真实发展履历对照")}
               </p>
             </div>
           </div>

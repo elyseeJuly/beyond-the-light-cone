@@ -1,11 +1,12 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-23
+> 最后更新：2026-07-24
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 23 总计）
+## 发布状态：🟢 就绪（0 RED / 24 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
+| **SCEN-I18N-FULL-EN** | UI/UX | 全文本英文本地化 | 切换为 English 时，TopHUD、LeftHub、RightInspector、TecTreeView、GovManagement、DiplomacyPanel、FleetModal、BattleScreen、WallfacerPanel、DepartmentPanel、PersonSelectPanel、AdvisorPanel、MuseumGallery、Tutorial、MissionLog、EndGameScreen 等全量 UI 与专有名词（Ken Liu 译本）自动渲染为英文 | 🟢 GREEN | 游戏点击英文版显示中文，缺乏英文本地化 | src/test/core/AppendixB.test.ts |
 | SCEN-TUTORIAL-NAV | UI/UX | 教程导航侧边栏 | 桌面端教程卡片展示垂直分类侧边栏，移动端水平滑动 | 🟢 GREEN | 1. 新手教程ui老样子演示按钮在顶部 | TutorialRemedy.scenario.test.tsx |
 | SCEN-HUD-RESPONSIVE | UI/UX | HUD 响应式自适应 | 所有视口尺寸下全量常驻展示稳定度、人口、资源、军力、威慑度，确保数值不隐藏且完整呈现 | 🟢 GREEN | 2. 下一回合按钮失踪; 3. 顶部数值显示不全 | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-BLOCKER | 交互 | 教程期间"下一回合"点击突破阻断 | 教程未完成时，AI脑关闭，存在阻断时，"下一回合"不被禁用且能推进回合 | 🟢 GREEN | 2. 下一回合按钮失踪（教程期间禁用阻断） | TutorialRemedy.scenario.test.tsx |
@@ -37,6 +38,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-24: 全文本英文本地化实装（SCEN-I18N-FULL-EN）——全量接入 `useTranslation` 动态国际化引擎与《三体》英文原版（Ken Liu 译本）标准化词库。覆盖 TopHUD、LeftHub、RightInspector、TecTreeView、GovManagement、DiplomacyPanel、FleetModal、BattleScreen、WallfacerPanel、DepartmentPanel、PersonSelectPanel、AdvisorPanel、MuseumGallery、Tutorial、MissionLog、EndGameScreen 等 34 个 UI 组件与 32 个终局结局。通过 734 项单元测试与生产打包。
 - 2026-07-23: 教程防卡死优化与主界面国际化适配——新手教程第一步「选中地球」重构为自动选中，消除 Canvas 偏置卡死隐患并改用「下一步」按钮推进；`TopHUD.tsx` 与 `GameCoverScreen.tsx` 关键说明文本和指标名称引入 `useTranslation` 进行 i18n 翻译，支持按中英文语言自适应格式化纪元年份显示。
 - 2026-07-22: PWA/Release 自动发布闭环——`main` 自动发布 GitHub Pages PWA；构建后校验 package.json、public/dist manifest、distribution 标记和 Service Worker 更新契约一致，部署完成后重试在线读取 manifest，确保线上版本已切换。v* tag 保持为下载包与 GitHub Release 的唯一触发器。更新提示显示当前版本与待切换版本，避免“更新后看似仍为旧版”的歧义。
 - 2026-07-22: 智脑顾问与新手引导体系重构——新手教程升级为 9 步交互序章，引入手动推进与完成校准按钮；重构新手任务清单为跟随纪元分阶段解锁的推演目标 MissionLog 且支持手动领奖；智脑常驻顾问百科面板上线，支持全局搜索；提示系统升级为具备冷却的智脑警告。修复多周目 LocalStorage session 前缀污染与教程死锁、幽灵事件、资源已建成即跳过劳力调配步骤的回归；封面与百科版本号实现动态绑定。

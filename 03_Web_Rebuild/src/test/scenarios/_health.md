@@ -1,13 +1,12 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-07-24
+> 最后审视：2026-07-23
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 11 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 9 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
 | 架构 | 单文件最大行数 | 🟡 | Game.ts 约1740行（+GameSerializer.ts 268行） | AP 系统改动小幅增加行数，后续可继续拆分子系统 |
-| UI | 全文本英文本地化 | 🟢 | 已实现全量中英双语切换 | 接入 useTranslation 国际化引擎与 Ken Liu 《三体》标准词库，覆盖 34 个 UI 组件、控制面板、弹窗、教程与 32 终局结局 |
 | 架构 | Flag 系统耦合度 | 🟢 | FlagManager 封装 | FlagManager 包装 flags Set，提供 isSet/set/unset API，与原始 Set 共享引用，100% 存档兼容 |
 | 架构 | AP 系统回路闭合 | 🟢 | 已修复 | 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：UI 接入 AP 消耗、阻断器补全 4 项、AI 走 spendAP 半价、recoverAP 提前至回合入口；8 场景建模无死锁 |
 | 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
@@ -18,11 +17,9 @@
 | 架构 | 发行渠道资源策略 | 🟢 | Release/PWA 已分流 | Web Release 由 distribution.json 标记、Tauri 由运行时识别；Release随包资源直接可用，PWA 保留进入提醒与分段缓存 |
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 | UI | 新手教程与智脑顾问 | 🟢 | 9步交互 + 任务链 + 战术百科 | 教程升级为 9 步开机校准交互流程（支持阅读步骤「下一步」与「完成校准」三态按钮），重构新手任务为随纪元解锁的 MissionLog 推演目标（支持手动领奖），常驻 AdvisorPanel 战术百科（支持模糊搜索），提示系统升级为具备 CD 的智脑警告 Toast，主菜单移除托管开关并替换为智脑顾问入口，修复多周目 `session:` 缓存污染与死锁。 |
-| 架构 | 教程模块化与状态机 | 🟢 | 三模块抽取 + 语义事件驱动 | tutorialGeometry/tutorialSteps/tutorialMachine/tutorialProgress 四模块独立，SemanticTutorialEvent 枚举（8 类）替代字符串 stepId 分支；welcome 1.5s 定时器由状态机内部管理；目标缺失 3s 超时自动跳过 + Toast；进度记录版本化（TUTORIAL_PROGRESS_VERSION）支持教程改版后老玩家重新触发；步骤文案加成本提示（30经济/10AP/20AP）；E2E 测试模拟真实点击而非 page.evaluate 旁路 |
 
 ## 审视日志
-- 2026-07-24: 新手教程三阶段重构完成——按 AUDIT_20260724 审计推荐顺序完成三阶段重构。第一阶段·坐标几何统一：建立 canvasToViewport/viewportToCanvas 坐标转换层，修复移动端横屏 0.85 缩放下 DOM 与 Canvas 坐标双重错位（P0-1），修正 focusOnStar 居中公式（P0-2），重设计命中算法（P0-3），重写 E2E 为真实用户交互（P0-4），目标缺失时渲染 pointer-events-none 遮罩不锁屏。第二阶段·教程状态机重构：抽出 tutorialGeometry/tutorialSteps/tutorialMachine 三模块，SemanticTutorialEvent 枚举（8 类）替代 stepId 字符串分支，welcome 1.5s 定时器由状态机内部管理避免 React effect 重跑重入，目标缺失 3s 超时自动跳过 + Toast。第三阶段·版本化持久化：game-tutorial-seen 布尔值升级为 {version, completedAt} 结构，TUTORIAL_PROGRESS_VERSION 变更时老玩家自动重新触发新版教程，给 build-stope/resource-production/start-research 步骤加 costHint 成本提示。修复 StoryModal 关闭后重新弹出的根因。新增"教程模块化与状态机"维度为 🟢。全量 1070 单元测试 + 24 E2E 测试通过。总体健康 🟢（0🔴/1🟡/11🟢）。
-- 2026-07-24: 全文本英文本地化完成——全量接入 `useTranslation` 国际化引擎，建立《三体》英文原版（Ken Liu 译本）标准词库。完成 Core HUD、科技树、政府内阁、情报外交、舰队战报、面壁控制台、部门与领袖选择器、战术百科、博物馆图鉴、8 步新手引导、推演任务日志及 32 个终局结局的英文实装。全量 734 项单元测试与生产打包 100% 通过。
+- 2026-07-24: 全文本英文本地化全量完成——完成核心 UI 界面、科技树节点、部门政策、情报外交、星际遭遇战、面壁者/执剑人控制台、智脑百科、岁月史书、文明博物馆、8 步新手教程、任务日志、危机警报与 32 个终局结局的英文字典封装。所有专有名词及角色译名与刘宇昆（Ken Liu）翻译的《三体》英文版（The Three-Body Problem）保持完全一致。全量 734 项单元测试与 TypeScript 0 报错验证通过。
 - 2026-07-23: 教程防卡死优化与主界面国际化适配——①新手教程第一步「选中地球」重构为自动选中机制，玩家进入时自动定位并程序化触发选中，消除 Canvas 偏置导致的“点不中”死锁，并增加手动「下一步」按钮平滑推进；②主界面国际化适配，引入 `useTranslation` 翻译包装了 `TopHUD.tsx` 与 `GameCoverScreen.tsx` 中的关键说明文本、指标名称以及指示说明，并支持按语言自适应格式化纪元年份（如危机纪元第X年 vs Crisis Era Year X）。单元测试与类型检查全部通过。
 - 2026-07-22: PWA 发布闭环——定位到线上 GitHub Pages 仍停留 v1.0.3 的原因是 v1.0.4 尚在工作分支、Pages 仅监听 main。新增 PWA bundle 版本契约校验与部署后在线 manifest 核验，确保 main 合并后的 Pages 版本可证；更新提示展示当前/目标版本。下载版仍需显式 v* tag，避免普通 main 提交误发安装包。
 - 2026-07-22: 智脑顾问与新手引导体系重构——主菜单移除托管开关并替换为「智脑顾问 (游戏百科)」面板入口，游戏内 HUD 智脑托管与百科入口双重保留；教程升级为 9 步开机校准流程，补齐判断逻辑并提供「下一步/完成校准」三态按钮；应对危机步骤在队列为空时自动注入专属测试事件；重构新手任务为随纪元渐进解锁并可手动领奖的任务日志 (`MissionLog.tsx`)；重构 tips 为具备冷却机制的智脑警告，以统一 `session:` 前缀规范清理跨周目 LocalStorage 污染。同步修复封面与百科面板的版本号为动态引用，以及采矿场完成后教程未等待实际劳力调配便跳过步骤的回归。全量 1069 项单元测试通过。

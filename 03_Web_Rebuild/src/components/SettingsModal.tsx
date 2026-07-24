@@ -4,6 +4,7 @@ import { Volume2, Globe, Monitor, Zap, Save, HelpCircle, Users, X, Database, Mes
 import { setLanguage, getLanguage, useTranslation } from '../utils/i18n';
 import { assetLoader } from '../core/AssetLoader';
 import { GAME_VERSION } from '../utils/version';
+import { resetTutorialProgress } from './tutorial/tutorialProgress';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -73,7 +74,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
   const handleRestart = () => {
     if (confirm("确认重置文明并重新开始吗？这会抹去当前的纪元进度。")) {
       GameInstance.reset();
-      localStorage.removeItem("game-tutorial-seen");
+      resetTutorialProgress();
       window.location.reload();
     }
   };

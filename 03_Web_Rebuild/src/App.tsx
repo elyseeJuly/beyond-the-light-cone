@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense, lazy } from 'react';
 import { TopHUD } from './components/TopHUD';
 import { LeftHub, ActiveViewType } from './components/LeftHub';
 import { RightInspector } from './components/RightInspector';
@@ -22,6 +22,7 @@ import { Toast } from './components/common/Toast';
 import { ContextualTips } from './components/ContextualTips';
 import { BeginnerTasks } from './components/BeginnerTasks';
 import { AdvisorPanel } from './components/AdvisorPanel';
+import { isTutorialCompleted, markTutorialCompleted, resetTutorialProgress } from './components/tutorial/tutorialProgress';
 
 // 重型模态组件按路由/交互懒加载，降低首屏 index chunk 体积
 const StoryModal = lazy(() => import('./components/StoryModal').then(m => ({ default: m.StoryModal })));
@@ -69,14 +70,22 @@ export const App: React.FC = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [showDownloadPrompt, setShowDownloadPrompt] = useState(false);
 
-  const remindAssetDownloadIfNeeded = () => {
+  const remindAssetDownloadIfNeeded = useCallback(() => {
     const stats = assetLoader.getStats();
     const promptSeen = localStorage.getItem('game-assets-prompt-seen') === 'true';
     if (shouldPromptForAssetDownload(stats.pendingPacks.length, promptSeen)) {
       setShowDownloadPrompt(true);
     }
-  };
+  }, []);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'audio' | 'storage'>('audio');
+
+  // 稳定的教程完成回调：避免内联函数在每次渲染时变化，导致 Tutorial 内部
+  // 依赖 onComplete 的 useEffect 反复重运行（曾导致 resolve-event 步骤的
+  // 测试事件被反复注入、StoryModal 关闭后又重新弹出）
+  const handleTutorialComplete = useCallback(() => {
+    setShowTutorial(false);
+    remindAssetDownloadIfNeeded();
+  }, [remindAssetDownloadIfNeeded]);
 
   const atmosphereEngineRef = useRef<any>(null);
   const bp = useBreakpoint();
@@ -87,7 +96,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     preloadCoreImages();
     const handleOpenTutorial = () => {
-      if (localStorage.getItem('game-tutorial-seen') !== 'true') {
+      if (!isTutorialCompleted()) {
         setShowTutorial(true);
       }
     };
@@ -443,10 +452,10 @@ export const App: React.FC = () => {
                   GameInstance.reset();
                   GameInstance.get().earthCivi.isAiBrainEnabled = enableAiBrain;
                   if (!withTutorial) {
-                    localStorage.setItem('game-tutorial-seen', 'true');
+                    markTutorialCompleted();
                     remindAssetDownloadIfNeeded();
                   } else {
-                    localStorage.removeItem('game-tutorial-seen');
+                    resetTutorialProgress();
                   }
                   setShowCoverScreen(false);
                 }}
@@ -475,11 +484,8 @@ export const App: React.FC = () => {
               />
             )}
             {showTutorial && (
-              <Tutorial 
-                onComplete={() => {
-                  setShowTutorial(false);
-                  remindAssetDownloadIfNeeded();
-                }} 
+              <Tutorial
+                onComplete={handleTutorialComplete}
               />
             )}
             {unlockedTech && <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />}
@@ -515,7 +521,7 @@ export const App: React.FC = () => {
           <Toast />
           <ContextualTips />
           <AdvisorPanel />
-          {!showTutorial && !showCoverScreen && localStorage.getItem('game-tutorial-seen') === 'true' && <BeginnerTasks />}
+          {!showTutorial && !showCoverScreen && isTutorialCompleted() && <BeginnerTasks />}
 
           {/* Legacy Modal System Bridge */}
           <div id="modal-container" className="modal-overlay hidden">

@@ -3,10 +3,11 @@ import { render, screen, act, fireEvent } from '@testing-library/react';
 import { Tutorial, TUTORIAL_STEPS } from '../../components/Tutorial';
 import { TopHUD } from '../../components/TopHUD';
 import { GameInstance } from '../../core/Game';
+import { isTutorialCompleted, resetTutorialProgress } from '../../components/tutorial/tutorialProgress';
 
 describe('Tutorial UI & Blocker Remediation Scenarios', () => {
   beforeEach(() => {
-    window.localStorage.removeItem('game-tutorial-seen');
+    resetTutorialProgress();
     (window as any).isTutorialActive = false;
     GameInstance.reset();
   });
@@ -107,7 +108,7 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     act(() => vi.advanceTimersByTime(400));
 
     expect(onComplete).toHaveBeenCalledOnce();
-    expect(localStorage.getItem('game-tutorial-seen')).toBe('true');
+    expect(isTutorialCompleted()).toBe(true);
   });
 
   it('SCEN-TUTORIAL-BLOCKER: 教程期间允许玩家越过回合阻断', () => {

@@ -182,8 +182,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
   const hasSpeaker = !!currentNode.speakerName;
 
   return (
-    <div 
-      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
+    <div
+      className="fixed inset-0 z-[1005] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
       role="dialog"
       aria-modal="true"
     >

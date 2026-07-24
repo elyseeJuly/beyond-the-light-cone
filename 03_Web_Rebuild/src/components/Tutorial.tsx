@@ -1,143 +1,113 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { X, ChevronRight, Flag, Sparkles } from 'lucide-react';
-import { ActiveViewType } from './LeftHub';
+import { X, ChevronRight, Flag, Sparkles, Zap } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { STAR_INDEX } from '../config/starIndices';
-import { t } from '../utils/i18n';
+import { TutorialMachine, type TutorialMachineCallbacks } from './tutorial/tutorialMachine';
+import { markTutorialCompleted } from './tutorial/tutorialProgress';
+import {
+  SemanticTutorialEvent,
+  WELCOME_AUTO_ADVANCE_MS,
+  buildSteps,
+  TUTORIAL_STEPS,
+} from './tutorial/tutorialSteps';
+import {
+  type HighlightRect,
+  computeHighlightRectFromElement,
+  computeHighlightRectFromStar,
+  computeOverlayBlocks,
+  computeArrowPosition,
+  computeCardStyle,
+} from './tutorial/tutorialGeometry';
 
-interface TutorialStep {
-  id: string;
-  title: string;
-  description: string;
-  highlightTarget?: string;
-  activeView: ActiveViewType;
-  inspectorTab?: 'overview' | 'build' | 'fleet' | 'history';
-  cardPosition?: 'left' | 'right' | 'top' | 'bottom' | 'center';
-  /** 是否为教程聚焦星（启用 StarMapRenderer.pulse + 强制居中） */
-  focusStar?: number;
-  /** 自定义高亮框尺寸（覆盖默认），用于不规则命中区 */
-  highlightSize?: number;
-  /** 是否允许"宽容点击"：高亮框内任意点击都算完成本步（不依赖真实命中） */
-  forgivingClick?: boolean;
-  /** 是否需要手动点击「下一步」推进（纯阅读或阶段谢幕步骤） */
-  requiresManualAdvance?: boolean;
-}
+// 兼容旧测试引用
+export { TUTORIAL_STEPS };
+export type { TutorialStep } from './tutorial/tutorialSteps';
 
-/**
- * 重设计后的新手教程：9 步（欢迎、核心操作与智脑校准收尾）。
- * 核心修复：
- *  - 步骤 1 启动时自动将地球居中并放大（focusOnStar），杜绝"找不到地球"
- *  - 步骤 1 高亮框扩大到 110×110px，覆盖 StarMapRenderer 60px 实际命中区
- *  - 步骤 1 启用 forgivingClick + StarMapRenderer pulse 环，引导玩家视线
- *  - 用单一可点击 hotspot 替换 4 块分块遮罩，消除接缝漏点
- *  - 增加欢迎页（1.5s 自动过渡或点击"开始"），给玩家仪式感与思考空间
- */
-function buildSteps(hasStope: boolean): TutorialStep[] {
-  return [
-    {
-      id: 'welcome',
-      title: t('智脑辅助校准'),
-      description: t('公元 2009 年，三体舰队启航。智脑战略系统初始化完成，即将开始校准。'),
-      activeView: 'starmap',
-      cardPosition: 'center',
-    },
-    {
-      id: 'click-earth',
-      title: t('选中家园星系'),
-      description: t('已为您自动定位并选中地球坐标。这是我们在这片暗黑森林中唯一的基石。'),
-      activeView: 'starmap',
-      cardPosition: 'left',
-      focusStar: STAR_INDEX.EARTH,
-      requiresManualAdvance: true,
-    },
-    {
-      id: 'read-status',
-      title: t('监控三维产出'),
-      description: t('查看右侧面板。矿产维持工业、经济驱动发展、文化决定科研速率。'),
-      highlightTarget: 'right-inspector-panel',
-      activeView: 'starmap',
-      inspectorTab: 'overview',
-      cardPosition: 'left',
-      requiresManualAdvance: true,
-    },
-    {
-      id: 'build-stope',
-      title: t('建设矿业基础'),
-      description: hasStope
-        ? t('检查建好的采矿场。工业与太空防线的建立离不开资源供应。')
-        : t('切换至建造面板，在地球轨道新建一座采矿场，奠定工业基础。'),
-      highlightTarget: hasStope ? 'btn-inspect-stope' : 'btn-build-stope',
-      activeView: 'starmap',
-      inspectorTab: hasStope ? 'overview' : 'build',
-      cardPosition: 'left',
-    },
-    {
-      id: 'resource-production',
-      title: t('调配劳力分配'),
-      description: t('拖动采矿比例滑块。劳动资源有限，需根据战略重心合理取舍。'),
-      highlightTarget: 'mining-ratio-section',
-      activeView: 'starmap',
-      inspectorTab: 'overview',
-      cardPosition: 'left',
-    },
-    {
-      id: 'start-research',
-      title: t('启动科技演进'),
-      description: t('进入科技树面板，点击选择「天文观测」节点启动首项研究。'),
-      highlightTarget: 'tech-node-天文观测',
-      activeView: 'techtree',
-      cardPosition: 'right',
-    },
-    {
-      id: 'next-turn',
-      title: '执行首回合决策',
-      description: '点击「下一回合」。时间将向前推移，智脑将演算各部门运转效果。',
-      highlightTarget: 'btn-next-turn',
-      activeView: 'starmap',
-      cardPosition: 'bottom',
-    },
-    {
-      id: 'resolve-event',
-      title: '应对突发危机',
-      description: '智脑推演到危机事件。每一个抉择都将深刻书写文明的生存命运。',
-      activeView: 'starmap',
-      cardPosition: 'center',
-      requiresManualAdvance: true,
-    },
-    {
-      id: 'tutorial-end',
-      title: '智脑校准完毕',
-      description: '校准完成！局势目标面板与智脑战术顾问已解锁，愿文明薪火永存。',
-      activeView: 'starmap',
-      cardPosition: 'center',
-    },
-  ];
-}
+/** resolve-event 步骤注入的测试事件 ID */
+const TUTORIAL_EVENT_ID = 'event_tutorial_eto_test';
 
-/** 保留导出以兼容旧测试引用，默认走"无采矿场"路径 */
-export const TUTORIAL_STEPS: TutorialStep[] = buildSteps(false);
-
-/** 欢迎页自动过渡时长（毫秒） */
-const WELCOME_AUTO_ADVANCE_MS = 1500;
-
-export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onCompleteProp }) => {
   const game = GameInstance.get();
   const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
   const initialHasStope = useRef(!!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope).current;
   const initialMiningRatio = useRef(game.earthCivi.miningRatio).current;
 
-  const steps = useRef(buildSteps(initialHasStope)).current;
-  const [step, setStep] = useState(0);
-  const [exiting, setExiting] = useState(false);
+  const steps = useRef(buildSteps(initialHasStope, initialMiningRatio)).current;
+
+  // 稳定的 onComplete 引用：避免外部传入的内联函数导致依赖链断裂
+  const onCompleteRef = useRef(onCompleteProp);
+  onCompleteRef.current = onCompleteProp;
+
+  // ── 创建状态机（仅一次） ──
+  const machineRef = useRef<TutorialMachine | null>(null);
+  if (!machineRef.current) {
+    const callbacks: TutorialMachineCallbacks = {
+      onStepEnter: () => {
+        /* 副作用由下方 useEffect 监听 step 变化时执行 */
+      },
+      onStepExit: (step) => {
+        // 离开聚焦星步骤时清掉 pulse
+        if (step.focusStar !== undefined) {
+          try {
+            const renderer = (window as any).activeStarMapRenderer;
+            if (renderer && typeof renderer.setTutorialPulse === 'function') {
+              renderer.setTutorialPulse(null);
+            }
+          } catch (_) { /* ignore */ }
+        }
+      },
+      onComplete: () => {
+        markTutorialCompleted();
+        try {
+          const renderer = (window as any).activeStarMapRenderer;
+          if (renderer && typeof renderer.setTutorialPulse === 'function') {
+            renderer.setTutorialPulse(null);
+          }
+        } catch (_) { /* ignore */ }
+        window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
+        setTimeout(() => onCompleteRef.current(), 400);
+      },
+      onTargetMissing: (step) => {
+        // 目标缺失超时：派发 Toast 提示，并跳过当前步骤（不锁屏）
+        console.warn(`[Tutorial] 步骤 "${step.id}" 目标元素缺失超时，已自动跳过`);
+        window.dispatchEvent(new CustomEvent('game:toast:message', {
+          detail: {
+            text: `智脑无法定位目标元素，已自动跳过 "${step.title}" 步骤。请从主菜单重新启动教程或继续游戏。`,
+            category: '【智脑警告】',
+          },
+        }));
+        // 跳过当前步骤（无论是 AUTO_COMPLETE 还是 MANUAL_ADVANCE）
+        machineRef.current?.dispatch(SemanticTutorialEvent.MANUAL_ADVANCE);
+      },
+    };
+    machineRef.current = new TutorialMachine(steps, callbacks);
+  }
+  const machine = machineRef.current;
+
+  // ── 订阅状态机变化，触发 React 重渲染 ──
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const unsubscribe = machine.subscribe(() => forceUpdate((v) => v + 1));
+    // 启动状态机（进入第一步）
+    machine.start();
+    return () => {
+      unsubscribe();
+      machine.dispose();
+    };
+  }, [machine]);
+
+  const stepIndex = machine.currentIndex();
+  const current = machine.currentStep();
+  const isComplete = machine.isComplete();
+
+  // ── 视图状态：用于卡片定位计算 ──
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-  const [highlightRect, setHighlightRect] = useState<{
-    top: number; left: number; width: number; height: number;
-  } | null>(null);
+  const [highlightRect, setHighlightRect] = useState<HighlightRect | null>(null);
+  const [exiting, setExiting] = useState(false);
 
-  const current = steps[step];
-  const stepCompletedRef = useRef(false);
-  const turnCompleteRef = useRef(false);
+  // ── 防御：resolve-event 步骤的事件注入标记，避免 effect 重跑后反复注入 ──
+  const resolveEventInjectedRef = useRef(false);
 
   // ── 窗口尺寸追踪 ──
   useEffect(() => {
@@ -160,11 +130,10 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
       window.dispatchEvent(new CustomEvent('game-state-changed'));
     } catch (e) {
-      console.error("Failed to disable AI brain on tutorial start:", e);
+      console.error('Failed to disable AI brain on tutorial start:', e);
     }
     return () => {
       (window as any).isTutorialActive = false;
-      // 退出教程时清除星图上的 pulse
       try {
         const renderer = (window as any).activeStarMapRenderer;
         if (renderer && typeof renderer.setTutorialPulse === 'function') {
@@ -177,16 +146,25 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         window.dispatchEvent(new CustomEvent('ai-brain-toggled'));
         window.dispatchEvent(new CustomEvent('game-state-changed'));
       } catch (e) {
-        console.error("Failed to restore AI brain on tutorial exit:", e);
+        console.error('Failed to restore AI brain on tutorial exit:', e);
       }
     };
   }, []);
 
-  // ── 高亮坐标追踪（requestAnimationFrame 循环） ──
+  // ── 完成时触发退出动画 ──
+  useEffect(() => {
+    if (isComplete) setExiting(true);
+  }, [isComplete]);
+
+  // ── 高亮坐标追踪（requestAnimationFrame 循环 + 目标缺失通知状态机） ──
   useEffect(() => {
     if (!current) return;
     const targetId = current.highlightTarget;
-    if (!targetId) { setHighlightRect(null); return; }
+    if (!targetId) {
+      setHighlightRect(null);
+      machine.markTargetFound();
+      return;
+    }
 
     let active = true;
 
@@ -199,16 +177,13 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           const coords = renderer.getStarScreenCoords(STAR_INDEX.EARTH);
           if (coords) {
             const size = current.highlightSize || 110;
-            setHighlightRect({
-              top: coords.y - size / 2,
-              left: coords.x - size / 2,
-              width: size,
-              height: size,
-            });
+            setHighlightRect(computeHighlightRectFromStar(coords, size));
+            machine.markTargetFound();
             return;
           }
         }
         setHighlightRect(null);
+        machine.markTargetMissing();
         return;
       }
 
@@ -220,22 +195,24 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       if (element) {
         // getBoundingClientRect() 已返回视口坐标，Tutorial 为 fixed 定位也在视口空间，无需再除缩放系数
         const rect = element.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) {
-          setHighlightRect(null);
+        const computed = computeHighlightRectFromElement(rect);
+        if (computed) {
+          setHighlightRect(computed);
+          machine.markTargetFound();
         } else {
-          setHighlightRect({
-            top: Math.max(0, rect.top - 4),
-            left: Math.max(0, rect.left - 4),
-            width: rect.width + 8,
-            height: rect.height + 8,
-          });
+          setHighlightRect(null);
+          machine.markTargetMissing();
         }
       } else {
         setHighlightRect(null);
+        machine.markTargetMissing();
       }
     };
 
-    const renderLoop = () => { updateRect(); if (active) requestAnimationFrame(renderLoop); };
+    const renderLoop = () => {
+      updateRect();
+      if (active) requestAnimationFrame(renderLoop);
+    };
     requestAnimationFrame(renderLoop);
 
     window.addEventListener('resize', updateRect);
@@ -247,14 +224,18 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
       window.removeEventListener('change-active-view', updateRect);
       window.removeEventListener('tutorial:set-tab', updateRect);
     };
-  }, [step, current]);
+  }, [current, machine]);
 
-  // ── 视图/Tab 同步 + 教程聚焦星（核心：自动居中地球） ──
+  // ── 步骤切换副作用：视图/Tab 同步、教程聚焦星、resolve-event 事件注入 ──
   useEffect(() => {
     if (!current) return;
+
+    // 1. 切换主视图
     if (current.activeView) {
       window.dispatchEvent(new CustomEvent('change-active-view', { detail: current.activeView }));
     }
+
+    // 2. click-earth 步骤：自动派发 star-selected 选中地球
     if (current.id === 'click-earth') {
       try {
         const g = GameInstance.get();
@@ -263,22 +244,25 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
         }
       } catch (e) {
-        console.error("Failed to auto-select Earth in tutorial:", e);
+        console.error('Failed to auto-select Earth in tutorial:', e);
       }
     }
+
+    // 3. 同步 inspector tab
     if (current.inspectorTab) {
       window.dispatchEvent(new CustomEvent('tutorial:set-tab', { detail: current.inspectorTab }));
     } else if (current.id !== 'click-earth') {
       window.dispatchEvent(new CustomEvent('tutorial:close-drawer'));
     }
+
+    // 4. 隐藏 modal-container（避免与教程步骤视觉冲突）
     try {
       const modal = document.getElementById('modal-container');
       if (modal) modal.classList.add('hidden');
     } catch (e) { /* ignore */ }
 
-    // 教程聚焦星：自动居中 + 开启 pulse
+    // 5. 教程聚焦星：自动居中 + 开启 pulse
     if (current.focusStar !== undefined) {
-      // 等待一帧让 StarMap 完成 render；极端情况下 renderer 还没挂载则轮询等待
       let attempts = 0;
       const tryFocus = () => {
         attempts++;
@@ -302,69 +286,15 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         }
       } catch (_) { /* ignore */ }
     }
-  }, [current]);
 
-  // ── 完成当前步骤（防重复） ──
-  const completeStep = useCallback(() => {
-    if (stepCompletedRef.current) return;
-    stepCompletedRef.current = true;
-    setStep(s => {
-      if (s < steps.length - 1) return s + 1;
-      // 最后一步完成 → 结束教程
-      setExiting(true);
-      localStorage.setItem('game-tutorial-seen', 'true');
-      // 退出时清掉 pulse
-      try {
-        const renderer = (window as any).activeStarMapRenderer;
-        if (renderer && typeof renderer.setTutorialPulse === 'function') {
-          renderer.setTutorialPulse(null);
-        }
-      } catch (_) { /* ignore */ }
-      window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
-      setTimeout(onComplete, 400);
-      return s;
-    });
-  }, [steps.length, onComplete]);
-
-  // ── 欢迎页：1.5s 自动过渡 ──
-  useEffect(() => {
-    if (current?.id !== 'welcome') return;
-    stepCompletedRef.current = false;
-    const timer = setTimeout(() => {
-      completeStep();
-    }, WELCOME_AUTO_ADVANCE_MS);
-    return () => clearTimeout(timer);
-    // completeStep 已用 ref 化的 stepCompletedRef 防止重入
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current?.id]);
-
-  // ── 步骤 1 高亮框点击 = 选中地球（宽容点击，杜绝"明明在框内却没反应"） ──
-  // ── 每步验证逻辑 ──
-  useEffect(() => {
-    stepCompletedRef.current = false;
-    if (!current) return;
-    const stepId = current.id;
-
-    // 欢迎页不需验证
-    if (stepId === 'welcome') return;
-
-    // 步骤 next-turn：监听 game-turn-complete 事件
-    if (stepId === 'next-turn') {
-      const handler = () => {
-        turnCompleteRef.current = true;
-        completeStep();
-      };
-      window.addEventListener('game-turn-complete', handler);
-      return () => window.removeEventListener('game-turn-complete', handler);
-    }
-
-    // 步骤 resolve-event：注入并监听危机事件
-    if (stepId === 'resolve-event') {
+    // 6. resolve-event 步骤：注入并监听危机事件
+    if (current.id === 'resolve-event') {
       const g = GameInstance.get();
-      const TUTORIAL_EVENT_ID = 'event_tutorial_eto_test';
-      const isAlreadyInjected = g.currentEvent?.id === TUTORIAL_EVENT_ID || g.eventQueue.some(e => e.id === TUTORIAL_EVENT_ID);
+      const isAlreadyInjected = resolveEventInjectedRef.current
+        || g.currentEvent?.id === TUTORIAL_EVENT_ID
+        || g.eventQueue.some((e) => e.id === TUTORIAL_EVENT_ID);
       if (!isAlreadyInjected) {
-        // 强制清除推进回合产生的随机事件，防止教程死锁
+        resolveEventInjectedRef.current = true;
         g.currentEvent = null;
         g.eventQueue = [];
         g.eventQueue.push({
@@ -373,78 +303,85 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           dialogQueue: [
             {
               speakerName: '智脑系统',
-              content: '监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。'
-            }
+              content: '监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。',
+            },
           ],
           choices: [
             { label: '发布戒严警告（社会稳定 -5）', action: () => {} },
-            { label: '暗中排查跟踪（积累情报）', action: () => {} }
-          ]
+            { label: '暗中排查跟踪（积累情报）', action: () => {} },
+          ],
         });
         g.processNextEvent();
         window.dispatchEvent(new CustomEvent('game-state-changed'));
       }
     }
+  }, [current]);
 
-    // 轮询验证逻辑
-    const checkCondition = (): boolean => {
-      const g = GameInstance.get();
-      switch (stepId) {
-        case 'build-stope': {
-          const star = g.starManager.getStar(STAR_INDEX.EARTH);
-          return !!star?.hasStope || !!star?.buildingProgress?.stope;
-        }
-        case 'resource-production': {
-          return g.earthCivi.miningRatio !== initialMiningRatio;
-        }
-        case 'start-research': {
-          for (const tree of g.earthCivi.tecTreeManager.trees.values()) {
-            for (const node of tree.nodes.values()) {
-              if (node.inResearch && !node.finished) return true;
-            }
+  // ── 步骤事件监听器：根据 completionEvent 注册对应 window 事件 ──
+  useEffect(() => {
+    if (!current) return;
+
+    const completionEvent = current.completionEvent;
+
+    // AUTO_COMPLETE 步骤：进入时立即 validate（若已满足条件直接完成）
+    // + 监听 game-state-changed 触发 validate（保留兜底轮询以防漏派发）
+    if (completionEvent === SemanticTutorialEvent.AUTO_COMPLETE && current.validate) {
+      const validate = current.validate;
+      const checkAndDispatch = () => {
+        try {
+          const g = GameInstance.get();
+          if (validate(g)) {
+            machine.dispatch(SemanticTutorialEvent.AUTO_COMPLETE);
           }
-          return false;
-        }
-        case 'welcome':
-        case 'click-earth':
-        case 'read-status':
-        case 'next-turn':
-        case 'resolve-event':
-        case 'tutorial-end':
-          return false; // 由定时器、特定事件监听或手动「下一步」按钮驱动
-        default:
-          console.error(`[Tutorial] 警告：步骤 "${stepId}" 未配置 checkCondition 验证规则，可能导致死锁。`);
-          return false;
-      }
-    };
-
-    if (checkCondition()) {
-      completeStep();
-      return;
+        } catch (e) { /* ignore */ }
+      };
+      checkAndDispatch();
+      const handler = () => checkAndDispatch();
+      window.addEventListener('game-state-changed', handler);
+      // 兜底轮询：某些状态变化可能未派发 game-state-changed（如 adjustWorkerRatio 直接修改字段）
+      // 用 300ms 兜底，避免因漏派发导致教程卡死
+      const interval = setInterval(checkAndDispatch, 300);
+      return () => {
+        window.removeEventListener('game-state-changed', handler);
+        clearInterval(interval);
+      };
     }
 
-    const interval = setInterval(() => {
-      if (checkCondition()) {
-        clearInterval(interval);
-        completeStep();
-      }
-    }, 300);
-    return () => clearInterval(interval);
-  }, [current, completeStep, initialHasStope, initialMiningRatio]);
+    // TURN_COMPLETE 步骤：监听 game-turn-complete
+    if (completionEvent === SemanticTutorialEvent.TURN_COMPLETE) {
+      const handler = () => machine.dispatch(SemanticTutorialEvent.TURN_COMPLETE);
+      window.addEventListener('game-turn-complete', handler);
+      return () => window.removeEventListener('game-turn-complete', handler);
+    }
+
+    // EVENT_RESOLVED 步骤：监听 StoryModal 关闭（currentEvent === null）
+    if (completionEvent === SemanticTutorialEvent.EVENT_RESOLVED) {
+      const handler = () => {
+        try {
+          const g = GameInstance.get();
+          // currentEvent 已清空表示事件处理完毕
+          if (!g.currentEvent) {
+            machine.dispatch(SemanticTutorialEvent.EVENT_RESOLVED);
+          }
+        } catch (e) { /* ignore */ }
+      };
+      window.addEventListener('game-state-changed', handler);
+      // 兜底：监听 game-turn-complete（StoryModal 选项触发的回合结算可能不派发 game-state-changed）
+      window.addEventListener('game-turn-complete', handler);
+      return () => {
+        window.removeEventListener('game-state-changed', handler);
+        window.removeEventListener('game-turn-complete', handler);
+      };
+    }
+
+    // WELCOME_TIMEOUT / MANUAL_ADVANCE / FINISH 由状态机内部定时器或按钮点击驱动，无需注册 window 事件
+    return;
+  }, [current, machine]);
 
   // ── 跳过教程 ──
   const handleSkip = useCallback(() => {
-    setExiting(true);
-    localStorage.setItem('game-tutorial-seen', 'true');
-    try {
-      const renderer = (window as any).activeStarMapRenderer;
-      if (renderer && typeof renderer.setTutorialPulse === 'function') {
-        renderer.setTutorialPulse(null);
-      }
-    } catch (_) { /* ignore */ }
-    window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
-    setTimeout(onComplete, 400);
-  }, [onComplete]);
+    machine.skip();
+  }, [machine]);
 
   // ── ESC 快捷键跳过 ──
   useEffect(() => {
@@ -455,44 +392,41 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleSkip]);
 
-  const progress = ((step + 1) / steps.length) * 100;
+  // ── 手动「下一步」按钮：派发 MANUAL_ADVANCE 或 FINISH ──
+  const handleManualAdvance = useCallback(() => {
+    if (!current) return;
+    if (current.completionEvent === SemanticTutorialEvent.FINISH) {
+      machine.dispatch(SemanticTutorialEvent.FINISH);
+    } else {
+      machine.dispatch(SemanticTutorialEvent.MANUAL_ADVANCE);
+    }
+  }, [current, machine]);
+
+  // ── click-earth 步骤：高亮框点击 = 选中地球（宽容点击） ──
+  const handleEarthHotspotClick = useCallback(() => {
+    if (!current || current.id !== 'click-earth') return;
+    // 派发 star-selected 让 App.tsx 打开 drawer（移动端）+ RightInspector 渲染
+    try {
+      const g = GameInstance.get();
+      const earth = g.starManager.getStar(STAR_INDEX.EARTH);
+      if (earth) {
+        window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
+      }
+    } catch (e) { /* ignore */ }
+    // click-earth 是 requiresManualAdvance 步骤，点击 hotspot 即视为完成
+    machine.dispatch(SemanticTutorialEvent.MANUAL_ADVANCE);
+  }, [current, machine]);
+
+  if (!current) return null;
+
+  const progress = ((stepIndex + 1) / steps.length) * 100;
   const showHighlight = highlightRect !== null;
-  const isWelcome = current?.id === 'welcome';
+  const isWelcome = current.id === 'welcome';
+  const isClickEarth = current.id === 'click-earth';
 
-  // ── 卡片定位（避免遮挡高亮目标） ──
-  const getCardStyle = (): React.CSSProperties => {
-    if (isWelcome) {
-      return { position: 'relative', maxWidth: '520px', width: windowWidth < 768 ? 'calc(100% - 24px)' : '100%' };
-    }
-    if (!showHighlight || !highlightRect) {
-      return { position: 'relative', maxWidth: '480px', width: windowWidth < 768 ? 'calc(100% - 24px)' : '100%' };
-    }
-
-    if (windowHeight < 500) {
-      const isTargetOnLeft = (highlightRect.left + highlightRect.width / 2) < windowWidth / 2;
-      return {
-        position: 'absolute', top: '12px', bottom: '12px',
-        ...(isTargetOnLeft ? { right: '12px', left: 'auto' } : { left: '12px', right: 'auto' }),
-        width: '300px', margin: 0, maxHeight: 'calc(100vh - 24px)', overflowY: 'auto',
-      };
-    }
-
-    if (windowWidth < 768) {
-      const isUpperHalf = (highlightRect.top + highlightRect.height / 2) < windowHeight / 2;
-      return {
-        position: 'absolute', left: '12px', right: '12px', width: 'calc(100% - 24px)',
-        margin: 0, maxWidth: 'none',
-        ...(isUpperHalf ? { bottom: '12px', top: 'auto', transform: 'none' } : { top: '12px', bottom: 'auto', transform: 'none' }),
-      };
-    }
-
-    const pos = current?.cardPosition || 'center';
-    if (pos === 'left') return { position: 'absolute', left: '40px', top: '50%', transform: 'translateY(-50%)', margin: 0, maxWidth: '480px' };
-    if (pos === 'right') return { position: 'absolute', right: '40px', top: '50%', transform: 'translateY(-50%)', margin: 0, maxWidth: '480px' };
-    if (pos === 'bottom') return { position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)', margin: 0, maxWidth: '480px' };
-    if (pos === 'top') return { position: 'absolute', top: '40px', left: '50%', transform: 'translateX(-50%)', margin: 0, maxWidth: '480px' };
-    return { position: 'relative', maxWidth: '480px' };
-  };
+  const cardStyle = computeCardStyle(highlightRect, { width: windowWidth, height: windowHeight }, current, isWelcome);
+  const arrowPos = showHighlight && highlightRect ? computeArrowPosition(highlightRect) : null;
+  const overlayBlocks = showHighlight && highlightRect ? computeOverlayBlocks(highlightRect) : [];
 
   return (
     <div className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-400 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
@@ -503,70 +437,79 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
         <>
           {/* 全屏暗化层（不接收事件，避免吞掉 hotspot 外的合法点击） */}
           <div className="absolute inset-0 bg-[#050810]/65 pointer-events-none z-[1000]" />
-          {/* 高亮遮罩：4 块拼接以提供"高亮区通透 + 其他区域接收事件"的视觉感受。
-              分块 div 接收事件的目的：阻止玩家误触其他 UI 元素。
-              注意：分块 div 的内边正好与 highlightRect 接缝对齐为 hotspot，让 hotspot 独占点击。 */}
-          {(() => {
-            // 把分块内边各让出 2px（向 highlight 中心收缩），让 hotspot 区域独占点击无接缝
-            const r = highlightRect;
-            const shrink = 2;
-            const inner = {
-              left: r.left + shrink,
-              top: r.top + shrink,
-              right: r.left + r.width - shrink,
-              bottom: r.top + r.height - shrink,
-            };
-            const blocks: React.CSSProperties[] = [
-              { top: 0, left: 0, right: 0, height: `${Math.max(0, inner.top)}px` },
-              { top: `${inner.bottom}px`, left: 0, right: 0, bottom: 0 },
-              { top: `${inner.top}px`, height: `${Math.max(0, inner.bottom - inner.top)}px`, left: 0, width: `${Math.max(0, inner.left)}px` },
-              { top: `${inner.top}px`, height: `${Math.max(0, inner.bottom - inner.top)}px`, left: `${inner.right}px`, right: 0 },
-            ];
-            return blocks.map((style, i) => (
-              <div key={i} data-testid={`tutorial-overlay-${['top', 'bottom', 'left', 'right'][i]}`}
-                className="absolute bg-transparent pointer-events-auto transition-all duration-300"
-                style={style}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
-            ));
-          })()}
+          {/* 高亮遮罩：4 块拼接以提供"高亮区通透 + 其他区域接收事件"的视觉感受。 */}
+          {overlayBlocks.map((blockStyle, i) => (
+            <div
+              key={i}
+              data-testid={`tutorial-overlay-${['top', 'bottom', 'left', 'right'][i]}`}
+              className="absolute bg-transparent pointer-events-auto transition-all duration-300"
+              style={blockStyle as React.CSSProperties}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            />
+          ))}
+          {/* click-earth 步骤：在 hotspot 区域放置可点击层（宽容点击） */}
+          {isClickEarth && (
+            <div
+              data-testid="tutorial-earth-hotspot"
+              className="absolute z-[1001] cursor-pointer"
+              style={{
+                top: `${highlightRect.top}px`,
+                left: `${highlightRect.left}px`,
+                width: `${highlightRect.width}px`,
+                height: `${highlightRect.height}px`,
+              }}
+              onClick={handleEarthHotspotClick}
+            />
+          )}
         </>
+      ) : current.highlightTarget ? (
+        // 目标缺失：步骤配置了 highlightTarget 但元素未渲染（highlightRect=null）。
+        // 审计 P0 流程问题 #2 修复：不渲染全屏拦截遮罩，改为不拦截点击的轻微暗化层，
+        // 玩家仍可操作游戏 UI，教程卡片（z-[1002]）保持可交互。
+        <div data-testid="tutorial-overlay-missing" className="absolute inset-0 bg-[#050810]/40 pointer-events-none z-[1000]" />
       ) : (
+        // 无 highlightTarget 的纯展示步骤（如 resolve-event）：全屏聚焦遮罩
         <div data-testid="tutorial-overlay-full" className="absolute inset-0 bg-[#050810]/85 pointer-events-auto z-[1000]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
       )}
 
       {/* 高亮边框 */}
-      {showHighlight && highlightRect && (
-        <div className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none rounded-lg"
+      {showHighlight && highlightRect && !isClickEarth && (
+        <div
+          className="absolute border-2 border-[var(--color-primary)] z-[1001] pointer-events-none rounded-lg"
           style={{
-            top: `${highlightRect.top}px`, left: `${highlightRect.left}px`,
-            width: `${highlightRect.width}px`, height: `${highlightRect.height}px`,
+            top: `${highlightRect.top}px`,
+            left: `${highlightRect.left}px`,
+            width: `${highlightRect.width}px`,
+            height: `${highlightRect.height}px`,
             transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
             boxShadow: '0 0 15px rgba(0,229,255,0.4), inset 0 0 15px rgba(0,229,255,0.15)',
             animation: 'border-pulse 2s infinite alternate',
-          }} />
+          }}
+        />
       )}
 
-
-
       {/* 指引箭头 */}
-      {showHighlight && highlightRect && (() => {
-        const pointFromBelow = highlightRect.top <= 60;
-        return (
-          <div className="absolute z-[1002] pointer-events-none transition-all duration-300 animate-bounce"
-            style={{
-              top: pointFromBelow ? `${highlightRect.top + highlightRect.height + 4}px` : `${highlightRect.top - 20}px`,
-              left: `${highlightRect.left + highlightRect.width / 2 - 10}px`,
-              width: 0, height: 0,
-              borderLeft: '10px solid transparent', borderRight: '10px solid transparent',
-              ...(pointFromBelow ? { borderBottom: '10px solid var(--color-primary)' } : { borderTop: '10px solid var(--color-primary)' }),
-              filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
-              transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
-            }} />
-        );
-      })()}
+      {showHighlight && highlightRect && arrowPos && (
+        <div
+          className="absolute z-[1002] pointer-events-none transition-all duration-300 animate-bounce"
+          style={{
+            top: arrowPos.top,
+            left: arrowPos.left,
+            width: 0,
+            height: 0,
+            borderLeft: '10px solid transparent',
+            borderRight: '10px solid transparent',
+            ...(arrowPos.pointFromBelow
+              ? { borderBottom: '10px solid var(--color-primary)' }
+              : { borderTop: '10px solid var(--color-primary)' }),
+            filter: 'drop-shadow(0 2px 5px rgba(0,229,255,0.5))',
+            transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+          }}
+        />
+      )}
 
       {/* 教程卡片 */}
-      <div style={getCardStyle()} className={`relative z-[1002] w-full mx-auto flex flex-col pointer-events-auto transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
+      <div style={cardStyle} className={`relative z-[1002] w-full mx-auto flex flex-col pointer-events-auto transition-all duration-300 ${exiting ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
         {/* 进度条 */}
         <div className="w-full h-1 bg-[#243245]/40 rounded-t overflow-hidden shrink-0">
           <div className="h-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
@@ -600,7 +543,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
             <div className="flex items-center gap-2">
               {isWelcome ? <Sparkles className="w-3 h-3 text-[var(--color-primary)]/60" /> : <Flag className="w-3 h-3 text-[var(--color-primary)]/60" />}
               <div className="text-[9px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">
-                {isWelcome ? '序幕' : `步骤 ${step} / ${steps.length - 1}`}
+                {isWelcome ? '序幕' : `步骤 ${stepIndex} / ${steps.length - 1}`}
               </div>
             </div>
             <h2 className="text-base font-title font-black text-white tracking-widest leading-none drop-shadow-md">
@@ -610,6 +553,12 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
               <p className="text-[var(--text-secondary)] leading-relaxed">
                 {current.description}
               </p>
+              {current.costHint && (
+                <p className="mt-2 pt-2 border-t border-[var(--color-primary)]/20 text-[11px] text-amber-400/80 font-mono flex items-center gap-1.5">
+                  <Zap size={11} className="shrink-0" />
+                  <span>{current.costHint}</span>
+                </p>
+              )}
             </div>
             {!isWelcome && !current.requiresManualAdvance && (
               <div className="flex items-center gap-2 text-[10px] text-amber-500/70">
@@ -634,16 +583,16 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
               跳过教程
             </button>
 
-            {step === steps.length - 1 ? (
+            {stepIndex === steps.length - 1 ? (
               <button
-                onClick={completeStep}
+                onClick={handleManualAdvance}
                 className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/60 rounded text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all cursor-pointer animate-pulse"
               >
                 完成校准 <ChevronRight size={14} />
               </button>
             ) : current?.requiresManualAdvance ? (
               <button
-                onClick={completeStep}
+                onClick={handleManualAdvance}
                 className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/30 border border-[var(--color-primary)]/60 rounded text-cyan-200 shadow-[0_0_12px_rgba(0,184,255,0.2)] transition-all cursor-pointer"
               >
                 下一步 <ChevronRight size={14} />

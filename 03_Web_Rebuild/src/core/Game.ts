@@ -1757,7 +1757,11 @@ export class GameInstance {
     const unlocked = SaveManager.getEndingUnlocks();
 
     SaveManager.deleteSave();
-    localStorage.removeItem("game-tutorial-seen");
+    // 重置教程进度（通过 localStorage 直接操作避免循环依赖）
+    try {
+      localStorage.removeItem("game-tutorial-progress");
+      localStorage.removeItem("game-tutorial-seen");
+    } catch (_) { /* SSR or unavailable */ }
     this.instance = new Game();
 
     if (endingHistory.length > 0) {

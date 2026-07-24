@@ -4,10 +4,13 @@ import { Page, expect } from '@playwright/test';
  * E2E 测试公共辅助函数
  */
 
-/** 通过 localStorage 禁用教程弹窗 */
+/** 通过 localStorage 禁用教程弹窗（写入与当前版本号匹配的完成记录） */
 export async function disableTutorial(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    localStorage.setItem('game-tutorial-seen', 'true');
+    localStorage.setItem('game-tutorial-progress', JSON.stringify({
+      version: '2026-07-24-v1',
+      completedAt: Date.now(),
+    }));
     localStorage.setItem('skip_cover', 'true');
   });
 }

@@ -66,7 +66,7 @@ function addEvidence(
 }
 
 function tokenPattern(key: string, value: string): string {
-  return `(?:FLAG\\.${escapeRegExp(key)}|['\"\\\`]${escapeRegExp(value)}['\"\\\`])`;
+  return `(?:FLAG\\.${escapeRegExp(key)}|['"\`]${escapeRegExp(value)}['"\`])`;
 }
 
 function scanFunctionSource(entry: FlagReachabilityEntry, sourceName: string, source: string): void {

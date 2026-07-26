@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { GameSimulationAdapter } from './GameSimulationAdapter';
-import { createPolicy } from './policies';
+import { createPolicy, isSimulationPolicyId } from './policies';
 
 const ENV = (globalThis as typeof globalThis & {
   process?: { env?: Record<string, string | undefined> };
@@ -19,8 +19,8 @@ describe('Headless Game Simulation Harness — replay', () => {
   it('按 SIM_SEED / SIM_POLICY 精确重放单次模拟', () => {
     const seed = parsePositiveInteger(ENV.SIM_SEED, 20260726);
     const targetTurns = parsePositiveInteger(ENV.SIM_TURNS, 20);
-    const policyId = ENV.SIM_POLICY === 'seeded-random-choice'
-      ? 'seeded-random-choice'
+    const policyId = isSimulationPolicyId(ENV.SIM_POLICY)
+      ? ENV.SIM_POLICY
       : 'first-choice';
 
     const result = new GameSimulationAdapter({

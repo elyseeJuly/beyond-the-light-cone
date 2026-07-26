@@ -1,5 +1,5 @@
 import { Game, GameInstance } from '../../core/Game';
-import { EventEffect } from '../../types/enums';
+import { DefeatType, EventEffect, NeutralType, VictoryType } from '../../types/enums';
 import { defaultSimulationInvariants } from './invariants';
 import { SeededRng } from './SeededRng';
 import type {
@@ -33,6 +33,10 @@ export class GameSimulationAdapter {
   private readonly config: ResolvedConfig;
   private readonly invariants: SimulationInvariant[];
   private readonly trace: SimulationTraceEntry[] = [];
+  private readonly observedEventIds = new Set<string>();
+  private readonly observedFlags = new Set<string>();
+  private readonly observedEpochs = new Set<number>();
+  private readonly observedEndings = new Set<string>();
   private traceStep = 0;
   private game: Game | null = null;
 
@@ -66,6 +70,7 @@ export class GameSimulationAdapter {
     Game.strictMode = this.config.strictMode;
     const game = this.initializeGame();
     const start = this.snapshot(game);
+    this.captureCoverage(game);
 
     try {
       this.config.policy.beforeRun?.(game);
@@ -98,6 +103,7 @@ export class GameSimulationAdapter {
 
         if (game.year > yearBefore) completedTurns++;
         const currentSnapshot = this.snapshot(game);
+        this.captureCoverage(game);
         this.pushTrace({
           kind: 'turn',
           year: game.year,
@@ -127,6 +133,7 @@ export class GameSimulationAdapter {
         epoch: game.epoch,
       });
     } finally {
+      this.captureCoverage(game);
       Game.strictMode = previousStrictMode;
     }
 
@@ -150,8 +157,14 @@ export class GameSimulationAdapter {
       end,
       violations,
       trace: [...this.trace],
+      coverage: {
+        observedEventIds: [...this.observedEventIds].sort(),
+        observedFlags: [...this.observedFlags].sort(),
+        observedEpochs: [...this.observedEpochs].sort((a, b) => a - b),
+        observedEndings: [...this.observedEndings].sort(),
+      },
       errorMessage,
-      replayCommand: `SIM_SEED=${this.config.seed} SIM_POLICY=${this.config.policy.id} npm run test:simulation:replay`,
+      replayCommand: `SIM_SEED=${this.config.seed} SIM_POLICY=${this.config.policy.id} SIM_TURNS=${this.config.targetTurns} npm run test:simulation:replay`,
       durationMs: Date.now() - startedAt,
     };
   }
@@ -183,6 +196,7 @@ export class GameSimulationAdapter {
       const event = game.currentEvent;
       if (!event) continue;
 
+      if (event.id) this.observedEventIds.add(event.id);
       const context = { game, turnAttempt, completedTurns };
       const choices = event.choices ?? [];
       if (choices.length === 0) {
@@ -195,6 +209,7 @@ export class GameSimulationAdapter {
           message: 'event had no choices; acknowledged with NONE',
         });
         game.applyEventEffect(EventEffect.NONE, true);
+        this.captureCoverage(game, event.id);
         continue;
       }
 
@@ -218,6 +233,7 @@ export class GameSimulationAdapter {
       if (game.currentEvent === eventBeforeAction) {
         game.applyEventEffect(EventEffect.NONE, true);
       }
+      this.captureCoverage(game, event.id);
     }
     return true;
   }
@@ -241,6 +257,23 @@ export class GameSimulationAdapter {
       historyEntryCount: game.historyLogs.length,
       isGameOver: game.isGameOver,
     };
+  }
+
+  private captureCoverage(game: Game, eventId?: string): void {
+    if (eventId) this.observedEventIds.add(eventId);
+    this.observedEpochs.add(game.epoch);
+    for (const flag of game.flagManager.getSnapshot()) {
+      this.observedFlags.add(flag);
+    }
+    if (game.victoryType !== null) {
+      this.observedEndings.add(`victory:${VictoryType[game.victoryType]}`);
+    }
+    if (game.defeatType !== null) {
+      this.observedEndings.add(`defeat:${DefeatType[game.defeatType]}`);
+    }
+    if (game.neutralType !== null) {
+      this.observedEndings.add(`neutral:${NeutralType[game.neutralType]}`);
+    }
   }
 
   private pushTrace(entry: Omit<SimulationTraceEntry, 'step'>): void {

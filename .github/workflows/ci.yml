@@ -61,12 +61,34 @@ jobs:
           set -o pipefail
           npm run test:simulation:smoke 2>&1 | tee ../simulation-smoke.log
 
+      - name: Quick reachability and soak report gate
+        if: github.event_name == 'pull_request'
+        env:
+          SIM_REACHABILITY: '1'
+          SIM_REACHABILITY_RUNS: '4'
+          SIM_REACHABILITY_TURNS: '40'
+          SIM_SOAK: '1'
+          SIM_SOAK_RUNS: '2'
+          SIM_SOAK_TURNS: '60'
+        run: |
+          npm run test:simulation:reachability
+          npm run test:simulation:soak
+
       - name: Upload simulation smoke diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: simulation-smoke-diagnostics
           path: simulation-smoke.log
+          retention-days: 7
+
+      - name: Upload quick simulation reports
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulation-quick-reports
+          path: 03_Web_Rebuild/reports/simulation/
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Run test suite with coverage

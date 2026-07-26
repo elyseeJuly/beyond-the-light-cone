@@ -63,6 +63,13 @@ export interface SimulationTraceEntry {
   choiceLabel?: string;
 }
 
+export interface SimulationCoverage {
+  observedEventIds: string[];
+  observedFlags: string[];
+  observedEpochs: number[];
+  observedEndings: string[];
+}
+
 export interface InvariantViolation {
   id: string;
   message: string;
@@ -82,6 +89,7 @@ export interface SimulationRunResult {
   end: SimulationSnapshot;
   violations: InvariantViolation[];
   trace: SimulationTraceEntry[];
+  coverage: SimulationCoverage;
   errorMessage?: string;
   replayCommand: string;
   durationMs: number;

@@ -4,6 +4,9 @@ import type { SimulationPolicy, SimulationRunResult } from './types';
 export interface SimulationSuiteCase {
   seed: number;
   targetTurns: number;
+  maxTurnAttempts?: number;
+  maxEventResolutionsPerTurn?: number;
+  traceLimit?: number;
   createPolicy(seed: number): SimulationPolicy;
 }
 
@@ -30,6 +33,9 @@ export function runSimulationSuite(cases: SimulationSuiteCase[]): SimulationSuit
     return new GameSimulationAdapter({
       seed: suiteCase.seed,
       targetTurns: suiteCase.targetTurns,
+      maxTurnAttempts: suiteCase.maxTurnAttempts,
+      maxEventResolutionsPerTurn: suiteCase.maxEventResolutionsPerTurn,
+      traceLimit: suiteCase.traceLimit,
       policy,
     }).run();
   });

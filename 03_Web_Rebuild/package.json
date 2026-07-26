@@ -23,6 +23,7 @@
     "test:e2e:report": "playwright show-report playwright-report/html",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "lint:simulation": "eslint src/test/simulation",
     "lint:fix": "eslint . --fix",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",

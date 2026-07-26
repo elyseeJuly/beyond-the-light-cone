@@ -156,8 +156,8 @@ export function renderReachabilityMarkdown(report: ReachabilityReport): string {
 
   return `# Headless Simulation Reachability Report
 
-> Generated: ${report.generatedAt}  
-> Runs: ${report.runCount}  
+> Generated: ${report.generatedAt}
+> Runs: ${report.runCount}
 > Production source files scanned: ${report.flagScan.scannedFileCount}
 
 ## Coverage summary

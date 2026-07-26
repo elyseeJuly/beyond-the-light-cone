@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { GameInstance } from '../core/Game';
 import { Volume2, Globe, Monitor, Zap, Save, HelpCircle, Users, X, Database, MessageSquare } from 'lucide-react';
-import { setLanguage, getLanguage } from '../utils/i18n';
+import { setLanguage, getLanguage, useTranslation } from '../utils/i18n';
 import { assetLoader } from '../core/AssetLoader';
 import { GAME_VERSION } from '../utils/version';
+import { resetTutorialProgress } from './tutorial/tutorialProgress';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ interface SettingsModalProps {
 type SettingsTab = 'audio' | 'lang' | 'display' | 'perf' | 'save' | 'help' | 'credits' | 'storage';
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTab }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab || 'audio');
   
   // Storage states
@@ -72,7 +74,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
   const handleRestart = () => {
     if (confirm("确认重置文明并重新开始吗？这会抹去当前的纪元进度。")) {
       GameInstance.reset();
-      localStorage.removeItem("game-tutorial-seen");
+      resetTutorialProgress();
       window.location.reload();
     }
   };
@@ -146,7 +148,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
         <div className="flex items-center justify-between border-b border-[#243245]/40 pb-3 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-title font-bold text-[var(--color-primary)] tracking-widest uppercase">
-              ⚙️ 执政控制中心设置档案
+              ⚙️ {t("执政控制中心设置档案")}
             </span>
           </div>
           <button 
@@ -166,56 +168,56 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
               onClick={() => setActiveTab('audio')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('audio')}`}
             >
-              <Volume2 size={14} /> 音频设置
+              <Volume2 size={14} /> {t("音频设置")}
             </button>
             
             <button
               onClick={() => setActiveTab('lang')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('lang')}`}
             >
-              <Globe size={14} /> 语言选择
+              <Globe size={14} /> {t("语言选择")}
             </button>
             
             <button
               onClick={() => setActiveTab('display')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('display')}`}
             >
-              <Monitor size={14} /> 显示配置
+              <Monitor size={14} /> {t("显示配置")}
             </button>
             
             <button
               onClick={() => setActiveTab('perf')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('perf')}`}
             >
-              <Zap size={14} /> 性能调度
+              <Zap size={14} /> {t("性能调度")}
             </button>
             
             <button
               onClick={() => setActiveTab('save')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('save')}`}
             >
-              <Save size={14} /> 存档管理
+              <Save size={14} /> {t("存档管理")}
             </button>
             
             <button
               onClick={() => setActiveTab('help')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('help')}`}
             >
-              <HelpCircle size={14} /> 执政帮助
+              <HelpCircle size={14} /> {t("执政帮助")}
             </button>
 
             <button
               onClick={() => setActiveTab('credits')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('credits')}`}
             >
-              <Users size={14} /> 制作人员
+              <Users size={14} /> {t("制作人员")}
             </button>
 
             <button
               onClick={() => setActiveTab('storage')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('storage')}`}
             >
-              <Database size={14} /> 存储与资源
+              <Database size={14} /> {t("存储与资源")}
             </button>
           </div>
 

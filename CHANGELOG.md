@@ -8,23 +8,84 @@
 ## [Unreleased]
 *(下个即将发布的版本内容，请在开发过程中将更新记录于此，正式发布时修改为具体版本号)*
 
+## [v1.0.6] - 2026-07-26
+
+本次版本合并主线模拟审计能力与最新教程、移动端交互迭代，并修复 PWA/桌面 Release 的版本漂移和发布门禁缺口。
+
 ### 新增 (Added)
 
 - **Headless Game Simulation Harness**：新增确定性 seed、策略接口、运行时不变量、失败轨迹、精确重放、回归种子库与多 seed 平衡矩阵。
-- **可达性审计**：记录每局实际触发的事件、Flag、纪元和结局，生成 JSON/Markdown reachability 报告。
-- **Flag 因果扫描**：自动扫描权威 `FLAG` 注册表的生产者与消费者，识别 producer-only、consumer-only 与 orphan 状态。
+- **可达性与 Flag 因果审计**：记录实际触发的事件、Flag、纪元和结局，识别 producer-only、consumer-only 与 orphan 状态。
 - **长周期 Soak**：新增 500 回合级多策略稳定性矩阵，检测异常、事件死锁与回合尝试上限。
+- **移动端快捷控制**：底部导航加入紧凑 BGM 播放控制与系统设置入口。
 
 ### 优化 (Optimized)
 
-- PR CI 使用 Chromium 核心门禁，`main` 保留完整五浏览器矩阵；Nightly 分层运行 balance、reachability 和 soak，并保存 30 天审计报告。
-- 事件选项策略从单一“首选项”扩展为首项、末项、循环与 seeded random 四类，提升分支覆盖。
+- 教程在新游戏开始后立即挂载，不再让玩家短暂进入无引导界面。
+- 地球选择改为玩家点击高亮热点后触发，避免移动端信息抽屉提前弹出。
+- 教程黄金路径 E2E 与当前 8 步手动推进流程同步，使用稳定语义标识。
+- PR CI 使用 Chromium 核心门禁，`main` 保留完整浏览器矩阵；Nightly 分层运行 balance、reachability 和 soak。
 
 ### 修复 (Fixed)
 
 - 修复事件效果只限制单次变化、未限制最终值，可能把军力与威慑度扣成负数的问题。
 - 修复新手教程采矿比例基线随重渲染变化，导致资源生产步骤无法完成的问题。
-- 修复教程 E2E 仍按旧流程寻找“建造采矿场”并依赖 Tailwind 样式类定位的问题。
+- Web、PWA 资源清单、Cargo 与 Tauri 版本统一为 `1.0.6`，PWA 缓存前缀改为跟随包版本。
+- Release 版本门禁扩展为校验标签、package、lockfile、资源清单、Cargo 与 Tauri 配置。
+- 稳定版 Release 仅在 Web、Windows 和 macOS 产物全部成功后发布，并强制检查 ZIP、MSI、EXE、DMG。
+- GitHub Actions 统一升级到 Node.js 22，满足当前 Wrangler/Miniflare 依赖要求。
+
+## [v1.0.5] - 2026-07-24
+
+本次更新按 AUDIT_20260721 审计推荐顺序完成新手教程三阶段重构，系统性解决坐标系统不统一、教程通过旁路事件绕过真实交互、测试同样绕过真实交互、启动/提示/任务清单依赖共享布尔状态和延迟副作用、目标丢失时缺少恢复路径五大架构问题。
+
+### 新增 (Added)
+
+- **教程坐标几何模块 (tutorialGeometry.ts)**：抽出纯函数几何计算（高亮框、4块拼接遮罩、卡片定位、指引箭头），统一 DOM 与 Canvas 坐标转换，修复移动端横屏 0.85 缩放下双重错位。
+- **教程步骤配置模块 (tutorialSteps.ts)**：引入 `SemanticTutorialEvent` 枚举（8 类语义事件）替代字符串 stepId 分支，声明每个步骤的完成事件类型与可选即时校验函数。
+- **教程状态机模块 (tutorialMachine.ts)**：轻量状态机类封装 step 索引、语义事件派发、目标缺失超时恢复（3s + Toast），welcome 1.5s 自动过渡定时器由状态机内部管理避免 React effect 重跑重入。
+- **教程进度版本化模块 (tutorialProgress.ts)**：`game-tutorial-seen` 布尔值升级为 `{version, completedAt}` 结构，教程内容重大改版时递增 `TUTORIAL_PROGRESS_VERSION` 即可让老玩家自动重新触发新版教程，旧版记录自动迁移为 legacy。
+- **横屏坐标验证 E2E 测试 (tutorial-coordinates.spec.ts)**：6 用例覆盖横屏 DOM 高亮误差 ≤4px、地球点击命中、focusOnStar 居中、坐标互逆性、桌面端无缩放、旋转屏幕连续性。
+- **教程鲁棒性 E2E 测试 (tutorial-robustness.spec.ts)**：4 用例覆盖目标缺失时遮罩切换、UI 可点击性、教程卡片交互性、目标延迟挂载恢复。
+- **步骤成本提示 (costHint)**：build-stope / resource-production / start-research 步骤描述下方显示资源/AP 消耗（30 经济 / 10 AP / 20 AP），与核心层成本值一致。
+
+### 优化 (Optimized)
+
+- **教程真实用户交互 E2E**：重写 tutorial-guided.spec.ts 为真实点击/拖动操作，替换 `page.evaluate` 旁路修改状态，覆盖 click-earth 宽容点击、build-stope 真实建造、resolve-event StoryModal 真实选项。
+- **Tutorial.tsx 状态机驱动重写**：移除全部 `stepId === 'xxx'` 字符串分支与 300ms 轮询，改用状态机 `subscribe()` 驱动 React 重渲染，行数从 680 精简至 580。
+
+### 修复 (Fixed)
+
+- **P0-1 移动端横屏坐标双重错位**：建立唯一坐标转换层 `canvasToViewport` / `viewportToCanvas`，统一 DOM 元素与 Canvas 星球坐标计算，纳入 `transform: scale(0.85)` 缩放系数。
+- **P0-2 focusOnStar 居中公式不正确**：修正公式，地球缩放后正确居中到视口中央。
+- **P0-3 星图命中区域异常巨大**：重设计命中算法为 `Math.max(visualRadius * 4 + 100, 44)`，地球给 60px 命中区。
+- **P0-4 E2E 测试绕过真实交互**：重写测试为真实用户点击，替换 `page.evaluate` 旁路。
+- **目标缺失锁屏**：步骤配置 highlightTarget 但目标元素未渲染时，渲染 `tutorial-overlay-missing`（pointer-events-none）而非全屏拦截遮罩，玩家仍可操作游戏 UI。
+- **StoryModal 关闭后重新弹出的根因**：App.tsx 传递内联 `onComplete` 导致 Tutorial 组件 `completeStep` 依赖变化、`useEffect` 反复重跑重新注入测试事件；修复为用 `useCallback` 稳定回调 + ref 标记事件注入状态。
+
+## [v1.0.4] - 2026-07-22
+
+本次更新对新手教程进行了全面重构，将其转型为“不太聪明但有用”的「智脑顾问」引导体系，保留游戏内的自动托管代打，同时彻底移除了主菜单上的托管开关。此外，也并入了 PWA 资源策略分流及跨周目状态清理的修复。
+
+### 新增 (Added)
+
+- **智脑战术数据百科 (AdvisorPanel)**：新增常驻战术数据百科面板（包含基础产出、战略与行政、终局胜利路线等模块），支持全局模糊搜索。可在主菜单及游戏内随时呼出。
+- **纪元推演任务链 (MissionLog)**：重构新手任务清单为跟随危机、威慑、广播/掩体纪元渐进解锁的任务日志系统，提供针对性推演建议并可点击领取资源奖励。
+- **新手教程 9 步交互序章**：将静态教程重构为 9 步智脑开机校准流程，引导完成选中地球、监控三维产出、建设采矿场、调配劳力比例、启动天文观测、应对突发危机。
+- **智脑警告与情境提示**：重写 ContextualTips，针对矿产下降、稳定度低、威慑度危急等风险引入冷却机制，发出标准格式的智脑报警 Toast。
+
+### 优化 (Optimized)
+
+- **PWA 进入游戏下载提醒**：新游戏跳过教程、完成教程或继续存档进入游戏时，若仍有未缓存扩展包且玩家尚未处理提醒，则显示资源下载选择弹窗。
+- **教程三态推进判定**：为纯阅读步骤、危机处理及谢幕步骤设计三态推进逻辑，支持手动的「下一步」与「完成校准」按钮，代替自动等待。
+
+### 修复 (Fixed)
+
+- **LocalStorage 跨周目污染**：统一引入 `session:` 命名前缀规范并支持正则遍历批量清除，彻底解决新开局时老周目任务和警告冷却残留的问题。
+- **教程流程卡死与幽灵事件**：补全 `build-stope` 与 `resolve-event` 的校验分支；在教程步骤 8 中增加专属测试事件的检测与防重复注入逻辑，防止玩家卡死。
+- **Release/PWA 资源策略分流**：Web Release 与 Tauri 桌面版将随包扩展资源直接识别为已安装，不再显示约 370MB 的伪下载提示，也不再重复读取资源建立下载状态。
+- **Tauri 桌面版本同步**：同步更新 `src-tauri/Cargo.toml` 与 `Cargo.lock` 中的 Tauri 后端包版本至 `1.0.4`（之前滞留在 `1.0.2`）。
+- **发行渠道识别稳定性**：Release 流水线为 Web 压缩包写入发行渠道标记；PWA Service Worker 不缓存该标记，避免 Release 被旧缓存误识别为 PWA。
 
 ## [v1.0.3] - 2026-07-13
 

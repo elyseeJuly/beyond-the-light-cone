@@ -5,6 +5,7 @@ import { SaveManager } from '../core/SaveManager';
 import { getAssetUrl } from '../utils/assetUrl';
 import { GameInstance } from '../core/Game';
 import { StatisticsManager } from '../core/StatisticsManager';
+import { useTranslation } from '../utils/i18n';
 
 
 interface CgEvent {
@@ -429,6 +430,7 @@ const SOUNDTRACKS: Track[] = [
 ];
 
 export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
+  const { t } = useTranslation();
   const history = SaveManager.getEndingHistory();
   const [activeTab, setActiveTab] = useState<'chronicles' | 'cgGallery' | 'phonograph'>('chronicles');
   const [selectedCg, setSelectedCg] = useState<CgEvent | null>(null);
@@ -568,10 +570,10 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
             </div>
             <div>
               <h1 className="text-3xl font-black tracking-widest text-white uppercase italic">
-                文明博物馆
+                {t("文明博物馆")}
               </h1>
               <p className="text-white/40 text-sm tracking-wide mt-1">
-                Museum Gallery // 记录平行宇宙中人类文明的纪元终章、属性馈赠与原声轨迹
+                Museum Gallery // {t("记录平行宇宙中人类文明的纪元终章、属性馈赠与原声轨迹")}
               </p>
             </div>
           </div>
@@ -594,7 +596,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                 : 'text-white/40 hover:text-white/80'
             }`}
           >
-            <span>星历终章</span>
+            <span>{t("星历终章")}</span>
             {activeTab === 'chronicles' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
             )}
@@ -609,7 +611,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
           >
             <span className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
-              纪元浮光 (CG图鉴)
+              {t("纪元浮光 (CG图鉴)")}
             </span>
             {activeTab === 'cgGallery' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
@@ -625,7 +627,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
           >
             <span className="flex items-center gap-2">
               <Music className="w-4 h-4" />
-              星海留声机
+              {t("星海留声机")}
             </span>
             {activeTab === 'phonograph' && (
               <div className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-cyan-400 animate-pulse" />
@@ -721,7 +723,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                 纪元历史浮光 (Major Event CG Gallery)
               </h3>
               <span className="text-[10px] text-white/40 font-mono">
-                已解锁 CG: {
+                {t("已解锁 CG")}: {
                   (() => {
                     const stats = StatisticsManager.getStats();
                     const unlockedCount = CG_EVENTS.filter(cg => {
@@ -785,7 +787,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                       
                       {/* Era badge */}
                       <span className="absolute top-2 left-2 text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-950/80 border border-white/10 text-white/60">
-                        {cg.era}
+                        {t(cg.era)}
                       </span>
                     </div>
 
@@ -793,10 +795,10 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
                     <div className="p-3.5 flex-1 flex flex-col justify-between gap-2">
                       <div>
                         <h4 className={`text-xs font-bold ${isUnlocked ? 'text-white' : 'text-white/30 line-through'}`}>
-                          {isUnlocked ? cg.name : '【未探索大事件】'}
+                          {isUnlocked ? t(cg.name) : t('【未探索大事件】')}
                         </h4>
                         <p className={`text-[10px] leading-relaxed mt-1 font-light ${isUnlocked ? 'text-white/50' : 'text-white/20'}`}>
-                          {isUnlocked ? cg.description : `解锁线索: ${cg.hint}`}
+                          {isUnlocked ? t(cg.description) : `${t('解锁线索:')} ${t(cg.hint)}`}
                         </p>
                       </div>
                       

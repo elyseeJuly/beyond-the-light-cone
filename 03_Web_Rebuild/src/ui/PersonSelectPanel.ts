@@ -1,5 +1,6 @@
 import { GameInstance } from "../core/Game";
 import { getImageUrl } from "../utils/assetUrl";
+import { t } from "../utils/i18n";
 
 export class PersonSelectPanel {
   private container: HTMLElement;
@@ -17,7 +18,7 @@ export class PersonSelectPanel {
     this.container.innerHTML = `
       <div class="modal-box glass-panel" style="max-width: 800px; height: 70vh;">
         <div class="modal-header">
-          <h2>指派人员</h2>
+          <h2>${t("指派人员")}</h2>
           <button class="btn-close" id="btn-person-modal-close">&times;</button>
         </div>
         <div class="modal-content" id="person-list-content">
@@ -56,7 +57,7 @@ export class PersonSelectPanel {
     const availableNames = Array.from(game.personManager.availablePersons);
     
     if (availableNames.length === 0) {
-      content.innerHTML = `<p style="color: var(--text-secondary);">当前没有可用的自由人员。</p>`;
+      content.innerHTML = `<p style="color: var(--text-secondary);">${t("当前没有可用的自由人员。")}</p>`;
       return;
     }
 
@@ -96,12 +97,12 @@ export class PersonSelectPanel {
       if (!p) return;
 
       const isTopChoice = index === 0 && this.sortCriteria !== "";
-      const topBadgeHtml = isTopChoice ? `<span style="background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 8px;">最适合</span>` : "";
+      const topBadgeHtml = isTopChoice ? `<span style="background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 8px;">${t("最适合")}</span>` : "";
 
       const avatarUrl = p.faceFile ? getImageUrl(p.faceFile) : '';
       const avatarHtml = avatarUrl 
         ? `<img src="${avatarUrl}" onerror="this.style.display='none'" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--color-primary);margin-right:12px;" />`
-        : `<div style="width:48px;height:48px;border-radius:50%;background:var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-right:12px;">${(p.name || '?')[0]}</div>`;
+        : `<div style="width:48px;height:48px;border-radius:50%;background:var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-right:12px;">${(t(p.name) || '?')[0]}</div>`;
 
       html += `
         <div class="person-card" data-name="${p.name}" style="
@@ -113,18 +114,18 @@ export class PersonSelectPanel {
             ${avatarHtml}
             <div>
               <h4 style="margin: 0 0 8px 0; color: var(--color-primary); display: flex; align-items: center;">
-                ${p.name} ${topBadgeHtml}
+                ${t(p.name)} ${topBadgeHtml}
               </h4>
               <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 0.8rem; color: var(--text-secondary);">
-                <span>科研: <b style="color:var(--text-primary)">${p.science}</b></span>
-                <span>领导: <b style="color:var(--text-primary)">${p.leadership}</b></span>
-                <span>经济: <b style="color:var(--text-primary)">${p.economy}</b></span>
-                <span>军事: <b style="color:var(--text-primary)">${p.army}</b></span>
+                <span>${t("科研")}: <b style="color:var(--text-primary)">${p.science}</b></span>
+                <span>${t("领导")}: <b style="color:var(--text-primary)">${p.leadership}</b></span>
+                <span>${t("经济")}: <b style="color:var(--text-primary)">${p.economy}</b></span>
+                <span>${t("军事")}: <b style="color:var(--text-primary)">${p.army}</b></span>
               </div>
             </div>
           </div>
           
-          <button class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">任命</button>
+          <button class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">${t("任命")}</button>
         </div>
       `;
     });

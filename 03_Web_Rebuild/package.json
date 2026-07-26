@@ -1,7 +1,7 @@
 {
   "name": "beyond-the-light-cone-web",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -37,6 +37,7 @@
     "deploy:cf": "npm run build:cf && wrangler deploy",
     "generate-icons": "node scripts/generate-icons.mjs",
     "generate-manifest": "node scripts/generate-manifest.mjs",
+    "verify:pwa-release": "node scripts/verify-pwa-release.mjs",
     "pwa:build": "npm run generate-icons && npm run build"
   },
   "devDependencies": {

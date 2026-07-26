@@ -6,6 +6,7 @@ import { storage } from "./core/IndexedDBStorage";
 import { StatisticsManager } from "./core/StatisticsManager";
 import { assetLoader } from "./core/AssetLoader";
 import { patchManager } from "./core/PatchManager";
+import { initializeDistributionChannel } from "./core/DistributionChannel";
 
 console.log('Legend of Uni Web (React) started');
 
@@ -20,6 +21,9 @@ console.log('Legend of Uni Web (React) started');
 
 async function bootstrap() {
   try {
+    // Step 0: 区分完整资源 Release 与分段下载 PWA
+    await initializeDistributionChannel();
+
     // Step 1: 存档存储
     await storage.init().catch(err => {
       console.warn('IndexedDB init failed, falling back to localStorage:', err);

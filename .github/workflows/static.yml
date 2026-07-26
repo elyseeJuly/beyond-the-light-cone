@@ -31,7 +31,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
           cache-dependency-path: 03_Web_Rebuild/package-lock.json
 
@@ -44,6 +44,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify PWA release bundle
+        run: npm run verify:pwa-release
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -55,3 +58,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+      - name: Verify published PWA version
+        run: node scripts/verify-published-pwa.mjs "${{ steps.deployment.outputs.page_url }}"

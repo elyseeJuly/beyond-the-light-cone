@@ -1,5 +1,6 @@
 import { TecTreeType } from "../types/enums";
 import { GameInstance } from "../core/Game";
+import { t } from "../utils/i18n";
 
 export class TecTreeView {
   private container: HTMLElement;
@@ -14,7 +15,7 @@ export class TecTreeView {
     const tree = game.earthCivi.tecTreeManager.trees.get(type);
 
     if (!tree) {
-      this.container.innerHTML = `<p style="color: red;">该科技树尚未初始化。</p>`;
+      this.container.innerHTML = `<p style="color: red;">${t("该科技树尚未初始化。")}</p>`;
       return;
     }
 
@@ -30,13 +31,13 @@ export class TecTreeView {
 
       html += `
         <div class="tech-node ${statusClass}" data-tech="${name}" data-tutorial-id="tech-node-${name}">
-          <h4>${name}</h4>
-          <p>前置: ${node.parentName || '无'}</p>
-          <p>花费: ${node.cost} | 总量: ${node.totalWorkload}</p>
+          <h4>${t(name)}</h4>
+          <p>${t("前置")}: ${t(node.parentName || '无')}</p>
+          <p>${t("花费")}: ${node.cost} | ${t("总量")}: ${node.totalWorkload}</p>
           <div class="progress-bar-bg">
             <div class="progress-bar-fill" style="width: ${progress}%"></div>
           </div>
-          <p style="margin-top: 8px; font-size: 0.75rem;">${node.tip}</p>
+          <p style="margin-top: 8px; font-size: 0.75rem;">${t(node.tip)}</p>
         </div>
       `;
     });
@@ -66,7 +67,7 @@ export class TecTreeView {
     if (node.parentName) {
       const parent = tree.nodes.get(node.parentName);
       if (!parent || !parent.finished) {
-        alert("前置科技尚未完成！");
+        alert(t("前置科技尚未完成！"));
         return;
       }
     }
@@ -77,14 +78,14 @@ export class TecTreeView {
         // 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：指派科研消耗 20 AP（AI 模式半价）
         const apOk = game.earthCivi.setResearchTarget(type, name, true);
         if (!apOk) {
-          alert("执政指令点不足，无法启动新科研！");
+          alert(t("执政指令点不足，无法启动新科研！"));
           return;
         }
         game.earthCivi.economy -= node.cost;
         node.inResearch = true;
         this.render(this.container, type); // Re-render
       } else {
-        alert("经济不足！");
+        alert(t("经济不足！"));
       }
     }
   }

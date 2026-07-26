@@ -3,6 +3,7 @@ import { GameEventPayload } from '../types/narrative';
 import { ChevronRight, FileText, CheckSquare } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { getImageUrl } from '../utils/assetUrl';
+import { useTranslation } from '../utils/i18n';
 
 interface StoryModalProps {
   event: GameEventPayload;
@@ -70,6 +71,7 @@ function getCharacterAvatar(speakerName: string | undefined): string {
 }
 
 export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
+  const { t, lang } = useTranslation();
   const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -107,7 +109,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
     setIsTyping(true);
     typeIndexRef.current = 0;
     
-    const content = currentNode.content;
+    const content = t(currentNode.content);
     const timer = setInterval(() => {
       const currentIndex = typeIndexRef.current;
       
@@ -127,11 +129,11 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
     }, 20);
 
     return () => clearInterval(timer);
-  }, [currentNode, currentNodeIndex, event.id, event.dialogQueue.length]);
+  }, [currentNode, currentNodeIndex, event.id, event.dialogQueue.length, t]);
 
   const handleNext = useCallback(() => {
     if (isTyping) {
-      setDisplayedText(currentNode.content);
+      setDisplayedText(t(currentNode.content));
       setIsTyping(false);
       if (currentNodeIndex === event.dialogQueue.length - 1) {
         setShowChoices(true);
@@ -142,7 +144,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
     if (currentNodeIndex < event.dialogQueue.length - 1) {
       setCurrentNodeIndex(prev => prev + 1);
     }
-  }, [isTyping, currentNode, currentNodeIndex, event.dialogQueue.length]);
+  }, [isTyping, currentNode, currentNodeIndex, event.dialogQueue.length, t]);
 
   // Generate a mock archive number from event ID/title
   const archiveNumber = useMemo(() => {
@@ -156,7 +158,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
   const game = GameInstance.get();
   const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-  const currentEraName = epochNames[game.epoch] || "未知纪元";
+  const currentEraName = t(epochNames[game.epoch] || "未知纪元");
 
   const handleSelectChoice = (choice: any, idx: number) => {
     setSigningChoice(idx);
@@ -180,8 +182,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
   const hasSpeaker = !!currentNode.speakerName;
 
   return (
-    <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
+    <div
+      className="fixed inset-0 z-[1005] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
       role="dialog"
       aria-modal="true"
     >
@@ -192,7 +194,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
       {/* Main card box (820px width, 520px height) */}
       <div 
-        className={`relative w-[820px] h-[520px] ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
+        className={`relative z-20 w-full max-w-[820px] h-[90vh] md:h-[520px] ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-col md:flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
       >
         {/* CG Full-bleed background layer */}
         {currentNode.isCG && (
@@ -222,7 +224,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
         {/* Left Panel: Speaker Portrait (split layout) - Hidden during CG events */}
         {hasSpeaker && !currentNode.isCG && (
-          <div className="w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex flex-col justify-end items-center relative overflow-hidden group z-10">
+          <div className="hidden md:flex w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex-col justify-end items-center relative overflow-hidden group z-10">
             {/* Holographic scanner grids */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-primary),transparent_1px),linear-gradient(to_bottom,var(--color-primary),transparent_1px)] bg-[size:16px_16px] opacity-[0.03]" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070B14]/90 via-transparent to-transparent z-10" />
@@ -257,19 +259,19 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
             <div className="flex items-center gap-2">
               <FileText className="text-[var(--color-primary)] w-4 h-4" />
               <span className="text-xs font-title font-bold text-[var(--color-primary)] tracking-widest uppercase">
-                银河文明重要战略档案
+                {t("银河文明重要战略档案")}
               </span>
             </div>
             <div className="flex items-center gap-4 font-mono text-[10px] text-[var(--text-secondary)]">
-              <span>档案编号: ARC-{archiveNumber}</span>
-              <span>时间节点: {currentEraName} 第 {game.year} 年</span>
+              <span>{t("档案编号")}: ARC-{archiveNumber}</span>
+              <span>{t("时间节点")}: {currentEraName} {lang === 'en' ? `Year ${game.year}` : `第 ${game.year} 年`}</span>
             </div>
           </div>
 
           {/* 2. Main Title */}
           <div className="my-4 shrink-0 text-center">
             <h2 className="text-lg font-extrabold text-white tracking-widest font-title">
-              《 {event.title.trim().replace(/^【|】$/g, '')} 》
+              《 {t(event.title.trim().replace(/^【|】$/g, ''))} 》
             </h2>
           </div>
 
@@ -282,7 +284,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
             {currentNode.speakerName && (
               <div className="flex flex-col items-center shrink-0">
                 <span className="text-[11px] font-title font-bold text-[var(--color-primary)] tracking-widest uppercase border border-[var(--color-primary)]/30 px-2.5 py-0.5 rounded bg-[var(--color-primary)]/5">
-                  {currentNode.speakerName} {currentNode.speakerTitle ? ` [ ${currentNode.speakerTitle} ]` : ''}
+                  {t(currentNode.speakerName)} {currentNode.speakerTitle ? ` [ ${t(currentNode.speakerTitle)} ]` : ''}
                 </span>
               </div>
             )}
@@ -303,7 +305,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
               <div className="flex flex-col items-center gap-2 text-xs font-mono text-[var(--color-primary)] animate-pulse">
                 <div className="flex items-center gap-2">
                   <CheckSquare className="w-4 h-4 animate-spin" />
-                  <span>正在执行电子指纹与意识授权签名...</span>
+                  <span>{t("正在执行电子指纹与意识授权签名...")}</span>
                 </div>
                 <div className="w-48 h-[1px] bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent mt-1" />
               </div>
@@ -312,13 +314,13 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                 onClick={handleNext}
                 className="story-proceed-btn px-8 py-3 bg-[rgba(var(--color-primary-rgb),0.15)] border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.3)] text-[var(--color-primary)] hover:text-white font-bold uppercase tracking-[0.25em] text-xs transition-all flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(0,184,255,0.1)] active:scale-95"
               >
-                <span>{isTyping ? "快速解密" : "下一页档案"}</span>
+                <span>{isTyping ? t("快速解密") : t("下一页档案")}</span>
                 <ChevronRight size={14} className="stroke-[2.5]" />
               </button>
             ) : (
               <div className="flex flex-col gap-3 w-full px-8">
                 <div className="text-[9px] font-title font-bold text-[var(--text-secondary)]/40 tracking-[0.3em] uppercase mb-1 text-center">
-                  执政官指令签署授权区
+                  {t("执政官指令签署授权区")}
                 </div>
                 <div className="flex flex-col gap-2 w-full max-h-36 overflow-y-auto">
                   {event.choices && event.choices.length > 0 ? (
@@ -330,12 +332,12 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-[10px] font-mono text-[var(--text-secondary)]/50 group-hover:text-[var(--color-primary)] shrink-0">
-                            指令 {idx + 1}
+                            {t("指令")} {idx + 1}
                           </span>
-                          <span className="font-bold tracking-wide">{choice.label}</span>
+                          <span className="font-bold tracking-wide">{t(choice.label)}</span>
                         </div>
                         <span className="text-[9px] font-mono text-[var(--color-primary)] opacity-0 group-hover:opacity-100 transition-opacity">
-                          [ 签署决策 ]
+                          [ {t("签署决策")} ]
                         </span>
                       </button>
                     ))
@@ -344,7 +346,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                       onClick={handleAcknowledge}
                       className="story-acknowledge-btn w-full py-3 bg-[var(--color-primary)] text-blue-950 font-black uppercase tracking-[0.3em] text-xs hover:brightness-110 transition-all shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] active:scale-95 text-center cursor-pointer"
                     >
-                      签署并归档
+                      {t("签署并归档")}
                     </button>
                   )}
                 </div>

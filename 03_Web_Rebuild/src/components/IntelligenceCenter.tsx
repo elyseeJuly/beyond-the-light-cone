@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { GameInstance } from '../core/Game';
 import { Radio, AlertTriangle, Shield, Cpu, Users, BookOpen, Globe } from 'lucide-react';
+import { useTranslation } from '../utils/i18n';
 
 type IntelCategory = 'crisis' | 'diplomacy' | 'research' | 'military' | 'livelihood' | 'history';
 
 export const IntelligenceCenter: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<IntelCategory>('crisis');
   
   const game = GameInstance.get();
@@ -82,7 +84,7 @@ export const IntelligenceCenter: React.FC = () => {
       <div className="mb-6 shrink-0">
         <h1 className="text-2xl font-extrabold text-[var(--color-primary)] tracking-wide flex items-center gap-2">
           <Radio className="animate-pulse" size={24} />
-          情报防御与战略监控中心
+          {t("情报防御与战略监控中心")}
         </h1>
         <p className="text-xs text-[var(--text-secondary)] mt-1.5 font-mono">
           STATUS: ONLINE | MONITORING GALACTIC BROADCASTS AND LOCAL SYSTEM LOGS
@@ -98,7 +100,7 @@ export const IntelligenceCenter: React.FC = () => {
             className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('crisis')}`}
           >
             <span className="flex items-center gap-2">
-              <AlertTriangle size={14} /> 危机报告
+              <AlertTriangle size={14} /> {t("危机报告")}
             </span>
             <span className="font-data bg-red-950/30 px-1.5 py-0.5 rounded text-[10px]">{counts.crisis}</span>
           </button>
@@ -108,7 +110,7 @@ export const IntelligenceCenter: React.FC = () => {
             className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('diplomacy')}`}
           >
             <span className="flex items-center gap-2">
-              <Globe size={14} /> 外交互动
+              <Globe size={14} /> {t("外交互动")}
             </span>
             <span className="font-data bg-emerald-950/30 px-1.5 py-0.5 rounded text-[10px]">{counts.diplomacy}</span>
           </button>
@@ -118,7 +120,7 @@ export const IntelligenceCenter: React.FC = () => {
             className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('research')}`}
           >
             <span className="flex items-center gap-2">
-              <Cpu size={14} /> 科研观测
+              <Cpu size={14} /> {t("科研观测")}
             </span>
             <span className="font-data bg-blue-950/30 px-1.5 py-0.5 rounded text-[10px]">{counts.research}</span>
           </button>
@@ -128,7 +130,7 @@ export const IntelligenceCenter: React.FC = () => {
             className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('military')}`}
           >
             <span className="flex items-center gap-2">
-              <Shield size={14} /> 军事调配
+              <Shield size={14} /> {t("军事调配")}
             </span>
             <span className="font-data bg-orange-950/30 px-1.5 py-0.5 rounded text-[10px]">{counts.military}</span>
           </button>
@@ -138,7 +140,7 @@ export const IntelligenceCenter: React.FC = () => {
             className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('livelihood')}`}
           >
             <span className="flex items-center gap-2">
-              <Users size={14} /> 民生物资
+              <Users size={14} /> {t("民生物资")}
             </span>
             <span className="font-data bg-yellow-950/30 px-1.5 py-0.5 rounded text-[10px]">{counts.livelihood}</span>
           </button>
@@ -150,7 +152,7 @@ export const IntelligenceCenter: React.FC = () => {
             className={`w-auto md:w-full shrink-0 whitespace-nowrap flex items-center justify-between gap-4 md:gap-2 px-3 py-2.5 rounded border-l-2 text-xs font-title font-bold uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('history')}`}
           >
             <span className="flex items-center gap-2">
-              <BookOpen size={14} /> 历史全卷
+              <BookOpen size={14} /> {t("历史全卷")}
             </span>
             <span className="font-data bg-white/5 px-1.5 py-0.5 rounded text-[10px]">{counts.history}</span>
           </button>

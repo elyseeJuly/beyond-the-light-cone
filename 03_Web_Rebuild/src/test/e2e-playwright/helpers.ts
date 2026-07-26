@@ -4,10 +4,13 @@ import { Page, expect } from '@playwright/test';
  * E2E 测试公共辅助函数
  */
 
-/** 通过 localStorage 禁用教程弹窗 */
+/** 通过 localStorage 禁用教程弹窗（写入与当前版本号匹配的完成记录） */
 export async function disableTutorial(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    localStorage.setItem('game-tutorial-seen', 'true');
+    localStorage.setItem('game-tutorial-progress', JSON.stringify({
+      version: '2026-07-24-v1',
+      completedAt: Date.now(),
+    }));
     localStorage.setItem('skip_cover', 'true');
   });
 }
@@ -49,6 +52,25 @@ export async function dismissOrientationPrompt(page: Page): Promise<void> {
   } catch {
     // 弹窗未出现（桌面端或已被关闭）
   }
+}
+
+/** 从封面启动引导，并通过真实交互推进到 read-status 步骤 */
+export async function startTutorialToReadStatus(page: Page): Promise<void> {
+  const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
+  await expect(newGameBtn).toBeVisible();
+  await newGameBtn.click();
+
+  const skipBtn = page.getByTestId('tutorial-skip-btn');
+  await expect(skipBtn).toBeVisible({ timeout: 10000 });
+  await page.getByRole('button', { name: '开始校准' }).click();
+  await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
+
+  const earthHotspot = page.getByRole('button', { name: '选中地球' });
+  await expect(earthHotspot).toBeVisible();
+  await earthHotspot.focus();
+  await page.keyboard.press('Enter');
+
+  await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
 }
 
 /** 点击下一回合（优先使用键盘空格，兼容按钮点击） */

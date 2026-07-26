@@ -10,13 +10,18 @@ describe('Tutorial 组件 - 冒烟测试', () => {
     expect(container.querySelector('button')).toBeTruthy();
   });
 
-  it('TUTORIAL_STEPS 导出：欢迎页 + 4 步核心操作（共 5 步）', () => {
-    expect(TUTORIAL_STEPS).toHaveLength(5);
-    expect(TUTORIAL_STEPS[0].id).toBe('welcome');
-    expect(TUTORIAL_STEPS[1].id).toBe('click-earth');
-    expect(TUTORIAL_STEPS[2].id).toBe('resource-production');
-    expect(TUTORIAL_STEPS[3].id).toBe('start-research');
-    expect(TUTORIAL_STEPS[4].id).toBe('next-turn');
+  it('TUTORIAL_STEPS 导出：9 步智脑校准路径', () => {
+    expect(TUTORIAL_STEPS.map(step => step.id)).toEqual([
+      'welcome',
+      'click-earth',
+      'read-status',
+      'build-stope',
+      'resource-production',
+      'start-research',
+      'next-turn',
+      'resolve-event',
+      'tutorial-end',
+    ]);
   });
 
   it('click-earth 步骤包含 focusStar 字段（核心防误触：自动居中地球）', () => {

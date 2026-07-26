@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: 03_Web_Rebuild/package-lock.json
 
@@ -96,6 +96,9 @@ jobs:
 
       - name: Build for production
         run: npm run build
+
+      - name: Verify PWA release bundle
+        run: npm run verify:pwa-release
 
       - name: Install Chromium for pull request E2E
         if: github.event_name == 'pull_request'

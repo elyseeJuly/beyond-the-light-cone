@@ -177,12 +177,25 @@ export class StarMapRenderer {
     // 限制缩放范围
     const clamped = Math.min(3.0, Math.max(0.3, targetZoom));
 
-    // 居中：将 rs.x 映射到 width/2
-    this.panX = this.width / 2 - rs.x;
-    this.panY = this.height / 2 - rs.y;
+    // 居中：在目标缩放下将 rs.x 映射到 width/2。
+    // 必须乘以 zoom，因绘制公式为 screenX = (rs.x - width/2) * zoom + width/2 + panX，
+    // 要使 screenX = width/2，需 panX = (width/2 - rs.x) * zoom（与 fitContent 保持一致）。
     this.zoomLevel = clamped;
+    this.panX = (this.width / 2 - rs.x) * clamped;
+    this.panY = (this.height / 2 - rs.y) * clamped;
     this.hoveredStar = null;
     this.emitZoomChanged();
+
+    // 断言：居中后星球视口坐标应位于 Canvas 视口中心（容差 1px），偏差过大说明公式或状态异常
+    const viewport = this.canvasToViewport(rs.x, rs.y);
+    const rect = this.canvas.getBoundingClientRect();
+    const viewportCenterX = rect.left + rect.width / 2;
+    const viewportCenterY = rect.top + rect.height / 2;
+    if (Math.abs(viewport.x - viewportCenterX) > 1 || Math.abs(viewport.y - viewportCenterY) > 1) {
+      console.warn(
+        `[StarMapRenderer] focusOnStar 居中偏差超 1px: dx=${(viewport.x - viewportCenterX).toFixed(2)}, dy=${(viewport.y - viewportCenterY).toFixed(2)}`,
+      );
+    }
     return true;
   }
 
@@ -391,24 +404,24 @@ export class StarMapRenderer {
 
   private initMouseEvents() {
     this.canvas.addEventListener("mousemove", (e) => {
+      // 统一走 canvasToViewport，在视口空间做命中判定（含外层 transform: scale 缩放）
       const rect = this.canvas.getBoundingClientRect();
-      const rawX = e.clientX - rect.left;
-      const rawY = e.clientY - rect.top;
-      
+      const scaleMin = Math.min(rect.width / this.canvas.width, rect.height / this.canvas.height);
+
       this.hoveredStar = null;
+      let bestDist = Infinity;
       for (const rs of this.renderStars) {
         if (!this.isStarInActiveArea(rs.star)) continue;
-        const screenX = (rs.x - this.width / 2) * this.zoomLevel + this.width / 2 + this.panX;
-        const screenY = (rs.y - this.height / 2) * this.zoomLevel + this.height / 2 + this.panY;
-        const dx = screenX - rawX;
-        const dy = screenY - rawY;
-        const visualRadius = rs.radius * this.zoomLevel;
-        // 与移动端 hit test 公式对齐：最小 44px 命中半径，地球(index===3)给 60px 更大点击区
-        const minHit = rs.star.index === 3 ? 60 : 44;
-        const hitRadius = Math.max(visualRadius * 4 + 100, minHit);
-        if (dx * dx + dy * dy <= hitRadius * hitRadius) {
+        const vp = this.canvasToViewport(rs.x, rs.y);
+        const dx = vp.x - e.clientX;
+        const dy = vp.y - e.clientY;
+        // 视觉半径映射到视口空间 + 16px 容差；最小 24px 命中区保证小星球可点
+        const visualRadiusViewport = rs.radius * this.zoomLevel * scaleMin;
+        const hitRadius = Math.max(visualRadiusViewport + 16, 24);
+        const distSq = dx * dx + dy * dy;
+        if (distSq <= hitRadius * hitRadius && distSq < bestDist) {
+          bestDist = distSq;
           this.hoveredStar = rs;
-          break;
         }
       }
       this.canvas.style.cursor = this.hoveredStar ? "pointer" : "default";
@@ -443,12 +456,11 @@ export class StarMapRenderer {
       const touches = e.touches;
 
       if (touches.length === 1) {
-        // Single finger: prepare for pan or tap
+        // Single finger: prepare for pan or tap（记录视口坐标，pan 时再除以 scaleX 还原 CSS 坐标）
         const t = touches[0];
-        const rect = canvas.getBoundingClientRect();
         this.touch.active = true;
-        this.touch.startX = t.clientX - rect.left;
-        this.touch.startY = t.clientY - rect.top;
+        this.touch.startX = t.clientX;
+        this.touch.startY = t.clientY;
         this.touch.lastX = this.touch.startX;
         this.touch.lastY = this.touch.startY;
         this.touch.moved = false;
@@ -469,11 +481,13 @@ export class StarMapRenderer {
       const touches = e.touches;
 
       if (touches.length === 1 && this.touch.active) {
-        // Single finger drag → pan
+        // Single finger drag → pan（视口偏移需除以 scaleX 还原为 Canvas CSS 坐标，修正 0.85 横屏缩放）
         const t = touches[0];
         const rect = canvas.getBoundingClientRect();
-        const currentX = t.clientX - rect.left;
-        const currentY = t.clientY - rect.top;
+        const scaleX = rect.width / this.canvas.width;
+        const scaleY = rect.height / this.canvas.height;
+        const currentX = t.clientX;
+        const currentY = t.clientY;
 
         const dx = currentX - this.touch.lastX;
         const dy = currentY - this.touch.lastY;
@@ -482,8 +496,8 @@ export class StarMapRenderer {
           this.touch.moved = true;
         }
 
-        this.panX += dx;
-        this.panY += dy;
+        this.panX += dx / scaleX;
+        this.panY += dy / scaleY;
 
         this.touch.lastX = currentX;
         this.touch.lastY = currentY;
@@ -519,9 +533,8 @@ export class StarMapRenderer {
       } else if (remainingTouches === 1) {
         // One finger remaining, transition to single-finger mode
         const t = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        this.touch.startX = t.clientX - rect.left;
-        this.touch.startY = t.clientY - rect.top;
+        this.touch.startX = t.clientX;
+        this.touch.startY = t.clientY;
         this.touch.lastX = this.touch.startX;
         this.touch.lastY = this.touch.startY;
       }
@@ -532,23 +545,25 @@ export class StarMapRenderer {
     }, { passive: false });
   }
 
-  /** Handle a tap on touch devices: find nearest star and select it */
+  /** Handle a tap on touch devices: find nearest star and select it.
+   *  tapX/tapY 为视口坐标（clientX/clientY），统一走 canvasToViewport 在视口空间命中。 */
   private handleTouchTap(tapX: number, tapY: number): void {
-    // Similar hit test as mousemove
     let tappedStar: RenderStar | null = null;
+    let bestDist = Infinity;
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleMin = Math.min(rect.width / this.canvas.width, rect.height / this.canvas.height);
     for (const rs of this.renderStars) {
       if (!this.isStarInActiveArea(rs.star)) continue;
-      const screenX = (rs.x - this.width / 2) * this.zoomLevel + this.width / 2 + this.panX;
-      const screenY = (rs.y - this.height / 2) * this.zoomLevel + this.height / 2 + this.panY;
-      const dx = screenX - tapX;
-      const dy = screenY - tapY;
-      const visualRadius = rs.radius * this.zoomLevel;
-
-      // Larger hit area for touch (fingers are less precise)
-      const hitRadius = Math.max(visualRadius * 4 + 100, 44); // 44px minimum tap target
-      if (dx * dx + dy * dy <= hitRadius * hitRadius) {
+      const vp = this.canvasToViewport(rs.x, rs.y);
+      const dx = vp.x - tapX;
+      const dy = vp.y - tapY;
+      const visualRadiusViewport = rs.radius * this.zoomLevel * scaleMin;
+      // 触屏最小 32px 命中区（手指精度低于鼠标），大星球自然由 visualRadius 主导
+      const hitRadius = Math.max(visualRadiusViewport + 16, 32);
+      const distSq = dx * dx + dy * dy;
+      if (distSq <= hitRadius * hitRadius && distSq < bestDist) {
+        bestDist = distSq;
         tappedStar = rs;
-        break;
       }
     }
 
@@ -902,12 +917,51 @@ export class StarMapRenderer {
     this.ctx.restore();
   }
 
+  /**
+   * 唯一坐标转换层：Canvas 逻辑坐标 → 视口坐标（clientX/clientY 空间）。
+   * 统一处理 pan/zoom 变换与外层 CSS transform: scale 缩放（如 .mobile-landscape-scale 的 0.85）。
+   * 教程高亮、外部 UI 定位星球必须走此接口，禁止再手写坐标换算。
+   */
+  public canvasToViewport(x: number, y: number): { x: number; y: number } {
+    const rect = this.canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0 || this.canvas.width === 0 || this.canvas.height === 0) {
+      return { x: rect.left, y: rect.top };
+    }
+    // Canvas 逻辑坐标 → Canvas CSS 坐标（与绘制公式一致：先平移再缩放）
+    const cssX = (x - this.width / 2) * this.zoomLevel + this.width / 2 + this.panX;
+    const cssY = (y - this.height / 2) * this.zoomLevel + this.height / 2 + this.panY;
+    // Canvas CSS 坐标 → 视口坐标（应用外层 transform: scale 缩放）
+    const scaleX = rect.width / this.canvas.width;
+    const scaleY = rect.height / this.canvas.height;
+    return {
+      x: rect.left + cssX * scaleX,
+      y: rect.top + cssY * scaleY,
+    };
+  }
+
+  /**
+   * 唯一坐标转换层：视口坐标（clientX/clientY）→ Canvas 逻辑坐标。
+   * 鼠标/触屏命中判定必须走此接口，统一逆变换外层 CSS transform 缩放。
+   */
+  public viewportToCanvas(clientX: number, clientY: number): { x: number; y: number } {
+    const rect = this.canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0 || this.canvas.width === 0 || this.canvas.height === 0) {
+      return { x: 0, y: 0 };
+    }
+    const scaleX = rect.width / this.canvas.width;
+    const scaleY = rect.height / this.canvas.height;
+    // 视口 → Canvas CSS 坐标（逆外层 transform 缩放）
+    const cssX = (clientX - rect.left) / scaleX;
+    const cssY = (clientY - rect.top) / scaleY;
+    // Canvas CSS → 逻辑坐标（逆 pan/zoom）
+    const x = (cssX - this.width / 2 - this.panX) / this.zoomLevel + this.width / 2;
+    const y = (cssY - this.height / 2 - this.panY) / this.zoomLevel + this.height / 2;
+    return { x, y };
+  }
+
   public getStarScreenCoords(starIndex: number): { x: number; y: number } | null {
     const rs = this.renderStarMap.get(starIndex);
     if (!rs || !this.isStarInActiveArea(rs.star)) return null;
-    const rect = this.canvas.getBoundingClientRect();
-    const screenX = (rs.x - this.width / 2) * this.zoomLevel + this.width / 2 + this.panX + rect.left;
-    const screenY = (rs.y - this.height / 2) * this.zoomLevel + this.height / 2 + this.panY + rect.top;
-    return { x: screenX, y: screenY };
+    return this.canvasToViewport(rs.x, rs.y);
   }
 }

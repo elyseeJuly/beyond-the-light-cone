@@ -13,8 +13,10 @@ import {
   VolumeX
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../utils/i18n';
 
 export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { t } = useTranslation();
   const [battleReport, setBattleReport] = useState<any>(null);
   const [currentRoundIdx, setCurrentRoundIdx] = useState<number>(0);
   const [displayedRounds, setDisplayedRounds] = useState<any[]>([]);
@@ -60,32 +62,23 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          
-          if (nextRound.log.includes('SUPERBOMB') || nextRound.log.includes('二向箔')) {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(80, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.6);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.6);
-          } else {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.15);
-          }
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.15);
         } catch {
-          // Fallback if audio context is blocked
+          // Web Audio may be unavailable until the player interacts with the page.
         }
       }
-    } else {
-      setBattleFinished(true);
+      
+      if (currentRoundIdx + 1 >= rounds.length) {
+        setBattleFinished(true);
+      }
     }
   };
 
@@ -136,14 +129,14 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <div className="flex items-center gap-2.5">
             <Swords className="text-[var(--color-primary)] w-4 h-4" />
             <span className="text-[var(--color-primary)] font-title font-bold tracking-widest text-xs uppercase">
-              PDC 战术演练系统 · 星际遭遇战档案
+              {t("PDC 战术演练系统 · 星际遭遇战档案")}
             </span>
           </div>
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSoundEnabled(!soundEnabled)}
               className="text-[var(--text-secondary)] hover:text-white p-1 rounded transition-colors cursor-pointer hover:bg-white/5"
-              title={soundEnabled ? "静音" : "开启声音"}
+              title={soundEnabled ? t("静音") : t("开启声音")}
             >
               {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
             </button>
@@ -162,7 +155,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           {/* Battle Location banner */}
           <div className="text-center bg-[#070B14]/40 border border-[#243245]/30 p-2.5 rounded font-mono shrink-0">
             <span className="text-[var(--text-secondary)]/50 text-[9px] tracking-widest block uppercase">BATTLEZONE COORD</span>
-            <span className="text-white text-sm font-bold tracking-wider">星系 [{planetName}] 边缘空间对决</span>
+            <span className="text-white text-sm font-bold tracking-wider">{t("星系")} [{t(planetName)}] {t("边缘空间对决")}</span>
           </div>
 
           {/* Dueling Parties Grid */}
@@ -178,14 +171,14 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
               transition={{ duration: 0.4 }}
               className="bg-[#070B14]/40 border border-[#243245]/30 p-3.5 rounded flex flex-col gap-1.5 relative overflow-hidden"
             >
-              <div className="text-[#FF5252] text-[9px] tracking-wider uppercase font-bold">ATTACK FORCES / 攻方</div>
-              <div className="text-white text-sm font-bold truncate">{attackerName}</div>
+              <div className="text-[#FF5252] text-[9px] tracking-wider uppercase font-bold">ATTACK FORCES / {t("攻方")}</div>
+              <div className="text-white text-sm font-bold truncate">{t(attackerName)}</div>
               <div className="flex justify-between items-center mt-1 border-t border-[#243245]/20 pt-1.5">
-                <span className="text-[var(--text-secondary)]/60">初始威慑强度:</span>
+                <span className="text-[var(--text-secondary)]/60">{t("初始威慑强度")}:</span>
                 <span className="text-[#FF5252] font-bold">{attackerPower}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[var(--text-secondary)]/60">实时剩余结构:</span>
+                <span className="text-[var(--text-secondary)]/60">{t("实时剩余结构")}:</span>
                 <span className="text-slate-200 font-bold">
                   {Math.max(0, currentRoundIdx === rounds.length ? attackerRemainingHp : Math.max(1, attackerPower - (currentRoundIdx * (attackerPower / (rounds.length + 1)))))}
                 </span>
@@ -203,14 +196,14 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
               transition={{ duration: 0.4 }}
               className="bg-[#070B14]/40 border border-[#243245]/30 p-3.5 rounded flex flex-col gap-1.5 relative overflow-hidden"
             >
-              <div className="text-[var(--color-primary)] text-[9px] tracking-wider uppercase font-bold">DEFEND FORCES / 守方</div>
-              <div className="text-white text-sm font-bold truncate">{defenderName}</div>
+              <div className="text-[var(--color-primary)] text-[9px] tracking-wider uppercase font-bold">DEFEND FORCES / {t("守方")}</div>
+              <div className="text-white text-sm font-bold truncate">{t(defenderName)}</div>
               <div className="flex justify-between items-center mt-1 border-t border-[#243245]/20 pt-1.5">
-                <span className="text-[var(--text-secondary)]/60">初始工事强度:</span>
+                <span className="text-[var(--text-secondary)]/60">{t("初始工事强度")}:</span>
                 <span className="text-[var(--color-primary)] font-bold">{defenderPower}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[var(--text-secondary)]/60">实时剩余结构:</span>
+                <span className="text-[var(--text-secondary)]/60">{t("实时剩余结构")}:</span>
                 <span className="text-slate-200 font-bold">
                   {Math.max(0, currentRoundIdx === rounds.length ? defenderRemainingHp : Math.max(1, defenderPower - (currentRoundIdx * (defenderPower / (rounds.length + 1)))))}
                 </span>
@@ -223,7 +216,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
             {displayedRounds.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)]/40 text-[11px] italic gap-2 py-8 text-center">
                 <Swords className="w-8 h-8 text-[var(--color-primary)]/20 animate-pulse" />
-                <span>全息微观战术交锋已就位，请开始解密战斗序列。</span>
+                <span>{t("全息微观战术交锋已就位，请开始解密战斗序列。")}</span>
               </div>
             ) : (
               displayedRounds.map((rnd, idx) => (
@@ -241,12 +234,12 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                     </span>
                   </div>
                   <div className="text-[11px] text-slate-200 leading-relaxed pl-1.5 border-l border-[var(--color-primary)]/40">
-                    {rnd.log}
+                    {t(rnd.log)}
                   </div>
                   {rnd.atkDamage > 0 || rnd.defDamage > 0 ? (
                     <div className="flex gap-4 text-[9px] text-slate-500 pl-1.5 font-bold">
-                      {rnd.atkDamage > 0 && <span className="text-red-400">攻方输出: -{rnd.atkDamage}HP</span>}
-                      {rnd.defDamage > 0 && <span className="text-cyan-400">守方输出: -{rnd.defDamage}HP</span>}
+                      {rnd.atkDamage > 0 && <span className="text-red-400">{t("攻方输出")}: -{rnd.atkDamage}HP</span>}
+                      {rnd.defDamage > 0 && <span className="text-cyan-400">{t("守方输出")}: -{rnd.defDamage}HP</span>}
                     </div>
                   ) : null}
                 </motion.div>
@@ -259,13 +252,13 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                 <div className="w-9 h-9 rounded-full bg-[#070B14] border border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary)] shadow-[0_0_12px_rgba(0,184,255,0.3)]">
                   {winner.includes(attackerName) ? <Flame className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
                 </div>
-                <div className="text-[var(--color-primary)] text-xs font-bold tracking-widest uppercase mt-1">【最终战报结算】</div>
+                <div className="text-[var(--color-primary)] text-xs font-bold tracking-widest uppercase mt-1">【{t("最终战报结算")}】</div>
                 <div className="text-[11px] text-slate-300 font-sans px-4 max-w-lg leading-relaxed mt-1">
-                  {outcomeLog}
+                  {t(outcomeLog)}
                 </div>
                 <div className="flex items-center gap-2 text-[9px] text-[var(--color-primary)]/70 uppercase tracking-widest mt-2 font-mono">
                   <Sparkles className="w-3 h-3" />
-                  WINNER: {winner}
+                  WINNER: {t(winner)}
                 </div>
               </div>
             )}
@@ -283,14 +276,14 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                     onClick={handleSkipAll}
                     className="px-3.5 py-1.5 bg-[#070B14] hover:bg-white/5 text-[var(--text-secondary)] rounded text-xs cursor-pointer border border-[#243245] transition-colors"
                   >
-                    跳过动画
+                    {t("跳过动画")}
                   </button>
                   <button
                     onClick={handleNextRound}
                     className="px-4 py-1.5 bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] text-[var(--color-primary)] font-bold rounded text-xs cursor-pointer border border-[var(--color-primary)]/40 shadow-[0_0_10px_rgba(0,184,255,0.15)] transition-colors flex items-center gap-1.5"
                   >
                     <Swords className="w-3.5 h-3.5 animate-pulse" />
-                    下一轮交锋
+                    {t("下一轮交锋")}
                   </button>
                 </>
               ) : (
@@ -298,7 +291,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
                   onClick={onClose}
                   className="px-5 py-1.5 bg-[var(--color-primary)] hover:brightness-110 text-black font-extrabold rounded text-xs cursor-pointer shadow-[0_0_12px_rgba(0,184,255,0.4)] transition-all"
                 >
-                  关闭终端
+                  {t("关闭终端")}
                 </button>
               )}
             </div>

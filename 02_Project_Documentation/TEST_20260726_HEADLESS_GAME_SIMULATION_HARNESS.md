@@ -1,10 +1,10 @@
 # TEST_20260726_HEADLESS_GAME_SIMULATION_HARNESS
 
-> **文档标题**：《光锥之外：纪元往事》统一测试系统与 Headless Game Simulation Harness 方案  
-> **文档版本**：V1.0 Draft  
-> **日期**：2026-07-26  
-> **证据截止提交**：`8c4cf47c14c6673b8b38f26e0c21ba01a7ac8da4`  
-> **适用工程**：`03_Web_Rebuild/`  
+> **文档标题**：《光锥之外：纪元往事》统一测试系统与 Headless Game Simulation Harness 方案
+> **文档版本**：V1.0 Draft
+> **日期**：2026-07-26
+> **证据截止提交**：`8c4cf47c14c6673b8b38f26e0c21ba01a7ac8da4`
+> **适用工程**：`03_Web_Rebuild/`
 > **关联材料**：
 > - `AUDIT_20260621_TEST_SYSTEM_ARCHITECTURE.md`
 > - `REPORT_20260622_TEST_SYSTEM_FIX.md`

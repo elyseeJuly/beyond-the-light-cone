@@ -7,9 +7,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Map, Cpu, Landmark, Archive, Radio } from 'lucide-react';
+import { Map, Cpu, Landmark, Archive, Radio, Settings } from 'lucide-react';
 import type { ActiveViewType } from './LeftHub';
 import { Badge } from './common/Badge';
+import { BgmPlayer } from './BgmPlayer';
+import { GameInstance } from '../core/Game';
 
 interface MobileBottomNavProps {
   activeView: ActiveViewType;
@@ -33,6 +35,23 @@ const navItems: NavItemConfig[] = [
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ activeView, setActiveView }) => {
   const [hasNewArchive, setHasNewArchive] = useState(false);
   const [hasNewIntelligence, setHasNewIntelligence] = useState(false);
+  const [epoch, setEpoch] = useState(0);
+
+  useEffect(() => {
+    const check = () => {
+      try {
+        const game = GameInstance.get();
+        setEpoch(game.epoch);
+      } catch { /* ignore */ }
+    };
+    check();
+    window.addEventListener('game-turn-complete', check);
+    window.addEventListener('game-loaded', check);
+    return () => {
+      window.removeEventListener('game-turn-complete', check);
+      window.removeEventListener('game-loaded', check);
+    };
+  }, []);
 
   useEffect(() => {
     const handleTurnComplete = () => {
@@ -57,9 +76,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ activeView, se
 
   return (
     <nav data-tutorial-id="mobile-bottom-nav" className="mobile-bottom-nav">
+      {/* 音乐播放控制（紧凑模式） */}
+      <BgmPlayer isGameOver={false} epoch={epoch} compact />
+
       {navItems.map((item) => {
         const isActive = activeView === item.view;
-        const showBadge = (item.view === 'archive' && hasNewArchive) || 
+        const showBadge = (item.view === 'archive' && hasNewArchive) ||
                           (item.view === 'intelligence' && hasNewIntelligence);
 
         return (
@@ -85,6 +107,16 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ activeView, se
           </button>
         );
       })}
+
+      {/* 系统设置按钮 */}
+      <button
+        onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))}
+        className="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-lg transition-all duration-200 cursor-pointer text-[var(--text-secondary)] hover:text-white hover:bg-white/5"
+        title="系统设置"
+      >
+        <Settings size={20} className="stroke-[1.5]" />
+        <span className="text-[9px] font-bold tracking-wider uppercase">设置</span>
+      </button>
     </nav>
   );
 };

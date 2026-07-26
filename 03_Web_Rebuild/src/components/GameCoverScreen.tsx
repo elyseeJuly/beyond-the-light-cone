@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Play, SkipForward, Landmark, Shield, Cpu, Info } from 'lucide-react';
+import { Play, SkipForward, Landmark, Shield, Brain, Info, Settings } from 'lucide-react';
 import { getImageUrl } from '../utils/assetUrl';
+import { AdvisorPanel } from './AdvisorPanel';
+import { GAME_VERSION } from '../utils/version';
+import { useTranslation } from '../utils/i18n';
 
 interface GameCoverScreenProps {
   hasSave: boolean;
   onStartNewGame: (withTutorial: boolean, enableAiBrain: boolean) => void;
   onContinueGame: () => void;
   onOpenMuseum: () => void;
+  onOpenSettings: () => void;
 }
 
-type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'archive' | null;
+type MenuOption = 'continue' | 'new_tutorial' | 'new_free' | 'advisor' | 'archive' | 'settings' | null;
 
 export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
   hasSave,
   onStartNewGame,
   onContinueGame,
   onOpenMuseum,
+  onOpenSettings,
 }) => {
+  const { t } = useTranslation();
   const [bgImage, setBgImage] = useState(() => getImageUrl('cover.png'));
   const [hoveredOption, setHoveredOption] = useState<MenuOption>(null);
   const [rendered, setRendered] = useState(false);
-  const [enableAiBrain, setEnableAiBrain] = useState(false); // Default off per project constraint
+  const [enableAiBrain] = useState(false); // Default off per project constraint
+  const [showAdvisor, setShowAdvisor] = useState(false);
 
   // Handle responsive background image
   useEffect(() => {
@@ -37,18 +44,31 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleStartNewGame = (withTutorial: boolean) => {
+    if (typeof window !== 'undefined') {
+      Object.keys(localStorage)
+        .filter(key => key.startsWith('session:'))
+        .forEach(key => localStorage.removeItem(key));
+    }
+    onStartNewGame(withTutorial, enableAiBrain);
+  };
+
   const getOptionDescription = (opt: MenuOption) => {
     switch (opt) {
       case 'continue':
-        return '读取最近的历史节点，继续您的文明演进与黑暗森林法则对抗之旅。';
+        return t('读取最近的历史节点，继续您的文明演进与黑暗森林法则对抗之旅。');
       case 'new_tutorial':
-        return '重构文明时间线。推荐新手玩家使用，本引导包含手把手战略和内政基础操作指南。';
+        return t('重构文明时间线。推荐新手玩家使用，智脑辅助系统将带您完成校准与基础规划。');
       case 'new_free':
-        return '跳过初级引导系统，直接以最高统帅身份跨入冷酷的宇宙博弈。';
+        return t('跳过初级引导系统，直接以最高统帅身份跨入冷酷的宇宙博弈。');
+      case 'advisor':
+        return t('唤醒智脑战术数据百科。可查阅三维资源链、AP机制、面壁者策略与完整结局路线图。');
       case 'archive':
-        return '查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。';
+        return t('查阅岁月史书。包含已点亮的纪元终章、搜集大结局、事件 CG 图鉴与原声音轨。');
+      case 'settings':
+        return t('调整音频、显示模式与数据存储状态。您也可以在此处重置新手教程进度。');
       default:
-        return '请选择操作指令。作为执政官，您在黑暗森林法则下的每一个决策都将书写人类文明的历史。';
+        return t('请选择操作指令。作为执政官，您在黑暗森林法则下的每一个决策都将书写人类文明的历史。');
     }
   };
 
@@ -56,7 +76,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[150] flex flex-col justify-between overflow-hidden bg-black text-[#DDEEFF] font-mono select-none"
+      className="cover-screen fixed inset-0 z-[150] flex flex-col justify-between overflow-hidden bg-black text-[#DDEEFF] font-mono select-none"
       style={{
         backgroundImage: `radial-gradient(circle at center, rgba(7, 11, 20, 0.4) 0%, #070B14 100%), url(${bgImage})`,
         backgroundSize: 'cover',
@@ -80,36 +100,36 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
           </span>
         </div>
         <div className="text-[10px] text-right text-[var(--text-secondary)]/60 font-mono">
-          SYSTEM VERSION: V0.9.0-BETA // SECURE
+          SYSTEM VERSION: V{GAME_VERSION} // SECURE
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="relative z-20 flex-1 flex flex-col md:flex-row items-center md:items-stretch justify-center md:justify-between px-6 md:px-16 py-8 gap-8 max-w-7xl mx-auto w-full overflow-hidden">
+      <main className="cover-main relative z-20 flex-1 flex flex-col md:flex-row items-center md:items-stretch justify-center md:justify-between px-6 md:px-16 py-8 gap-8 max-w-7xl mx-auto w-full overflow-hidden">
         {/* Left Side: Title and Logo */}
-        <div className="flex-1 flex flex-col justify-center text-center md:text-left">
+        <div className="cover-title flex-1 flex flex-col justify-center text-center md:text-left">
           <div className="inline-flex items-center justify-center md:justify-start gap-2 text-[var(--color-primary)] mb-2 tracking-[0.3em] text-xs font-bold">
             <Shield size={14} className="animate-pulse" />
-            地球防卫理事会最高指挥中心
+            {t("地球防卫理事会最高指挥中心")}
           </div>
           <h1 
             className="text-4xl sm:text-6xl font-black font-title tracking-[0.2em] text-white leading-tight drop-shadow-[0_0_20px_rgba(0,184,255,0.5)] uppercase"
             style={{ textShadow: '0 0 15px rgba(0, 184, 255, 0.4)' }}
           >
-            光锥之外
+            {t("光锥之外")}
           </h1>
           <h2 className="text-xl sm:text-2xl font-light text-[var(--color-primary)] tracking-[0.4em] mt-1 uppercase">
-            纪元往事
+            {t("纪元往事")}
           </h2>
           <div className="mt-6 text-xs text-[var(--text-secondary)]/80 leading-relaxed max-w-md hidden md:block">
-            在冷酷黑暗的宇宙森林深处，地球文明的坐标已经暴露，智子封锁着科学的边界。你将扮演人类最高执政官，引领文明跨越危机、威慑、广播、掩体及逃亡纪元，在毁灭与永恒的交织中为文明寻找一线生路。
+            {t("在冷酷黑暗的宇宙森林深处，地球文明的坐标已经暴露，智子封锁着科学的边界。你将扮演人类最高执政官，引领文明跨越危机、威慑、广播、掩体及逃亡纪元，在毁灭与永恒的交织中为文明寻找一线生路。")}
           </div>
         </div>
 
         {/* Right Side: Options and HUD */}
-        <div className="w-full md:w-[420px] flex flex-col justify-center gap-6">
+        <div className="cover-menu-column w-full md:w-[420px] flex flex-col justify-center gap-6">
           {/* Action Menu */}
-          <div className="flex flex-col gap-3.5 bg-black/60 border border-[var(--color-primary)]/20 p-6 rounded backdrop-blur-md shadow-[0_0_30px_rgba(0,184,255,0.08)]">
+          <div className="cover-action-menu flex flex-col gap-3.5 bg-black/60 border border-[var(--color-primary)]/20 p-6 rounded backdrop-blur-md shadow-[0_0_30px_rgba(0,184,255,0.08)]">
             <div className="text-[10px] tracking-[0.2em] text-[var(--color-primary)] font-bold mb-1 border-b border-[var(--color-primary)]/10 pb-2">
               SELECT COMMAND OR PROTOCOL
             </div>
@@ -131,29 +151,29 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               )}
               <Play size={16} className={hasSave ? 'text-[var(--color-primary)]' : 'text-slate-500'} />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">继续我的文明</div>
+                <div className="text-sm font-bold tracking-widest font-title">{t("继续我的文明")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">CONTINUE EXISTENTIAL LOG</div>
               </div>
             </button>
 
             {/* Option 2: New Game with Tutorial */}
             <button
-              onClick={() => onStartNewGame(true, enableAiBrain)}
+              onClick={() => handleStartNewGame(true)}
               onMouseEnter={() => setHoveredOption('new_tutorial')}
               onMouseLeave={() => setHoveredOption(null)}
-              className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
+              className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 hover:shadow-[0_0_20px_rgba(0,184,255,0.3)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
             >
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
-              <Cpu size={16} className="text-[var(--color-primary)]" />
+              <Shield size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">开始新游戏 (启用引导)</div>
+                <div className="text-sm font-bold tracking-widest font-title text-[var(--color-primary)]">{t("重新构想 (开启引导)")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">NEW GAME WITH TUTORIAL</div>
               </div>
             </button>
 
             {/* Option 3: New Game Free Exploration */}
             <button
-              onClick={() => onStartNewGame(false, enableAiBrain)}
+              onClick={() => handleStartNewGame(false)}
               onMouseEnter={() => setHoveredOption('new_free')}
               onMouseLeave={() => setHoveredOption(null)}
               className="w-full group flex items-center gap-4 px-4 py-3.5 border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_15px_rgba(0,184,255,0.2)] text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer"
@@ -161,30 +181,27 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <SkipForward size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">自由探索 (跳过引导)</div>
+                <div className="text-sm font-bold tracking-widest font-title">{t("自由探索 (跳过引导)")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">FREE EXPLORATION MODE</div>
               </div>
             </button>
 
-            {/* AI Brain Toggle */}
-            <div className="flex items-center justify-between px-4 py-2 border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/3 rounded">
-              <div className="flex items-center gap-2">
-                <Cpu size={14} className={enableAiBrain ? 'text-[var(--color-primary)]' : 'text-slate-500'} />
-                <span className="text-[11px] text-[var(--text-secondary)] font-mono tracking-wider">AI 智脑托管</span>
+            {/* AI Advisor Button */}
+            <button
+              onClick={() => setShowAdvisor(true)}
+              onMouseEnter={() => setHoveredOption('advisor')}
+              onMouseLeave={() => setHoveredOption(null)}
+              className="w-full group flex items-center gap-4 px-4 py-3 border border-cyan-500/40 hover:border-cyan-400 bg-cyan-950/20 hover:bg-cyan-500/10 text-cyan-200 transition-all duration-300 relative overflow-hidden text-left cursor-pointer rounded"
+            >
+              <Brain size={16} className="text-cyan-400" />
+              <div className="flex-grow">
+                <div className="text-xs font-bold tracking-widest font-title text-cyan-200 flex items-center justify-between">
+                  <span>{t("智脑顾问 · 战术百科")}</span>
+                  <span className="text-[9px] px-1.5 py-0.5 bg-cyan-500/20 rounded font-mono text-cyan-300">HELP</span>
+                </div>
+                <div className="text-[9px] opacity-70 mt-0.5 font-mono">TACTICAL ENCYCLOPEDIA & ADVISOR</div>
               </div>
-              <button
-                onClick={() => setEnableAiBrain(!enableAiBrain)}
-                className={`relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer ${
-                  enableAiBrain ? 'bg-[var(--color-primary)]/40' : 'bg-slate-700'
-                }`}
-              >
-                <div
-                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
-                    enableAiBrain ? 'left-5' : 'left-0.5'
-                  }`}
-                />
-              </button>
-            </div>
+            </button>
 
             {/* Option 4: View Museum (Civilization Museum) */}
             <button
@@ -196,17 +213,32 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
               <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-primary)] transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
               <Landmark size={16} className="text-[var(--color-primary)]" />
               <div className="flex-grow">
-                <div className="text-sm font-bold tracking-widest font-title">文明博物馆</div>
+                <div className="text-sm font-bold tracking-widest font-title">{t("文明博物馆")}</div>
                 <div className="text-[9px] opacity-60 mt-0.5 font-mono">CIVILIZATION MUSEUM</div>
+              </div>
+            </button>
+
+            {/* Option 5: Settings */}
+            <button
+              onClick={onOpenSettings}
+              onMouseEnter={() => setHoveredOption('settings')}
+              onMouseLeave={() => setHoveredOption(null)}
+              className="w-full group flex items-center gap-4 px-4 py-3.5 border border-slate-700/60 hover:border-slate-500 hover:bg-slate-800/20 text-white transition-all duration-300 relative overflow-hidden text-left cursor-pointer rounded"
+            >
+              <div className="absolute top-0 left-0 w-1 h-full bg-slate-500 transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />
+              <Settings size={16} className="text-slate-400 group-hover:text-white transition-colors" />
+              <div className="flex-grow">
+                <div className="text-sm font-bold tracking-widest font-title">{t("游戏设置")}</div>
+                <div className="text-[9px] opacity-60 mt-0.5 font-mono">GAME SETTINGS</div>
               </div>
             </button>
           </div>
 
           {/* Description HUD */}
-          <div className="bg-[#070B14]/80 border border-slate-800 p-4 min-h-[90px] rounded flex gap-3 text-xs leading-relaxed text-[var(--text-secondary)]">
+          <div className="cover-description bg-[#070B14]/80 border border-slate-800 p-4 min-h-[90px] rounded flex gap-3 text-xs leading-relaxed text-[var(--text-secondary)]">
             <Info size={16} className="text-[var(--color-primary)] shrink-0 mt-0.5" />
             <div>
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">指令说明 / DECISION DESCRIPTION</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">{t("指令说明 / DECISION DESCRIPTION")}</div>
               <p className="transition-all duration-300">{getOptionDescription(hoveredOption)}</p>
             </div>
           </div>
@@ -222,11 +254,43 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
         </div>
       </footer>
 
+      {/* Advisor Panel Modal */}
+      <AdvisorPanel isOpen={showAdvisor} onClose={() => setShowAdvisor(false)} />
+
       {/* Custom keyframe styles for scanning */}
       <style>{`
         @keyframes menu-scan {
           0% { top: -5%; }
           100% { top: 105%; }
+        }
+        @media (max-height: 500px) and (orientation: landscape) {
+          .cover-screen > header {
+            padding: 0.5rem 1.5rem;
+          }
+          .cover-main {
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 0.75rem 1.5rem;
+            overflow-y: auto;
+          }
+          .cover-title,
+          .cover-description,
+          .cover-screen > footer {
+            display: none;
+          }
+          .cover-menu-column {
+            justify-content: flex-start;
+            gap: 0.75rem;
+            margin: 0 auto;
+          }
+          .cover-action-menu {
+            gap: 0.5rem;
+            padding: 0.75rem;
+          }
+          .cover-action-menu > button {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
         }
       `}</style>
     </div>

@@ -1,8 +1,8 @@
 # EXEC_20260726_SIMULATION_REACHABILITY_P3_P4
 
-> **项目**：《光锥之外：纪元往事》  
-> **日期**：2026-07-26  
-> **阶段**：Headless Game Simulation Harness P3–P4  
+> **项目**：《光锥之外：纪元往事》
+> **日期**：2026-07-26
+> **阶段**：Headless Game Simulation Harness P3–P4
 > **前置基线**：PR #5 / Harness V1（P0–P2）
 
 ## 一、执行目标

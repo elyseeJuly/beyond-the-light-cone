@@ -25,9 +25,11 @@ const SONG_NAME_MAP: Record<string, string> = {
 interface BgmPlayerProps {
   isGameOver: boolean;
   epoch: number;
+  /** 紧凑模式：仅显示播放/暂停按钮，适配移动端底部导航栏 */
+  compact?: boolean;
 }
 
-export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
+export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact = false }) => {
   const [isPlaying, setIsPlaying] = useState(() => {
     const savedMuted = localStorage.getItem('game-bgm-muted');
     return savedMuted !== 'true';
@@ -279,11 +281,54 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch }) => {
   const currentEpochName = epochNames[epoch] || "主背景";
 
   if (!isAvailable) {
+    if (compact) {
+      return (
+        <button
+          disabled
+          className="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-lg opacity-40 cursor-not-allowed"
+        >
+          <VolumeX size={20} className="stroke-[1.5]" />
+          <span className="text-[9px] font-bold tracking-wider uppercase">无曲</span>
+        </button>
+      );
+    }
     return (
       <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-sm text-[10px] text-white/30 tracking-widest uppercase">
         <VolumeX size={12} className="opacity-50" />
         <span>《{currentEpochName} BGM》待加入</span>
       </div>
+    );
+  }
+
+  // 紧凑模式：仅播放/暂停按钮，适配移动端底部导航栏
+  if (compact) {
+    return (
+      <button
+        onClick={togglePlay}
+        className={`flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-lg transition-all duration-200 cursor-pointer relative ${
+          isPlaying ? 'text-[var(--color-primary)]' : 'text-[var(--text-secondary)] hover:text-white hover:bg-white/5'
+        }`}
+        style={isPlaying ? { textShadow: '0 0 8px rgba(var(--color-primary-rgb), 0.5)' } : undefined}
+        title={isPlaying ? '暂停 BGM' : '播放 BGM'}
+      >
+        {isPlaying ? (
+          <div className="flex gap-0.5 items-end h-5 w-5 justify-center">
+            {[1, 2, 3].map(i => (
+              <div
+                key={i}
+                className="w-0.5 bg-[var(--color-primary)] rounded-full"
+                style={{
+                  height: '100%',
+                  animation: `equalizer-bar 0.${4 + i}s ease-in-out infinite alternate`
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <Play size={20} className="fill-current stroke-[1.5]" />
+        )}
+        <span className="text-[9px] font-bold tracking-wider uppercase">{isPlaying ? '播放中' : '音乐'}</span>
+      </button>
     );
   }
 

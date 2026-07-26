@@ -17,6 +17,7 @@ import type {
   AssetRecord,
 } from '../types/asset';
 import { getAssetUrl } from '../utils/assetUrl';
+import { isPackagedRelease } from './DistributionChannel';
 
 const MANIFEST_URL = getAssetUrl('asset_manifest.json');
 
@@ -90,6 +91,17 @@ export class AssetLoader {
     const pack = this.manifest.expansion.packs.find(p => p.packId === packId);
     if (!pack) throw new Error(`[AssetLoader] Pack not found: ${packId}`);
 
+    if (isPackagedRelease()) {
+      onProgress?.({
+        packId,
+        state: 'complete',
+        downloadedBytes: pack.totalSize,
+        totalBytes: pack.totalSize,
+        progress: 1,
+      });
+      return;
+    }
+
     if (onProgress) {
       this.progressCallbacks.set(packId, onProgress);
     }
@@ -121,7 +133,7 @@ export class AssetLoader {
    * 支持完整 7 纪元序列：黄金 → 危机 → 威慑 → 广播 → 掩体 → 银河 → 星屑
    */
   async preloadNextEra(currentEra: string): Promise<void> {
-    if (!this.manifest) return;
+    if (!this.manifest || isPackagedRelease()) return;
 
     const eraOrder = [
       'golden_era', 'crisis_era', 'deterrence_era', 'broadcast_era',
@@ -159,8 +171,7 @@ export class AssetLoader {
     const asset = this.manifest.expansion.assets.find(a => a.id === assetId);
     if (!asset) return null;
 
-    const base = '/beyond-the-light-cone';
-    const url = `${base}/${asset.path}`;
+    const url = getAssetUrl(asset.path);
 
     // 检查是否已缓存
     const record = this.assetRecords.get(assetId);
@@ -177,6 +188,7 @@ export class AssetLoader {
   getCompletedPacks(): string[] {
     const completed: string[] = [];
     if (!this.manifest) return completed;
+    if (isPackagedRelease()) return this.manifest.expansion.packs.map(pack => pack.packId);
 
     for (const pack of this.manifest.expansion.packs) {
       const allDone = pack.assetIds.every(id => {
@@ -206,6 +218,23 @@ export class AssetLoader {
     const coreSize = this.manifest.core.reduce((sum, a) => sum + (a.size || 0), 0);
     const expansionSize = this.manifest.expansion.assets.reduce((sum, a) => sum + (a.size || 0), 0);
     const totalSize = coreSize + expansionSize;
+
+    if (isPackagedRelease()) {
+      return {
+        loadedSize: totalSize,
+        totalSize,
+        downloadedPacks: this.manifest.expansion.packs.map(pack => pack.packId),
+        pendingPacks: [] as string[],
+        packsDetail: this.manifest.expansion.packs.map(pack => ({
+          packId: pack.packId,
+          name: pack.name,
+          description: pack.description,
+          totalSize: pack.totalSize,
+          type: pack.type,
+          state: 'complete' as DownloadState,
+        })),
+      };
+    }
 
     // Calculate loaded size (core is always loaded + completed expansion assets)
     let loadedSize = coreSize;
@@ -242,6 +271,12 @@ export class AssetLoader {
 
   /** 检查某资源是否已离线可用 */
   isAssetAvailable(assetId: string): boolean {
+    if (isPackagedRelease()) {
+      return this.manifest !== null && (
+        this.manifest.core.some(asset => asset.id === assetId)
+        || this.manifest.expansion.assets.some(asset => asset.id === assetId)
+      );
+    }
     return this.assetRecords.get(assetId)?.state === 'complete';
   }
 
@@ -249,6 +284,13 @@ export class AssetLoader {
   getDownloadStatus(): Record<string, DownloadState> {
     const status: Record<string, DownloadState> = {};
     if (!this.manifest) return status;
+
+    if (isPackagedRelease()) {
+      for (const pack of this.manifest.expansion.packs) {
+        status[pack.packId] = 'complete';
+      }
+      return status;
+    }
 
     for (const pack of this.manifest.expansion.packs) {
       const states = pack.assetIds.map(id => this.assetRecords.get(id)?.state ?? 'none');

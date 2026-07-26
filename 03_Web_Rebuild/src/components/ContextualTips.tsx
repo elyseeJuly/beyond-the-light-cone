@@ -2,55 +2,89 @@ import React, { useEffect, useRef } from 'react';
 import { GameInstance } from '../core/Game';
 
 /**
- * 一次性情境提示组件：监听游戏事件，在特定情境首次出现时通过 Toast 显示简短提示。
- * 每条提示每设备只出现一次（通过 localStorage 标记）。
- * 不渲染任何 UI，仅负责事件监听与 Toast 派发。
+ * 智脑情境提示组件：监听游戏事件与回合状态，
+ * 在特定情境（AP缺乏、威慑危急、资源赤字）下通过 Toast 派发【智脑警告】或【智脑提示】。
+ * 具备冷却时间机制，避免高频打扰，同时确保重度危机时给予提醒。
  */
-const STORAGE_PREFIX = 'tip-shown:';
+const STORAGE_PREFIX = 'session:tip-shown:';
 
-function showTipOnce(key: string, text: string): void {
+function showTipOnce(key: string, text: string, category = '【智脑提示】'): void {
   if (typeof window === 'undefined') return;
   if (localStorage.getItem(STORAGE_PREFIX + key) === 'true') return;
   localStorage.setItem(STORAGE_PREFIX + key, 'true');
   window.dispatchEvent(new CustomEvent('game:toast:message', {
-    detail: { text, category: '【新手提示】' },
+    detail: { text, category },
+  }));
+}
+
+function showTipWithCooldown(key: string, text: string, currentTurn: number, cooldownTurns: number, category = '【智脑警告】'): void {
+  if (typeof window === 'undefined') return;
+  const lastShownKey = `session:tip-last-turn:${key}`;
+  const lastTurn = parseInt(localStorage.getItem(lastShownKey) || '-999', 10);
+  if (currentTurn - lastTurn < cooldownTurns) return;
+
+  localStorage.setItem(lastShownKey, currentTurn.toString());
+  window.dispatchEvent(new CustomEvent('game:toast:message', {
+    detail: { text, category },
   }));
 }
 
 export const ContextualTips: React.FC = () => {
-  const stabilityWarnedRef = useRef(false);
   const prevEpochRef = useRef<number>(-1);
+  const prevResourceRef = useRef<number>(-1);
+  const resourceDropTurnsRef = useRef<number>(0);
 
   useEffect(() => {
     const game = GameInstance.get();
     prevEpochRef.current = game.epoch;
+    prevResourceRef.current = game.earthCivi.resource;
 
-    // ── AP 首次不足 ──
+    // ── AP 不足警告（5回合冷却） ──
     const handleApInsufficient = () => {
-      showTipOnce('ap-insufficient', 'AP 是本回合的行动力，下一回合会重新恢复。');
+      const g = GameInstance.get();
+      showTipWithCooldown('ap-insufficient', 'AP 是本回合指令点。可在内阁任命更多部长以加快 AP 恢复。', g.year, 5, '【智脑提示】');
     };
 
-    // ── 首次进入科技树 ──
+    // ── 界面首次切换 ──
     const handleViewChange = (e: Event) => {
       const view = (e as CustomEvent).detail;
       if (view === 'techtree') {
-        showTipOnce('enter-techtree', '选择可研究的节点，科研会随回合推进。');
+        showTipOnce('enter-techtree', '选择可研究的科技节点，科研会随着回合推进自动积累。');
       } else if (view === 'government') {
-        showTipOnce('enter-government', '任命合适人员可以提升部门效率。');
+        showTipOnce('enter-government', '任命官员可强化对应部门产出并提供 AP 回复加成。');
       }
     };
 
-    // ── 首次被回合阻断 ──
+    // ── 回合阻断 ──
     const handleTurnBlocked = () => {
-      showTipOnce('turn-blocked', '还有事务没有处理，点击提示可以前往对应界面。');
+      const g = GameInstance.get();
+      showTipWithCooldown('turn-blocked', '当前存在未处理事项（如科研停滞或未解决事件）。', g.year, 3, '【智脑提示】');
     };
 
-    // ── 回合完成：检查稳定度与纪元切换 ──
+    // ── 回合完成：检查资源赤字与威慑报警 ──
     const handleTurnComplete = () => {
       const g = GameInstance.get();
       const earth = g.earthCivi;
+      const turn = g.year;
 
-      // 稳定度首次低于 50%
+      // 1. 矿产连续下降检查
+      if (earth.resource < prevResourceRef.current) {
+        resourceDropTurnsRef.current += 1;
+        if (resourceDropTurnsRef.current >= 3) {
+          showTipWithCooldown('resource-decay', '检测到矿产储备连续 3 回合下降！建议调高采矿比例或新建采矿场。', turn, 8, '【智脑警告】');
+          resourceDropTurnsRef.current = 0;
+        }
+      } else {
+        resourceDropTurnsRef.current = 0;
+      }
+      prevResourceRef.current = earth.resource;
+
+      // 2. 威慑度危急检查（威慑纪元及以后）
+      if (g.epoch >= 1 && earth.deterrenceValue < 30) {
+        showTipWithCooldown('deterrence-low', '战略威慑度处于极危险低位！三体舰队进攻风险剧增。', turn, 5, '【智脑警告】');
+      }
+
+      // 3. 稳定度低警告
       let finishedTechs = 0;
       let totalTechs = 0;
       for (const tree of earth.tecTreeManager.trees.values()) {
@@ -72,23 +106,13 @@ export const ContextualTips: React.FC = () => {
       const cultureFactor = Math.min(25, (cul / 100) * 25);
       const stability = Math.max(5, Math.min(100, Math.floor(econFactor + armyFactor + popFactor + techFactor + cultureFactor + (40 - treacheryPenalty))));
 
-      if (stability < 50 && !stabilityWarnedRef.current) {
-        stabilityWarnedRef.current = true;
-        showTipOnce('stability-low', '稳定度归零将导致失败。');
+      if (stability < 40) {
+        showTipWithCooldown('stability-low', '社会稳定度已降至 40% 以下！稳定度归零将导致政权崩溃。', turn, 6, '【智脑警告】');
       }
 
-      // 纪元首次切换
+      // 4. 纪元切换
       if (prevEpochRef.current !== -1 && g.epoch !== prevEpochRef.current) {
-        showTipOnce('epoch-changed', '新纪元会带来新的事件、科技和生存问题。');
-        prevEpochRef.current = g.epoch;
-      }
-    };
-
-    // ── 纪元切换事件 ──
-    const handleEpochChanged = () => {
-      const g = GameInstance.get();
-      if (prevEpochRef.current !== -1 && g.epoch !== prevEpochRef.current) {
-        showTipOnce('epoch-changed', '新纪元会带来新的事件、科技和生存问题。');
+        showTipOnce(`epoch-${g.epoch}`, `已跨入新纪元。解锁全新战略目标与智脑数据库。`, '【纪元新篇】');
         prevEpochRef.current = g.epoch;
       }
     };
@@ -97,14 +121,12 @@ export const ContextualTips: React.FC = () => {
     window.addEventListener('change-active-view', handleViewChange);
     window.addEventListener('turn-blocked', handleTurnBlocked);
     window.addEventListener('game-turn-complete', handleTurnComplete);
-    window.addEventListener('epoch-changed', handleEpochChanged);
 
     return () => {
       window.removeEventListener('ap-insufficient', handleApInsufficient);
       window.removeEventListener('change-active-view', handleViewChange);
       window.removeEventListener('turn-blocked', handleTurnBlocked);
       window.removeEventListener('game-turn-complete', handleTurnComplete);
-      window.removeEventListener('epoch-changed', handleEpochChanged);
     };
   }, []);
 

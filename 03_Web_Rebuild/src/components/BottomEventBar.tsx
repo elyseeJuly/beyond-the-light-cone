@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { GameInstance } from '../core/Game';
 import { Terminal, Shield, RefreshCw, Cpu, Globe } from 'lucide-react';
+import { useTranslation } from '../utils/i18n';
 
 export const BottomEventBar: React.FC = () => {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
@@ -88,7 +90,7 @@ export const BottomEventBar: React.FC = () => {
           className="flex items-center gap-2.5 text-xs text-[var(--text-primary)] font-mono animate-fade-slide-up"
         >
           {getIcon(activeMessage)}
-          <span>{cleanMessage(activeMessage)}</span>
+          <span>{t(cleanMessage(activeMessage))}</span>
         </div>
       </div>
 

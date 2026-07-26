@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: 03_Web_Rebuild/package-lock.json
 
@@ -32,11 +32,25 @@ jobs:
         run: |
           TAG_VERSION="${GITHUB_REF#refs/tags/v}"
           PKG_VERSION=$(node -p "require('./package.json').version")
-          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "❌ Version mismatch: tag=v${TAG_VERSION} vs package.json=${PKG_VERSION}"
-            exit 1
-          fi
-          echo "✅ Version consistent: v${TAG_VERSION}"
+          LOCK_VERSION=$(node -p "require('./package-lock.json').version")
+          TAURI_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          CARGO_VERSION=$(node -e "const fs=require('fs'); const text=fs.readFileSync('./src-tauri/Cargo.toml','utf8'); const match=text.match(/^version = \"([^\"]+)\"/m); if (!match) process.exit(2); process.stdout.write(match[1])")
+          MANIFEST_VERSION=$(node -p "require('./public/asset_manifest.json').version")
+          for ENTRY in \
+            "package.json:${PKG_VERSION}" \
+            "package-lock.json:${LOCK_VERSION}" \
+            "tauri.conf.json:${TAURI_VERSION}" \
+            "Cargo.toml:${CARGO_VERSION}" \
+            "asset_manifest.json:${MANIFEST_VERSION}"
+          do
+            NAME="${ENTRY%%:*}"
+            VERSION="${ENTRY#*:}"
+            if [ "$TAG_VERSION" != "$VERSION" ]; then
+              echo "❌ Version mismatch: tag=v${TAG_VERSION} vs ${NAME}=${VERSION}"
+              exit 1
+            fi
+          done
+          echo "✅ All release versions consistent: v${TAG_VERSION}"
 
       - name: TypeScript type check
         run: npx tsc --noEmit
@@ -49,6 +63,9 @@ jobs:
 
       - name: Build for production
         run: npm run build
+
+      - name: Verify PWA release bundle
+        run: npm run verify:pwa-release
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -77,6 +94,7 @@ jobs:
       - name: Create web archive
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
+          printf '{"channel":"release"}\n' > dist/distribution.json
           cd dist
           zip -r "../beyond-the-light-cone-${VERSION}-web.zip" .
           cd ..
@@ -117,7 +135,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: 03_Web_Rebuild/package-lock.json
 
@@ -147,7 +165,6 @@ jobs:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
     needs: [build-web, build-tauri]
-    if: always() && needs.build-web.result == 'success'
 
     steps:
       - uses: actions/checkout@v4
@@ -159,14 +176,12 @@ jobs:
           path: artifacts/web-release/
 
       - name: Download Tauri artifacts (Windows)
-        if: needs.build-tauri.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: tauri-windows-x64
           path: artifacts/tauri-windows-x64/
 
       - name: Download Tauri artifacts (macOS)
-        if: needs.build-tauri.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: tauri-macos-arm64
@@ -185,6 +200,10 @@ jobs:
           find artifacts/tauri-macos-arm64 -type f -name "*.dmg" -exec cp {} release-assets/ \;
 
           ls -la release-assets/
+          test -n "$(find release-assets -maxdepth 1 -name '*.zip' -print -quit)"
+          test -n "$(find release-assets -maxdepth 1 -name '*.msi' -print -quit)"
+          test -n "$(find release-assets -maxdepth 1 -name '*.exe' -print -quit)"
+          test -n "$(find release-assets -maxdepth 1 -name '*.dmg' -print -quit)"
 
       - name: Extract release notes
         id: changelog
@@ -218,4 +237,4 @@ jobs:
           prerelease: ${{ steps.prerelease.outputs.prerelease == 'true' }}
           files: release-assets/*
           generate_release_notes: true
-          fail_on_unmatched_files: false
+          fail_on_unmatched_files: true

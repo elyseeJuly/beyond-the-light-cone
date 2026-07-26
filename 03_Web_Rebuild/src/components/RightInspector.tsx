@@ -4,13 +4,41 @@ import { GameInstance } from '../core/Game';
 import { Star } from '../core/Star';
 import { STAR_INDEX } from '../config/starIndices';
 import { EndingForecastPanel } from './ending/EndingForecastPanel';
+import { useTranslation } from '../utils/i18n';
 
 type TabType = 'overview' | 'build' | 'fleet' | 'history';
 
 export const RightInspector: React.FC = () => {
+  const { t, lang } = useTranslation();
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [, forceUpdate] = useState(0);
+
+  const game = GameInstance.get();
+  // Local states for sliders to prevent continuous AP drain on drag
+  const [localMiningRatio, setLocalMiningRatio] = useState(game.earthCivi.miningRatio);
+  const [localFactoryRatio, setLocalFactoryRatio] = useState(game.earthCivi.factoryRatio);
+  const [localCultureRatio, setLocalCultureRatio] = useState(game.earthCivi.cultureRatio);
+
+  useEffect(() => {
+    setLocalMiningRatio(game.earthCivi.miningRatio);
+    setLocalFactoryRatio(game.earthCivi.factoryRatio);
+    setLocalCultureRatio(game.earthCivi.cultureRatio);
+  }, [game.earthCivi.miningRatio, game.earthCivi.factoryRatio, game.earthCivi.cultureRatio]);
+
+  const commitRatio = (type: 'mining' | 'factory' | 'culture', newVal: number) => {
+    const earth = game.earthCivi;
+    const currentVal = type === 'mining' ? earth.miningRatio : type === 'factory' ? earth.factoryRatio : earth.cultureRatio;
+    const delta = newVal - currentVal;
+    if (delta !== 0) {
+      const success = earth.adjustWorkerRatio(type, delta);
+      if (!success) {
+        setLocalMiningRatio(earth.miningRatio);
+        setLocalFactoryRatio(earth.factoryRatio);
+        setLocalCultureRatio(earth.cultureRatio);
+      }
+    }
+  };
 
   useEffect(() => {
     const handleStarSelect = (e: Event) => {
@@ -39,7 +67,6 @@ export const RightInspector: React.FC = () => {
     };
   }, []);
 
-  const game = GameInstance.get();
   const star = selectedStar || (() => {
     const earth = game.starManager.getStar(STAR_INDEX.EARTH);
     return earth || null;
@@ -48,7 +75,7 @@ export const RightInspector: React.FC = () => {
   if (!star) {
     return (
       <aside className="sidebar-right w-full md:w-[320px] h-full bg-[#070B14]/75 backdrop-blur-[12px] border-l border-[#243245]/50 flex flex-col p-6 select-none shrink-0">
-        <p className="text-[var(--text-secondary)] text-sm font-mono">选择一颗星球以查看详情</p>
+        <p className="text-[var(--text-secondary)] text-sm font-mono">{t("选择一颗星球以查看详情")}</p>
       </aside>
     );
   }
@@ -120,7 +147,7 @@ export const RightInspector: React.FC = () => {
         <h2 className="text-xl font-extrabold text-white tracking-wide">{star.name}</h2>
         <div className="text-[10px] text-[var(--text-secondary)] flex items-center gap-1 font-mono">
           <Target size={10} className="stroke-[1.5]" />
-          <span>所属: {star.belongToCivi || "无主星域"} | 资源: {star.currentResource}/{star.totalResource}</span>
+          <span>{t("所属")}: {t(star.belongToCivi || "无主星域")} | {t("资源")}: {star.currentResource}/{star.totalResource}</span>
         </div>
       </div>
 
@@ -137,10 +164,10 @@ export const RightInspector: React.FC = () => {
                 : 'border-transparent text-[var(--text-secondary)] hover:text-white'
             }`}
           >
-            {tab === 'overview' && '概况'}
-            {tab === 'build' && '建设'}
-            {tab === 'fleet' && '舰队'}
-            {tab === 'history' && '历史'}
+            {tab === 'overview' && t('概况')}
+            {tab === 'build' && t('建设')}
+            {tab === 'fleet' && t('舰队')}
+            {tab === 'history' && t('历史')}
           </button>
         ))}
       </div>
@@ -151,16 +178,16 @@ export const RightInspector: React.FC = () => {
           <div className="space-y-4">
             <section className="space-y-2.5">
               <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-wider">
-                天体数据概要
+                {t("天体数据概要")}
               </div>
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="bg-[#070B14]/40 p-2.5 rounded border border-[#243245]/30">
-                  <div className="text-[9px] text-[var(--text-secondary)] uppercase">人口承载限额</div>
-                  <div className="text-sm font-bold font-data mt-0.5">{star.populationLimit} 万</div>
+                  <div className="text-[9px] text-[var(--text-secondary)] uppercase">{t("人口承载限额")}</div>
+                  <div className="text-sm font-bold font-data mt-0.5">{star.populationLimit} {lang === 'en' ? 'M' : '万'}</div>
                 </div>
                 <div className="bg-[#070B14]/40 p-2.5 rounded border border-[#243245]/30">
-                  <div className="text-[9px] text-[var(--text-secondary)] uppercase">常驻殖民人口</div>
-                  <div className="text-sm font-bold font-data mt-0.5">{star.currentPopulation} 万</div>
+                  <div className="text-[9px] text-[var(--text-secondary)] uppercase">{t("常驻殖民人口")}</div>
+                  <div className="text-sm font-bold font-data mt-0.5">{star.currentPopulation} {lang === 'en' ? 'M' : '万'}</div>
                 </div>
               </div>
             </section>
@@ -169,7 +196,7 @@ export const RightInspector: React.FC = () => {
               <>
                 <section className="space-y-2.5">
                   <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-wider">
-                    行政管理比重
+                    {t("行政管理比重")}
                   </div>
                   {(() => {
                     let stopeCount = 0;
@@ -195,28 +222,21 @@ export const RightInspector: React.FC = () => {
                         <div data-tutorial-id="mining-ratio-section" className={`space-y-1 p-1 rounded transition-colors ${miningShortage ? 'border border-orange-500/20 bg-orange-500/5' : ''}`}>
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${miningShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
-                              采矿占比: {earth.miningRatio}% (实际: {actualMiningPct}%)
-                              {miningShortage && ' (缺工)'}
+                              {t("采矿占比")}: {localMiningRatio}% ({t("实际")}: {actualMiningPct}%)
+                              {miningShortage && ` (${t("缺工")})`}
                             </span>
-                            <span className={`font-bold font-data ${miningShortage ? 'text-orange-400' : 'text-[var(--color-primary)]'}`}>{earth.miningWorkers}万人</span>
+                            <span className={`font-bold font-data ${miningShortage ? 'text-orange-400' : 'text-[var(--color-primary)]'}`}>{earth.miningWorkers}{lang === 'en' ? 'M' : '万人'}</span>
                           </div>
                           <input
                             type="range"
                             min="0"
                             max="100"
-                            value={earth.miningRatio}
+                            value={localMiningRatio}
                             onChange={(ev) => {
-                              const newVal = parseInt(ev.target.value, 10);
-                              const delta = newVal - earth.miningRatio;
-                              if (delta !== 0) {
-                                if (earth.adjustWorkerRatio('mining', delta)) {
-                                  // AP 消耗成功，比例已调整
-                                } else {
-                                  // AP 不足：回滚滑块视觉
-                                }
-                              }
-                              forceUpdate(n => n + 1);
+                              setLocalMiningRatio(parseInt(ev.target.value, 10));
                             }}
+                            onMouseUp={() => commitRatio('mining', localMiningRatio)}
+                            onTouchEnd={() => commitRatio('mining', localMiningRatio)}
                             className={`w-full h-1 rounded appearance-none cursor-pointer ${miningShortage ? 'bg-orange-950 accent-orange-500' : 'bg-cyan-950 accent-[var(--color-primary)]'}`}
                           />
                         </div>
@@ -224,53 +244,47 @@ export const RightInspector: React.FC = () => {
                         <div className={`space-y-1 p-1 rounded transition-colors ${factoryShortage ? 'border border-orange-500/20 bg-orange-500/5' : ''}`}>
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${factoryShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
-                              加工占比: {earth.factoryRatio}% (实际: {actualFactoryPct}%)
-                              {factoryShortage && ' (缺工)'}
+                              {t("加工占比")}: {localFactoryRatio}% ({t("实际")}: {actualFactoryPct}%)
+                              {factoryShortage && ` (${t("缺工")})`}
                             </span>
-                            <span className={`font-bold font-data ${factoryShortage ? 'text-orange-400' : 'text-emerald-400'}`}>{earth.factoryWorkers}万人</span>
+                            <span className={`font-bold font-data ${factoryShortage ? 'text-orange-400' : 'text-emerald-400'}`}>{earth.factoryWorkers}{lang === 'en' ? 'M' : '万人'}</span>
                           </div>
                           <input
                             type="range"
                             min="0"
                             max="100"
-                            value={earth.factoryRatio}
+                            value={localFactoryRatio}
                             onChange={(ev) => {
-                              const newVal = parseInt(ev.target.value, 10);
-                              const delta = newVal - earth.factoryRatio;
-                              if (delta !== 0) {
-                                earth.adjustWorkerRatio('factory', delta);
-                              }
-                              forceUpdate(n => n + 1);
+                              setLocalFactoryRatio(parseInt(ev.target.value, 10));
                             }}
+                            onMouseUp={() => commitRatio('factory', localFactoryRatio)}
+                            onTouchEnd={() => commitRatio('factory', localFactoryRatio)}
                             className={`w-full h-1 rounded appearance-none cursor-pointer ${factoryShortage ? 'bg-orange-950 accent-orange-500' : 'bg-emerald-950 accent-emerald-400'}`}
                           />
                         </div>
                         {/* Culture */}
                         <div className="space-y-1 p-1 rounded">
                           <div className="flex justify-between text-[11px] font-mono">
-                            <span className="text-[var(--text-secondary)]">文化占比: {earth.cultureRatio}% (实际: {actualCulturePct}%)</span>
-                            <span className="font-bold text-amber-400 font-data">{earth.cultureWorkers}万人</span>
+                            <span className="text-[var(--text-secondary)]">{t("文化占比")}: {localCultureRatio}% ({t("实际")}: {actualCulturePct}%)</span>
+                            <span className="font-bold text-amber-400 font-data">{earth.cultureWorkers}{lang === 'en' ? 'M' : '万人'}</span>
                           </div>
                           <input
                             type="range"
                             min="0"
                             max="100"
-                            value={earth.cultureRatio}
+                            value={localCultureRatio}
                             onChange={(ev) => {
-                              const newVal = parseInt(ev.target.value, 10);
-                              const delta = newVal - earth.cultureRatio;
-                              if (delta !== 0) {
-                                earth.adjustWorkerRatio('culture', delta);
-                              }
-                              forceUpdate(n => n + 1);
+                              setLocalCultureRatio(parseInt(ev.target.value, 10));
                             }}
+                            onMouseUp={() => commitRatio('culture', localCultureRatio)}
+                            onTouchEnd={() => commitRatio('culture', localCultureRatio)}
                             className="w-full h-1 bg-amber-950 rounded appearance-none cursor-pointer accent-amber-400"
                           />
                         </div>
                         {/* Idle workers */}
                         <div className="flex justify-between text-[10px] font-mono pt-1.5 border-t border-[#243245]/20 px-1">
-                          <span className="text-[var(--text-secondary)]">闲置科研与劳动力</span>
-                          <span className="font-bold text-slate-300 font-data">{earth.idleWorkers}万人</span>
+                          <span className="text-[var(--text-secondary)]">{t("闲置科研与劳动力")}</span>
+                          <span className="font-bold text-slate-300 font-data">{earth.idleWorkers}{lang === 'en' ? 'M' : '万人'}</span>
                         </div>
                       </div>
                     );
@@ -288,7 +302,7 @@ export const RightInspector: React.FC = () => {
         {activeTab === 'build' && (
           <div className="space-y-3">
             <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-wider">
-              轨道基础设施计划
+              {t("轨道基础设施计划")}
             </div>
             
             <button onClick={handleBuildStope} data-tutorial-id="btn-build-stope" className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
@@ -296,20 +310,12 @@ export const RightInspector: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <Pickaxe className={star.hasStope ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={16} />
                   <div>
-                    <div className="text-xs font-bold text-white">{star.hasStope ? '✅ 资源采矿场 已就绪' : star.buildingProgress?.stope ? '🔨 采矿场建造中' : '➕ 筹建采矿场'}</div>
-                    {!star.hasStope && !star.buildingProgress?.stope && <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">消耗 30 经济 | 预估 5 回合</div>}
+                    <div className="text-xs font-bold text-white">{star.hasStope ? t('资源采矿场 已就绪') : star.buildingProgress?.stope ? t('采矿场建造中') : t('筹建采矿场')}</div>
+                    {!star.hasStope && !star.buildingProgress?.stope && <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">{t("消耗 30 经济 | 预估 5 回合")}</div>}
                   </div>
                 </div>
                 {!star.hasStope && !star.buildingProgress?.stope && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-primary)]" size={14} />}
               </div>
-              {star.buildingProgress?.stope && !star.hasStope && (
-                <div className="w-full mt-2">
-                  <div className="h-1 bg-white/10 rounded overflow-hidden">
-                    <div className="h-full bg-[var(--color-primary)] transition-all" style={{ width: `${(star.buildingProgress.stope.currentBuild / star.buildingProgress.stope.totalBuild) * 100}%` }} />
-                  </div>
-                  <div className="text-[8px] text-[var(--text-secondary)] mt-0.5 font-mono">建造进度 {Math.floor((star.buildingProgress.stope.currentBuild / star.buildingProgress.stope.totalBuild) * 100)}%</div>
-                </div>
-              )}
             </button>
 
             <button onClick={handleBuildFactory} data-tutorial-id="btn-build-factory" className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
@@ -317,20 +323,12 @@ export const RightInspector: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <Factory className={star.hasFactory ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={16} />
                   <div>
-                    <div className="text-xs font-bold text-white">{star.hasFactory ? '✅ 工业加工厂 已就绪' : star.buildingProgress?.factory ? '🔨 加工厂建造中' : '➕ 筹建加工厂'}</div>
-                    {!star.hasFactory && !star.buildingProgress?.factory && <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">消耗 50 经济 | 预估 6 回合</div>}
+                    <div className="text-xs font-bold text-white">{star.hasFactory ? t('工业加工厂 已就绪') : star.buildingProgress?.factory ? t('加工厂建造中') : t('筹建加工厂')}</div>
+                    {!star.hasFactory && !star.buildingProgress?.factory && <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">{t("消耗 50 经济 | 预估 6 回合")}</div>}
                   </div>
                 </div>
                 {!star.hasFactory && !star.buildingProgress?.factory && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-primary)]" size={14} />}
               </div>
-              {star.buildingProgress?.factory && !star.hasFactory && (
-                <div className="w-full mt-2">
-                  <div className="h-1 bg-white/10 rounded overflow-hidden">
-                    <div className="h-full bg-[var(--color-primary)] transition-all" style={{ width: `${(star.buildingProgress.factory.currentBuild / star.buildingProgress.factory.totalBuild) * 100}%` }} />
-                  </div>
-                  <div className="text-[8px] text-[var(--text-secondary)] mt-0.5 font-mono">建造进度 {Math.floor((star.buildingProgress.factory.currentBuild / star.buildingProgress.factory.totalBuild) * 100)}%</div>
-                </div>
-              )}
             </button>
 
             <button onClick={handleBuildCity} data-tutorial-id="btn-build-city" className="w-full flex flex-col p-3 rounded bg-[#070B14]/40 border border-[#243245]/30 hover:border-[var(--color-primary)] hover:bg-[#070B14]/60 transition-all group cursor-pointer text-left">
@@ -338,20 +336,12 @@ export const RightInspector: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <Building className={star.hasCity ? "text-[var(--color-primary)]" : "text-[var(--text-secondary)]"} size={16} />
                   <div>
-                    <div className="text-xs font-bold text-white">{star.hasCity ? '✅ 太空星港城市 已就绪' : star.buildingProgress?.city ? '🔨 城市工程推进中' : '➕ 筹建太空城市'}</div>
-                    {!star.hasCity && !star.buildingProgress?.city && <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">消耗 80 经济 | 预估 7 回合</div>}
+                    <div className="text-xs font-bold text-white">{star.hasCity ? t('太空星港城市 已就绪') : star.buildingProgress?.city ? t('城市工程推进中') : t('筹建太空城市')}</div>
+                    {!star.hasCity && !star.buildingProgress?.city && <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">{t("消耗 80 经济 | 预估 7 回合")}</div>}
                   </div>
                 </div>
                 {!star.hasCity && !star.buildingProgress?.city && <ArrowUpCircle className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-primary)]" size={14} />}
               </div>
-              {star.buildingProgress?.city && !star.hasCity && (
-                <div className="w-full mt-2">
-                  <div className="h-1 bg-white/10 rounded overflow-hidden">
-                    <div className="h-full bg-[var(--color-primary)] transition-all" style={{ width: `${(star.buildingProgress.city.currentBuild / star.buildingProgress.city.totalBuild) * 100}%` }} />
-                  </div>
-                  <div className="text-[8px] text-[var(--text-secondary)] mt-0.5 font-mono">建造进度 {Math.floor((star.buildingProgress.city.currentBuild / star.buildingProgress.city.totalBuild) * 100)}%</div>
-                </div>
-              )}
             </button>
           </div>
         )}
@@ -359,16 +349,16 @@ export const RightInspector: React.FC = () => {
         {activeTab === 'fleet' && (
           <div className="space-y-3">
             <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-wider">
-              驻防与轨道防御力量
+              {t("驻防与轨道防御力量")}
             </div>
             
             <div className="bg-[#070B14]/40 p-3 rounded border border-[#243245]/30 space-y-2">
               <div className="flex justify-between items-center text-xs font-mono">
-                <span className="text-[var(--text-secondary)]">驻守舰队数量</span>
-                <span className="text-white font-bold">{earth.fleets.filter(f => f.targetStarIndex === star.index || f.sourceStarIndex === star.index).length} 支</span>
+                <span className="text-[var(--text-secondary)]">{t("驻守舰队数量")}</span>
+                <span className="text-white font-bold">{earth.fleets.filter(f => f.targetStarIndex === star.index || f.sourceStarIndex === star.index).length}</span>
               </div>
               <div className="flex justify-between items-center text-xs font-mono">
-                <span className="text-[var(--text-secondary)]">当前总威慑度</span>
+                <span className="text-[var(--text-secondary)]">{t("当前总威慑度")}</span>
                 <span className="text-red-400 font-bold">{Math.floor(earth.deterrenceValue)}%</span>
               </div>
             </div>
@@ -380,8 +370,8 @@ export const RightInspector: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Rocket className="text-[var(--color-primary)]" size={16} />
                 <div className="text-left">
-                  <div className="text-xs font-bold text-white">进入舰队指挥中心</div>
-                  <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">调配、部署及补充战斗编制</div>
+                  <div className="text-xs font-bold text-white">{t("进入舰队指挥中心")}</div>
+                  <div className="text-[9px] text-[var(--text-secondary)] mt-0.5">{t("调配、部署及补充战斗编制")}</div>
                 </div>
               </div>
             </button>
@@ -391,19 +381,18 @@ export const RightInspector: React.FC = () => {
         {activeTab === 'history' && (
           <div className="space-y-3 text-xs font-mono text-[var(--text-secondary)] leading-relaxed">
             <div className="text-[10px] font-title font-bold text-[var(--color-primary)] uppercase tracking-wider">
-              文明观测与档案纪实
+              {t("文明观测与档案纪实")}
             </div>
             {isEarth ? (
               <div className="bg-[#070B14]/40 p-3 rounded border border-[#243245]/30 space-y-2">
-                <div className="text-white font-bold">【母星历史记录】</div>
+                <div className="text-white font-bold">{t("【母星历史记录】")}</div>
                 <p>自大低谷期与公元纪元结束以来，地球作为人类文明的绝对摇篮与联合政府心脏，已进入「危机纪元」。</p>
                 <p>本行政星拥有人类最古老的遗存，也是各大面壁工程与防御阵地的战术中枢。</p>
               </div>
             ) : (
               <div className="bg-[#070B14]/40 p-3 rounded border border-[#243245]/30 space-y-2">
-                <div className="text-white font-bold">【殖民档案记载】</div>
+                <div className="text-white font-bold">{t("【殖民档案记载】")}</div>
                 <p>探测并建立该星港的前哨基地。根据银河星图指令，此星球已被划分为人类太空防御战术外围支点。</p>
-                <p>随着人口迁徙工程（当前人口：{star.currentPopulation}万），它将为联合政府提供充足的深空矿物输出。</p>
               </div>
             )}
           </div>
@@ -413,13 +402,13 @@ export const RightInspector: React.FC = () => {
       {/* Mini Bottom Tracker */}
       <div className="mt-auto pt-4 border-t border-[#243245]/30 shrink-0">
         <div className="flex justify-between items-center mb-2 font-mono">
-          <span className="text-[10px] font-bold uppercase text-[var(--text-secondary)]">执政舰队规模</span>
-          <span className="text-xs font-data font-bold text-white">{earth.fleets.length} 支</span>
+          <span className="text-[10px] font-bold uppercase text-[var(--text-secondary)]">{t("执政舰队规模")}</span>
+          <span className="text-xs font-data font-bold text-white">{earth.fleets.length}</span>
         </div>
         <div className="h-1 w-full bg-white/10 rounded overflow-hidden">
           <div className="h-full bg-[var(--color-primary)] transition-all" style={{ width: `${Math.min(earth.deterrenceValue, 100)}%` }} />
         </div>
-        <div className="text-[9px] font-mono text-right text-[var(--text-secondary)] mt-1">全局战略威慑平衡: {Math.floor(earth.deterrenceValue)}%</div>
+        <div className="text-[9px] font-mono text-right text-[var(--text-secondary)] mt-1">{t("全局战略威慑平衡")}: {Math.floor(earth.deterrenceValue)}%</div>
       </div>
     </aside>
   );

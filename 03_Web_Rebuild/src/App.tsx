@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense, lazy } from 'react';
 import { TopHUD } from './components/TopHUD';
 import { LeftHub, ActiveViewType } from './components/LeftHub';
 import { RightInspector } from './components/RightInspector';
@@ -21,6 +21,8 @@ import { useBreakpoint } from './hooks/useBreakpoint';
 import { Toast } from './components/common/Toast';
 import { ContextualTips } from './components/ContextualTips';
 import { BeginnerTasks } from './components/BeginnerTasks';
+import { AdvisorPanel } from './components/AdvisorPanel';
+import { isTutorialCompleted, markTutorialCompleted, resetTutorialProgress } from './components/tutorial/tutorialProgress';
 
 // 重型模态组件按路由/交互懒加载，降低首屏 index chunk 体积
 const StoryModal = lazy(() => import('./components/StoryModal').then(m => ({ default: m.StoryModal })));
@@ -35,6 +37,8 @@ const GameCoverScreen = lazy(() => import('./components/GameCoverScreen').then(m
 const AssetDownloadPromptModal = lazy(() => import('./components/AssetDownloadPromptModal').then(m => ({ default: m.AssetDownloadPromptModal })));
 import { SaveManager } from './core/SaveManager';
 import { assetLoader } from './core/AssetLoader';
+import { shouldPromptForAssetDownload } from './core/AssetDownloadPolicy';
+import { supportsSegmentedAssetDownloads } from './core/DistributionChannel';
 
 const LazyFallback: React.FC = () => (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#070B14]/80" />
@@ -65,7 +69,23 @@ export const App: React.FC = () => {
   const [currentEpoch, setCurrentEpoch] = useState(0);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [showDownloadPrompt, setShowDownloadPrompt] = useState(false);
+
+  const remindAssetDownloadIfNeeded = useCallback(() => {
+    const stats = assetLoader.getStats();
+    const promptSeen = localStorage.getItem('game-assets-prompt-seen') === 'true';
+    if (shouldPromptForAssetDownload(stats.pendingPacks.length, promptSeen)) {
+      setShowDownloadPrompt(true);
+    }
+  }, []);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'audio' | 'storage'>('audio');
+
+  // 稳定的教程完成回调：避免内联函数在每次渲染时变化，导致 Tutorial 内部
+  // 依赖 onComplete 的 useEffect 反复重运行（曾导致 resolve-event 步骤的
+  // 测试事件被反复注入、StoryModal 关闭后又重新弹出）
+  const handleTutorialComplete = useCallback(() => {
+    setShowTutorial(false);
+    remindAssetDownloadIfNeeded();
+  }, [remindAssetDownloadIfNeeded]);
 
   const atmosphereEngineRef = useRef<any>(null);
   const bp = useBreakpoint();
@@ -76,7 +96,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     preloadCoreImages();
     const handleOpenTutorial = () => {
-      if (localStorage.getItem('game-tutorial-seen') !== 'true') {
+      if (!isTutorialCompleted()) {
         setShowTutorial(true);
       }
     };
@@ -432,15 +452,13 @@ export const App: React.FC = () => {
                   GameInstance.reset();
                   GameInstance.get().earthCivi.isAiBrainEnabled = enableAiBrain;
                   if (!withTutorial) {
-                    localStorage.setItem('game-tutorial-seen', 'true');
-                    const stats = assetLoader.getStats();
-                    const hasPending = stats.pendingPacks.length > 0;
-                    const seenPrompt = localStorage.getItem('game-assets-prompt-seen') === 'true';
-                    if (hasPending && !seenPrompt) {
-                      setShowDownloadPrompt(true);
-                    }
+                    markTutorialCompleted();
+                    remindAssetDownloadIfNeeded();
                   } else {
-                    localStorage.removeItem('game-tutorial-seen');
+                    resetTutorialProgress();
+                    // 立即启动教程，不等 GameInstance.reset() 内部 500ms 延迟的 open-tutorial 事件
+                    // 避免封面消失后玩家面对裸露游戏界面无所适从
+                    setShowTutorial(true);
                   }
                   setShowCoverScreen(false);
                 }}
@@ -448,12 +466,16 @@ export const App: React.FC = () => {
                   const success = GameInstance.loadGame();
                   if (success) {
                     setShowCoverScreen(false);
+                    remindAssetDownloadIfNeeded();
                   } else {
                     alert('无法读取存档！');
                   }
                 }}
                 onOpenMuseum={() => {
                   setShowMuseum(true);
+                }}
+                onOpenSettings={() => {
+                  setShowSettings(true);
                 }}
               />
             )}
@@ -468,16 +490,8 @@ export const App: React.FC = () => {
               />
             )}
             {showTutorial && (
-              <Tutorial 
-                onComplete={() => {
-                  setShowTutorial(false);
-                  const stats = assetLoader.getStats();
-                  const hasPending = stats.pendingPacks.length > 0;
-                  const seenPrompt = localStorage.getItem('game-assets-prompt-seen') === 'true';
-                  if (hasPending && !seenPrompt) {
-                    setShowDownloadPrompt(true);
-                  }
-                }} 
+              <Tutorial
+                onComplete={handleTutorialComplete}
               />
             )}
             {unlockedTech && <TechUnlockModal tech={unlockedTech} onClose={() => setUnlockedTech(null)} />}
@@ -506,13 +520,14 @@ export const App: React.FC = () => {
           </Suspense>
 
           {/* PWA Components */}
-          <UpdatePrompt />
+          {supportsSegmentedAssetDownloads() && <UpdatePrompt />}
           <Suspense fallback={null}>
             <OrientationPrompt />
           </Suspense>
           <Toast />
           <ContextualTips />
-          {!showTutorial && !showCoverScreen && localStorage.getItem('game-tutorial-seen') === 'true' && <BeginnerTasks />}
+          <AdvisorPanel />
+          {!showTutorial && !showCoverScreen && isTutorialCompleted() && <BeginnerTasks />}
 
           {/* Legacy Modal System Bridge */}
           <div id="modal-container" className="modal-overlay hidden">

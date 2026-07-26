@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Brain, Zap } from 'lucide-react';
 import { GameInstance } from '../core/Game';
+import { useTranslation } from '../utils/i18n';
 
 interface TopHUDStatItemProps {
   icon: React.ReactNode;
@@ -29,6 +30,7 @@ const TopHUDStatItem: React.FC<TopHUDStatItemProps> = ({ icon, label, value, col
 };
 
 export const TopHUD: React.FC = () => {
+  const { t, lang } = useTranslation();
   const [showStabilityDropdown, setShowStabilityDropdown] = useState(false);
   const [showDeterrenceDropdown, setShowDeterrenceDropdown] = useState(false);
 
@@ -77,6 +79,7 @@ export const TopHUD: React.FC = () => {
   const apCurrent = earth.apCurrent;
   const isAiBrainEnabled = earth.isAiBrainEnabled;
   const isTutorialActive = typeof window !== 'undefined' && (window as any).isTutorialActive;
+  const currentTutorialStepId = typeof window !== 'undefined' && (window as any).currentTutorialStepId;
   const turnBlockers = (isAiBrainEnabled || isTutorialActive) ? [] : game.getTurnBlockers();
   const turnWarnings = (isAiBrainEnabled || isTutorialActive) ? [] : game.getTurnWarnings();
 
@@ -108,7 +111,7 @@ export const TopHUD: React.FC = () => {
   const stats = {
     year: game.year,
     epoch: game.epoch,
-    epochName: epochNames[game.epoch] || "未知纪元",
+    epochName: t(epochNames[game.epoch] || "未知纪元"),
     epochNameEn: epochNamesEn[game.epoch] || "UNKNOWN ERA",
     pop,
     eco,
@@ -174,7 +177,7 @@ export const TopHUD: React.FC = () => {
         <div data-tutorial-id="top-hud-stability" className="relative" ref={dropdownRef}>
           <TopHUDStatItem 
             icon={<Landmark className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5]" />}
-            label="稳定度"
+            label={t("稳定度")}
             value={`${stats.stability}%`}
             colorClass={stabilityColor}
             onClick={() => setShowStabilityDropdown(!showStabilityDropdown)}
@@ -183,30 +186,30 @@ export const TopHUD: React.FC = () => {
           {showStabilityDropdown && (
             <div className="absolute top-[52px] left-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
               <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-2 uppercase tracking-wider">
-                文明发展指标详情
+                {t("文明发展指标详情")}
               </div>
               <div className="space-y-2 text-xs font-mono">
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">经济指数</span>
+                  <span className="text-[var(--text-secondary)]">{t("经济指数")}</span>
                   <span className="text-white font-bold">{stats.eco}</span>
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">文化资产</span>
+                  <span className="text-[var(--text-secondary)]">{t("文化资产")}</span>
                   <span className="text-white font-bold">{stats.cul}</span>
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">科技研发度</span>
+                  <span className="text-[var(--text-secondary)]">{t("科技研发度")}</span>
                   <span className="text-white font-bold">{stats.techProgress}%</span>
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">逃亡系数</span>
+                  <span className="text-[var(--text-secondary)]">{t("逃亡系数")}</span>
                   <span className={`${stats.treachery > 50 ? 'text-red-400' : 'text-white'} font-bold`}>
                     {stats.treachery}%
                   </span>
                 </div>
               </div>
               <div className="text-[9px] text-[var(--text-secondary)] leading-relaxed mt-2.5 italic border-t border-[#243245]/40 pt-2">
-                * 稳定度决定文明生命线，当稳定度降为零时文明将被判定终结。
+                {t("1. 稳定度代表你文明生命线的健康度，低于 30% 时面临极高崩溃风险。")}
               </div>
             </div>
           )}
@@ -215,21 +218,21 @@ export const TopHUD: React.FC = () => {
         {/* Population — always visible */}
         <TopHUDStatItem 
           icon={<Users className="w-3.5 h-3.5 stroke-[1.5]" />}
-          label="人口"
+          label={t("人口")}
           value={`${stats.pop}M`}
         />
 
         {/* Resources — always visible */}
         <TopHUDStatItem 
           icon={<Gem className="w-3.5 h-3.5 stroke-[1.5]" />}
-          label="资源"
+          label={t("资源")}
           value={stats.res}
         />
 
         {/* Army — always visible */}
         <TopHUDStatItem 
           icon={<Swords className="w-3.5 h-3.5 stroke-[1.5]" />}
-          label="军力"
+          label={t("军力")}
           value={stats.army}
         />
 
@@ -237,7 +240,7 @@ export const TopHUD: React.FC = () => {
         <div className="relative" ref={deterrenceDropdownRef}>
           <TopHUDStatItem 
             icon={<AlertTriangle className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5]" />}
-            label="威慑度"
+            label={t("威慑度")}
             value={`${stats.deterrence}%`}
             colorClass="text-red-400"
             onClick={() => setShowDeterrenceDropdown(!showDeterrenceDropdown)}
@@ -246,20 +249,17 @@ export const TopHUD: React.FC = () => {
           {showDeterrenceDropdown && (
             <div className="absolute top-[52px] right-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
               <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-2 uppercase tracking-wider">
-                战略威慑指标详情
+                {t("全息战略威慑指标详情")}
               </div>
               <div className="space-y-2 text-xs font-mono">
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">防卫军力</span>
+                  <span className="text-[var(--text-secondary)]">{t("防卫军力")}</span>
                   <span className="text-white font-bold">{stats.army}</span>
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
-                  <span className="text-[var(--text-secondary)]">在位执剑人</span>
-                  <span className="text-white font-bold">{stats.swordholder || '空缺'}</span>
+                  <span className="text-[var(--text-secondary)]">{t("在位执剑人")}</span>
+                  <span className="text-white font-bold">{t(stats.swordholder || '空缺')}</span>
                 </div>
-              </div>
-              <div className="text-[9px] text-[var(--text-secondary)] leading-relaxed mt-2.5 italic border-t border-[#243245]/40 pt-2">
-                * 威慑度代表引力波发射塔与执剑人对三体的震慑能力。
               </div>
             </div>
           )}
@@ -272,7 +272,7 @@ export const TopHUD: React.FC = () => {
           {stats.epochNameEn}
         </span>
         <span className="text-xs md:text-lg font-extrabold tracking-widest text-[var(--text-primary)] mt-0.5">
-          {stats.epochName} · 第 {stats.year} 年
+          {stats.epochName} · {lang === 'en' ? `Year ${stats.year}` : `第 ${stats.year} 年`}
         </span>
       </div>
 
@@ -289,42 +289,50 @@ export const TopHUD: React.FC = () => {
           </div>
         </div>
 
+        {/* AI Advisor Button — always visible */}
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-advisor-panel'))}
+          data-tutorial-id="btn-ai-advisor"
+          className="flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-500/20 text-cyan-300 text-[10px] md:text-xs transition-colors cursor-pointer"
+          title={t("智脑顾问")}
+        >
+          <Brain className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5] text-cyan-400" />
+          <span className="font-title font-bold hidden md:inline">{t("智脑顾问")}</span>
+        </button>
+
         {/* AI Brain Toggle — always visible */}
         <button
           onClick={toggleAiBrain}
           data-tutorial-id="btn-ai-brain"
-          className={`flex items-center gap-1 px-1.5 md:px-3 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors cursor-pointer ${
+          className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors cursor-pointer ${
             stats.isAiBrainEnabled
-              ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300'
+              ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
               : 'bg-gray-800/50 border-gray-600/50 text-gray-400'
           }`}
-          title={stats.isAiBrainEnabled ? 'AI智脑托管中 - 点击切换手动模式' : '手动模式 - 点击切换AI托管'}
+          title={stats.isAiBrainEnabled ? t("智脑托管") : t("手动")}
         >
-          <Brain className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5]" />
           <span className="font-title font-bold hidden md:inline">
-            {stats.isAiBrainEnabled ? '智脑托管' : '手动'}
+            {stats.isAiBrainEnabled ? t("智脑托管") : t("手动")}
           </span>
         </button>
 
         {/* Next Turn Button — always visible */}
         <button
           onClick={handleNextTurn}
-          disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0)}
+          disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) || (isTutorialActive && currentTutorialStepId !== 'next-turn')}
           data-tutorial-id="btn-next-turn"
           className={`btn-next-turn flex items-center gap-1 md:gap-2 text-[10px] md:text-xs ${
-            (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0))
+            (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) || (isTutorialActive && currentTutorialStepId !== 'next-turn'))
               ? 'opacity-40 cursor-not-allowed pointer-events-none'
               : stats.turnWarnings.length > 0
                 ? 'cursor-pointer text-amber-400 animate-pulse'
                 : 'cursor-pointer'
           }`}
-          title={
-            !stats.isAiBrainEnabled && stats.turnBlockers.length > 0 ? stats.turnBlockers[0] :
-            !stats.isAiBrainEnabled && stats.turnWarnings.length > 0 ? stats.turnWarnings[0] : ''
-          }
         >
           <span className="font-title font-bold tracking-wider">
-            {stats.hasEvent ? "同步逻辑中" : (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) ? "有阻断" : "下一回合"}
+            {stats.hasEvent ? t("同步逻辑中") : 
+             (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) ? t("有阻断") : 
+             (isTutorialActive && currentTutorialStepId !== 'next-turn') ? t("教程指引中") : t("下一回合")}
           </span>
           <SkipForward size={12} className="md:size-[14] stroke-[2.5]" />
         </button>
@@ -332,3 +340,4 @@ export const TopHUD: React.FC = () => {
     </header>
   );
 };
+

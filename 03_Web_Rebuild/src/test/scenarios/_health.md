@@ -1,8 +1,8 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-07-13
+> 最后审视：2026-07-26
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 8 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 9 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
@@ -12,12 +12,21 @@
 | 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
 | 性能 | 1000事件压力测试 | 🟢 | 通过 | 持续关注长局内存与性能表现 |
 | 内容 | 设计文档 vs 代码一致性 | 🟢 | 已解决 | 原 3 处偏离 (D01-D03) 已通过 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 确认为权威设计，并编写 SCEN-DESIGN-DRIFT 17 项验证测试 |
-| DevOps | Release流水线 | 🟢 | Tag-Driven 自动化 | .github/workflows/release.yml（4Job：gate→build-web+build-tauri→publish-release）+ tools/extract-changelog.sh + tools/sync-version.sh |
+| DevOps | PWA/Release发布流水线 | 🟢 | v1.0.6 六处版本一致；稳定版要求 Web + Windows + macOS 全产物 | static.yml 构建并校验 PWA bundle、部署后在线核验 manifest；release.yml 在 ZIP、MSI、EXE、DMG 全部成功后才发布稳定版 |
 | 架构 | 资产按需下载功能 | 🟢 | 已接入主循环 | AssetLoader.downloadEraPack + preloadNextEra 已接入 Game.ts 纪元更替生命周期；manifest 分类覆盖率 99.3%（uncategorized 从 41% 降至 0.7%） |
+| 架构 | 发行渠道资源策略 | 🟢 | Release/PWA 已分流 | Web Release 由 distribution.json 标记、Tauri 由运行时识别；Release随包资源直接可用，PWA 保留进入提醒与分段缓存 |
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
-| UI | 新手教程可用性 | 🟢 | 5 步架构 + 误触修复 | 教程从 12 步简化为 4 步核心操作 + 1 步欢迎页；修复 5 个误触根因（高亮框 40px→110px 覆盖 60px 命中区、单一 hotspot 替代 4 块遮罩接缝、focusOnStar 自动居中地球、移动端缩放修正、pulse 呼吸光环视觉引导）；阻断器新增 3 回合宽限期（科研停滞与部门空缺降级为警告）；新增一次性情境提示与可选新手任务清单 |
+| UI | 新手教程与智脑顾问 | 🟢 | 序幕 + 8 步真实交互 + 任务链 + 战术百科 | 欢迎页手动启程；选中地球、建造、劳力调配、研发与回合推进均由真实玩家交互驱动；常驻 AdvisorPanel 支持搜索，MissionLog 支持分阶段解锁与手动领奖。 |
 
 ## 审视日志
+- 2026-07-26: v1.0.6 发布审视——修复教程地球按钮因父级 `pointer-events-none` 无法真实点击、851×390 等短横屏下封面新教程按钮被页头覆盖、采矿劳力滑块测试只改 DOM 未提交游戏状态三项问题；版本号统一到 package、lockfile、Tauri、Cargo、资源清单与 Service Worker 缓存；稳定 Release 改为 Web ZIP、Windows MSI/EXE、macOS DMG 缺一不可。验证结果：1089 项单测通过、覆盖率门禁通过、生产构建与 PWA 契约通过、Cargo 检查通过、Chromium 22/22 及 Firefox/WebKit/mobile-safari 风险集 36/36 通过。
+- 2026-07-24: 批量提取脚本与全量英文本地化闭环——使用 Node 批量脚本（`batch_localize.cjs`）扫描修补 `MuseumGallery.tsx`、`AssetDownloadPromptModal.tsx`、`AnnouncementBoard.tsx` 等遗留组件中的硬编码中文与未包 `t()` 的渲染字段；补充 `i18n.ts` 的 `enDictionary` 中的 CG 绝密事件、按钮与系统提示词条。全量 734 项单元测试与 TypeScript 0 报错验证通过。
+- 2026-07-24: 教程体验深度优化与主页设置实装——①新增主菜单「游戏设置」入口，能够直接唤醒 `SettingsModal` 进行音频/教程重置；②优化新手教程遮罩透明度（bg-[#050810]/65 和 /80 -> /20 和 /30），降低暗度使游戏页面背景与功能更加清晰可见；③修复拖动滑块不断触发 AP 消耗（导致 100AP 瞬间归零）的严重 bug，重构 `RightInspector.tsx` 占比滑块为拖动时仅改变本地状态，鼠标释放时才单次触发 `adjustWorkerRatio` 并消耗 AP；④教程进程下 `canSpendAP` 始终返回 `true`，并在科技研发步骤启动时自动防御性为玩家补足 50 AP，且在非 `next-turn` 步骤锁定并禁用「下一回合」按钮，防止玩家误触导致 AP/数据状态跑偏。
+- 2026-07-24: 全文本英文本地化全量完成——完成核心 UI 界面、科技树节点、部门政策、情报外交、星际遭遇战、面壁者/执剑人控制台、智脑百科、岁月史书、文明博物馆、8 步新手教程、任务日志、危机警报与 32 个终局结局的英文字典封装。所有专有名词及角色译名与刘宇昆（Ken Liu）翻译的《三体》英文版（The Three-Body Problem）保持完全一致。全量 734 项单元测试与 TypeScript 0 报错验证通过。
+- 2026-07-23: 教程防卡死优化与主界面国际化适配——①新手教程第一步「选中地球」重构为自动选中机制，玩家进入时自动定位并程序化触发选中，消除 Canvas 偏置导致的“点不中”死锁，并增加手动「下一步」按钮平滑推进；②主界面国际化适配，引入 `useTranslation` 翻译包装了 `TopHUD.tsx` 与 `GameCoverScreen.tsx` 中的关键说明文本、指标名称以及指示说明，并支持按语言自适应格式化纪元年份（如危机纪元第X年 vs Crisis Era Year X）。单元测试与类型检查全部通过。
+- 2026-07-22: PWA 发布闭环——定位到线上 GitHub Pages 仍停留 v1.0.3 的原因是 v1.0.4 尚在工作分支、Pages 仅监听 main。新增 PWA bundle 版本契约校验与部署后在线 manifest 核验，确保 main 合并后的 Pages 版本可证；更新提示展示当前/目标版本。下载版仍需显式 v* tag，避免普通 main 提交误发安装包。
+- 2026-07-22: 智脑顾问与新手引导体系重构——主菜单移除托管开关并替换为「智脑顾问 (游戏百科)」面板入口，游戏内 HUD 智脑托管与百科入口双重保留；教程升级为 9 步开机校准流程，补齐判断逻辑并提供「下一步/完成校准」三态按钮；应对危机步骤在队列为空时自动注入专属测试事件；重构新手任务为随纪元渐进解锁并可手动领奖的任务日志 (`MissionLog.tsx`)；重构 tips 为具备冷却机制的智脑警告，以统一 `session:` 前缀规范清理跨周目 LocalStorage 污染。同步修复封面与百科面板的版本号为动态引用，以及采矿场完成后教程未等待实际劳力调配便跳过步骤的回归。全量 1069 项单元测试通过。
+- 2026-07-18: Release/PWA 资源交付策略修复——完整资源 Web/Tauri Release 不再沿用 PWA 的 IndexedDB 下载判定，不显示约 370MB 伪下载提示，不重复 fetch 随包资源；PWA 在无教程新游戏、教程完成或继续存档进入时统一检查并提醒尚未缓存的扩展包。Service Worker 排除发行渠道标记缓存，防止 Release 被构建期默认值误判。Tauri 版本同步至 1.0.3。新增 SCEN-DISTRIBUTION-ASSET-POLICY 4 项回归测试；全量 1078 项测试、生产构建与 Chromium 双渠道实测通过。总体健康保持 🟢（0🔴/1🟡/9🟢）。
 - 2026-07-13: 新手教程误触修复与重设计——教程从 12 步精简为 4 步核心操作 + 1 步欢迎页（5 步架构）。修复 5 个误触根因：①教程高亮框 40px 扩大到 110px 覆盖 StarMapRenderer 60px 命中区；②步骤 1 用单一 `<button>` hotspot 替代 4 块分块遮罩消除接缝漏点；③StarMapRenderer 新增 `focusOnStar()` 自动居中地球到屏幕中央并缩放 1.5x；④StarMapRenderer 新增 `setTutorialPulse()` 呼吸光环视觉引导；⑤移动端 landscape 缩放纳入 hotspot 物理像素换算。同步实现阻断器 3 回合宽限期（前 3 回合科研停滞与部门空缺降级为警告不阻断）、一次性情境提示（ContextualTips 组件）、可选新手任务清单（BeginnerTasks 组件）。新增 SCEN-TUTORIAL-WELCOME/SCEN-TUTORIAL-STEP1-HOTSPOT/SCEN-TUTORIAL-STEP1-FOCUS-EARTH 三个场景测试。全量 1074 测试通过。"新手教程可用性"维度新增为 🟢。总体健康 🟢（0🔴/1🟡/8🟢）。
 - 2026-07-12: AP 系统回路闭合 + 星图点击 + 军事部星舰入口 —— 依据 SPEC_20260712_AP_SYSTEM_REDESIGN 完成 AP 系统重设计：基础恢复 30→5、AP 不累加跨回合、新增纪元加成（危机+10/威慑+20/掩体-10）；recoverAP 提前至 Game.runARound 入口避免阻断死锁；getTurnBlockers 补全科研停滞和行政瘫痪两项阻断器；runAIBrain 4 处直接赋值改走 spendAP 半价；UI 层 RightInspector 3 处滑块和 TecTreeView 科研指派接入 AP 消耗。同步修复星图地球点击命中半径（桌面端从 15.6px 提升至 60px，与移动端对齐）和军事部增加星舰建造入口（与地球 FleetModal 打通）。8 场景建模验证无死锁，全量 1045 测试通过。"AP 系统回路闭合"维度新增为 🟢。总体健康 🟢（0🔴/1🟡/7🟢）。
 - 2026-07-10: 修复 E2E 测试与 Cloudflare 部署反复失败故障 —— ① E2E 测试修复：修正 `core-flow.spec.ts` 归档视图标题断言为 `"岁月史书"`；修正 `tutorial-guided.spec.ts` 移动端教程结束按钮文本断言为 `"开始"`（自适应屏幕尺寸）。② 修复 `AssetDownload.scenario.test.ts` 版本号一致性断言：因本地版本号升至 `1.0.2` 时未重新生成 `asset_manifest.json`，导致 CI 测试中发生版本号冲突失败，通过重新运行 `npm run generate-manifest` 刷新清单并提交解决。③ Cloudflare 部署修复：定位到纯静态 assets 托管模式下 Cloudflare Pages 跳过 `build.command` 的免构建陷阱，通过在根目录引入最小 Worker 代理 `src/worker.js` 并配置 `"main": "src/worker.js"` 强制激活云端 Vite 编译，打通 Cloudflare Pages/Workers CI/CD 流水线。

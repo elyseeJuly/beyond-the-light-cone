@@ -27,7 +27,17 @@ jobs:
         run: npm ci
 
       - name: TypeScript type check
-        run: npm run typecheck
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee ../typecheck.log
+
+      - name: Upload typecheck diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-diagnostics
+          path: typecheck.log
+          retention-days: 7
 
       - name: ESLint
         run: npm run lint

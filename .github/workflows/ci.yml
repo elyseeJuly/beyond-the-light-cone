@@ -27,13 +27,16 @@ jobs:
         run: npm ci
 
       - name: TypeScript type check
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
-      - name: Run all tests
-        run: npx vitest run
+      - name: ESLint
+        run: npm run lint
 
-      - name: Run tests with coverage
-        run: npx vitest run --coverage
+      - name: Headless simulation smoke gate
+        run: npm run test:simulation:smoke
+
+      - name: Run test suite with coverage
+        run: npm run test:coverage
 
       - name: Build for production
         run: npm run build
@@ -42,7 +45,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright E2E tests
-        run: npx playwright test
+        run: npm run test:e2e
 
       - name: Upload Playwright report
         if: always()

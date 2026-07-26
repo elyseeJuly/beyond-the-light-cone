@@ -48,6 +48,7 @@ export class CyclingChoicePolicy extends AutopilotPolicy {
   private cursor: number;
 
   constructor(seed: number) {
+    super();
     this.cursor = Math.abs(seed) % 97;
   }
 

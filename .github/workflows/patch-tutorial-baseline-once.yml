@@ -1,0 +1,64 @@
+name: One-shot Tutorial Baseline Patch
+
+on:
+  push:
+    branches:
+      - docs/headless-simulation-harness-v1
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, '[tutorial-baseline-patched]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/headless-simulation-harness-v1
+          fetch-depth: 0
+
+      - name: Freeze tutorial initial production baseline
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('03_Web_Rebuild/src/components/Tutorial.tsx')
+          source = path.read_text(encoding='utf-8')
+          old = """  const game = GameInstance.get();
+            const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
+            const initialHasStope = !!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope;
+            const initialMiningRatio = game.earthCivi.miningRatio;
+
+            const steps = useRef(buildSteps(initialHasStope)).current;
+          """.replace('          ', '')
+          new = """  const game = GameInstance.get();
+            const initialTutorialStateRef = useRef<{
+              hasStope: boolean;
+              miningRatio: number;
+            } | null>(null);
+            if (initialTutorialStateRef.current === null) {
+              const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
+              initialTutorialStateRef.current = {
+                hasStope: !!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope,
+                miningRatio: game.earthCivi.miningRatio,
+              };
+            }
+            const initialHasStope = initialTutorialStateRef.current.hasStope;
+            const initialMiningRatio = initialTutorialStateRef.current.miningRatio;
+
+            const steps = useRef(buildSteps(initialHasStope)).current;
+          """.replace('          ', '')
+
+          if old not in source:
+              raise SystemExit('Expected Tutorial initialization block not found')
+          path.write_text(source.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit exact patch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add 03_Web_Rebuild/src/components/Tutorial.tsx
+          git commit -m "fix(tutorial): freeze initial production baseline [tutorial-baseline-patched]"
+          git push origin HEAD:docs/headless-simulation-harness-v1

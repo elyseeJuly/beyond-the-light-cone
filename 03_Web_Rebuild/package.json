@@ -17,6 +17,7 @@
     "test:simulation:smoke": "vitest run src/test/simulation/smoke.sim.test.ts",
     "test:simulation:regression": "vitest run src/test/simulation/regression.sim.test.ts",
     "test:simulation:replay": "vitest run src/test/simulation/replay.sim.test.ts",
+    "test:simulation:balance": "vitest run src/test/simulation/balance.sim.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report playwright-report/html",

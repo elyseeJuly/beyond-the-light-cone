@@ -2,8 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { FirstChoicePolicy, SeededRandomChoicePolicy } from './policies';
 import { runSimulationSuite } from './SimulationSuite';
 
+const ENV = (globalThis as typeof globalThis & {
+  process?: { env?: Record<string, string | undefined> };
+}).process?.env ?? {};
+
 function readPositiveInteger(name: string, fallback: number): number {
-  const raw = process.env[name];
+  const raw = ENV[name];
   if (!raw) return fallback;
   const value = Number(raw);
   if (!Number.isInteger(value) || value <= 0) {
@@ -12,7 +16,7 @@ function readPositiveInteger(name: string, fallback: number): number {
   return value;
 }
 
-const balanceDescribe = process.env.SIM_BALANCE === '1' ? describe : describe.skip;
+const balanceDescribe = ENV.SIM_BALANCE === '1' ? describe : describe.skip;
 
 balanceDescribe('Headless Game Simulation Harness — balance matrix', () => {
   it('多 seed × 多策略矩阵无运行时失败', () => {

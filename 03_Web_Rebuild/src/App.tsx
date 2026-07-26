@@ -456,6 +456,9 @@ export const App: React.FC = () => {
                     remindAssetDownloadIfNeeded();
                   } else {
                     resetTutorialProgress();
+                    // 立即启动教程，不等 GameInstance.reset() 内部 500ms 延迟的 open-tutorial 事件
+                    // 避免封面消失后玩家面对裸露游戏界面无所适从
+                    setShowTutorial(true);
                   }
                   setShowCoverScreen(false);
                 }}

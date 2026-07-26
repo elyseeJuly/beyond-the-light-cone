@@ -100,7 +100,7 @@ export function buildSteps(hasStope: boolean, initialMiningRatio: number = NaN):
     {
       id: 'click-earth',
       title: t('选中家园星系'),
-      description: t('已为您自动定位并选中地球坐标。这是我们在这片暗黑森林中唯一的基石。'),
+      description: t('点击高亮的地球坐标，这是我们在这片暗黑森林中唯一的基石。'),
       highlightTarget: 'earth-star',
       highlightSize: 110,
       forgivingClick: true,

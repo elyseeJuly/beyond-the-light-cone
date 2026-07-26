@@ -6,10 +6,10 @@ import { TutorialMachine, type TutorialMachineCallbacks } from './tutorial/tutor
 import { markTutorialCompleted } from './tutorial/tutorialProgress';
 import {
   SemanticTutorialEvent,
-  WELCOME_AUTO_ADVANCE_MS,
   buildSteps,
   TUTORIAL_STEPS,
 } from './tutorial/tutorialSteps';
+import { t } from '../utils/i18n';
 import {
   type HighlightRect,
   computeHighlightRectFromElement,
@@ -282,18 +282,9 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
       window.dispatchEvent(new CustomEvent('change-active-view', { detail: current.activeView }));
     }
 
-    // 2. click-earth 步骤：自动派发 star-selected 选中地球
-    if (current.id === 'click-earth') {
-      try {
-        const g = GameInstance.get();
-        const earth = g.starManager.getStar(STAR_INDEX.EARTH);
-        if (earth) {
-          window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
-        }
-      } catch (e) {
-        console.error('Failed to auto-select Earth in tutorial:', e);
-      }
-    }
+    // 2. click-earth 步骤：不再自动派发 star-selected
+    // 原先进入步骤时立即选中地球，导致移动端 drawer 突然弹出，玩家还没看清教程卡片界面就变了。
+    // 现在改为玩家点击 hotspot 时才派发 star-selected（见 handleEarthHotspotClick），给玩家反应时间。
 
     // 3. 同步 inspector tab
     if (current.inspectorTab) {

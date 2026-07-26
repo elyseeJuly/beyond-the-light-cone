@@ -1,7 +1,8 @@
+import { FLAG_EQUIVALENCE_GROUPS, getCanonicalFlag } from '../../core/GameFlagAliases';
 import { FLAG } from '../../core/GameFlags';
 
 export type FlagEvidenceRole = 'producer' | 'consumer' | 'remover' | 'reference';
-export type FlagLinkStatus = 'linked' | 'producer-only' | 'consumer-only' | 'orphan';
+export type FlagLinkStatus = 'linked' | 'legacy-alias' | 'producer-only' | 'consumer-only' | 'orphan';
 
 export interface FlagEvidence {
   role: FlagEvidenceRole;
@@ -13,6 +14,7 @@ export interface FlagReachabilityEntry {
   key: string;
   value: string;
   status: FlagLinkStatus;
+  aliasOf?: string;
   producers: FlagEvidence[];
   consumers: FlagEvidence[];
   removers: FlagEvidence[];
@@ -24,6 +26,7 @@ export interface FlagReachabilityReport {
   totalFlags: number;
   scannedFileCount: number;
   linkedCount: number;
+  legacyAliasCount: number;
   producerOnlyCount: number;
   consumerOnlyCount: number;
   orphanCount: number;
@@ -114,11 +117,27 @@ function scanSource(entry: FlagReachabilityEntry, path: string, source: string):
   }
 }
 
-function getStatus(entry: FlagReachabilityEntry): FlagLinkStatus {
+function getDirectStatus(entry: FlagReachabilityEntry): FlagLinkStatus {
   if (entry.producers.length > 0 && entry.consumers.length > 0) return 'linked';
   if (entry.producers.length > 0) return 'producer-only';
   if (entry.consumers.length > 0) return 'consumer-only';
   return 'orphan';
+}
+
+function applyAliasStatuses(entries: FlagReachabilityEntry[]): void {
+  const byValue = new Map(entries.map((entry) => [entry.value, entry]));
+  for (const group of FLAG_EQUIVALENCE_GROUPS) {
+    const canonicalValue = group[0];
+    const canonicalEntry = byValue.get(canonicalValue);
+    if (!canonicalEntry || canonicalEntry.producers.length === 0) continue;
+
+    for (const aliasValue of group.slice(1)) {
+      const aliasEntry = byValue.get(aliasValue);
+      if (!aliasEntry) continue;
+      aliasEntry.status = 'legacy-alias';
+      aliasEntry.aliasOf = getCanonicalFlag(aliasValue);
+    }
+  }
 }
 
 export function scanFlagReachability(): FlagReachabilityReport {
@@ -136,8 +155,9 @@ export function scanFlagReachability(): FlagReachabilityReport {
     for (const [path, source] of SOURCE_MODULES) {
       scanSource(entry, path, source);
     }
-    entry.status = getStatus(entry);
+    entry.status = getDirectStatus(entry);
   }
+  applyAliasStatuses(entries);
 
   entries.sort((a, b) => a.value.localeCompare(b.value));
   return {
@@ -145,6 +165,7 @@ export function scanFlagReachability(): FlagReachabilityReport {
     totalFlags: entries.length,
     scannedFileCount: SOURCE_MODULES.length,
     linkedCount: entries.filter((entry) => entry.status === 'linked').length,
+    legacyAliasCount: entries.filter((entry) => entry.status === 'legacy-alias').length,
     producerOnlyCount: entries.filter((entry) => entry.status === 'producer-only').length,
     consumerOnlyCount: entries.filter((entry) => entry.status === 'consumer-only').length,
     orphanCount: entries.filter((entry) => entry.status === 'orphan').length,

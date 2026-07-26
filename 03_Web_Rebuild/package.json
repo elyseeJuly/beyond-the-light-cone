@@ -15,6 +15,7 @@
     "test:core": "vitest run src/test/core",
     "test:simulation": "vitest run src/test/simulation",
     "test:simulation:smoke": "vitest run src/test/simulation/smoke.sim.test.ts",
+    "test:simulation:regression": "vitest run src/test/simulation/regression.sim.test.ts",
     "test:simulation:replay": "vitest run src/test/simulation/replay.sim.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

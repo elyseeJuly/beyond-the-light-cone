@@ -13,9 +13,9 @@ test.describe('Guided Tutorial E2E Flow (4-step simplified)', () => {
     await expect(newGameBtn).toBeVisible();
     await newGameBtn.click();
 
-    // 教程卡片出现
-    const tutorialCard = page.locator('.relative.z-\[1002\]');
-    await expect(tutorialCard).toBeVisible();
+    // 教程出现：使用稳定的语义测试标识，不依赖 Tailwind 任意值类名。
+    const tutorialSkipButton = page.getByTestId('tutorial-skip-btn');
+    await expect(tutorialSkipButton).toBeVisible();
 
     // ===== 步骤 1：点击地球 =====
     await expect(page.getByText('选中家园', { exact: true })).toBeVisible();
@@ -79,8 +79,8 @@ test.describe('Guided Tutorial E2E Flow (4-step simplified)', () => {
       window.dispatchEvent(new CustomEvent('game-turn-complete'));
     });
 
-    // 教程卡片已关闭
-    await expect(tutorialCard).not.toBeVisible();
+    // 教程已关闭
+    await expect(tutorialSkipButton).not.toBeVisible();
 
     // localStorage 已标记教程完成
     const tutorialSeen = await page.evaluate(() => localStorage.getItem('game-tutorial-seen'));
@@ -96,16 +96,14 @@ test.describe('Guided Tutorial E2E Flow (4-step simplified)', () => {
     const newGameBtn = page.locator('button:has-text("开始新游戏 (启用引导)")');
     await newGameBtn.click();
 
-    const tutorialCard = page.locator('.relative.z-\[1002\]');
-    await expect(tutorialCard).toBeVisible();
+    const tutorialSkipButton = page.getByTestId('tutorial-skip-btn');
+    await expect(tutorialSkipButton).toBeVisible();
 
     // 点击跳过教程按钮
-    const skipBtn = page.locator('[data-testid="tutorial-skip-btn"]');
-    await expect(skipBtn).toBeVisible();
-    await skipBtn.click();
+    await tutorialSkipButton.click();
 
-    // 教程卡片已关闭
-    await expect(tutorialCard).not.toBeVisible();
+    // 教程已关闭
+    await expect(tutorialSkipButton).not.toBeVisible();
     const tutorialSeen = await page.evaluate(() => localStorage.getItem('game-tutorial-seen'));
     expect(tutorialSeen).toBe('true');
   });

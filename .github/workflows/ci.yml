@@ -40,7 +40,17 @@ jobs:
           retention-days: 7
 
       - name: ESLint
-        run: npm run lint
+        run: |
+          set -o pipefail
+          npm run lint 2>&1 | tee ../eslint.log
+
+      - name: Upload ESLint diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-diagnostics
+          path: eslint.log
+          retention-days: 7
 
       - name: Headless simulation smoke gate
         run: npm run test:simulation:smoke

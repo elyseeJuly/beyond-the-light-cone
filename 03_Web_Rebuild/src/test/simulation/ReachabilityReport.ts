@@ -1,4 +1,5 @@
 import { GameInstance } from '../../core/Game';
+import { getCanonicalFlag } from '../../core/GameFlagAliases';
 import { FLAG } from '../../core/GameFlags';
 import { DefeatType, EpochType, NeutralType, VictoryType } from '../../types/enums';
 import { scanFlagReachability, type FlagReachabilityReport } from './FlagReachability';
@@ -79,13 +80,17 @@ function difference(known: string[], observed: string[]): string[] {
 
 export function buildReachabilityReport(summary: SimulationSuiteSummary): ReachabilityReport {
   const observedEvents = uniqueSorted(summary.results.flatMap((result) => result.coverage.observedEventIds));
-  const observedFlags = uniqueSorted(summary.results.flatMap((result) => result.coverage.observedFlags));
+  const observedFlags = uniqueSorted(
+    summary.results
+      .flatMap((result) => result.coverage.observedFlags)
+      .map(getCanonicalFlag),
+  );
   const observedEpochs = [...new Set(summary.results.flatMap((result) => result.coverage.observedEpochs))]
     .sort((a, b) => a - b);
   const observedEndings = uniqueSorted(summary.results.flatMap((result) => result.coverage.observedEndings));
 
   const knownEvents = collectKnownEventIds();
-  const knownFlags = uniqueSorted(Object.values(FLAG));
+  const knownFlags = uniqueSorted(Object.values(FLAG).map(getCanonicalFlag));
   const knownEpochs = numericEnumValues(EpochType, EpochType.COUNT);
   const knownEndings = [
     ...enumNames(VictoryType).map((name) => `victory:${name}`),
@@ -140,21 +145,27 @@ export function renderReachabilityMarkdown(report: ReachabilityReport): string {
   };
 
   const flagIssues = report.flagScan.entries
-    .filter((entry) => entry.status !== 'linked')
+    .filter((entry) => entry.status === 'producer-only' || entry.status === 'consumer-only' || entry.status === 'orphan')
     .map((entry) => `| \`${entry.value}\` | ${entry.status} | ${entry.producers.length} | ${entry.consumers.length} |`)
     .join('\n') || '| — | 无 | 0 | 0 |';
+
+  const legacyAliases = report.flagScan.entries
+    .filter((entry) => entry.status === 'legacy-alias')
+    .map((entry) => `| \`${entry.value}\` | \`${entry.aliasOf ?? 'unknown'}\` |`)
+    .join('\n') || '| — | — |';
 
   return `# Headless Simulation Reachability Report
 
 > Generated: ${report.generatedAt}  
-> Runs: ${report.runCount}
+> Runs: ${report.runCount}  
+> Production source files scanned: ${report.flagScan.scannedFileCount}
 
 ## Coverage summary
 
 | Domain | Observed | Known | Ratio |
 |---|---:|---:|---:|
 ${coverageRow('Events', report.observed.events.length, report.known.events.length)}
-${coverageRow('Flags', report.observed.flags.length, report.known.flags.length)}
+${coverageRow('Canonical flags', report.observed.flags.length, report.known.flags.length)}
 ${coverageRow('Epochs', report.observed.epochs.length, report.known.epochs.length)}
 ${coverageRow('Endings', report.observed.endings.length, report.known.endings.length)}
 
@@ -178,6 +189,12 @@ ${markdownList(report.unobserved.epochs)}
 |---|---|---:|---:|
 ${flagIssues}
 
+## Legacy aliases
+
+| Historical flag | Canonical flag |
+|---|---|
+${legacyAliases}
+
 ## Failed seeds
 
 ${report.failures.length > 0
@@ -186,7 +203,7 @@ ${report.failures.length > 0
 
 ## Interpretation boundary
 
-“未观测到”只表示当前 seed × policy × turn matrix 没有到达该节点，不自动等同于代码不可达。Flag 扫描中的 consumer-only、producer-only 与 orphan 项需要结合设计文档和具体因果链复核。
+“未观测到”只表示当前 seed × policy × turn matrix 没有到达该节点，不自动等同于代码不可达。Flag 扫描中的 consumer-only、producer-only 与 orphan 项需要结合设计文档和具体因果链复核；legacy-alias 已由统一等价读取层处理，不作为断链问题。
 `;
 }
 

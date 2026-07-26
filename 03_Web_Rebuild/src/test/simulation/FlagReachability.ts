@@ -151,6 +151,7 @@ function getStatus(entry: FlagReachabilityEntry): FlagLinkStatus {
 }
 
 export function scanFlagReachability(): FlagReachabilityReport {
+  const filteredEvents = new GameEventManager().filteredEvents;
   const entries: FlagReachabilityEntry[] = Object.entries(FLAG).map(([key, value]) => ({
     key,
     value,
@@ -165,6 +166,7 @@ export function scanFlagReachability(): FlagReachabilityReport {
     for (const target of SCAN_TARGETS) scanPrototype(entry, target);
     scanDataNode(entry, eventsData, 'events.json');
     scanDataNode(entry, randomEventsData, 'randomevents.json');
+    scanDataNode(entry, filteredEvents, 'GameEventManager.filteredEvents');
     entry.status = getStatus(entry);
   }
 

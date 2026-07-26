@@ -1,12 +1,4 @@
-import { DigitalLife } from '../../core/DigitalLife';
-import { EarthCivilization } from '../../core/EarthCivilization';
-import { Game } from '../../core/Game';
-import { GameEventManager } from '../../core/GameEventManager';
 import { FLAG } from '../../core/GameFlags';
-import { PlanetEngine } from '../../core/PlanetEngine';
-import { EventSystem } from '../../core/subsystems/EventSystem';
-import eventsData from '../../data/events.json';
-import randomEventsData from '../../data/randomevents.json';
 
 export type FlagEvidenceRole = 'producer' | 'consumer' | 'remover' | 'reference';
 export type FlagLinkStatus = 'linked' | 'producer-only' | 'consumer-only' | 'orphan';
@@ -30,6 +22,7 @@ export interface FlagReachabilityEntry {
 export interface FlagReachabilityReport {
   generatedAt: string;
   totalFlags: number;
+  scannedFileCount: number;
   linkedCount: number;
   producerOnlyCount: number;
   consumerOnlyCount: number;
@@ -37,19 +30,14 @@ export interface FlagReachabilityReport {
   entries: FlagReachabilityEntry[];
 }
 
-interface ScanTarget {
-  label: string;
-  ctor: { prototype: object };
-}
+const RAW_SOURCE_MODULES = import.meta.glob(
+  ['../../**/*.{ts,tsx,json}', '!../../test/**/*'],
+  { eager: true, query: '?raw', import: 'default' },
+) as Record<string, string>;
 
-const SCAN_TARGETS: ScanTarget[] = [
-  { label: 'Game', ctor: Game },
-  { label: 'GameEventManager', ctor: GameEventManager },
-  { label: 'EventSystem', ctor: EventSystem },
-  { label: 'EarthCivilization', ctor: EarthCivilization },
-  { label: 'PlanetEngine', ctor: PlanetEngine },
-  { label: 'DigitalLife', ctor: DigitalLife },
-];
+const SOURCE_MODULES = Object.entries(RAW_SOURCE_MODULES)
+  .filter(([path]) => !path.endsWith('/GameFlags.ts'))
+  .sort(([left], [right]) => left.localeCompare(right));
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -69,77 +57,60 @@ function tokenPattern(key: string, value: string): string {
   return `(?:FLAG\\.${escapeRegExp(key)}|['"\`]${escapeRegExp(value)}['"\`])`;
 }
 
-function scanFunctionSource(entry: FlagReachabilityEntry, sourceName: string, source: string): void {
-  const token = tokenPattern(entry.key, entry.value);
-  const producer = new RegExp(`(?:addFlag|flagManager\\.set|setAll)\\s*\\([^)]*${token}`, 's');
-  const consumer = new RegExp(`(?:hasFlag|flagManager\\.isSet)\\s*\\([^)]*${token}`, 's');
-  const remover = new RegExp(`(?:removeFlag|flagManager\\.unset|clearTransientFlags)\\s*\\([^)]*${token}`, 's');
-  const anyReference = new RegExp(token);
-
-  if (producer.test(source)) {
-    addEvidence(entry.producers, 'producer', sourceName, 'sets or grants the flag');
+function lineNumberAt(source: string, index: number): number {
+  let line = 1;
+  for (let cursor = 0; cursor < index; cursor++) {
+    if (source.charCodeAt(cursor) === 10) line++;
   }
-  if (consumer.test(source)) {
-    addEvidence(entry.consumers, 'consumer', sourceName, 'reads the flag as a condition');
-  }
-  if (remover.test(source)) {
-    addEvidence(entry.removers, 'remover', sourceName, 'removes or clears the flag');
-  }
-  if (anyReference.test(source) && !producer.test(source) && !consumer.test(source) && !remover.test(source)) {
-    addEvidence(entry.references, 'reference', sourceName, 'references the flag without a classified read/write call');
-  }
+  return line;
 }
 
-function scanPrototype(entry: FlagReachabilityEntry, target: ScanTarget): void {
-  for (const name of Object.getOwnPropertyNames(target.ctor.prototype)) {
-    if (name === 'constructor') continue;
-    const descriptor = Object.getOwnPropertyDescriptor(target.ctor.prototype, name);
-    const fn = descriptor?.value;
-    if (typeof fn !== 'function') continue;
-    scanFunctionSource(entry, `${target.label}.${name}`, Function.prototype.toString.call(fn));
+function classifyOccurrence(prefix: string): FlagEvidenceRole[] {
+  const roles: FlagEvidenceRole[] = [];
+
+  const producerCall = /(?:addFlag|flagManager\.set|setAll)\s*\([^)]*$/s;
+  const producerArray = /(?:grantsFlags|flags)\s*:\s*\[[^\]]*$/s;
+  const producerEffect = /(?:type\s*:\s*['"]flag['"]|['"]type['"]\s*:\s*['"]flag['"])[^}\]]*(?:target\s*:|['"]target['"]\s*:)\s*$/s;
+  if (producerCall.test(prefix) || producerArray.test(prefix) || producerEffect.test(prefix)) {
+    roles.push('producer');
   }
+
+  const consumerCall = /(?:hasFlag|flagManager\.isSet)\s*\([^)]*$/s;
+  const consumerField = /(?:reqFlag|reqNotFlag|requiredFlag|requiredFlags|forbiddenFlag|forbiddenFlags|conditionFlag|conditionFlags|unlessFlag|blockFlag)\s*:\s*(?:\[[^\]]*)?$/s;
+  const consumerJsonField = /['"](?:reqFlag|reqNotFlag|requiredFlag|requiredFlags|forbiddenFlag|forbiddenFlags|conditionFlag|conditionFlags|unlessFlag|blockFlag)['"]\s*:\s*(?:\[[^\]]*)?$/s;
+  if (consumerCall.test(prefix) || consumerField.test(prefix) || consumerJsonField.test(prefix)) {
+    roles.push('consumer');
+  }
+
+  const removerCall = /(?:removeFlag|flagManager\.unset|clearTransientFlags)\s*\([^)]*$/s;
+  const removerField = /(?:removeFlags|unsetFlags|clearFlags)\s*:\s*\[[^\]]*$/s;
+  if (removerCall.test(prefix) || removerField.test(prefix)) {
+    roles.push('remover');
+  }
+
+  return roles.length > 0 ? roles : ['reference'];
 }
 
-function classifyDataRole(parentKey: string): FlagEvidenceRole {
-  const normalized = parentKey.toLowerCase();
-  if (/req|required|condition|unless|forbid|exclude|block|consume/.test(normalized)) {
-    return 'consumer';
-  }
-  if (/remove|unset|clear/.test(normalized)) return 'remover';
-  if (/grant|flag|effect|result|target|produce|set/.test(normalized)) return 'producer';
-  return 'reference';
-}
+function scanSource(entry: FlagReachabilityEntry, path: string, source: string): void {
+  const matcher = new RegExp(tokenPattern(entry.key, entry.value), 'g');
+  let match: RegExpExecArray | null;
 
-function scanDataNode(
-  entry: FlagReachabilityEntry,
-  node: unknown,
-  path: string,
-  parentKey = '',
-): void {
-  if (typeof node === 'string') {
-    if (node !== entry.value) return;
-    const role = classifyDataRole(parentKey);
-    const evidence: FlagEvidence = {
-      role,
-      source: path,
-      detail: `data field ${parentKey || '(root)'} contains ${entry.value}`,
-    };
-    if (role === 'producer') addEvidence(entry.producers, role, evidence.source, evidence.detail);
-    else if (role === 'consumer') addEvidence(entry.consumers, role, evidence.source, evidence.detail);
-    else if (role === 'remover') addEvidence(entry.removers, role, evidence.source, evidence.detail);
-    else addEvidence(entry.references, role, evidence.source, evidence.detail);
-    return;
-  }
+  while ((match = matcher.exec(source)) !== null) {
+    const prefixStart = Math.max(0, match.index - 260);
+    const prefix = source.slice(prefixStart, match.index);
+    const line = lineNumberAt(source, match.index);
+    const normalizedPath = path.replace(/^\.\.\/\.\.\//, 'src/');
+    const detail = `line ${line}: ${match[0]}`;
+    const roles = classifyOccurrence(prefix);
 
-  if (Array.isArray(node)) {
-    node.forEach((value, index) => scanDataNode(entry, value, `${path}[${index}]`, parentKey));
-    return;
-  }
-
-  if (node && typeof node === 'object') {
-    for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
-      scanDataNode(entry, value, `${path}.${key}`, key);
+    for (const role of roles) {
+      if (role === 'producer') addEvidence(entry.producers, role, normalizedPath, detail);
+      else if (role === 'consumer') addEvidence(entry.consumers, role, normalizedPath, detail);
+      else if (role === 'remover') addEvidence(entry.removers, role, normalizedPath, detail);
+      else addEvidence(entry.references, role, normalizedPath, detail);
     }
+
+    if (match[0].length === 0) matcher.lastIndex++;
   }
 }
 
@@ -151,7 +122,6 @@ function getStatus(entry: FlagReachabilityEntry): FlagLinkStatus {
 }
 
 export function scanFlagReachability(): FlagReachabilityReport {
-  const filteredEvents = new GameEventManager().filteredEvents;
   const entries: FlagReachabilityEntry[] = Object.entries(FLAG).map(([key, value]) => ({
     key,
     value,
@@ -163,10 +133,9 @@ export function scanFlagReachability(): FlagReachabilityReport {
   }));
 
   for (const entry of entries) {
-    for (const target of SCAN_TARGETS) scanPrototype(entry, target);
-    scanDataNode(entry, eventsData, 'events.json');
-    scanDataNode(entry, randomEventsData, 'randomevents.json');
-    scanDataNode(entry, filteredEvents, 'GameEventManager.filteredEvents');
+    for (const [path, source] of SOURCE_MODULES) {
+      scanSource(entry, path, source);
+    }
     entry.status = getStatus(entry);
   }
 
@@ -174,6 +143,7 @@ export function scanFlagReachability(): FlagReachabilityReport {
   return {
     generatedAt: new Date().toISOString(),
     totalFlags: entries.length,
+    scannedFileCount: SOURCE_MODULES.length,
     linkedCount: entries.filter((entry) => entry.status === 'linked').length,
     producerOnlyCount: entries.filter((entry) => entry.status === 'producer-only').length,
     consumerOnlyCount: entries.filter((entry) => entry.status === 'consumer-only').length,

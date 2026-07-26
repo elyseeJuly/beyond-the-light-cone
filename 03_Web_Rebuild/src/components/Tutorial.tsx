@@ -88,9 +88,19 @@ const WELCOME_AUTO_ADVANCE_MS = 1500;
 
 export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const game = GameInstance.get();
-  const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
-  const initialHasStope = !!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope;
-  const initialMiningRatio = game.earthCivi.miningRatio;
+  const initialTutorialStateRef = useRef<{
+    hasStope: boolean;
+    miningRatio: number;
+  } | null>(null);
+  if (initialTutorialStateRef.current === null) {
+    const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
+    initialTutorialStateRef.current = {
+      hasStope: !!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope,
+      miningRatio: game.earthCivi.miningRatio,
+    };
+  }
+  const initialHasStope = initialTutorialStateRef.current.hasStope;
+  const initialMiningRatio = initialTutorialStateRef.current.miningRatio;
 
   const steps = useRef(buildSteps(initialHasStope)).current;
   const [step, setStep] = useState(0);

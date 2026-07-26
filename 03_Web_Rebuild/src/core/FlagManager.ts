@@ -8,7 +8,8 @@
  * 统一通过此管理器读写，避免外部模块直接操作原始 Set。
  */
 
-import { GameFlag, DynamicGameFlag } from "./GameFlags";
+import { getEquivalentFlags } from './GameFlagAliases';
+import { GameFlag, DynamicGameFlag } from './GameFlags';
 
 export class FlagManager {
   private flags: Set<string>;
@@ -25,9 +26,12 @@ export class FlagManager {
     return this.flags;
   }
 
-  /** 检查标记是否已设置 */
+  /**
+   * 检查标记是否已设置。
+   * 对历史版本中的同义 Flag 使用双向等价读取，避免旧存档与新代码断链。
+   */
   isSet(flag: GameFlag | DynamicGameFlag | string): boolean {
-    return this.flags.has(flag);
+    return getEquivalentFlags(flag).some((candidate) => this.flags.has(candidate));
   }
 
   /** 设置标记 */

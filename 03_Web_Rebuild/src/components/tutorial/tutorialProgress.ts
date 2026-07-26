@@ -44,7 +44,7 @@ export function getTutorialProgress(): TutorialProgress | null {
         return parsed;
       }
     }
-  } catch (_) { /* 损坏数据，回退到旧格式检测 */ }
+  } catch { /* 损坏数据，回退到旧格式检测 */ }
 
   // 旧格式迁移：game-tutorial-seen === 'true'
   if (localStorage.getItem(LEGACY_KEY) === 'true') {

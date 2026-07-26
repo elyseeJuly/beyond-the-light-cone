@@ -30,39 +30,36 @@ test.describe('Guided Tutorial E2E - 真实用户交互黄金路径', () => {
     await expect(newGameBtn).toBeVisible();
     await newGameBtn.click();
 
-    // GameInstance.reset() 内部 500ms 延迟后派发 open-tutorial
-    // 等待教程卡片挂载（不依赖固定延时，改用元素检测）
-    const tutorialCard = page.locator('.relative.z-\\[1002\\]');
-    await expect(tutorialCard).toBeVisible({ timeout: 10000 });
+    // App 立即挂载教程；使用稳定的语义标识，不依赖 Tailwind 类名。
+    const tutorialSkipButton = page.getByTestId('tutorial-skip-btn');
+    await expect(tutorialSkipButton).toBeVisible({ timeout: 10000 });
 
     // ===== 欢迎页 → 步骤 1：选中家园星系（click-earth） =====
-    // 欢迎页 1.5s 自动过渡，等待步骤 1 标题出现（跳过对「序幕」的竞态检测）
+    await expect(page.locator('text=智脑辅助校准')).toBeVisible();
+    await page.getByRole('button', { name: '开始校准' }).click();
     await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('text=步骤 1 / 8')).toBeVisible();
 
-    // 验证右侧面板已显示地球信息（教程内部已派发 star-selected）
-    await expect(page.locator('[data-tutorial-id="right-inspector"]')).toContainText('地球', { timeout: 5000 });
-
-    // 点击「下一步」（requiresManualAdvance = true）
-    await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(400);
+    // 地球会随星图持续运动；通过可访问按钮获得焦点并按 Enter，
+    // 验证动态目标也能由真实键盘交互完成，而不依赖旁路事件。
+    const earthHotspot = page.getByRole('button', { name: '选中地球' });
+    await expect(earthHotspot).toBeVisible();
+    await earthHotspot.focus();
+    await page.keyboard.press('Enter');
 
     // ===== 步骤 2：监控三维产出（read-status） =====
     await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('text=步骤 2 / 8')).toBeVisible();
+    await expect(page.locator('[data-tutorial-id="right-inspector"]')).toContainText('地球', { timeout: 5000 });
 
     // 点击「下一步」（requiresManualAdvance = true）
     await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(500);
 
     // ===== 步骤 3：建设矿业基础（build-stope） =====
-    // 地球初始已有 hasStope=true，教程 checkCondition 立即返回 true，此步自动跳过。
-    // 若 hasStope=false（理论上不会发生），则需点击建造按钮。
-    const buildStopeVisible = await page.locator('text=建设矿业基础').isVisible().catch(() => false);
-    if (buildStopeVisible) {
-      await expect(page.locator('text=步骤 3 / 8')).toBeVisible();
-      const buildStopeBtn = page.locator('[data-tutorial-id="btn-build-stope"]');
-      await expect(buildStopeBtn).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=建设矿业基础')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=步骤 3 / 8')).toBeVisible();
+    const buildStopeBtn = page.locator('[data-tutorial-id="btn-build-stope"]');
+    if (await buildStopeBtn.isVisible().catch(() => false)) {
       await buildStopeBtn.click();
       // 验证建设已真实启动
       await expect.poll(async () => {
@@ -73,27 +70,38 @@ test.describe('Guided Tutorial E2E - 真实用户交互黄金路径', () => {
         });
       }, { timeout: 5000, message: '采矿场建设应已启动' }).toBe(true);
     }
+    await expect(page.locator('button:has-text("下一步")')).toBeEnabled({ timeout: 5000 });
+    await page.locator('button:has-text("下一步")').click();
 
     // ===== 步骤 4：调配劳力分配（resource-production） =====
-    // 等待步骤 4 出现（可能从步骤 2 直接跳来，也可能经过步骤 3）
     await expect(page.locator('text=调配劳力分配')).toBeVisible({ timeout: 8000 });
     await expect(page.locator('text=步骤 4 / 8')).toBeVisible();
 
-    // 真实拖动采矿比例滑块（fill 触发真实 onChange → adjustWorkerRatio）
-    // 初始 miningRatio=30，改为 40 触发条件（!== initialMiningRatio）
+    // 真实拖动采矿比例滑块；业务提交发生在 mouseup，不能只改 DOM value。
     const miningSlider = page.locator('[data-tutorial-id="mining-ratio-section"] input[type="range"]');
     await expect(miningSlider).toBeVisible({ timeout: 5000 });
-    await miningSlider.fill('40');
+    const initialMiningRatio = Number(await miningSlider.inputValue());
+    const miningSliderBox = await miningSlider.boundingBox();
+    expect(miningSliderBox).not.toBeNull();
+    await page.mouse.move(
+      miningSliderBox!.x + miningSliderBox!.width * 0.4,
+      miningSliderBox!.y + miningSliderBox!.height / 2,
+    );
+    await page.mouse.down();
+    await page.mouse.up();
+    const committedMiningRatio = Number(await miningSlider.inputValue());
+    expect(committedMiningRatio).not.toBe(initialMiningRatio);
 
-    // 验证 miningRatio 已真实改变（只读断言）
+    // 验证真实游戏状态与滑块提交值一致（只读断言）
     await expect.poll(async () => {
       return await page.evaluate(() => {
         const game = (window as any).GameInstance?.get?.();
         return game?.earthCivi?.miningRatio ?? 0;
       });
-    }, { timeout: 5000, message: '采矿比例应已调整为 40' }).toBe(40);
+    }, { timeout: 5000, message: '采矿比例应写入真实游戏状态' }).toBe(committedMiningRatio);
 
-    // 等待教程轮询检测到 miningRatio 变化并推进
+    await expect(page.locator('button:has-text("下一步")')).toBeEnabled({ timeout: 5000 });
+    await page.locator('button:has-text("下一步")').click();
     await expect(page.locator('text=启动科技演进')).toBeVisible({ timeout: 5000 });
 
     // ===== 步骤 5：启动科技演进（start-research） =====
@@ -119,7 +127,8 @@ test.describe('Guided Tutorial E2E - 真实用户交互黄金路径', () => {
       });
     }, { timeout: 5000, message: '天文观测科研应已启动' }).toBe(true);
 
-    // 等待教程轮询检测到 inResearch 并推进
+    await expect(page.locator('button:has-text("下一步")')).toBeEnabled({ timeout: 5000 });
+    await page.locator('button:has-text("下一步")').click();
     await expect(page.locator('text=执行首回合决策')).toBeVisible({ timeout: 5000 });
 
     // ===== 步骤 6：执行首回合决策（next-turn） =====
@@ -224,7 +233,7 @@ test.describe('Guided Tutorial E2E - 真实用户交互黄金路径', () => {
 
     // ===== 最终验证 =====
     // 教程卡片已关闭
-    await expect(tutorialCard).not.toBeVisible();
+    await expect(tutorialSkipButton).not.toBeVisible();
 
     // localStorage 已标记教程完成（版本化进度记录）
     const progress = await page.evaluate(() => {
@@ -246,19 +255,14 @@ test.describe('Guided Tutorial E2E - 真实用户交互黄金路径', () => {
     // 真实点击「重新构想 (开启引导)」
     const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
     await newGameBtn.click();
-    await page.waitForTimeout(2200);
-
-    const tutorialCard = page.locator('.relative.z-\\[1002\\]');
-    await expect(tutorialCard).toBeVisible();
 
     // 真实点击跳过教程按钮
-    const skipBtn = page.locator('[data-testid="tutorial-skip-btn"]');
+    const skipBtn = page.getByTestId('tutorial-skip-btn');
     await expect(skipBtn).toBeVisible();
     await skipBtn.click();
-    await page.waitForTimeout(600);
 
-    // 教程卡片已关闭
-    await expect(tutorialCard).not.toBeVisible();
+    // 教程已关闭
+    await expect(skipBtn).not.toBeVisible();
 
     // localStorage 已标记（跳过也会写入进度记录）
     const progress = await page.evaluate(() => {

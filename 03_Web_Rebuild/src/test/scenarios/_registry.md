@@ -1,8 +1,8 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-23
+> 最后更新：2026-07-26
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 就绪（0 RED / 23 总计）
+## 发布状态：🟢 v1.0.6 候选就绪（0 RED / 30 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -11,7 +11,7 @@
 | SCEN-TUTORIAL-BLOCKER | 交互 | 教程期间"下一回合"点击突破阻断 | 教程未完成时，AI脑关闭，存在阻断时，"下一回合"不被禁用且能推进回合 | 🟢 GREEN | 2. 下一回合按钮失踪（教程期间禁用阻断） | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-CLICK-THROUGH | 交互 | 教程高亮抠孔点击穿透 | 教程高亮特定元素时，点击抠孔可以触发底层按钮（如AI脑），点击遮罩其他地方无效 | 🟢 GREEN | 4. ai智脑托管按钮不能点击 | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-STEPS-MATCH | 设计偏离 | 教程步骤分类对齐 | 教程分类为教程内部组织标签（基础操作/战略星图/情报中心/科技研发/政府管理），不与 LeftHub 导航项强制 1:1 对应。基础操作为教程专属分类。 | 🟢 GREEN | 教程分类语义不匹配（基础操作→岁月史书→战略星图 回归） | TutorialRemedy.scenario.test.tsx |
-| SCEN-TUTORIAL-WELCOME | UI/UX | 教程欢迎页自动过渡 | 教程启动时显示"序幕"欢迎页，1.5s 后自动进入步骤 1/4（点击地球），给玩家仪式感与思考空间 | 🟢 GREEN | 新手教程一进游戏就要求操作，缺少缓冲 | TutorialRemedy.scenario.test.tsx |
+| SCEN-TUTORIAL-WELCOME | UI/UX | 教程欢迎页手动启程 | 教程启动时显示“序幕”欢迎页，玩家点击“开始校准”后进入 8 步真实交互流程，避免自动跳过说明 | 🟢 GREEN | 欢迎页自动推进造成玩家未读完；教程测试没有覆盖真实交互 | TutorialRemedy.scenario.test.tsx / tutorial-guided.spec.ts |
 | SCEN-TUTORIAL-STEP1-HOTSPOT | 交互 | 教程步骤 1 防误触 hotspot | 步骤 1 高亮框扩大到 110×110px 覆盖 StarMapRenderer 60px 命中区；单一 `<button>` hotspot 替代 4 块分块遮罩消除接缝漏点；框内任意位置点击都算选中地球 | 🟢 GREEN | 新手教程点击地球经常会误触（高亮框 40px < 命中区 60px + 遮罩接缝漏点） | TutorialRemedy.scenario.test.tsx |
 | SCEN-TUTORIAL-STEP1-FOCUS-EARTH | 交互 | 教程步骤 1 自动居中地球 | 步骤 1 启动时 StarMapRenderer.focusOnStar(3, 1.5, true) 自动将地球居中到屏幕中央并缩放 1.5x，无论玩家之前停留在哪个星区 | 🟢 GREEN | 新手教程找不到地球（玩家停留在银河系区域时地球不在视野内） | TutorialRemedy.scenario.test.tsx |
 | SCEN-GRACE-PERIOD-BLOCKERS | 交互 | 前 3 回合阻断器宽限期 | year < 3 时科研停滞与部门首长空缺降级为警告（不阻断回合推进），资源崩盘与经济危机仍阻断；getTurnWarnings() 返回警告列表 | 🟢 GREEN | 新玩家前几回合因不熟悉机制被反复阻断 | TutorialRemedy.scenario.test.tsx |
@@ -26,6 +26,7 @@
 | **SCEN-DISTRIBUTION-ASSET-POLICY** | Regression | Release/PWA 资源交付分流 | PWA 首次进入游戏时对未缓存资源显示下载提醒；Web/Tauri Release 将随包资源视为已安装，不弹窗且不重复 fetch | 🟢 GREEN | Release 与 PWA 共用 IndexedDB 下载状态，导致完整桌面包仍提示下载约 370MB | DistributionChannel.scenario.test.ts |
 | **SCEN-FLAG-MANAGER** | Design | Flag 状态标记管理器解耦 | Game.flags Set<string> 的公开暴露改用 FlagManager 封装，提供 isSet/set/unset API | 🟢 GREEN | Game.ts 中 flags 直接暴露为 Set<string>，外部模块可直接操作 | FlagManager.ts / Game.ts |
 | **SCEN-RELEASE-PIPELINE** | DevOps | PWA/Release 自动发布流水线 | 合并 `main` 自动构建、验证并发布 PWA；推送 v* tag 自动触发 CI 门禁、多平台构建与 GitHub Release。PWA 部署完成后必须在线核验 manifest 版本 | 🟢 GREEN | 分支已更新但线上 PWA 未部署，更新提示无法给出目标版本 | static.yml / release.yml / verify-pwa-release.mjs |
+| **SCEN-RELEASE-V106** | DevOps | v1.0.6 PWA 与桌面版一致发布 | package、lockfile、Tauri、Cargo、资源清单及 Service Worker 缓存名统一为 1.0.6；稳定版只有在 Web ZIP、Windows MSI/EXE、macOS DMG 全部构建成功后才允许发布 | 🟢 GREEN | 版本漂移、桌面构建失败时仍可能产生不完整稳定版 | release.yml / vite.config.ts / asset_manifest.json |
 | **SCEN-DESIGN-DRIFT** | Design | 设计偏离修复验证 | 验证 7 大设计决策与 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 一致：7纪元系统、文化公式、年份递增、纪元溢出保护、AI智脑默认关闭、地球初始建筑、思想钢印权重 | 🟢 GREEN | 原始 SPEC 与实际代码存在 3 处设计偏离 (D01-D03)，已创建权威 SPEC 并编写验证测试 | DesignDrift.scenario.test.ts |
 | **SCEN-STRICT-MODE** | Infrastructure | 严格模式禁止吞异常 | Game.strictMode 静态开关：开启时子系统异常（7 个 catch 块 + 外层核心崩溃）直接向上抛出，测试中不再被静默吞没；关闭时按原有逻辑记录为 [警告] 历史日志 | 🟢 GREEN | 异常被系统性吞掉导致 Autoplay500 测试全绿但 bug 存在；测试无法发现真实运行时错误 | StrictMode.scenario.test.ts |
 | **SCEN-FLAG-TYPED** | Infrastructure | Flag 类型化消灭魔法字符串 | 创建 FLAG 常量对象（40+ 个已知 flag）、GameFlag 联合类型；GameEvent 新增 grantsFlags 字段替代文案字符串匹配；纪元推进/结局判定/外星接触等所有 flag 字符串字面量替换为 FLAG.* 常量 | 🟢 GREEN | 用显示文本的字符串匹配驱动游戏逻辑（文案修改静默改变解锁链）；Flag 拼写错误无编译期检查 | FlagTyped.scenario.test.ts |
@@ -37,6 +38,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-26: v1.0.6 发布候选完成——修复教程地球 hotspot 被父级 `pointer-events-none` 吞掉、短横屏封面按钮被页头遮挡，以及采矿滑块 E2E 未真实提交的问题；统一 PWA/Tauri/Cargo/资源清单/缓存版本，并将稳定 Release 收紧为 ZIP、MSI、EXE、DMG 全产物门禁。本地通过 1089 项单测、覆盖率门禁、生产构建、PWA 契约校验、Cargo 检查、Chromium 22/22 全流程及 Firefox/WebKit/mobile-safari 36/36 风险集。
 - 2026-07-24: 批量提取脚本与全量英文本地化闭环——编写并运行 Node 批量提取与修补脚本（`batch_localize.cjs`），对 `MuseumGallery.tsx`、`AssetDownloadPromptModal.tsx`、`AnnouncementBoard.tsx` 等遗留组件中裸写的硬编码中文及动态变量渲染补齐 `t(...)` 国际化包裹与中英文双向逻辑适配；扩充 `i18n.ts` 中 `enDictionary` 的全部 CG 描述、纪元名称、面板按钮及系统广播词条。通过 TypeScript 0 报错与 734 项单元测试 100% 通过。
 - 2026-07-24: 教程体验深度优化与主页设置实装——新增主菜单「游戏设置」入口；降低教程蒙版透明度，提高背景清晰度；重构占比滑块为拖动结束时单次扣除 AP，防止持续扣减 AP；教程下 `canSpendAP` 始终返回 `true`，且在启动科技研发前自动补足 50 AP，锁定并禁用非 `next-turn` 状态下的下一回合按钮，保障教程 100% 顺畅完成。
 - 2026-07-24: 全文本英文本地化全量实装——基于刘宇昆（Ken Liu）翻译的《三体》英文原版（The Three-Body Problem）译名规范，全面完成 `i18n.ts` 英文字典映射。覆涵盖主菜单、TopHUD、LeftHub、RightInspector、TecTreeView、GovManagement、IntelligenceCenter、DiplomacyPanel、FleetModal、BattleScreen、WallfacerPanel、DepartmentPanel、PersonSelectPanel、AdvisorPanel、MuseumGallery、ChroniclesModal、Tutorial、MissionLog、AssetDownloadPromptModal 与 CrisisWarningPanel 等全部 20+ 个核心组件及 32 个终局结局。通过全量 734 项单元测试与 TypeScript 0 报错验证。

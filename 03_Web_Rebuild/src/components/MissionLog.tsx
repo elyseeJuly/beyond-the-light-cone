@@ -25,7 +25,7 @@ export const MissionLog: React.FC = () => {
   const [claimedMissions, setClaimedMissions] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('session:mission-log-claimed') || '[]');
-    } catch (_) {
+    } catch {
       return [];
     }
   });

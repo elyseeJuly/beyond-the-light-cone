@@ -110,13 +110,13 @@ export class EventSystem {
         if (val < 0) {
           const absVal = Math.abs(val);
           switch (canonicalTarget) {
-            case 'army': this.game.earthCivi.army -= absVal; break;
-            case 'economy': this.game.earthCivi.economy -= absVal; break;
-            case 'population': this.game.earthCivi.population -= absVal; break;
-            case 'culture': this.game.earthCivi.culture -= absVal; break;
-            case 'deterrenceValue': this.game.earthCivi.deterrenceValue -= absVal; break;
+            case 'army': this.game.earthCivi.army = Math.max(0, this.game.earthCivi.army - absVal); break;
+            case 'economy': this.game.earthCivi.economy = Math.max(0, this.game.earthCivi.economy - absVal); break;
+            case 'population': this.game.earthCivi.population = Math.max(0, this.game.earthCivi.population - absVal); break;
+            case 'culture': this.game.earthCivi.culture = Math.max(0, this.game.earthCivi.culture - absVal); break;
+            case 'deterrenceValue': this.game.earthCivi.deterrenceValue = Math.max(0, this.game.earthCivi.deterrenceValue - absVal); break;
             case 'treachery': this.game.earthCivi.treachery = Math.max(0, this.game.earthCivi.treachery - absVal); break;
-            case 'resource': this.game.earthCivi.resource -= absVal; break;
+            case 'resource': this.game.earthCivi.resource = Math.max(0, this.game.earthCivi.resource - absVal); break;
             default: break;
           }
         } else {

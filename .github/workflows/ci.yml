@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, master]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     name: Type Check, Test & Build
@@ -19,7 +23,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: 03_Web_Rebuild/package-lock.json
 
@@ -27,13 +31,68 @@ jobs:
         run: npm ci
 
       - name: TypeScript type check
-        run: npx tsc --noEmit
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee ../typecheck.log
 
-      - name: Run all tests
-        run: npx vitest run
+      - name: Upload typecheck diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-diagnostics
+          path: typecheck.log
+          retention-days: 7
 
-      - name: Run tests with coverage
-        run: npx vitest run --coverage
+      - name: ESLint simulation harness
+        run: |
+          set -o pipefail
+          npm run lint:simulation 2>&1 | tee ../eslint.log
+
+      - name: Upload ESLint diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-diagnostics
+          path: eslint.log
+          retention-days: 7
+
+      - name: Headless simulation smoke gate
+        run: |
+          set -o pipefail
+          npm run test:simulation:smoke 2>&1 | tee ../simulation-smoke.log
+
+      - name: Quick reachability and soak report gate
+        if: github.event_name == 'pull_request'
+        env:
+          SIM_REACHABILITY: '1'
+          SIM_REACHABILITY_RUNS: '4'
+          SIM_REACHABILITY_TURNS: '40'
+          SIM_SOAK: '1'
+          SIM_SOAK_RUNS: '2'
+          SIM_SOAK_TURNS: '60'
+        run: |
+          npm run test:simulation:reachability
+          npm run test:simulation:soak
+
+      - name: Upload simulation smoke diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulation-smoke-diagnostics
+          path: simulation-smoke.log
+          retention-days: 7
+
+      - name: Upload quick simulation reports
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulation-quick-reports
+          path: 03_Web_Rebuild/reports/simulation/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Run test suite with coverage
+        run: npm run test:coverage
 
       - name: Build for production
         run: npm run build
@@ -41,11 +100,21 @@ jobs:
       - name: Verify PWA release bundle
         run: npm run verify:pwa-release
 
-      - name: Install Playwright browsers
+      - name: Install Chromium for pull request E2E
+        if: github.event_name == 'pull_request'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Chromium E2E gate for pull request
+        if: github.event_name == 'pull_request'
+        run: npx playwright test --project=chromium-desktop
+
+      - name: Install full Playwright browser matrix on main
+        if: github.event_name == 'push'
         run: npx playwright install --with-deps
 
-      - name: Run Playwright E2E tests
-        run: npx playwright test
+      - name: Run full Playwright E2E matrix on main
+        if: github.event_name == 'push'
+        run: npm run test:e2e
 
       - name: Upload Playwright report
         if: always()

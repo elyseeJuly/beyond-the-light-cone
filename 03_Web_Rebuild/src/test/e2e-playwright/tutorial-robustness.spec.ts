@@ -1,5 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
-import { dismissOrientationPrompt } from './helpers';
+import { test, expect } from '@playwright/test';
+import { dismissOrientationPrompt, startTutorialToReadStatus } from './helpers';
 
 /**
  * 教程鲁棒性测试（审计 P0 流程问题 #2 硬性合并门槛）
@@ -15,12 +15,6 @@ import { dismissOrientationPrompt } from './helpers';
  * 本测试通过让教程进入一个 highlightTarget 指向不存在元素的步骤来模拟目标缺失。
  */
 
-/** 等待教程卡片挂载 */
-async function waitForTutorialCard(page: Page): Promise<void> {
-  const card = page.locator('.relative.z-\\[1002\\]');
-  await expect(card).toBeVisible({ timeout: 10000 });
-}
-
 test.describe('教程鲁棒性：目标缺失不锁屏', () => {
   test.use({ hasTouch: false, viewport: { width: 1440, height: 900 } });
 
@@ -30,17 +24,8 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
 
-    // 启动教程
-    const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
-    await expect(newGameBtn).toBeVisible();
-    await newGameBtn.click();
-    await waitForTutorialCard(page);
-
-    // 进入步骤 2（read-status，highlightTarget='right-inspector'）
-    await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
-    await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(500);
-    await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+    // 启动教程并进入 read-status（highlightTarget='right-inspector'）
+    await startTutorialToReadStatus(page);
 
     // 步骤 2 正常情况下应渲染分块遮罩（非 full/missing）
     const blockOverlays = page.locator('[data-testid^="tutorial-overlay-"]:not([data-testid="tutorial-overlay-full"]):not([data-testid="tutorial-overlay-missing"])');
@@ -65,16 +50,8 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
 
-    const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
-    await expect(newGameBtn).toBeVisible();
-    await newGameBtn.click();
-    await waitForTutorialCard(page);
-
-    // 推进到步骤 2（有 DOM 高亮）
-    await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
-    await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(500);
-    await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+    // 推进到 read-status（有 DOM 高亮）
+    await startTutorialToReadStatus(page);
 
     // 等待高亮框渲染
     const blockOverlays = page.locator('[data-testid^="tutorial-overlay-"]:not([data-testid="tutorial-overlay-full"]):not([data-testid="tutorial-overlay-missing"])');
@@ -111,15 +88,7 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
 
-    const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
-    await expect(newGameBtn).toBeVisible();
-    await newGameBtn.click();
-    await waitForTutorialCard(page);
-
-    await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
-    await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(500);
-    await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+    await startTutorialToReadStatus(page);
 
     // 触发目标缺失
     await page.evaluate(() => {
@@ -154,16 +123,8 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
 
-    const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
-    await expect(newGameBtn).toBeVisible();
-    await newGameBtn.click();
-    await waitForTutorialCard(page);
-
-    // 推进到步骤 2
-    await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
-    await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(500);
-    await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+    // 推进到 read-status
+    await startTutorialToReadStatus(page);
 
     // 等待高亮框正常渲染
     const blockOverlays = page.locator('[data-testid^="tutorial-overlay-"]:not([data-testid="tutorial-overlay-full"]):not([data-testid="tutorial-overlay-missing"])');

@@ -1761,7 +1761,7 @@ export class GameInstance {
     try {
       localStorage.removeItem("game-tutorial-progress");
       localStorage.removeItem("game-tutorial-seen");
-    } catch (_) { /* SSR or unavailable */ }
+    } catch { /* SSR or unavailable */ }
     this.instance = new Game();
 
     if (endingHistory.length > 0) {
@@ -1827,4 +1827,3 @@ export class GameInstance {
     return false;
   }
 }
-

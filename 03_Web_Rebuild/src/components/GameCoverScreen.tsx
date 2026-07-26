@@ -76,7 +76,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[150] flex flex-col justify-between overflow-hidden bg-black text-[#DDEEFF] font-mono select-none"
+      className="cover-screen fixed inset-0 z-[150] flex flex-col justify-between overflow-hidden bg-black text-[#DDEEFF] font-mono select-none"
       style={{
         backgroundImage: `radial-gradient(circle at center, rgba(7, 11, 20, 0.4) 0%, #070B14 100%), url(${bgImage})`,
         backgroundSize: 'cover',
@@ -105,9 +105,9 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
       </header>
 
       {/* Main Content Area */}
-      <main className="relative z-20 flex-1 flex flex-col md:flex-row items-center md:items-stretch justify-center md:justify-between px-6 md:px-16 py-8 gap-8 max-w-7xl mx-auto w-full overflow-hidden">
+      <main className="cover-main relative z-20 flex-1 flex flex-col md:flex-row items-center md:items-stretch justify-center md:justify-between px-6 md:px-16 py-8 gap-8 max-w-7xl mx-auto w-full overflow-hidden">
         {/* Left Side: Title and Logo */}
-        <div className="flex-1 flex flex-col justify-center text-center md:text-left">
+        <div className="cover-title flex-1 flex flex-col justify-center text-center md:text-left">
           <div className="inline-flex items-center justify-center md:justify-start gap-2 text-[var(--color-primary)] mb-2 tracking-[0.3em] text-xs font-bold">
             <Shield size={14} className="animate-pulse" />
             {t("地球防卫理事会最高指挥中心")}
@@ -127,9 +127,9 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
         </div>
 
         {/* Right Side: Options and HUD */}
-        <div className="w-full md:w-[420px] flex flex-col justify-center gap-6">
+        <div className="cover-menu-column w-full md:w-[420px] flex flex-col justify-center gap-6">
           {/* Action Menu */}
-          <div className="flex flex-col gap-3.5 bg-black/60 border border-[var(--color-primary)]/20 p-6 rounded backdrop-blur-md shadow-[0_0_30px_rgba(0,184,255,0.08)]">
+          <div className="cover-action-menu flex flex-col gap-3.5 bg-black/60 border border-[var(--color-primary)]/20 p-6 rounded backdrop-blur-md shadow-[0_0_30px_rgba(0,184,255,0.08)]">
             <div className="text-[10px] tracking-[0.2em] text-[var(--color-primary)] font-bold mb-1 border-b border-[var(--color-primary)]/10 pb-2">
               SELECT COMMAND OR PROTOCOL
             </div>
@@ -235,7 +235,7 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
           </div>
 
           {/* Description HUD */}
-          <div className="bg-[#070B14]/80 border border-slate-800 p-4 min-h-[90px] rounded flex gap-3 text-xs leading-relaxed text-[var(--text-secondary)]">
+          <div className="cover-description bg-[#070B14]/80 border border-slate-800 p-4 min-h-[90px] rounded flex gap-3 text-xs leading-relaxed text-[var(--text-secondary)]">
             <Info size={16} className="text-[var(--color-primary)] shrink-0 mt-0.5" />
             <div>
               <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">{t("指令说明 / DECISION DESCRIPTION")}</div>
@@ -262,6 +262,35 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
         @keyframes menu-scan {
           0% { top: -5%; }
           100% { top: 105%; }
+        }
+        @media (max-height: 500px) and (orientation: landscape) {
+          .cover-screen > header {
+            padding: 0.5rem 1.5rem;
+          }
+          .cover-main {
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 0.75rem 1.5rem;
+            overflow-y: auto;
+          }
+          .cover-title,
+          .cover-description,
+          .cover-screen > footer {
+            display: none;
+          }
+          .cover-menu-column {
+            justify-content: flex-start;
+            gap: 0.75rem;
+            margin: 0 auto;
+          }
+          .cover-action-menu {
+            gap: 0.5rem;
+            padding: 0.75rem;
+          }
+          .cover-action-menu > button {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+          }
         }
       `}</style>
     </div>

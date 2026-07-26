@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { dismissOrientationPrompt } from './helpers';
+import { dismissOrientationPrompt, startTutorialToReadStatus } from './helpers';
 
 /**
  * 坐标几何验证测试（审计 P0-1/P0-2 硬性合并门槛）
@@ -26,18 +26,6 @@ async function waitForHighlightStable(page: Page): Promise<void> {
   const highlight = page.locator('[data-testid^="tutorial-overlay-"]:not([data-testid="tutorial-overlay-full"])').first();
   await expect(highlight).toBeVisible({ timeout: 8000 });
   await page.waitForTimeout(400);
-}
-
-/** 启动教程并推进到步骤 2（read-status，有 DOM 高亮） */
-async function startTutorialToReadStatus(page: Page): Promise<void> {
-  const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
-  await expect(newGameBtn).toBeVisible();
-  await newGameBtn.click();
-  await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
-  await page.locator('button:has-text("下一步")').click();
-  await page.waitForTimeout(500);
-  await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
-  await waitForHighlightStable(page);
 }
 
 /** 启动自由探索（跳过教程） */
@@ -87,6 +75,7 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
     await startTutorialToReadStatus(page);
+    await waitForHighlightStable(page);
 
     const scaleFactor = await readScaleFactor(page);
     expect(Math.abs(scaleFactor - 0.85)).toBeLessThan(0.01);
@@ -197,6 +186,7 @@ test.describe('桌面端坐标验证（无缩放）', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
     await startTutorialToReadStatus(page);
+    await waitForHighlightStable(page);
 
     const hasScale = await page.evaluate(() => !!document.querySelector('.mobile-landscape-scale'));
     expect(hasScale).toBe(false);
@@ -218,13 +208,7 @@ test.describe('旋转屏幕坐标连续性', () => {
     await page.goto('/');
     await dismissOrientationPrompt(page);
 
-    const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
-    await expect(newGameBtn).toBeVisible();
-    await newGameBtn.click();
-    await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
-    await page.locator('button:has-text("下一步")').click();
-    await page.waitForTimeout(500);
-    await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+    await startTutorialToReadStatus(page);
     await waitForHighlightStable(page);
 
     // 旋转到横屏

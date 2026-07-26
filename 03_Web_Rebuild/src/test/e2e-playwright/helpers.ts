@@ -54,6 +54,25 @@ export async function dismissOrientationPrompt(page: Page): Promise<void> {
   }
 }
 
+/** 从封面启动引导，并通过真实交互推进到 read-status 步骤 */
+export async function startTutorialToReadStatus(page: Page): Promise<void> {
+  const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
+  await expect(newGameBtn).toBeVisible();
+  await newGameBtn.click();
+
+  const skipBtn = page.getByTestId('tutorial-skip-btn');
+  await expect(skipBtn).toBeVisible({ timeout: 10000 });
+  await page.getByRole('button', { name: '开始校准' }).click();
+  await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
+
+  const earthHotspot = page.getByRole('button', { name: '选中地球' });
+  await expect(earthHotspot).toBeVisible();
+  await earthHotspot.focus();
+  await page.keyboard.press('Enter');
+
+  await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+}
+
 /** 点击下一回合（优先使用键盘空格，兼容按钮点击） */
 export async function clickNextTurn(page: Page): Promise<void> {
   await page.keyboard.press('Space');

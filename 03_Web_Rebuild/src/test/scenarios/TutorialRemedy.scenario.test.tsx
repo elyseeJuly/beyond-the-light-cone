@@ -61,7 +61,9 @@ describe('Tutorial UI & Blocker Remediation Scenarios', () => {
     // 推进 RAF 让 highlightRect 更新
     act(() => vi.advanceTimersByTime(100));
 
-    fireEvent.click(screen.getByTestId('tutorial-earth-hotspot'));
+    const earthHotspot = screen.getByTestId('tutorial-earth-hotspot');
+    expect(earthHotspot).toHaveClass('pointer-events-auto');
+    fireEvent.click(earthHotspot);
 
     expect(screen.getByText('步骤 2 / 8')).toBeInTheDocument();
     expect(screen.getByText('监控三维产出')).toBeInTheDocument();

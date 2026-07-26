@@ -28,9 +28,19 @@ const TUTORIAL_EVENT_ID = 'event_tutorial_eto_test';
 
 export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onCompleteProp }) => {
   const game = GameInstance.get();
-  const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
-  const initialHasStope = useRef(!!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope).current;
-  const initialMiningRatio = useRef(game.earthCivi.miningRatio).current;
+  const initialTutorialStateRef = useRef<{
+    hasStope: boolean;
+    miningRatio: number;
+  } | null>(null);
+  if (initialTutorialStateRef.current === null) {
+    const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
+    initialTutorialStateRef.current = {
+      hasStope: !!earthStar?.hasStope || !!earthStar?.buildingProgress?.stope,
+      miningRatio: game.earthCivi.miningRatio,
+    };
+  }
+  const initialHasStope = initialTutorialStateRef.current.hasStope;
+  const initialMiningRatio = initialTutorialStateRef.current.miningRatio;
 
   const steps = useRef(buildSteps(initialHasStope, initialMiningRatio)).current;
 
@@ -53,7 +63,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
             if (renderer && typeof renderer.setTutorialPulse === 'function') {
               renderer.setTutorialPulse(null);
             }
-          } catch (_) { /* ignore */ }
+          } catch { /* ignore */ }
         }
       },
       onComplete: () => {
@@ -63,7 +73,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
           if (renderer && typeof renderer.setTutorialPulse === 'function') {
             renderer.setTutorialPulse(null);
           }
-        } catch (_) { /* ignore */ }
+        } catch { /* ignore */ }
         window.dispatchEvent(new CustomEvent('change-active-view', { detail: 'starmap' }));
         setTimeout(() => onCompleteRef.current(), 400);
       },
@@ -136,7 +146,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
         if (validate(g)) {
           setActionValidated(true);
         }
-      } catch (e) { /* ignore */ }
+      } catch { /* ignore */ }
     };
     checkAndSet();
 
@@ -173,7 +183,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
         if (renderer && typeof renderer.setTutorialPulse === 'function') {
           renderer.setTutorialPulse(null);
         }
-      } catch (_) { /* ignore */ }
+      } catch { /* ignore */ }
       try {
         const g = GameInstance.get();
         g.earthCivi.isAiBrainEnabled = previousAiState;
@@ -203,7 +213,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
           g.earthCivi.apCurrent = 50;
           window.dispatchEvent(new CustomEvent('ap-changed'));
         }
-      } catch (_) { /* ignore */ }
+      } catch { /* ignore */ }
     }
 
     const targetId = current.highlightTarget;
@@ -297,7 +307,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
     try {
       const modal = document.getElementById('modal-container');
       if (modal) modal.classList.add('hidden');
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
 
     // 5. 教程聚焦星：自动居中 + 开启 pulse
     if (current.focusStar !== undefined) {
@@ -311,7 +321,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
             renderer.setTutorialPulse(current.focusStar!);
             return;
           }
-        } catch (e) { /* ignore */ }
+        } catch { /* ignore */ }
         if (attempts < 20) requestAnimationFrame(tryFocus);
       };
       requestAnimationFrame(tryFocus);
@@ -322,7 +332,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
         if (renderer && typeof renderer.setTutorialPulse === 'function') {
           renderer.setTutorialPulse(null);
         }
-      } catch (_) { /* ignore */ }
+      } catch { /* ignore */ }
     }
 
     // 6. resolve-event 步骤：注入并监听危机事件
@@ -379,7 +389,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
           if (!g.currentEvent) {
             machine.dispatch(SemanticTutorialEvent.EVENT_RESOLVED);
           }
-        } catch (e) { /* ignore */ }
+        } catch { /* ignore */ }
       };
       window.addEventListener('game-state-changed', handler);
       // 兜底：监听 game-turn-complete（StoryModal 选项触发的回合结算可能不派发 game-state-changed）
@@ -428,7 +438,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
       if (earth) {
         window.dispatchEvent(new CustomEvent('star-selected', { detail: earth }));
       }
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
     // click-earth 是 requiresManualAdvance 步骤，点击 hotspot 即视为完成
     machine.dispatch(SemanticTutorialEvent.MANUAL_ADVANCE);
   }, [current, machine]);
@@ -465,9 +475,11 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
           ))}
           {/* click-earth 步骤：在 hotspot 区域放置可点击层（宽容点击） */}
           {isClickEarth && (
-            <div
+            <button
+              type="button"
+              aria-label={t("选中地球")}
               data-testid="tutorial-earth-hotspot"
-              className="absolute z-[1001] cursor-pointer"
+              className="absolute z-[1001] cursor-pointer pointer-events-auto border-0 bg-transparent p-0"
               style={{
                 top: `${highlightRect.top}px`,
                 left: `${highlightRect.left}px`,

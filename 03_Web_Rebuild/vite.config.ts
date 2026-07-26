@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import packageJson from './package.json'
 
 const basePath = process.env.CF_PAGES === '1' 
   ? '/' 
@@ -148,7 +149,7 @@ export default defineConfig({
           }
         ],
         // 缓存版本控制：自动替换旧缓存
-        cacheId: 'beyond-light-cone-v1.0.0',
+        cacheId: `beyond-light-cone-v${packageJson.version}`,
         // 清理过期的缓存
         cleanupOutdatedCaches: true
       }

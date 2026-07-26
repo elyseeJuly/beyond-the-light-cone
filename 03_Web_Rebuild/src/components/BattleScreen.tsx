@@ -71,7 +71,9 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           gain.connect(audioCtx.destination);
           osc.start();
           osc.stop(audioCtx.currentTime + 0.15);
-        } catch (_) {}
+        } catch {
+          // Web Audio may be unavailable until the player interacts with the page.
+        }
       }
       
       if (currentRoundIdx + 1 >= rounds.length) {

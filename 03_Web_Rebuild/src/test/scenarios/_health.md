@@ -1,5 +1,5 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-07-26
+> 最后审视：2026-07-27
 > 审视周期：每周一次 或 里程碑节点
 
 ## 总体健康：🟢（0 🔴 / 1 🟡 / 9 🟢）
@@ -12,13 +12,14 @@
 | 架构 | EventBus 兼容性 | 🟢 | 旧事件名兼容 | emitLegacy 同时派发新旧事件名，保证迁移过渡期 React 组件旧监听器不失效；emitToWindow 别名保留向后兼容 |
 | 性能 | 1000事件压力测试 | 🟢 | 通过 | 持续关注长局内存与性能表现 |
 | 内容 | 设计文档 vs 代码一致性 | 🟢 | 已解决 | 原 3 处偏离 (D01-D03) 已通过 SPEC_20260703_CORE_SYSTEMS_AUTHORITATIVE.md 确认为权威设计，并编写 SCEN-DESIGN-DRIFT 17 项验证测试 |
-| DevOps | PWA/Release发布流水线 | 🟢 | v1.0.6 六处版本一致；稳定版要求 Web + Windows + macOS 全产物 | static.yml 构建并校验 PWA bundle、部署后在线核验 manifest；release.yml 在 ZIP、MSI、EXE、DMG 全部成功后才发布稳定版 |
+| DevOps | PWA/Release发布流水线 | 🟢 | v1.0.6 已正式发布，4 产物全量上线 | static.yml 构建并校验 PWA bundle、部署后在线核验 manifest；release.yml 在 ZIP、MSI、EXE、DMG 全部成功后才发布稳定版。v1.0.6 Release 已发布：Web ZIP 353.7MB / Windows MSI 348.2MB / Windows EXE 349.5MB / macOS DMG 355.5MB |
 | 架构 | 资产按需下载功能 | 🟢 | 已接入主循环 | AssetLoader.downloadEraPack + preloadNextEra 已接入 Game.ts 纪元更替生命周期；manifest 分类覆盖率 99.3%（uncategorized 从 41% 降至 0.7%） |
 | 架构 | 发行渠道资源策略 | 🟢 | Release/PWA 已分流 | Web Release 由 distribution.json 标记、Tauri 由运行时识别；Release随包资源直接可用，PWA 保留进入提醒与分段缓存 |
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 | UI | 新手教程与智脑顾问 | 🟢 | 序幕 + 8 步真实交互 + 任务链 + 战术百科 | 欢迎页手动启程；选中地球、建造、劳力调配、研发与回合推进均由真实玩家交互驱动；常驻 AdvisorPanel 支持搜索，MissionLog 支持分阶段解锁与手动领奖。 |
 
 ## 审视日志
+- 2026-07-27: v1.0.6 稳定版正式发布——修复 Windows Tauri 构建因 `resolveJsonModule` 将异构 `expansion.assets` 数组（约 100 项，shape 不一致）在 Windows MSVC 下推断为 `never[]` 而报 TS2339（`packId`/`id` 属性不存在），将 `DistributionChannel.scenario.test.ts` 中 `asset_manifest.json` 导入显式断言为 `AssetManifest` 类型（`as unknown as AssetManifest`，因 `latestPatch: null` 与 `string | undefined` 不兼容需经 `unknown` 中转）。v1.0.6 标签从 `ba0b5a9` 强制更新到 `9762a77` 重新触发 Release Pipeline #30232947054，全部 5 个 job 通过：CI Gate（TypeCheck + Test + Build + E2E）/ Build Web Archive / Build Tauri (windows-x64) / Build Tauri (macos-arm64) / Publish GitHub Release。GitHub Release 发布 4 个产物：Web ZIP 353.7MB、Windows MSI 348.2MB、Windows EXE 349.5MB、macOS DMG 355.5MB。同步追加 WebKit/mobile-safari 教程步骤切换时高亮框滞留旧坐标的 E2E 假阳性修复（`waitForHighlightAligned` 轮询对齐）。
 - 2026-07-26: v1.0.6 发布审视——修复教程地球按钮因父级 `pointer-events-none` 无法真实点击、851×390 等短横屏下封面新教程按钮被页头覆盖、采矿劳力滑块测试只改 DOM 未提交游戏状态三项问题；版本号统一到 package、lockfile、Tauri、Cargo、资源清单与 Service Worker 缓存；稳定 Release 改为 Web ZIP、Windows MSI/EXE、macOS DMG 缺一不可。验证结果：1089 项单测通过、覆盖率门禁通过、生产构建与 PWA 契约通过、Cargo 检查通过、Chromium 22/22 及 Firefox/WebKit/mobile-safari 风险集 36/36 通过。
 - 2026-07-24: 批量提取脚本与全量英文本地化闭环——使用 Node 批量脚本（`batch_localize.cjs`）扫描修补 `MuseumGallery.tsx`、`AssetDownloadPromptModal.tsx`、`AnnouncementBoard.tsx` 等遗留组件中的硬编码中文与未包 `t()` 的渲染字段；补充 `i18n.ts` 的 `enDictionary` 中的 CG 绝密事件、按钮与系统提示词条。全量 734 项单元测试与 TypeScript 0 报错验证通过。
 - 2026-07-24: 教程体验深度优化与主页设置实装——①新增主菜单「游戏设置」入口，能够直接唤醒 `SettingsModal` 进行音频/教程重置；②优化新手教程遮罩透明度（bg-[#050810]/65 和 /80 -> /20 和 /30），降低暗度使游戏页面背景与功能更加清晰可见；③修复拖动滑块不断触发 AP 消耗（导致 100AP 瞬间归零）的严重 bug，重构 `RightInspector.tsx` 占比滑块为拖动时仅改变本地状态，鼠标释放时才单次触发 `adjustWorkerRatio` 并消耗 AP；④教程进程下 `canSpendAP` 始终返回 `true`，并在科技研发步骤启动时自动防御性为玩家补足 50 AP，且在非 `next-turn` 步骤锁定并禁用「下一回合」按钮，防止玩家误触导致 AP/数据状态跑偏。

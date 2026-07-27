@@ -1,8 +1,8 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-26
+> 最后更新：2026-07-27
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 v1.0.6 候选就绪（0 RED / 30 总计）
+## 发布状态：🟢 v1.0.6 已发布（0 RED / 30 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -38,6 +38,7 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 
 ## 变更日志
+- 2026-07-27: v1.0.6 稳定版正式发布——修复 Windows Tauri 构建因 `resolveJsonModule` 将异构 `expansion.assets` 数组推断为 `never[]` 而报 TS2339（`packId`/`id` 属性不存在），将 `DistributionChannel.scenario.test.ts` 中 `asset_manifest.json` 导入显式断言为 `AssetManifest` 类型。v1.0.6 标签从 `ba0b5a9` 强制更新到 `9762a77` 重新触发 Release Pipeline，全部 5 个 job 通过（gate / build-web / build-tauri windows-x64 / build-tauri macos-arm64 / publish-release），GitHub Release 发布 4 个产物：Web ZIP 353.7MB、Windows MSI 348.2MB、Windows EXE 349.5MB、macOS DMG 355.5MB。同步追加 WebKit/mobile-safari 高亮框坐标漂移修复（`waitForHighlightAligned` 轮询对齐）。
 - 2026-07-26: v1.0.6 发布候选完成——修复教程地球 hotspot 被父级 `pointer-events-none` 吞掉、短横屏封面按钮被页头遮挡，以及采矿滑块 E2E 未真实提交的问题；统一 PWA/Tauri/Cargo/资源清单/缓存版本，并将稳定 Release 收紧为 ZIP、MSI、EXE、DMG 全产物门禁。本地通过 1089 项单测、覆盖率门禁、生产构建、PWA 契约校验、Cargo 检查、Chromium 22/22 全流程及 Firefox/WebKit/mobile-safari 36/36 风险集。
 - 2026-07-24: 批量提取脚本与全量英文本地化闭环——编写并运行 Node 批量提取与修补脚本（`batch_localize.cjs`），对 `MuseumGallery.tsx`、`AssetDownloadPromptModal.tsx`、`AnnouncementBoard.tsx` 等遗留组件中裸写的硬编码中文及动态变量渲染补齐 `t(...)` 国际化包裹与中英文双向逻辑适配；扩充 `i18n.ts` 中 `enDictionary` 的全部 CG 描述、纪元名称、面板按钮及系统广播词条。通过 TypeScript 0 报错与 734 项单元测试 100% 通过。
 - 2026-07-24: 教程体验深度优化与主页设置实装——新增主菜单「游戏设置」入口；降低教程蒙版透明度，提高背景清晰度；重构占比滑块为拖动结束时单次扣除 AP，防止持续扣减 AP；教程下 `canSpendAP` 始终返回 `true`，且在启动科技研发前自动补足 50 AP，锁定并禁用非 `next-turn` 状态下的下一回合按钮，保障教程 100% 顺畅完成。

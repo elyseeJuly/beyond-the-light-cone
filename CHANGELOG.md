@@ -34,6 +34,8 @@
 - Release 版本门禁扩展为校验标签、package、lockfile、资源清单、Cargo 与 Tauri 配置。
 - 稳定版 Release 仅在 Web、Windows 和 macOS 产物全部成功后发布，并强制检查 ZIP、MSI、EXE、DMG。
 - GitHub Actions 统一升级到 Node.js 22，满足当前 Wrangler/Miniflare 依赖要求。
+- 修复 WebKit/mobile-safari 上教程步骤切换时高亮框滞留旧坐标导致的 E2E 假阳性偏差，新增 `waitForHighlightAligned` 轮询直到高亮框中心与目标中心对齐。
+- 修复 Windows Tauri 构建因 `resolveJsonModule` 将异构 `expansion.assets` 数组推断为 `never[]` 而报 TS2339（`packId`/`id` 属性不存在），将 `asset_manifest.json` 导入显式断言为 `AssetManifest` 类型。
 
 ## [v1.0.5] - 2026-07-24
 

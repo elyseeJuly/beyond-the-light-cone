@@ -2,7 +2,7 @@
 > 最后更新：2026-07-27
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 v1.0.6 已发布（0 RED / 30 总计）
+## 发布状态：🟢 v1.0.7 候选（0 RED / 31 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -36,8 +36,10 @@
 | **SCEN-EVENT-FREEZE** | BugFix | 直接入队事件关闭后 StoryModal 卡死修复 | enqueueAlienEvent / ruinsEvent 的 choice 补 applyEventEffect(NONE)，App.tsx onClose 末尾同步 React 状态，确保直接入队事件作为最后一个事件时 StoryModal 正确关闭 | 🟢 GREEN | 外星发现/接触事件弹窗关闭后 StoryModal 不消失导致画面冻结（间歇性 bug） | EventFreeze.scenario.test.ts |
 | **SCEN-TOPHUD-ZINDEX** | BugFix | TopHUD z-index 过高覆盖所有弹窗 | TopHUD z-index 从 z-[1010] 降回 z-50，不再覆盖封面(z-150)、事件弹窗(z-100)、设置弹窗(z-200)；教程 SVG 镂空机制不依赖 z-index 提升 | 🟢 GREEN | 状态栏一直展示在游戏页面顶部，盖住封面和所有弹窗 | TopHUD.tsx |
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
+| **SCEN-AIBRAIN-BLOCKER** | BugFix | 智脑托管 currentEvent 残留卡死下一回合 | runAIBrain 处理 currentEvent 后强制清理 this.currentEvent=null，末尾兜底再清一次；filteredEvent 的 action() 不调用 applyEventEffect 导致残留，TopHUD.hasEvent 永真使"下一回合"按钮永久 disabled；同步在教程期间禁用智脑切换按钮避免与教程状态机冲突 | 🟢 GREEN | 过完教程正常游戏点智脑按钮后无论怎么操作都无法进入下一回合 | Game.ts / TopHUD.tsx |
 
 ## 变更日志
+- 2026-07-27: v1.0.7 候选——修复智脑托管导致"下一回合"按钮永久卡死的严重 bug。根因：`Game.runAIBrain` 处理 `currentEvent` 后未清理 `this.currentEvent = null`，filteredEvent 的 `action()` 不调用 `applyEventEffect` 导致 `currentEvent` 残留，`TopHUD.hasEvent` 永真使按钮永久 disabled。修复为处理完事件后立即清理 + 末尾兜底清理。同步修复教程期间智脑按钮可被误触开启（加 `disabled={isTutorialActive}` 守卫）、教程步骤跳转过快（click-earth 改为玩家点击 hotspot 触发）、教程与游戏初始操作冲突（移除 500ms 延迟）、移动端音乐/设置按钮消失（新增 BgmPlayer 紧凑模式 + 设置按钮）。全量 1089 项测试通过，TypeScript 0 报错。Registry 30→31 条目。
 - 2026-07-27: v1.0.6 稳定版正式发布——修复 Windows Tauri 构建因 `resolveJsonModule` 将异构 `expansion.assets` 数组推断为 `never[]` 而报 TS2339（`packId`/`id` 属性不存在），将 `DistributionChannel.scenario.test.ts` 中 `asset_manifest.json` 导入显式断言为 `AssetManifest` 类型。v1.0.6 标签从 `ba0b5a9` 强制更新到 `9762a77` 重新触发 Release Pipeline，全部 5 个 job 通过（gate / build-web / build-tauri windows-x64 / build-tauri macos-arm64 / publish-release），GitHub Release 发布 4 个产物：Web ZIP 353.7MB、Windows MSI 348.2MB、Windows EXE 349.5MB、macOS DMG 355.5MB。同步追加 WebKit/mobile-safari 高亮框坐标漂移修复（`waitForHighlightAligned` 轮询对齐）。
 - 2026-07-26: v1.0.6 发布候选完成——修复教程地球 hotspot 被父级 `pointer-events-none` 吞掉、短横屏封面按钮被页头遮挡，以及采矿滑块 E2E 未真实提交的问题；统一 PWA/Tauri/Cargo/资源清单/缓存版本，并将稳定 Release 收紧为 ZIP、MSI、EXE、DMG 全产物门禁。本地通过 1089 项单测、覆盖率门禁、生产构建、PWA 契约校验、Cargo 检查、Chromium 22/22 全流程及 Firefox/WebKit/mobile-safari 36/36 风险集。
 - 2026-07-24: 批量提取脚本与全量英文本地化闭环——编写并运行 Node 批量提取与修补脚本（`batch_localize.cjs`），对 `MuseumGallery.tsx`、`AssetDownloadPromptModal.tsx`、`AnnouncementBoard.tsx` 等遗留组件中裸写的硬编码中文及动态变量渲染补齐 `t(...)` 国际化包裹与中英文双向逻辑适配；扩充 `i18n.ts` 中 `enDictionary` 的全部 CG 描述、纪元名称、面板按钮及系统广播词条。通过 TypeScript 0 报错与 734 项单元测试 100% 通过。

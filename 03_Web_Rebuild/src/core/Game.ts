@@ -273,13 +273,17 @@ export class Game {
     }
 
     // AI 托管自动处理待处理事件，避免死锁
+    // 修复：处理完 currentEvent 后必须清理，否则 TopHUD.hasEvent 永真导致"下一回合"按钮卡死
     if (this.currentEvent) {
       const defaultChoice = this.currentEvent.choices?.[0];
+      const eventTitle = this.currentEvent.title;
       if (defaultChoice) {
-        const eventTitle = this.currentEvent.title;
         defaultChoice.action();
         actions.push(`🤖 [AI智脑] 已自动处理剧情事件「${eventTitle}」`);
       }
+      // 无论 action() 内部是否调用 applyEventEffect，都强制清理 currentEvent
+      // （filteredEvent 的 action 不调用 applyEventEffect，会残留 currentEvent）
+      this.currentEvent = null;
     }
     while (this.eventQueue.length > 0) {
       const ev = this.eventQueue.shift()!;
@@ -289,6 +293,8 @@ export class Game {
         actions.push(`🤖 [AI智脑] 已自动处理剧情事件「${ev.title}」`);
       }
     }
+    // 兜底：确保 runAIBrain 返回时 currentEvent 已清理，避免 hasEvent 误判卡死下一回合按钮
+    this.currentEvent = null;
 
     for (const action of actions) {
       this.tickerMessages.push(action);
@@ -740,32 +746,7 @@ export class Game {
         }
 
         // 3. 角色生命状态检查与卸任
-        const epochNamesInternal = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
-        const currentEpochStr = epochNamesInternal[this.epoch] || "GOLDEN";
-
-        for (const p of this.personManager.getAllPersons()) {
-          // If character is currently alive but shouldn't be in this epoch, they pass away
-          if (p.isAlive && !this.eventManager.isPersonAliveInEpoch(p.name, currentEpochStr)) {
-            p.isAlive = false;
-          }
-
-          if (!p.isAlive) {
-            // 解除执剑人
-            if (this.earthCivi.swordholder === p.name) {
-              this.earthCivi.swordholder = null;
-            }
-            // 解除面壁者
-            if (this.earthCivi.wallfacers.has(p.name)) {
-              this.earthCivi.wallfacers.delete(p.name);
-            }
-            // 发布讣告
-            if (p.deathYear === 0 || p.deathYear === this.year) {
-              if (p.deathYear === 0) p.deathYear = this.year;
-              this.addHistory(`【讣告】${p.name} 结束了波澜壮阔的一生，于 ${this.year} 年逝世。`);
-              this.tickerMessages.push(`讣告：${p.name} 逝世。`);
-            }
-          }
-        }
+        this.reconcilePersonDeaths();
         if (typeof window !== 'undefined') {
           this.eventBus.emitLegacy('game-state-changed');
         }

@@ -300,19 +300,21 @@ export const TopHUD: React.FC = () => {
           <span className="font-title font-bold hidden md:inline">{t("智脑顾问")}</span>
         </button>
 
-        {/* AI Brain Toggle — always visible */}
+        {/* AI Brain Toggle — always visible (教程期间禁用，避免智脑与教程状态机冲突) */}
         <button
           onClick={toggleAiBrain}
+          disabled={isTutorialActive}
           data-tutorial-id="btn-ai-brain"
-          className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors cursor-pointer ${
+          className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors ${
+            isTutorialActive ? 'opacity-40 cursor-not-allowed pointer-events-none border-gray-700/50 text-gray-600' :
             stats.isAiBrainEnabled
-              ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
-              : 'bg-gray-800/50 border-gray-600/50 text-gray-400'
+              ? 'bg-purple-500/20 border-purple-500/50 text-purple-300 cursor-pointer'
+              : 'bg-gray-800/50 border-gray-600/50 text-gray-400 cursor-pointer'
           }`}
-          title={stats.isAiBrainEnabled ? t("智脑托管") : t("手动")}
+          title={isTutorialActive ? t("教程期间不可切换智脑托管") : (stats.isAiBrainEnabled ? t("智脑托管") : t("手动"))}
         >
           <span className="font-title font-bold hidden md:inline">
-            {stats.isAiBrainEnabled ? t("智脑托管") : t("手动")}
+            {isTutorialActive ? t("教程中") : (stats.isAiBrainEnabled ? t("智脑托管") : t("手动"))}
           </span>
         </button>
 

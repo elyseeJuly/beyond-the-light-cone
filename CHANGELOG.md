@@ -6,7 +6,23 @@
 > ⚠️ **注意**: 每次更新版本都**必须**在此文档中按照格式添加相应的发布更新说明。
 
 ## [Unreleased]
-*(下个即将发布的版本内容，请在开发过程中将更新记录于此，正式发布时修改为具体版本号)*
+
+## [v1.0.7] - 2026-07-27
+
+本次版本为 v1.0.6 之后的热修复，聚焦解决玩家在实际游玩中反馈的智脑托管阻塞与教程节奏问题。
+
+### 修复 (Fixed)
+
+- **智脑托管导致"下一回合"按钮永久卡死**：`Game.runAIBrain` 处理 `currentEvent` 后未清理 `this.currentEvent = null`，filteredEvent 的 `action()` 不调用 `applyEventEffect` 导致 `currentEvent` 残留，`TopHUD.hasEvent` 永真使"下一回合"按钮永久 disabled。修复为处理完事件后立即清理 `currentEvent`，并在 `runAIBrain` 末尾兜底再清一次。
+- **教程期间智脑按钮可被误触开启**：`TopHUD` 的智脑切换按钮缺少 `isTutorialActive` 守卫，教程启动时虽关闭智脑但玩家可中途重开，导致智脑与教程状态机争夺回合推进控制权。修复为教程期间按钮 `disabled` 并显示"教程中"占位。
+- **教程步骤跳转过快**：`click-earth` 步骤进入时自动派发 `star-selected` 导致移动端 drawer 突然弹出，玩家未看清教程卡片界面就变了。改为玩家点击 hotspot 时才派发，给玩家反应时间，文案同步从"已为您自动定位并选中地球"改为"点击高亮的地球坐标"。
+- **教程与游戏初始操作冲突**：`App.tsx` 的 `onStartNewGame` 中教程启动有 500ms 延迟，封面消失后玩家短暂进入无引导界面。移除延迟，封面消失后立即启动教程。
+- **智脑目标出现后音乐按钮和设置按钮消失**：移动端 `MobileBottomNav` 缺少音乐和设置入口。新增 `BgmPlayer` 紧凑模式（仅播放/暂停按钮）和设置按钮，恢复移动端操作入口。
+
+### 优化 (Optimized)
+
+- **教程步骤推进语义化**：`resource-production` 和 `start-research` 步骤从自动完成改为 `MANUAL_ADVANCE`，玩家需先满足 `validate` 条件再手动点击"下一步"，避免状态变化与步骤推进不同步。
+- **教程测试覆盖补齐**：`TutorialRemedy.scenario.test.tsx` 修复 4 个失败用例，适配 welcome 步骤手动推进、click-earth 步骤交互逻辑变更、MANUAL_ADVANCE 步骤需额外点击"下一步"。
 
 ## [v1.0.6] - 2026-07-26
 

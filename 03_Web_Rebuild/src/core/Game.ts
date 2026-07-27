@@ -783,6 +783,44 @@ export class Game {
     }
   }
 
+  /**
+   * 角色生命状态对账（抽自 runARound 步骤 3）。
+   * 逻辑死亡(isAlive=false)对全体生效，以保证任命资格判定正确；
+   * 但讣告播报仅对“本局已登场/解锁”的角色(availablePersons)触发，
+   * 避免为从未登场或在世的角色误发讣告。
+   */
+  private reconcilePersonDeaths(): void {
+    const epochNamesInternal = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
+    const currentEpochStr = epochNamesInternal[this.epoch] || "GOLDEN";
+    const appeared = this.personManager.availablePersons;
+
+    for (const p of this.personManager.getAllPersons()) {
+      // 当前在世但本纪元不应在世 → 标记死亡（对全体生效，保证任命资格正确）
+      if (p.isAlive && !this.eventManager.isPersonAliveInEpoch(p.name, currentEpochStr)) {
+        p.isAlive = false;
+      }
+
+      if (!p.isAlive) {
+        // 解除执剑人
+        if (this.earthCivi.swordholder === p.name) {
+          this.earthCivi.swordholder = null;
+        }
+        // 解除面壁者
+        if (this.earthCivi.wallfacers.has(p.name)) {
+          this.earthCivi.wallfacers.delete(p.name);
+        }
+        // 发布讣告（仅本局已登场角色）
+        if (p.deathYear === 0 || p.deathYear === this.year) {
+          if (p.deathYear === 0) p.deathYear = this.year;
+          if (appeared.has(p.name)) {
+            this.addHistory(`【讣告】${p.name} 结束了波澜壮阔的一生，于 ${this.year} 年逝世。`);
+            this.tickerMessages.push(`讣告：${p.name} 逝世。`);
+          }
+        }
+      }
+    }
+  }
+
   public updateEpoch(): void {
     const prevEpoch = this.epoch;
     const culture = this.earthCivi?.culture || 0;

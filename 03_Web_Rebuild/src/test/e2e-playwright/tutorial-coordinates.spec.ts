@@ -28,6 +28,26 @@ async function waitForHighlightStable(page: Page): Promise<void> {
   await page.waitForTimeout(400);
 }
 
+/**
+ * 等待目标元素与高亮框坐标稳定（连续两帧差异 < 1px）。
+ *
+ * CI 上 WebKit/mobile-safari 曾出现 highlightRect 在布局变化中更新、
+ * 测试读到中间状态导致 X 偏差 100~500px 的问题。此函数通过轮询
+ * getBoundingClientRect() 直到稳定，消除时序导致的假阳性偏差。
+ */
+async function waitForCoordsStable(page: Page, maxRounds = 8): Promise<void> {
+  for (let i = 0; i < maxRounds; i++) {
+    const first = await readHighlightAndTargetCenters(page);
+    await page.waitForTimeout(80);
+    const second = await readHighlightAndTargetCenters(page);
+    const dx = Math.abs(first.highlightCenter.x - second.highlightCenter.x)
+      + Math.abs(first.targetCenter.x - second.targetCenter.x);
+    const dy = Math.abs(first.highlightCenter.y - second.highlightCenter.y)
+      + Math.abs(first.targetCenter.y - second.targetCenter.y);
+    if (dx < 1 && dy < 1) return;
+  }
+}
+
 /** 启动自由探索（跳过教程） */
 async function startFreeExplore(page: Page): Promise<void> {
   const freeExploreBtn = page.locator('button:has-text("自由探索")');
@@ -47,10 +67,13 @@ async function readScaleFactor(page: Page): Promise<number> {
   });
 }
 
-/** 读取高亮框与目标元素中心坐标 */
+/** 读取高亮框与目标元素中心坐标（含诊断数据） */
 async function readHighlightAndTargetCenters(page: Page): Promise<{
   highlightCenter: { x: number; y: number };
   targetCenter: { x: number; y: number };
+  highlightRect: { left: number; top: number; width: number; height: number };
+  targetRect: { left: number; top: number; width: number; height: number };
+  scaledRect: { left: number; top: number; width: number; height: number } | null;
 }> {
   return page.evaluate(() => {
     const highlightEl = document.querySelector('div.z-\\[1001\\]') as HTMLElement;
@@ -59,9 +82,14 @@ async function readHighlightAndTargetCenters(page: Page): Promise<{
     const targetEl = document.querySelector('[data-tutorial-id="right-inspector"]') as HTMLElement;
     if (!targetEl) throw new Error('目标元素 right-inspector 未找到');
     const tRect = targetEl.getBoundingClientRect();
+    const scaled = document.querySelector('.mobile-landscape-scale') as HTMLElement | null;
+    const sRect = scaled ? scaled.getBoundingClientRect() : null;
     return {
       highlightCenter: { x: hRect.left + hRect.width / 2, y: hRect.top + hRect.height / 2 },
       targetCenter: { x: tRect.left + tRect.width / 2, y: tRect.top + tRect.height / 2 },
+      highlightRect: { left: hRect.left, top: hRect.top, width: hRect.width, height: hRect.height },
+      targetRect: { left: tRect.left, top: tRect.top, width: tRect.width, height: tRect.height },
+      scaledRect: sRect ? { left: sRect.left, top: sRect.top, width: sRect.width, height: sRect.height } : null,
     };
   });
 }
@@ -70,19 +98,23 @@ async function readHighlightAndTargetCenters(page: Page): Promise<{
 test.describe('横屏 0.85 缩放坐标验证', () => {
   test.use({ hasTouch: true, viewport: { width: 851, height: 390 } });
 
-  test('DOM 高亮框中心与目标元素中心误差 ≤ 4px', async ({ page }) => {
+  test('DOM 高亮框中心与目标元素中心误差 ≤ 4px', async ({ page, browserName }) => {
     test.setTimeout(40000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
     await startTutorialToReadStatus(page);
     await waitForHighlightStable(page);
+    await waitForCoordsStable(page);
 
     const scaleFactor = await readScaleFactor(page);
     expect(Math.abs(scaleFactor - 0.85)).toBeLessThan(0.01);
 
-    const { highlightCenter, targetCenter } = await readHighlightAndTargetCenters(page);
+    const { highlightCenter, targetCenter, highlightRect, targetRect, scaledRect } = await readHighlightAndTargetCenters(page);
     const dx = Math.abs(highlightCenter.x - targetCenter.x);
     const dy = Math.abs(highlightCenter.y - targetCenter.y);
+    if (dx >= HIGHLIGHT_CENTER_TOLERANCE_PX || dy >= HIGHLIGHT_CENTER_TOLERANCE_PX) {
+      console.log(`[${browserName}] 坐标偏差 dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} | scale=${scaleFactor} | highlight=${JSON.stringify(highlightRect)} | target=${JSON.stringify(targetRect)} | scaled=${JSON.stringify(scaledRect)}`);
+    }
     expect(dx, `高亮框中心 X 偏差 ${dx.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
     expect(dy, `高亮框中心 Y 偏差 ${dy.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
   });
@@ -181,19 +213,23 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
 test.describe('桌面端坐标验证（无缩放）', () => {
   test.use({ hasTouch: false, viewport: { width: 1440, height: 900 } });
 
-  test('DOM 高亮框中心与目标元素中心误差 ≤ 4px', async ({ page }) => {
+  test('DOM 高亮框中心与目标元素中心误差 ≤ 4px', async ({ page, browserName }) => {
     test.setTimeout(40000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
     await startTutorialToReadStatus(page);
     await waitForHighlightStable(page);
+    await waitForCoordsStable(page);
 
     const hasScale = await page.evaluate(() => !!document.querySelector('.mobile-landscape-scale'));
     expect(hasScale).toBe(false);
 
-    const { highlightCenter, targetCenter } = await readHighlightAndTargetCenters(page);
+    const { highlightCenter, targetCenter, highlightRect, targetRect } = await readHighlightAndTargetCenters(page);
     const dx = Math.abs(highlightCenter.x - targetCenter.x);
     const dy = Math.abs(highlightCenter.y - targetCenter.y);
+    if (dx >= HIGHLIGHT_CENTER_TOLERANCE_PX || dy >= HIGHLIGHT_CENTER_TOLERANCE_PX) {
+      console.log(`[${browserName}] 桌面端坐标偏差 dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} | highlight=${JSON.stringify(highlightRect)} | target=${JSON.stringify(targetRect)}`);
+    }
     expect(dx, `桌面端高亮框 X 偏差 ${dx.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
     expect(dy, `桌面端高亮框 Y 偏差 ${dy.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
   });
@@ -203,7 +239,7 @@ test.describe('桌面端坐标验证（无缩放）', () => {
 test.describe('旋转屏幕坐标连续性', () => {
   test.use({ hasTouch: true, viewport: { width: 393, height: 851 } });
 
-  test('竖屏启动教程后旋转到横屏 0.85 缩放，高亮框不漂移', async ({ page }) => {
+  test('竖屏启动教程后旋转到横屏 0.85 缩放，高亮框不漂移', async ({ page, browserName }) => {
     test.setTimeout(40000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -214,13 +250,17 @@ test.describe('旋转屏幕坐标连续性', () => {
     // 旋转到横屏
     await page.setViewportSize({ width: 851, height: 390 });
     await page.waitForTimeout(1000);
+    await waitForCoordsStable(page);
 
     const scaleFactor = await readScaleFactor(page);
     expect(Math.abs(scaleFactor - 0.85)).toBeLessThan(0.01);
 
-    const { highlightCenter, targetCenter } = await readHighlightAndTargetCenters(page);
+    const { highlightCenter, targetCenter, highlightRect, targetRect, scaledRect } = await readHighlightAndTargetCenters(page);
     const dx = Math.abs(highlightCenter.x - targetCenter.x);
     const dy = Math.abs(highlightCenter.y - targetCenter.y);
+    if (dx >= HIGHLIGHT_CENTER_TOLERANCE_PX || dy >= HIGHLIGHT_CENTER_TOLERANCE_PX) {
+      console.log(`[${browserName}] 旋转后坐标偏差 dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} | scale=${scaleFactor} | highlight=${JSON.stringify(highlightRect)} | target=${JSON.stringify(targetRect)} | scaled=${JSON.stringify(scaledRect)}`);
+    }
     expect(dx, `旋转后高亮框 X 漂移 ${dx.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
     expect(dy, `旋转后高亮框 Y 漂移 ${dy.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
   });

@@ -29,22 +29,20 @@ async function waitForHighlightStable(page: Page): Promise<void> {
 }
 
 /**
- * 等待目标元素与高亮框坐标稳定（连续两帧差异 < 1px）。
+ * 等待高亮框中心与目标元素中心对齐（差值 < tolerance）。
  *
- * CI 上 WebKit/mobile-safari 曾出现 highlightRect 在布局变化中更新、
- * 测试读到中间状态导致 X 偏差 100~500px 的问题。此函数通过轮询
- * getBoundingClientRect() 直到稳定，消除时序导致的假阳性偏差。
+ * CI 上 WebKit/mobile-safari 在教程步骤切换或屏幕旋转后，highlightRect
+ * 可能滞留旧坐标（如 click-earth 的地球框 110×110），需要若干 rAF 帧
+ * 后 Tutorial 的 updateRect 循环才会将其更新为当前目标的坐标。
+ * 此函数轮询直到两者中心对齐，消除时序导致的假阳性偏差。
  */
-async function waitForCoordsStable(page: Page, maxRounds = 8): Promise<void> {
+async function waitForHighlightAligned(page: Page, tolerance = 4, maxRounds = 30): Promise<void> {
   for (let i = 0; i < maxRounds; i++) {
-    const first = await readHighlightAndTargetCenters(page);
-    await page.waitForTimeout(80);
-    const second = await readHighlightAndTargetCenters(page);
-    const dx = Math.abs(first.highlightCenter.x - second.highlightCenter.x)
-      + Math.abs(first.targetCenter.x - second.targetCenter.x);
-    const dy = Math.abs(first.highlightCenter.y - second.highlightCenter.y)
-      + Math.abs(first.targetCenter.y - second.targetCenter.y);
-    if (dx < 1 && dy < 1) return;
+    const { highlightCenter, targetCenter } = await readHighlightAndTargetCenters(page);
+    const dx = Math.abs(highlightCenter.x - targetCenter.x);
+    const dy = Math.abs(highlightCenter.y - targetCenter.y);
+    if (dx < tolerance && dy < tolerance) return;
+    await page.waitForTimeout(100);
   }
 }
 
@@ -104,7 +102,7 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
     await dismissOrientationPrompt(page);
     await startTutorialToReadStatus(page);
     await waitForHighlightStable(page);
-    await waitForCoordsStable(page);
+    await waitForHighlightAligned(page);
 
     const scaleFactor = await readScaleFactor(page);
     expect(Math.abs(scaleFactor - 0.85)).toBeLessThan(0.01);
@@ -219,7 +217,7 @@ test.describe('桌面端坐标验证（无缩放）', () => {
     await dismissOrientationPrompt(page);
     await startTutorialToReadStatus(page);
     await waitForHighlightStable(page);
-    await waitForCoordsStable(page);
+    await waitForHighlightAligned(page);
 
     const hasScale = await page.evaluate(() => !!document.querySelector('.mobile-landscape-scale'));
     expect(hasScale).toBe(false);
@@ -250,7 +248,7 @@ test.describe('旋转屏幕坐标连续性', () => {
     // 旋转到横屏
     await page.setViewportSize({ width: 851, height: 390 });
     await page.waitForTimeout(1000);
-    await waitForCoordsStable(page);
+    await waitForHighlightAligned(page);
 
     const scaleFactor = await readScaleFactor(page);
     expect(Math.abs(scaleFactor - 0.85)).toBeLessThan(0.01);

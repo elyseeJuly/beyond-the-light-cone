@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import manifestData from '../../../public/asset_manifest.json';
+import manifestDataRaw from '../../../public/asset_manifest.json';
+import type { AssetManifest } from '../../types/asset';
 import { shouldPromptForAssetDownload } from '../../core/AssetDownloadPolicy';
 import { AssetLoader } from '../../core/AssetLoader';
 import {
@@ -7,6 +8,13 @@ import {
   initializeDistributionChannel,
   supportsSegmentedAssetDownloads,
 } from '../../core/DistributionChannel';
+
+/**
+ * resolveJsonModule 对超大异构数组（expansion.assets 约 100 项，shape 不一致）
+ * 在 Windows MSVC 下会推断为 never[]，导致 .packId / .id 访问报 TS2339。
+ * 此处显式断言为 AssetManifest，与 AssetLoader 运行时使用的类型保持一致。
+ */
+const manifestData = manifestDataRaw as unknown as AssetManifest;
 
 function mockDistribution(channel: 'pwa' | 'release') {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({

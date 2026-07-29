@@ -1,8 +1,8 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-07-27
+> 最后审视：2026-07-28
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 12 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 13 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
@@ -19,8 +19,10 @@
 | UI | 弹窗层叠秩序 | 🟢 | z-index 规范化 | TopHUD z-50 / StoryModal z-100 / 封面 z-150 / 设置 z-200 / 教程 z-1000，不再有越权覆盖 |
 | UI | 新手教程与智脑顾问 | 🟢 | 序幕 + 8 步真实交互 + 任务链 + 战术百科 | 欢迎页手动启程；选中地球、建造、劳力调配、研发与回合推进均由真实玩家交互驱动；常驻 AdvisorPanel 支持搜索，MissionLog 支持分阶段解锁与手动领奖。教程期间智脑按钮禁用避免冲突。 |
 | 内容 | 讣告/死亡对账逻辑 | 🟢 | 已修复 | 恢复被 ae1119e 误删的 reconcilePersonDeaths() 方法体（此前 tsc 报错、死亡对账整段不执行）；讣告播报加登场门控（仅本局已登场角色 via availablePersons 才发布，逻辑死亡仍对全体生效以保证任命正确）；新增 ObituaryAppearanceGate 回归测试 3 项。registry SCEN-OBITUARY-APPEARANCE-GATE GREEN，0 RED / 32 总计。 |
+| 安全 | 生产 sourcemap / 遥测版本号 | 🟢 | 已修复 | vite.config.ts build.sourcemap 从 true 改为 false，生产产物不再包含 .map 文件；StatisticsManager 遥测 payload 版本号从 0.9.0-beta 更新为 1.0.7（遇端点当前为空会提前返回，不作为当前线上信息泄露）。 |
 
 ## 审视日志
+- 2026-07-28: AUDIT_20260728 审计修复闭环——完成 4 项 P2/P3 修复（CHANGELOG 对齐、runAIBrain 回归测试 SCEN-AIBRAIN-EVENT-CLEANUP、sourcemap 关闭、遥测版本号同步）。全量 61 文件 1096 用例通过，TypeScript 0 报错，无回归。新增「安全 | 生产 sourcemap / 遥测版本号」维度为 🟢。总体健康 🟢（0 🔴 / 1 🟡 / 13 🟢）。
 - 2026-07-27: v1.0.7 候选审视（讣告修复）——修复底部动态信息误发"未登场/在世角色讣告"。根因双重：①当前 HEAD(ae1119e) 把死亡对账抽成 reconcilePersonDeaths() 调用却丢失方法体，tsc 报 TS2339、对账整段不执行（该路径不再发任何讣告）；用户观察到的错误讣告来自 ae1119e 之前的旧版 dist（内联循环对全体 35 人无条件发讣告）。②即便恢复，旧逻辑也对未登场角色发讣告。修复：补回 reconcilePersonDeaths() 方法体，并在讣告播报处加登场门控（仅本局已登场角色 availablePersons.has 才发布，逻辑死亡 isAlive=false 仍对全体生效以保证任命正确）。新增 ObituaryAppearanceGate 回归测试 3 项（CRISIS 下仅已登场雷志成/杨卫宁收讣告，山杉惠子等逻辑死亡但不播报）。验证：tsc 0 报错（纠正了原失实的 REG-BUILD-CLEAN），全量 1092 测试通过；registry 新增 SCEN-OBITUARY-APPEARANCE-GATE GREEN，0 RED / 32 总计；已授权重建 dist（旧 dist 移入废纸篓可逆）。总体健康保持 🟢。
 - 2026-07-27: v1.0.7 候选审视——修复智脑托管导致"下一回合"按钮永久卡死的严重 bug。根因：`Game.runAIBrain` 处理 `currentEvent` 后未清理 `this.currentEvent = null`，filteredEvent 的 `action()` 不调用 `applyEventEffect` 导致 `currentEvent` 残留，`TopHUD.hasEvent` 永真使按钮永久 disabled。修复为处理完事件后立即清理 + 末尾兜底清理。同步修复教程期间智脑按钮可被误触开启（加 `disabled={isTutorialActive}` 守卫）、教程步骤跳转过快（click-earth 改为玩家点击 hotspot 触发）、教程与游戏初始操作冲突（移除 500ms 延迟）、移动端音乐/设置按钮消失（新增 BgmPlayer 紧凑模式 + 设置按钮）。新增"智脑托管回合推进"维度为 🟢。全量 1089 项测试通过，TypeScript 0 报错。总体健康保持 🟢（0🔴/1🟡/10🟢）。
 - 2026-07-27: v1.0.6 稳定版正式发布——修复 Windows Tauri 构建因 `resolveJsonModule` 将异构 `expansion.assets` 数组（约 100 项，shape 不一致）在 Windows MSVC 下推断为 `never[]` 而报 TS2339（`packId`/`id` 属性不存在），将 `DistributionChannel.scenario.test.ts` 中 `asset_manifest.json` 导入显式断言为 `AssetManifest` 类型（`as unknown as AssetManifest`，因 `latestPatch: null` 与 `string | undefined` 不兼容需经 `unknown` 中转）。v1.0.6 标签从 `ba0b5a9` 强制更新到 `9762a77` 重新触发 Release Pipeline #30232947054，全部 5 个 job 通过：CI Gate（TypeCheck + Test + Build + E2E）/ Build Web Archive / Build Tauri (windows-x64) / Build Tauri (macos-arm64) / Publish GitHub Release。GitHub Release 发布 4 个产物：Web ZIP 353.7MB、Windows MSI 348.2MB、Windows EXE 349.5MB、macOS DMG 355.5MB。同步追加 WebKit/mobile-safari 教程步骤切换时高亮框滞留旧坐标的 E2E 假阳性修复（`waitForHighlightAligned` 轮询对齐）。

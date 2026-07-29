@@ -157,7 +157,7 @@ export default defineConfig({
   ],
   base: basePath,
   build: {
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         // 代码分割策略：将大型依赖与游戏核心拆分为独立 chunk，降低首屏 index chunk 体积

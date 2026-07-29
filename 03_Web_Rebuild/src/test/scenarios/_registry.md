@@ -1,8 +1,8 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-07-27
+> 最后更新：2026-07-28
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 v1.0.7 候选（0 RED / 32 总计）
+## 发布状态：🟢 v1.0.7 候选（0 RED / 33 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -38,8 +38,10 @@
 | **SCEN-EVENTBUS-COMPAT** | BugFix | EventBus 重构兼容性断裂修复 | emitLegacy 同时派发新旧事件名保证向后兼容；添加 emitToWindow 别名；修复 EarthCivilization.ts emitToWindow 调用；修复 runAIBrain 中 currentEvent null 访问 | 🟢 GREEN | 开始新游戏不弹教程、下一回合无反应、科技研发异常（EventBus 重构未派发旧事件名导致 App.tsx 监听器全部失效） | EventBus.ts / EarthCivilization.ts / Game.ts |
 | **SCEN-AIBRAIN-BLOCKER** | BugFix | 智脑托管 currentEvent 残留卡死下一回合 | runAIBrain 处理 currentEvent 后强制清理 this.currentEvent=null，末尾兜底再清一次；filteredEvent 的 action() 不调用 applyEventEffect 导致残留，TopHUD.hasEvent 永真使"下一回合"按钮永久 disabled；同步在教程期间禁用智脑切换按钮避免与教程状态机冲突 | 🟢 GREEN | 过完教程正常游戏点智脑按钮后无论怎么操作都无法进入下一回合 | Game.ts / TopHUD.tsx |
 | **SCEN-OBITUARY-APPEARANCE-GATE** | BugFix | 讣告仅对本局已登场角色播报 | 死亡对账(reconcilePersonDeaths)逻辑死亡(isAlive=false)对全体生效以保证任命资格正确；讣告 ticker 播报仅当角色在 personManager.availablePersons(本局已登场/解锁)时触发，未登场/在世角色不再收到讣告 | 🟢 GREEN | 底部动态信息为未登场/在世角色(如 山杉惠子、伊依、霍金等 13 名永不被解锁角色)误发讣告 | src/test/core/ObituaryAppearanceGate.test.ts / Game.ts |
+| **SCEN-AIBRAIN-EVENT-CLEANUP** | Regression | runAIBrain currentEvent 清理回归测试 | 4 项回归用例：AB01 action 不调用 applyEventEffect 时 currentEvent===null 且 hasEvent===false；AB02 队列中多个 filteredEvent 全部清理；AB03 混合事件（有/无 applyEventEffect）均正确清理；AB04 无事件时安全执行 | 🟢 GREEN | AUDIT_20260728 P2：runAIBrain currentEvent 修复缺少针对性回归断言 | AIBrainEventCleanup.scenario.test.ts |
 
 ## 变更日志
+- 2026-07-28: AUDIT_20260728 审计修复闭环——完成 4 项 P2/P3 修复：①CHANGELOG v1.0.7 条目对齐 v1.0.6..HEAD 实际 diff（移除误植的教程/移动端改动，补入遗漏的死亡对账修复 commit 2a6b1b61，日期更正为 2026-07-28）；②新增 SCEN-AIBRAIN-EVENT-CLEANUP 回归测试（4 项，覆盖 filteredEvent 风格 action 不调用 applyEventEffect 时 currentEvent 仍被正确清理的精确断言）；③vite.config.ts build.sourcemap 从 true 改为 false（消除生产产物 .map 文件暴露源码风险）；④StatisticsManager 遥测 payload 版本号从陈旧的 0.9.0-beta 更新为 1.0.7。全量 61 文件 1096 用例通过（3 个 simulation 测试 skip），TypeScript 0 报错，无回归。Registry 32→33 条目。
 - 2026-07-27: 修复讣告误发(RED→GREEN, SCEN-OBITUARY-APPEARANCE-GATE)。根因:最新提交 ae1119e 把死亡对账抽成 reconcilePersonDeaths() 调用却丢了方法体,导致对账整段不执行(tsc 亦报错,REG-BUILD-CLEAN 此前为失实 GREEN);旧逻辑对全体 35 人无条件发讣告。修复:补回方法体(逻辑死亡对全体生效以保证任命正确),讣告播报加"仅本局已登场角色"门控;新增 3 项回归测试。全量 1092 测试通过,tsc 0 报错,REG-BUILD-CLEAN 现为真 GREEN。Registry 31→32 条目。
 - 2026-07-27: v1.0.7 候选——修复智脑托管导致"下一回合"按钮永久卡死的严重 bug。根因：`Game.runAIBrain` 处理 `currentEvent` 后未清理 `this.currentEvent = null`，filteredEvent 的 `action()` 不调用 `applyEventEffect` 导致 `currentEvent` 残留，`TopHUD.hasEvent` 永真使按钮永久 disabled。修复为处理完事件后立即清理 + 末尾兜底清理。同步修复教程期间智脑按钮可被误触开启（加 `disabled={isTutorialActive}` 守卫）、教程步骤跳转过快（click-earth 改为玩家点击 hotspot 触发）、教程与游戏初始操作冲突（移除 500ms 延迟）、移动端音乐/设置按钮消失（新增 BgmPlayer 紧凑模式 + 设置按钮）。全量 1089 项测试通过，TypeScript 0 报错。Registry 30→31 条目。
 - 2026-07-27: v1.0.6 稳定版正式发布——修复 Windows Tauri 构建因 `resolveJsonModule` 将异构 `expansion.assets` 数组推断为 `never[]` 而报 TS2339（`packId`/`id` 属性不存在），将 `DistributionChannel.scenario.test.ts` 中 `asset_manifest.json` 导入显式断言为 `AssetManifest` 类型。v1.0.6 标签从 `ba0b5a9` 强制更新到 `9762a77` 重新触发 Release Pipeline，全部 5 个 job 通过（gate / build-web / build-tauri windows-x64 / build-tauri macos-arm64 / publish-release），GitHub Release 发布 4 个产物：Web ZIP 353.7MB、Windows MSI 348.2MB、Windows EXE 349.5MB、macOS DMG 355.5MB。同步追加 WebKit/mobile-safari 高亮框坐标漂移修复（`waitForHighlightAligned` 轮询对齐）。

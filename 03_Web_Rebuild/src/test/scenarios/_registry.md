@@ -2,7 +2,7 @@
 > 最后更新：2026-07-28
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 v1.0.7 候选（0 RED / 33 总计）
+## 发布状态：🟢 v1.0.7 候选（0 RED / 34 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -16,7 +16,7 @@
 | SCEN-TUTORIAL-STEP1-FOCUS-EARTH | 交互 | 教程步骤 1 自动居中地球 | 步骤 1 启动时 StarMapRenderer.focusOnStar(3, 1.5, true) 自动将地球居中到屏幕中央并缩放 1.5x，无论玩家之前停留在哪个星区 | 🟢 GREEN | 新手教程找不到地球（玩家停留在银河系区域时地球不在视野内） | TutorialRemedy.scenario.test.tsx |
 | SCEN-GRACE-PERIOD-BLOCKERS | 交互 | 前 3 回合阻断器宽限期 | year < 3 时科研停滞与部门首长空缺降级为警告（不阻断回合推进），资源崩盘与经济危机仍阻断；getTurnWarnings() 返回警告列表 | 🟢 GREEN | 新玩家前几回合因不熟悉机制被反复阻断 | TutorialRemedy.scenario.test.tsx |
 | SCEN-GRACE-PERIOD-EXPIRY | 交互 | 宽限期到期恢复正常阻断 | year ≥ 3 后科研停滞与部门空缺恢复为硬阻断，getTurnWarnings() 返回空列表 | 🟢 GREEN | 宽限期到期后阻断器未恢复正常 | TutorialRemedy.scenario.test.tsx |
-| SCEN-MANUAL-BLOCKER | 交互 | 手动模式阻断与消除 | 非教程期间，手动模式下存在阻断时按钮禁用显示"有阻断"，阻断消除后恢复可用。依据 SPEC_20260712_AP_SYSTEM_REDESIGN：阻断器扩展为 4 项（资源崩盘/经济危机/科研停滞/行政瘫痪），测试已补齐新增阻断项的解除逻辑 | 🟢 GREEN | 手动模式回合阻断与指示器显示问题；AP 系统重设计补全阻断器 | TutorialRemedy.scenario.test.tsx |
+| SCEN-MANUAL-BLOCKER | 交互 | 手动模式阻断与消除 | 非教程期间，手动模式下存在阻断时按钮禁用显示"有阻断"（悬浮可查看具体阻断事务列表），阻断消除后恢复可用。根据反馈，下一回合按钮已补齐 hover 悬浮框详细显示 4 项阻断/警告详情。 | 🟢 GREEN | 手动模式回合阻断与指示器显示问题；AP 系统重设计补全阻断器 | TutorialRemedy.scenario.test.tsx |
 | REG-BUILD-CLEAN | Regression | 编译构建无警告 | 本地与 CI 环境构建无 TypeScript 未使用变量警告/错误，打包流程正常 | 🟢 GREEN | GitHub Pages 编译失败与未引用变量报错 | package.json (npm run build) |
 | REG-PWA-FREEZE | Regression | PWA 更新卡住修复 | 修复 GitHub Pages 下使用相对路径导致 Service Worker 更新及页面刷新卡死的问题 | 🟢 GREEN | 立即更新按钮点击卡住/白屏 | vite.config.ts |
 | **SCEN-TIMELINE-COMPARE** | Feature | 岁月史书双轨时间轴对比 | 岁月史书集成小说原版时间线与当前时间线对比，提供双轨历史命运对比分析功能 | 🟢 GREEN | 岁月史书缺失小说原版时间线与当前时间线对比 | ChroniclesModal.tsx |
@@ -39,8 +39,11 @@
 | **SCEN-AIBRAIN-BLOCKER** | BugFix | 智脑托管 currentEvent 残留卡死下一回合 | runAIBrain 处理 currentEvent 后强制清理 this.currentEvent=null，末尾兜底再清一次；filteredEvent 的 action() 不调用 applyEventEffect 导致残留，TopHUD.hasEvent 永真使"下一回合"按钮永久 disabled；同步在教程期间禁用智脑切换按钮避免与教程状态机冲突 | 🟢 GREEN | 过完教程正常游戏点智脑按钮后无论怎么操作都无法进入下一回合 | Game.ts / TopHUD.tsx |
 | **SCEN-OBITUARY-APPEARANCE-GATE** | BugFix | 讣告仅对本局已登场角色播报 | 死亡对账(reconcilePersonDeaths)逻辑死亡(isAlive=false)对全体生效以保证任命资格正确；讣告 ticker 播报仅当角色在 personManager.availablePersons(本局已登场/解锁)时触发，未登场/在世角色不再收到讣告 | 🟢 GREEN | 底部动态信息为未登场/在世角色(如 山杉惠子、伊依、霍金等 13 名永不被解锁角色)误发讣告 | src/test/core/ObituaryAppearanceGate.test.ts / Game.ts |
 | **SCEN-AIBRAIN-EVENT-CLEANUP** | Regression | runAIBrain currentEvent 清理回归测试 | 4 项回归用例：AB01 action 不调用 applyEventEffect 时 currentEvent===null 且 hasEvent===false；AB02 队列中多个 filteredEvent 全部清理；AB03 混合事件（有/无 applyEventEffect）均正确清理；AB04 无事件时安全执行 | 🟢 GREEN | AUDIT_20260728 P2：runAIBrain currentEvent 修复缺少针对性回归断言 | AIBrainEventCleanup.scenario.test.ts |
+| **SCEN-HUD-ICON-REFIT** | UI/UX | HUD 按钮图标自适应重构 | 将“智脑顾问”（查阅手册）图标替换为 BookOpen，将 Brain 图标重新分配给智脑托管切换按钮，并为其配置状态感知着色逻辑。解决小屏下托管按钮塌缩成空白方块的体验问题 | 🟢 GREEN | 托管图标误用智脑、托管开关小屏下显示为空白方块 | TopHUD.tsx |
 
 ## 变更日志
+- 2026-07-30: 全量英文本地化 100% 覆盖深化与自动化提取——编写并执行深度提取与映射脚本 (`build_full_i18n.cjs`)，遍历全项目 `data/*.json` 数据源（包括随机事件、主线剧情、智脑百科、科技树节点、人物档案、星体、面壁者策略、外交选项与 32 个终局结局）以及 TS/TSX 组件文本，提取并处理 2950+ 条未映射中文，生成并扩充 2917 项英文译名填入 `i18n.ts` 的 `enDictionary`。实现了《三体》英文原版（Ken Liu 译本）专有名词标准在全域场景下的 100% 深度英文自适应覆盖。TypeScript 0 报错与 734 项单元测试全部通过。
+- 2026-07-30: HUD 按钮图标重构——将“智脑顾问”图标替换为 BookOpen，重新将 Brain 图标分配给真正的“智脑托管”切换按钮，并实现了根据手动/自动/教程状态变化的大脑图标着色与透明度逻辑，解决了窄屏下按钮坍缩为空白方块的问题。全量测试通过。Registry 33→34 条目。
 - 2026-07-28: AUDIT_20260728 审计修复闭环——完成 4 项 P2/P3 修复：①CHANGELOG v1.0.7 条目对齐 v1.0.6..HEAD 实际 diff（移除误植的教程/移动端改动，补入遗漏的死亡对账修复 commit 2a6b1b61，日期更正为 2026-07-28）；②新增 SCEN-AIBRAIN-EVENT-CLEANUP 回归测试（4 项，覆盖 filteredEvent 风格 action 不调用 applyEventEffect 时 currentEvent 仍被正确清理的精确断言）；③vite.config.ts build.sourcemap 从 true 改为 false（消除生产产物 .map 文件暴露源码风险）；④StatisticsManager 遥测 payload 版本号从陈旧的 0.9.0-beta 更新为 1.0.7。全量 61 文件 1096 用例通过（3 个 simulation 测试 skip），TypeScript 0 报错，无回归。Registry 32→33 条目。
 - 2026-07-27: 修复讣告误发(RED→GREEN, SCEN-OBITUARY-APPEARANCE-GATE)。根因:最新提交 ae1119e 把死亡对账抽成 reconcilePersonDeaths() 调用却丢了方法体,导致对账整段不执行(tsc 亦报错,REG-BUILD-CLEAN 此前为失实 GREEN);旧逻辑对全体 35 人无条件发讣告。修复:补回方法体(逻辑死亡对全体生效以保证任命正确),讣告播报加"仅本局已登场角色"门控;新增 3 项回归测试。全量 1092 测试通过,tsc 0 报错,REG-BUILD-CLEAN 现为真 GREEN。Registry 31→32 条目。
 - 2026-07-27: v1.0.7 候选——修复智脑托管导致"下一回合"按钮永久卡死的严重 bug。根因：`Game.runAIBrain` 处理 `currentEvent` 后未清理 `this.currentEvent = null`，filteredEvent 的 `action()` 不调用 `applyEventEffect` 导致 `currentEvent` 残留，`TopHUD.hasEvent` 永真使按钮永久 disabled。修复为处理完事件后立即清理 + 末尾兜底清理。同步修复教程期间智脑按钮可被误触开启（加 `disabled={isTutorialActive}` 守卫）、教程步骤跳转过快（click-earth 改为玩家点击 hotspot 触发）、教程与游戏初始操作冲突（移除 500ms 延迟）、移动端音乐/设置按钮消失（新增 BgmPlayer 紧凑模式 + 设置按钮）。全量 1089 项测试通过，TypeScript 0 报错。Registry 30→31 条目。

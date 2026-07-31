@@ -2,6 +2,7 @@ import React from 'react';
 import { SaveManager } from '../../core/SaveManager';
 import { ENDING_CONFIGS, EndingKey, NG_PLUS_BONUSES, resolveEndingKey } from '../../config/endingConfig';
 import { Lock, Award, Sparkles } from 'lucide-react';
+import { t } from "../../utils/i18n";
 
 export const EndingCollectionGrid: React.FC = () => {
   const history = SaveManager.getEndingHistory();
@@ -28,10 +29,9 @@ export const EndingCollectionGrid: React.FC = () => {
       <div className="p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-sm shadow-inner">
         <h3 className="text-sm font-bold text-yellow-400 flex items-center gap-2 mb-2 font-mono">
           <Sparkles className="w-4 h-4 animate-pulse text-yellow-400" />
-          ACTIVE NEW GAME PLUS BONUSES // 当前生效的周目加成
-        </h3>
+          {t("ACTIVE NEW GAME PLUS BONUSES // 当前生效的周目加成")}</h3>
         {history.length === 0 ? (
-          <p className="text-xs text-white/40 italic">暂无生效的加成。通关任意胜利结局以解锁下周目全局属性加成！</p>
+          <p className="text-xs text-white/40 italic">{t("暂无生效的加成。通关任意胜利结局以解锁下周目全局属性加成！")}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
             {Array.from(unlocked).map((unlockKey, idx) => {
@@ -104,7 +104,7 @@ export const EndingCollectionGrid: React.FC = () => {
 
               {/* Description */}
               <div className="text-xs text-white/60 leading-relaxed font-light mt-1 flex-1">
-                {isUnlocked ? config.declaration : '本结局尚未解锁，继续在后续周目中进行抉择以开启。'}
+                {isUnlocked ? config.declaration : t("本结局尚未解锁，继续在后续周目中进行抉择以开启。")}
               </div>
 
               {/* NG+ Bonus description */}
@@ -120,8 +120,8 @@ export const EndingCollectionGrid: React.FC = () => {
                     <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                   )}
                   <div>
-                    <span className="font-bold">{isUnlocked ? '✦ 已激活加成：' : '🔒 待解锁加成：'}{bonus?.name || '新周目加成'}</span>
-                    <p className="mt-0.5 text-white/50">{bonus?.desc || '通关该结局以获取独特属性。'}</p>
+                    <span className="font-bold">{isUnlocked ? t("✦ 已激活加成：") : t("🔒 待解锁加成：")}{bonus?.name || t("新周目加成")}</span>
+                    <p className="mt-0.5 text-white/50">{bonus?.desc || t("通关该结局以获取独特属性。")}</p>
                   </div>
                 </div>
               )}

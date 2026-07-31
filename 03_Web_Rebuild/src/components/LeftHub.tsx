@@ -134,7 +134,7 @@ export const LeftHub: React.FC<LeftHubProps> = ({ activeView, setActiveView }) =
           >
             <span className="flex items-center gap-1 font-mono">
               <span className="text-[8px] transition-transform duration-300" style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}>▼</span>
-              {t('event_diversity') || '档案同步率'}
+              {t('event_diversity') || t("档案同步率")}
             </span>
             <span className="text-[var(--color-primary)] font-data font-bold">{diversity.triggered} / {diversity.total}</span>
           </div>

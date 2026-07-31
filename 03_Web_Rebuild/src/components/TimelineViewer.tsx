@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GameInstance } from '../core/Game';
 import timelineData from '../data/timeline.json';
 import { Clock, BookOpen, Flag } from 'lucide-react';
+import { t } from "../utils/i18n";
 
 export const TimelineViewer: React.FC = () => {
   const [playerTimeline, setPlayerTimeline] = useState<Array<{year: number, event: string}>>([]);
@@ -30,8 +31,8 @@ export const TimelineViewer: React.FC = () => {
         <div className="flex items-center gap-4 border-b border-[var(--color-primary)]/30 pb-4">
           <Clock className="text-[var(--color-primary)] w-8 h-8" />
           <div>
-            <h1 className="text-3xl font-bold text-[var(--color-primary)] tracking-wider">编年史观测</h1>
-            <p className="text-[var(--text-secondary)] mt-1 tracking-wide text-sm">对比当前时间线进展与《三体》宇宙官方纪元事件</p>
+            <h1 className="text-3xl font-bold text-[var(--color-primary)] tracking-wider">{t("编年史观测")}</h1>
+            <p className="text-[var(--text-secondary)] mt-1 tracking-wide text-sm">{t("对比当前时间线进展与《三体》宇宙官方纪元事件")}</p>
           </div>
         </div>
 
@@ -40,8 +41,7 @@ export const TimelineViewer: React.FC = () => {
           <div className="glass-panel p-6 border border-white/5 relative">
             <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2">
               <BookOpen size={20} className="text-blue-400" />
-              官方原著纪元
-            </h2>
+              {t("官方原著纪元")}</h2>
             <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
               {timelineData.map((epoch, idx) => {
                 const isActive = currentYear >= epoch.gameYearRange[0] && currentYear <= epoch.gameYearRange[1];
@@ -71,16 +71,15 @@ export const TimelineViewer: React.FC = () => {
           <div className="glass-panel p-6 border border-[var(--color-primary)]/30 relative">
             <h2 className="text-xl font-bold text-[var(--color-primary)] mb-6 flex items-center gap-2">
               <Flag size={20} />
-              本局发展履历 (当前: 危机纪元 {currentYear} 年)
-            </h2>
+              {t("本局发展履历 (当前: 危机纪元")}{currentYear} {t("年)")}</h2>
             <div className="space-y-4">
               {playerTimeline.length === 0 ? (
-                <p className="text-center text-[var(--text-secondary)] py-10 italic">尚无重大历史事件发生...</p>
+                <p className="text-center text-[var(--text-secondary)] py-10 italic">{t("尚无重大历史事件发生...")}</p>
               ) : (
                 [...playerTimeline].reverse().map((evt, idx) => (
                   <div key={idx} className="flex gap-4 p-3 rounded bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/10 transition-colors">
                     <div className="w-16 shrink-0 text-right">
-                      <span className="text-[var(--color-primary)] font-mono text-sm font-bold opacity-80">第 {evt.year} 年</span>
+                      <span className="text-[var(--color-primary)] font-mono text-sm font-bold opacity-80">{t("第")}{evt.year} {t("年")}</span>
                     </div>
                     <div className="w-px bg-[var(--color-primary)]/30" />
                     <div className="flex-1">

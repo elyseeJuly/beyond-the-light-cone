@@ -41,13 +41,13 @@ export const AnnouncementBoard: React.FC = () => {
   }, [messages]);
 
   const getIcon = (text: string) => {
-    if (text.includes('👥') || text.includes('人员') || text.includes('人物') || text.includes('Personnel') || text.includes('Character')) {
+    if (text.includes('👥') || text.includes(t("人员")) || text.includes(t("人物")) || text.includes('Personnel') || text.includes('Character')) {
       return <Users className="w-3.5 h-3.5 text-cyan-400 shrink-0" />;
     }
-    if (text.includes('警报') || text.includes('威胁') || text.includes('三体') || text.includes('Alert') || text.includes('Threat') || text.includes('Trisolaris')) {
+    if (text.includes(t("警报")) || text.includes(t("威胁")) || text.includes(t("三体")) || text.includes('Alert') || text.includes('Threat') || text.includes('Trisolaris')) {
       return <Shield className="w-3.5 h-3.5 text-red-400 shrink-0 animate-pulse" />;
     }
-    if (text.includes('大事记') || text.includes('更替') || text.includes('Chronicle') || text.includes('Epoch')) {
+    if (text.includes(t("大事记")) || text.includes(t("更替")) || text.includes('Chronicle') || text.includes('Epoch')) {
       return <Bell className="w-3.5 h-3.5 text-amber-400 shrink-0" />;
     }
     return <Terminal className="w-3.5 h-3.5 text-emerald-400 shrink-0" />;

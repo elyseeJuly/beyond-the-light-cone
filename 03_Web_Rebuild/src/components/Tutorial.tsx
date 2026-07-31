@@ -79,11 +79,11 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
       },
       onTargetMissing: (step) => {
         // 目标缺失超时：派发 Toast 提示，并跳过当前步骤（不锁屏）
-        console.warn(`[Tutorial] 步骤 "${step.id}" 目标元素缺失超时，已自动跳过`);
+        console.warn(t("[Tutorial] 步骤 \"{param0}\" 目标元素缺失超时，已自动跳过", { param0: step.id }));
         window.dispatchEvent(new CustomEvent('game:toast:message', {
           detail: {
-            text: `智脑无法定位目标元素，已自动跳过 "${step.title}" 步骤。请从主菜单重新启动教程或继续游戏。`,
-            category: '【智脑警告】',
+            text: t("智脑无法定位目标元素，已自动跳过 \"{param0}\" 步骤。请从主菜单重新启动教程或继续游戏。", { param0: step.title }),
+            category: t("【智脑警告】"),
           },
         }));
         // 跳过当前步骤（无论是 AUTO_COMPLETE 还是 MANUAL_ADVANCE）
@@ -347,16 +347,16 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
         g.eventQueue = [];
         g.eventQueue.push({
           id: TUTORIAL_EVENT_ID,
-          title: '【智脑测试】拦截 ETO 异常信号',
+          title: t("【智脑测试】拦截 ETO 异常信号"),
           dialogQueue: [
             {
-              speakerName: '智脑系统',
-              content: '监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。',
+              speakerName: t("智脑系统"),
+              content: t("监测到加密通信片段，疑为 ETO 秘密节点。请指示对策。"),
             },
           ],
           choices: [
-            { label: '发布戒严警告（社会稳定 -5）', action: () => {} },
-            { label: '暗中排查跟踪（积累情报）', action: () => {} },
+            { label: t("发布戒严警告（社会稳定 -5）"), action: () => {} },
+            { label: t("暗中排查跟踪（积累情报）"), action: () => {} },
           ],
         });
         g.processNextEvent();
@@ -546,8 +546,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
         {/* 内容卡片 */}
         <div className="relative bg-[#070B14]/90 backdrop-blur-md border border-[var(--color-primary)]/30 rounded-b p-4 sm:p-6 flex flex-col gap-4 overflow-hidden shadow-[0_0_40px_rgba(0,184,255,0.15)]">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-[var(--color-primary)]/10 border-x border-b border-[var(--color-primary)]/30 px-4 py-0.5 rounded-b text-[10px] text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase shadow-[0_0_10px_rgba(0,184,255,0.2)]">
-            光锥之外·纪元往事
-          </div>
+            {t("光锥之外·纪元往事")}</div>
 
           {/* 扫描线装饰 */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -571,7 +570,7 @@ export const Tutorial: React.FC<{ onComplete: () => void }> = ({ onComplete: onC
             <div className="flex items-center gap-2">
               {isWelcome ? <Sparkles className="w-3 h-3 text-[var(--color-primary)]/60" /> : <Flag className="w-3 h-3 text-[var(--color-primary)]/60" />}
               <div className="text-[9px] font-mono font-bold text-[var(--color-primary)]/80 uppercase tracking-[0.2em]">
-                {isWelcome ? '序幕' : `步骤 ${stepIndex} / ${steps.length - 1}`}
+                {isWelcome ? t("序幕") : t("步骤 {param0} / {param1}", { param0: stepIndex, param1: steps.length - 1 })}
               </div>
             </div>
             <h2 className="text-base font-title font-black text-white tracking-widest leading-none drop-shadow-md">

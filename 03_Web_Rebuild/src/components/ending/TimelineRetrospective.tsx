@@ -9,6 +9,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GameInstance } from '../../core/Game';
 import { EndingConfig } from '../../config/endingConfig';
 import timelineData from '../../data/timeline.json';
+import { t } from "../../utils/i18n";
 
 interface Props {
   config: EndingConfig;
@@ -39,7 +40,7 @@ export const TimelineRetrospective: React.FC<Props> = ({ config, onComplete }) =
     if (game.year >= epoch.gameYearRange[0]) {
       entries.push({
         year: epoch.gameYearRange[0],
-        event: `【纪元】进入${epoch.epoch}`,
+        event: t("【纪元】进入{param0}", { param0: epoch.epoch }),
         type: 'epoch',
       });
     }
@@ -50,10 +51,10 @@ export const TimelineRetrospective: React.FC<Props> = ({ config, onComplete }) =
 
   // Add final summary card
   const e = game.earthCivi;
-  const epochNames = ['黄金岁月', '危机纪元', '威慑纪元', '广播纪元', '掩体纪元', '银河纪元', '星屑纪元'];
+  const epochNames = [t("黄金岁月"), t("危机纪元"), t("威慑纪元"), t("广播纪元"), t("掩体纪元"), t("银河纪元"), t("星屑纪元")];
   entries.push({
     year: game.year,
-    event: `历时 ${game.year} 年 · ${epochNames[game.epoch] || '未知纪元'} · 人口 ${Math.max(0, e.population).toLocaleString()} · 经济 ${Math.max(0, e.economy)} · 文化 ${Math.max(0, e.culture)} · 军力 ${Math.max(0, e.army)} · 文明等级 ${e.getCiviLevelLabel ? e.getCiviLevelLabel() : '未知'}`,
+    event: t("历时 {param0} 年 · {param1} · 人口 {param2} · 经济 {param3} · 文化 {param4} · 军力 {param5} · 文明等级 {param6}", { param0: game.year, param1: epochNames[game.epoch] || t("未知纪元"), param2: Math.max(0, e.population).toLocaleString(), param3: Math.max(0, e.economy), param4: Math.max(0, e.culture), param5: Math.max(0, e.army), param6: e.getCiviLevelLabel ? e.getCiviLevelLabel() : t("未知") }),
     type: 'summary',
   });
 
@@ -97,11 +98,9 @@ export const TimelineRetrospective: React.FC<Props> = ({ config, onComplete }) =
           className="text-3xl font-black tracking-tight"
           style={{ color: config.accentColor }}
         >
-          岁月回溯
-        </h2>
+          {t("岁月回溯")}</h2>
         <p className="text-white/30 text-sm mt-1">
-          记录下你带领人类文明走过的每一个重要时刻
-        </p>
+          {t("记录下你带领人类文明走过的每一个重要时刻")}</p>
       </div>
 
       {/* Timeline scroll container */}
@@ -159,8 +158,7 @@ export const TimelineRetrospective: React.FC<Props> = ({ config, onComplete }) =
                     className="text-xs font-mono font-bold"
                     style={{ color: config.accentColor + '99' }}
                   >
-                    第 {entry.year} 年
-                  </span>
+                    {t("第")}{entry.year} {t("年")}</span>
                   {entry.type === 'epoch' && (
                     <span className="text-[10px] px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-sm uppercase tracking-wider">
                       Epoch

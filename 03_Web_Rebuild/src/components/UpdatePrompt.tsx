@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { getAssetUrl } from '../utils/assetUrl';
 import { GAME_VERSION } from '../utils/version';
+import { t } from "../utils/i18n";
 
 interface UpdatePromptProps {
   // No props needed - reads from SW registration
@@ -69,10 +70,9 @@ export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#DDEEFF]">发现新版本{availableVersion ? ` v${availableVersion}` : ''}</p>
+            <p className="text-sm font-medium text-[#DDEEFF]">{t("发现新版本")}{availableVersion ? ` v${availableVersion}` : ''}</p>
             <p className="text-xs text-[#8899BB] mt-1">
-              将从 v{GAME_VERSION} 更新{availableVersion ? `至 v${availableVersion}` : ''}，是否立即更新？
-            </p>
+              {t("将从 v")}{GAME_VERSION} {t("更新")}{availableVersion ? t("至 v{param0}", { param0: availableVersion }) : ''}{t("，是否立即更新？")}</p>
           </div>
         </div>
         <div className="flex gap-2 mt-3 justify-end">
@@ -80,14 +80,12 @@ export const UpdatePrompt: React.FC<UpdatePromptProps> = () => {
             onClick={() => close()}
             className="px-3 py-1.5 text-xs text-[#8899BB] hover:text-[#DDEEFF] transition-colors rounded border border-[#1A3A6A]/30 hover:border-[#1A3A6A]"
           >
-            稍后提醒
-          </button>
+            {t("稍后提醒")}</button>
           <button
             onClick={() => updateServiceWorker(true)}
             className="px-3 py-1.5 text-xs text-white bg-[#1A3A6A] hover:bg-[#2A4A8A] transition-colors rounded font-medium"
           >
-            立即更新
-          </button>
+            {t("立即更新")}</button>
         </div>
       </div>
     </div>

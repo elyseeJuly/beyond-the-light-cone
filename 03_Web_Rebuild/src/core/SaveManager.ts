@@ -3,6 +3,7 @@ import { storage } from "./IndexedDBStorage";
 import { StatisticsManager } from "./StatisticsManager";
 import { validateSavePackage, validateSaveIndex, validateSaveMeta } from "./SaveSchema";
 import { GameInstance } from "./Game";
+import { t } from "../utils/i18n";
 
 /**
  * SaveManager - 独立存档管理器 (IndexedDB 单一数据源)
@@ -228,7 +229,7 @@ export class SaveManager {
         console.error(`SaveManager: IndexedDB write failed for slot ${slotId}:`, err);
         if (typeof window !== 'undefined') {
           GameInstance.get().eventBus.emitLegacy('save-storage-warning', {
-            slotId, message: '存档持久化存储写入失败，数据已暂存于浏览器本地缓存。'
+            slotId, message: t("存档持久化存储写入失败，数据已暂存于浏览器本地缓存。")
           });
         }
       });
@@ -240,7 +241,7 @@ export class SaveManager {
       localStorage.setItem(`Beyond-the-Light-Cone_Save_${slotId}`, JSON.stringify(savePackage));
     } catch (e) {
       console.error('SaveManager: Failed to save game:', e);
-      throw new SaveDataCorruptedError('存档写入失败');
+      throw new SaveDataCorruptedError(t("存档写入失败"));
     }
   }
 
@@ -505,7 +506,7 @@ export class SaveManager {
     try {
       pkg = validateSavePackage(savePackage);
     } catch (e: any) {
-      throw new SaveDataCorruptedError(`存档包校验失败: ${e?.message || '未知错误'}`);
+      throw new SaveDataCorruptedError(t("存档包校验失败: {param0}", { param0: e?.message || t("未知错误") }));
     }
 
     // 版本迁移：旧版本存档尝试升级到当前版本
@@ -522,21 +523,21 @@ export class SaveManager {
         };
       } catch {
         throw new SaveDataCorruptedError(
-          `存档版本不兼容：当前版本 v${SaveManager.SAVE_VERSION}，存档版本 v${pkg.version}`
+          t("存档版本不兼容：当前版本 v{param0}，存档版本 v{param1}", { param0: SaveManager.SAVE_VERSION, param1: pkg.version })
         );
       }
     }
 
     if (pkg.version !== SaveManager.SAVE_VERSION) {
       throw new SaveDataCorruptedError(
-        `存档版本不兼容：当前版本 v${SaveManager.SAVE_VERSION}，存档版本 v${pkg.version}`
+        t("存档版本不兼容：当前版本 v{param0}，存档版本 v{param1}", { param0: SaveManager.SAVE_VERSION, param1: pkg.version })
       );
     }
 
     const dataStr = typeof pkg.data === 'string' ? pkg.data : JSON.stringify(pkg.data);
     const computedSignature = SaveManager.computeHash(dataStr);
     if (pkg.signature !== computedSignature) {
-      throw new SaveDataCorruptedError('存档哈希校验失败，数据可能已被篡改！');
+      throw new SaveDataCorruptedError(t("存档哈希校验失败，数据可能已被篡改！"));
     }
 
     return dataStr;
@@ -575,7 +576,7 @@ export class SaveManager {
       return this._verifyAndExtract(parsed);
     } catch (e) {
       if (e instanceof SaveDataCorruptedError) throw e;
-      throw new SaveDataCorruptedError('存档解析失败：无效的 JSON 格式');
+      throw new SaveDataCorruptedError(t("存档解析失败：无效的 JSON 格式"));
     }
   }
 

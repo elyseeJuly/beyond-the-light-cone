@@ -39,6 +39,7 @@ import { SaveManager } from './core/SaveManager';
 import { assetLoader } from './core/AssetLoader';
 import { shouldPromptForAssetDownload } from './core/AssetDownloadPolicy';
 import { supportsSegmentedAssetDownloads } from './core/DistributionChannel';
+import { t } from "./utils/i18n";
 
 const LazyFallback: React.FC = () => (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#070B14]/80" />
@@ -195,7 +196,7 @@ export const App: React.FC = () => {
     // Global Error Monitor
     const globalErrorHandler = (event: ErrorEvent) => {
       const game = GameInstance.get();
-      game.addHistory(`【系统崩溃】捕获到全局异常: ${event.message}`);
+      game.addHistory(t("【系统崩溃】捕获到全局异常: {param0}", { param0: event.message }));
       game.isProcessing = false;
     };
     window.addEventListener('error', globalErrorHandler);
@@ -239,7 +240,7 @@ export const App: React.FC = () => {
         window.dispatchEvent(new CustomEvent('game:toast:message', {
           detail: {
             text: latestMsg,
-            category: '【星区日志更新】',
+            category: t("【星区日志更新】"),
             onClick: () => {
               setMobileDrawerOpen(true);
               setActiveView('archive');
@@ -371,8 +372,8 @@ export const App: React.FC = () => {
           <div className="p-4 sm:p-6 md:p-8">
             <div className="max-w-6xl mx-auto">
               <div className="mb-6 md:mb-8">
-                <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)]">科技研发中心</h1>
-                <p className="text-sm md:text-base text-[var(--text-secondary)] mt-2">基础物理已被锁定，重点转向应用技术与太空作战理论。</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)]">{t("科技研发中心")}</h1>
+                <p className="text-sm md:text-base text-[var(--text-secondary)] mt-2">{t("基础物理已被锁定，重点转向应用技术与太空作战理论。")}</p>
               </div>
               <div id="tech-tree-container" className="min-h-[400px] md:min-h-[500px]">
                 {/* Tech tree content will be rendered here by legacy logic */}
@@ -423,8 +424,7 @@ export const App: React.FC = () => {
                         onClick={() => setMobileDrawerOpen(false)}
                         className="text-[var(--text-secondary)] hover:text-white text-sm px-3 py-1 rounded hover:bg-white/5 transition-colors cursor-pointer"
                       >
-                        ✕ 关闭
-                      </button>
+                        {t("✕ 关闭")}</button>
                     </div>
                     <div className="flex-1 min-h-0">
                       <RightInspector />
@@ -468,7 +468,7 @@ export const App: React.FC = () => {
                     setShowCoverScreen(false);
                     remindAssetDownloadIfNeeded();
                   } else {
-                    alert('无法读取存档！');
+                    alert(t("无法读取存档！"));
                   }
                 }}
                 onOpenMuseum={() => {

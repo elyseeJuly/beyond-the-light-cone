@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { dismissOrientationPrompt, startTutorialToReadStatus } from './helpers';
+import { t } from "../../utils/i18n";
 
 /**
  * 坐标几何验证测试（审计 P0-1/P0-2 硬性合并门槛）
@@ -48,7 +49,7 @@ async function waitForHighlightAligned(page: Page, tolerance = 4, maxRounds = 30
 
 /** 启动自由探索（跳过教程） */
 async function startFreeExplore(page: Page): Promise<void> {
-  const freeExploreBtn = page.locator('button:has-text("自由探索")');
+  const freeExploreBtn = page.locator(t("button:has-text(\"自由探索\")"));
   await expect(freeExploreBtn).toBeVisible();
   await freeExploreBtn.click();
   await page.waitForTimeout(1500);
@@ -75,10 +76,10 @@ async function readHighlightAndTargetCenters(page: Page): Promise<{
 }> {
   return page.evaluate(() => {
     const highlightEl = document.querySelector('div.z-\\[1001\\]') as HTMLElement;
-    if (!highlightEl) throw new Error('高亮框元素未找到');
+    if (!highlightEl) throw new Error(t("高亮框元素未找到"));
     const hRect = highlightEl.getBoundingClientRect();
     const targetEl = document.querySelector('[data-tutorial-id="right-inspector"]') as HTMLElement;
-    if (!targetEl) throw new Error('目标元素 right-inspector 未找到');
+    if (!targetEl) throw new Error(t("目标元素 right-inspector 未找到"));
     const tRect = targetEl.getBoundingClientRect();
     const scaled = document.querySelector('.mobile-landscape-scale') as HTMLElement | null;
     const sRect = scaled ? scaled.getBoundingClientRect() : null;
@@ -93,10 +94,10 @@ async function readHighlightAndTargetCenters(page: Page): Promise<{
 }
 
 // ── 横屏触屏测试组（hasTouch + 851×390 → 0.85 缩放） ──
-test.describe('横屏 0.85 缩放坐标验证', () => {
+test.describe(t("横屏 0.85 缩放坐标验证"), () => {
   test.use({ hasTouch: true, viewport: { width: 851, height: 390 } });
 
-  test('DOM 高亮框中心与目标元素中心误差 ≤ 4px', async ({ page, browserName }) => {
+  test(t("DOM 高亮框中心与目标元素中心误差 ≤ 4px"), async ({ page, browserName }) => {
     test.setTimeout(40000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -111,13 +112,13 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
     const dx = Math.abs(highlightCenter.x - targetCenter.x);
     const dy = Math.abs(highlightCenter.y - targetCenter.y);
     if (dx >= HIGHLIGHT_CENTER_TOLERANCE_PX || dy >= HIGHLIGHT_CENTER_TOLERANCE_PX) {
-      console.log(`[${browserName}] 坐标偏差 dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} | scale=${scaleFactor} | highlight=${JSON.stringify(highlightRect)} | target=${JSON.stringify(targetRect)} | scaled=${JSON.stringify(scaledRect)}`);
+      console.log(t("[{param0}] 坐标偏差 dx={param1} dy={param2} | scale={param3} | highlight={param4} | target={param5} | scaled={param6}", { param0: browserName, param1: dx.toFixed(2), param2: dy.toFixed(2), param3: scaleFactor, param4: JSON.stringify(highlightRect), param5: JSON.stringify(targetRect), param6: JSON.stringify(scaledRect) }));
     }
-    expect(dx, `高亮框中心 X 偏差 ${dx.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
-    expect(dy, `高亮框中心 Y 偏差 ${dy.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
+    expect(dx, t("高亮框中心 X 偏差 {param0}px", { param0: dx.toFixed(2) })).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
+    expect(dy, t("高亮框中心 Y 偏差 {param0}px", { param0: dy.toFixed(2) })).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
   });
 
-  test('getStarScreenCoords 返回的地球坐标可被真实点击命中', async ({ page }) => {
+  test(t("getStarScreenCoords 返回的地球坐标可被真实点击命中"), async ({ page }) => {
     test.setTimeout(30000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -125,10 +126,10 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
 
     const earthCoords = await page.evaluate(() => {
       const renderer = (window as any).activeStarMapRenderer;
-      if (!renderer) throw new Error('StarMapRenderer 未挂载');
+      if (!renderer) throw new Error(t("StarMapRenderer 未挂载"));
       // 注意：page.evaluate 在浏览器沙箱内执行，无法访问外部常量，使用字面量
       const coords = renderer.getStarScreenCoords(3);
-      if (!coords) throw new Error('地球视口坐标为 null');
+      if (!coords) throw new Error(t("地球视口坐标为 null"));
       return coords;
     });
 
@@ -142,10 +143,10 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
 
     const inspector = page.locator('[data-tutorial-id="right-inspector"]');
     await expect(inspector).toBeVisible({ timeout: 3000 });
-    await expect(inspector).toContainText('地球', { timeout: 3000 });
+    await expect(inspector).toContainText(t("地球"), { timeout: 3000 });
   });
 
-  test('focusOnStar 居中后地球位于 Canvas 视口中心', async ({ page }) => {
+  test(t("focusOnStar 居中后地球位于 Canvas 视口中心"), async ({ page }) => {
     test.setTimeout(20000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -153,7 +154,7 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
 
     const result = await page.evaluate(() => {
       const renderer = (window as any).activeStarMapRenderer;
-      if (!renderer) throw new Error('StarMapRenderer 未挂载');
+      if (!renderer) throw new Error(t("StarMapRenderer 未挂载"));
       // 注意：page.evaluate 在浏览器沙箱内执行，无法访问外部常量，使用字面量
       renderer.focusOnStar(3, 1.5, true);
       return new Promise((resolve) => {
@@ -171,11 +172,11 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
     expect(result.earthViewport).not.toBeNull();
     const dx = Math.abs(result.earthViewport!.x - result.canvasCenter.x);
     const dy = Math.abs(result.earthViewport!.y - result.canvasCenter.y);
-    expect(dx, `focusOnStar 居中 X 偏差 ${dx.toFixed(2)}px`).toBeLessThan(FOCUS_CENTER_TOLERANCE_PX);
-    expect(dy, `focusOnStar 居中 Y 偏差 ${dy.toFixed(2)}px`).toBeLessThan(FOCUS_CENTER_TOLERANCE_PX);
+    expect(dx, t("focusOnStar 居中 X 偏差 {param0}px", { param0: dx.toFixed(2) })).toBeLessThan(FOCUS_CENTER_TOLERANCE_PX);
+    expect(dy, t("focusOnStar 居中 Y 偏差 {param0}px", { param0: dy.toFixed(2) })).toBeLessThan(FOCUS_CENTER_TOLERANCE_PX);
   });
 
-  test('canvasToViewport / viewportToCanvas 互逆性', async ({ page }) => {
+  test(t("canvasToViewport / viewportToCanvas 互逆性"), async ({ page }) => {
     test.setTimeout(20000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -183,7 +184,7 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
 
     const result = await page.evaluate(() => {
       const renderer = (window as any).activeStarMapRenderer;
-      if (!renderer) throw new Error('StarMapRenderer 未挂载');
+      if (!renderer) throw new Error(t("StarMapRenderer 未挂载"));
       const canvas = renderer.canvas as HTMLCanvasElement;
       const rect = canvas.getBoundingClientRect();
       const samples = [
@@ -201,17 +202,17 @@ test.describe('横屏 0.85 缩放坐标验证', () => {
     });
 
     for (const r of result) {
-      expect(r.dx, `采样点 ${r.sample} 往返 X 误差 ${r.dx.toFixed(4)}px`).toBeLessThan(ROUNDTRIP_TOLERANCE_PX);
-      expect(r.dy, `采样点 ${r.sample} 往返 Y 误差 ${r.dy.toFixed(4)}px`).toBeLessThan(ROUNDTRIP_TOLERANCE_PX);
+      expect(r.dx, t("采样点 {param0} 往返 X 误差 {param1}px", { param0: r.sample, param1: r.dx.toFixed(4) })).toBeLessThan(ROUNDTRIP_TOLERANCE_PX);
+      expect(r.dy, t("采样点 {param0} 往返 Y 误差 {param1}px", { param0: r.sample, param1: r.dy.toFixed(4) })).toBeLessThan(ROUNDTRIP_TOLERANCE_PX);
     }
   });
 });
 
 // ── 桌面端无缩放测试组 ──
-test.describe('桌面端坐标验证（无缩放）', () => {
+test.describe(t("桌面端坐标验证（无缩放）"), () => {
   test.use({ hasTouch: false, viewport: { width: 1440, height: 900 } });
 
-  test('DOM 高亮框中心与目标元素中心误差 ≤ 4px', async ({ page, browserName }) => {
+  test(t("DOM 高亮框中心与目标元素中心误差 ≤ 4px"), async ({ page, browserName }) => {
     test.setTimeout(40000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -226,18 +227,18 @@ test.describe('桌面端坐标验证（无缩放）', () => {
     const dx = Math.abs(highlightCenter.x - targetCenter.x);
     const dy = Math.abs(highlightCenter.y - targetCenter.y);
     if (dx >= HIGHLIGHT_CENTER_TOLERANCE_PX || dy >= HIGHLIGHT_CENTER_TOLERANCE_PX) {
-      console.log(`[${browserName}] 桌面端坐标偏差 dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} | highlight=${JSON.stringify(highlightRect)} | target=${JSON.stringify(targetRect)}`);
+      console.log(t("[{param0}] 桌面端坐标偏差 dx={param1} dy={param2} | highlight={param3} | target={param4}", { param0: browserName, param1: dx.toFixed(2), param2: dy.toFixed(2), param3: JSON.stringify(highlightRect), param4: JSON.stringify(targetRect) }));
     }
-    expect(dx, `桌面端高亮框 X 偏差 ${dx.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
-    expect(dy, `桌面端高亮框 Y 偏差 ${dy.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
+    expect(dx, t("桌面端高亮框 X 偏差 {param0}px", { param0: dx.toFixed(2) })).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
+    expect(dy, t("桌面端高亮框 Y 偏差 {param0}px", { param0: dy.toFixed(2) })).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
   });
 });
 
 // ── 旋转屏幕测试组（竖屏启动 → 旋转到横屏） ──
-test.describe('旋转屏幕坐标连续性', () => {
+test.describe(t("旋转屏幕坐标连续性"), () => {
   test.use({ hasTouch: true, viewport: { width: 393, height: 851 } });
 
-  test('竖屏启动教程后旋转到横屏 0.85 缩放，高亮框不漂移', async ({ page, browserName }) => {
+  test(t("竖屏启动教程后旋转到横屏 0.85 缩放，高亮框不漂移"), async ({ page, browserName }) => {
     test.setTimeout(40000);
     await page.goto('/');
     await dismissOrientationPrompt(page);
@@ -257,9 +258,9 @@ test.describe('旋转屏幕坐标连续性', () => {
     const dx = Math.abs(highlightCenter.x - targetCenter.x);
     const dy = Math.abs(highlightCenter.y - targetCenter.y);
     if (dx >= HIGHLIGHT_CENTER_TOLERANCE_PX || dy >= HIGHLIGHT_CENTER_TOLERANCE_PX) {
-      console.log(`[${browserName}] 旋转后坐标偏差 dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} | scale=${scaleFactor} | highlight=${JSON.stringify(highlightRect)} | target=${JSON.stringify(targetRect)} | scaled=${JSON.stringify(scaledRect)}`);
+      console.log(t("[{param0}] 旋转后坐标偏差 dx={param1} dy={param2} | scale={param3} | highlight={param4} | target={param5} | scaled={param6}", { param0: browserName, param1: dx.toFixed(2), param2: dy.toFixed(2), param3: scaleFactor, param4: JSON.stringify(highlightRect), param5: JSON.stringify(targetRect), param6: JSON.stringify(scaledRect) }));
     }
-    expect(dx, `旋转后高亮框 X 漂移 ${dx.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
-    expect(dy, `旋转后高亮框 Y 漂移 ${dy.toFixed(2)}px`).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
+    expect(dx, t("旋转后高亮框 X 漂移 {param0}px", { param0: dx.toFixed(2) })).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
+    expect(dy, t("旋转后高亮框 Y 漂移 {param0}px", { param0: dy.toFixed(2) })).toBeLessThan(HIGHLIGHT_CENTER_TOLERANCE_PX);
   });
 });

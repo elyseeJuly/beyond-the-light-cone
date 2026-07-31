@@ -12,6 +12,7 @@ import type { ActiveViewType } from './LeftHub';
 import { Badge } from './common/Badge';
 import { BgmPlayer } from './BgmPlayer';
 import { GameInstance } from '../core/Game';
+import { t } from "../utils/i18n";
 
 interface MobileBottomNavProps {
   activeView: ActiveViewType;
@@ -25,11 +26,11 @@ interface NavItemConfig {
 }
 
 const navItems: NavItemConfig[] = [
-  { view: 'starmap', icon: <Map size={20} className="stroke-[1.5]" />, label: '星图' },
-  { view: 'intelligence', icon: <Radio size={20} className="stroke-[1.5]" />, label: '情报' },
-  { view: 'techtree', icon: <Cpu size={20} className="stroke-[1.5]" />, label: '科技' },
-  { view: 'government', icon: <Landmark size={20} className="stroke-[1.5]" />, label: '政府' },
-  { view: 'archive', icon: <Archive size={20} className="stroke-[1.5]" />, label: '档案' },
+  { view: 'starmap', icon: <Map size={20} className="stroke-[1.5]" />, label: t("星图") },
+  { view: 'intelligence', icon: <Radio size={20} className="stroke-[1.5]" />, label: t("情报") },
+  { view: 'techtree', icon: <Cpu size={20} className="stroke-[1.5]" />, label: t("科技") },
+  { view: 'government', icon: <Landmark size={20} className="stroke-[1.5]" />, label: t("政府") },
+  { view: 'archive', icon: <Archive size={20} className="stroke-[1.5]" />, label: t("档案") },
 ];
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ activeView, setActiveView }) => {
@@ -112,10 +113,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ activeView, se
       <button
         onClick={() => window.dispatchEvent(new CustomEvent('open-settings'))}
         className="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-lg transition-all duration-200 cursor-pointer text-[var(--text-secondary)] hover:text-white hover:bg-white/5"
-        title="系统设置"
+        title={t("系统设置")}
       >
         <Settings size={20} className="stroke-[1.5]" />
-        <span className="text-[9px] font-bold tracking-wider uppercase">设置</span>
+        <span className="text-[9px] font-bold tracking-wider uppercase">{t("设置")}</span>
       </button>
     </nav>
   );

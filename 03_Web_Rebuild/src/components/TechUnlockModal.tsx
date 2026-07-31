@@ -40,11 +40,11 @@ export const TechUnlockModal: React.FC<TechUnlockModalProps> = ({ tech, onClose 
 
   const getTreeLabel = (treeType: string) => {
     switch (treeType) {
-      case "physics": return "基础物理 / Theoretical Physics";
-      case "aerospace": return "核能与航天 / Nuclear & Aerospace";
-      case "military": return "深空战略与军工 / Space Military";
-      case "information": return "信息理论与人机 / Information Science";
-      case "interstellar": return "星际探索 / Interstellar Exploration";
+      case "physics": return t("基础物理 / Theoretical Physics");
+      case "aerospace": return t("核能与航天 / Nuclear & Aerospace");
+      case "military": return t("深空战略与军工 / Space Military");
+      case "information": return t("信息理论与人机 / Information Science");
+      case "interstellar": return t("星际探索 / Interstellar Exploration");
       default: return treeType;
     }
   };
@@ -65,7 +65,7 @@ export const TechUnlockModal: React.FC<TechUnlockModalProps> = ({ tech, onClose 
 
         {/* Top bar */}
         <div className="w-full flex justify-between items-center text-[10px] text-cyan-500/50 font-mono tracking-widest border-b border-cyan-500/10 pb-2">
-          <span>PDC_RESEARCH_LOG // 科技部记录</span>
+          <span>{t("PDC_RESEARCH_LOG // 科技部记录")}</span>
           <span>ONLINE</span>
         </div>
 
@@ -84,14 +84,14 @@ export const TechUnlockModal: React.FC<TechUnlockModalProps> = ({ tech, onClose 
             {tech.name}
           </h2>
           <div className="text-xs text-cyan-500 font-semibold uppercase tracking-widest">
-            {t('unlocked_tech') || '科技研发完成'}
+            {t('unlocked_tech') || t("科技研发完成")}
           </div>
         </div>
 
         {/* Description */}
         <div className="w-full bg-slate-900/40 border border-cyan-500/10 p-4 rounded-lg text-center mt-2 min-h-[4.5rem] flex items-center justify-center">
           <p className="text-sm text-cyan-100/80 leading-relaxed font-sans font-medium">
-            {desc || "基础研究已突破，开启全新技术篇章。"}
+            {desc || t("基础研究已突破，开启全新技术篇章。")}
           </p>
         </div>
 
@@ -100,8 +100,7 @@ export const TechUnlockModal: React.FC<TechUnlockModalProps> = ({ tech, onClose 
           onClick={onClose}
           className="w-full mt-4 py-3 bg-cyan-950/20 hover:bg-cyan-500 hover:text-black border border-cyan-500/40 hover:border-cyan-400 rounded-lg text-cyan-300 font-black tracking-widest text-xs transition-all duration-300 shadow-[inset_0_0_10px_rgba(6,182,212,0.1)] active:scale-[0.98] cursor-pointer"
         >
-          ACKNOWLEDGE / 确认
-        </button>
+          {t("ACKNOWLEDGE / 确认")}</button>
       </div>
     </div>
   );

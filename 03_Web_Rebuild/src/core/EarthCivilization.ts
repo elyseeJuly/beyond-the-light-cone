@@ -8,13 +8,14 @@ import type { Game, RngProvider } from "./Game";
 import { GameInstance } from "./Game";
 import { STAR_INDEX } from "../config/starIndices";
 import wallfacersData from "../data/wallfacers.json";
+import { t } from "../utils/i18n";
 
 const MAX_ECONOMY = 999999;
 const MAX_POPULATION_MULTIPLIER = 3;
 
 export class EarthCivilization extends Civilization {
   public idlePopulation: number = 0;
-  public levelString: string = "普通文明";
+  public levelString: string = t("普通文明");
   public deterrenceValue: number = 0;
   public wallfacers: Set<string> = new Set();
   public wallfacerPlans: Record<string, { planName: string; progress: number; isBroken: boolean }> = {};
@@ -214,10 +215,10 @@ export class EarthCivilization extends Civilization {
   }
 
   constructor() {
-    super("地球");
+    super(t("地球"));
     const deptNames = [
-      "经济部", "军事部", "文化部", "人力资源部", "宇宙社会学",
-      "核技术", "航天技术", "质子技术", "天体物理", "文化研究所", "经济研究所"
+      t("经济部"), t("军事部"), t("文化部"), t("人力资源部"), t("宇宙社会学"),
+      t("核技术"), t("航天技术"), t("质子技术"), t("天体物理"), t("文化研究所"), t("经济研究所")
     ];
     for (let i = 0; i < 11; i++) {
       const d = createDepartment(i as DepartmentType, deptNames[i]);
@@ -277,17 +278,17 @@ export class EarthCivilization extends Civilization {
         // Progress secret plan!
         if (!this.wallfacerPlans[wName]) {
           const planNames: Record<string, string> = wallfacersData.plans;
-          this.wallfacerPlans[wName] = { planName: planNames[wName] || "面壁秘密工程", progress: 0, isBroken: false };
+          this.wallfacerPlans[wName] = { planName: planNames[wName] || t("面壁秘密工程"), progress: 0, isBroken: false };
         }
 
         const plan = this.wallfacerPlans[wName];
         if (!plan.isBroken && plan.progress < 100) {
           const boost = Math.floor((p.leadership + p.science) * wallfacersData.progressFactor) + wallfacersData.baseProgressBoost;
           plan.progress = Math.min(100, plan.progress + boost);
-          game.addHistory(`【面壁计划】面壁者 ${wName} 的秘密计划「${plan.planName}」进度推进至 ${plan.progress}%。`);
+          game.addHistory(t("【面壁计划】面壁者 {param0} 的秘密计划「{param1}」进度推进至 {param2}%。", { param0: wName, param1: plan.planName, param2: plan.progress }));
 
           if (plan.progress >= 100) {
-            game.addHistory(`【面壁计划】面壁者 ${wName} 的秘密计划「${plan.planName}」已完全部署就绪！威慑度显著上升！`);
+            game.addHistory(t("【面壁计划】面壁者 {param0} 的秘密计划「{param1}」已完全部署就绪！威慑度显著上升！", { param0: wName, param1: plan.planName }));
             this.deterrenceValue += 20;
             this.army += 100;
           }
@@ -307,8 +308,8 @@ export class EarthCivilization extends Civilization {
           this.wallfacers.delete(targetWallfacer);
           this.deterrenceValue = Math.max(0, this.deterrenceValue - wallfacersData.breakDeterrencePenalty);
 
-          game.addHistory(`【破壁人降临】三体智子与破壁人正式识破了面壁者 ${targetWallfacer} 的「${plan.planName}」计划！该计划宣告破产，${targetWallfacer} 承受巨大心理打击退场。`);
-          game.tickerMessages.push(`👥 [战略公报] 面壁者 ${targetWallfacer} 被破壁！其秘密计划「${plan.planName}」已被识破并宣告失败。`);
+          game.addHistory(t("【破壁人降临】三体智子与破壁人正式识破了面壁者 {param0} 的「{param1}」计划！该计划宣告破产，{param2} 承受巨大心理打击退场。", { param0: targetWallfacer, param1: plan.planName, param2: targetWallfacer }));
+          game.tickerMessages.push(t("👥 [战略公报] 面壁者 {param0} 被破壁！其秘密计划「{param1}」已被识破并宣告失败。", { param0: targetWallfacer, param1: plan.planName }));
           GameInstance.get().eventBus.emitLegacy('ticker-message-added');
         }
       }
@@ -367,7 +368,7 @@ export class EarthCivilization extends Civilization {
             if (key === 'stope') star.hasStope = true;
             else if (key === 'factory') star.hasFactory = true;
             else if (key === 'city') star.hasCity = true;
-            game.addHistory(`${star.name} 的${key === 'stope' ? '采矿场' : key === 'factory' ? '加工厂' : '太空城市'}建造完成！`);
+            game.addHistory(t("{param0} 的{param1}建造完成！", { param0: star.name, param1: key === 'stope' ? t("采矿场") : key === 'factory' ? t("加工厂") : t("太空城市") }));
             delete bp[key];
           }
         }
@@ -471,9 +472,9 @@ export class EarthCivilization extends Civilization {
     const workersPerStope = Math.floor(this.miningWorkers / stopeCount);
     let miningWeight = 2;
     const tm = this.tecTreeManager;
-    if (tm.isTecFinished(TecTreeType.AEROSPACE, "星矿Ⅲ")) miningWeight = 5;
-    else if (tm.isTecFinished(TecTreeType.AEROSPACE, "星矿Ⅱ")) miningWeight = 4;
-    else if (tm.isTecFinished(TecTreeType.AEROSPACE, "星矿Ⅰ")) miningWeight = 3;
+    if (tm.isTecFinished(TecTreeType.AEROSPACE, t("星矿Ⅲ"))) miningWeight = 5;
+    else if (tm.isTecFinished(TecTreeType.AEROSPACE, t("星矿Ⅱ"))) miningWeight = 4;
+    else if (tm.isTecFinished(TecTreeType.AEROSPACE, t("星矿Ⅰ"))) miningWeight = 3;
 
     for (const idx of this.starIndices) {
       const star = game.starManager.getStar(idx);
@@ -491,10 +492,10 @@ export class EarthCivilization extends Civilization {
   private processFactories(game: any): void {
     const projectedConsumption = this.factoryWorkers * 2;
     if (projectedConsumption > this.resource * 0.5 && this.resource > 0) {
-      game.addHistory(`【资源预警】工厂产能消耗巨大，当前资源 ${this.resource} 可能在下回合供应紧张。建议增加采矿比例。`);
+      game.addHistory(t("【资源预警】工厂产能消耗巨大，当前资源 {param0} 可能在下回合供应紧张。建议增加采矿比例。", { param0: this.resource }));
     }
     if (this.resource <= 10 && this.factoryWorkers > 0) {
-      game.addHistory(`【资源枯竭警报】资源储备仅剩 ${this.resource}，工厂生产即将停滞！请立即调整工人分配！`);
+      game.addHistory(t("【资源枯竭警报】资源储备仅剩 {param0}，工厂生产即将停滞！请立即调整工人分配！", { param0: this.resource }));
     }
 
     const ecoDept = this.departments.get(DepartmentType.ECONOMY);
@@ -517,28 +518,28 @@ export class EarthCivilization extends Civilization {
     const workersPerFactory = Math.floor(this.factoryWorkers / factoryCount);
     let factoryWeight = 2;
     const tm = this.tecTreeManager;
-    if (tm.isTecFinished(TecTreeType.AEROSPACE, "星厂Ⅲ")) factoryWeight = 5;
-    else if (tm.isTecFinished(TecTreeType.AEROSPACE, "星厂Ⅱ")) factoryWeight = 4;
-    else if (tm.isTecFinished(TecTreeType.AEROSPACE, "星厂Ⅰ")) factoryWeight = 3;
+    if (tm.isTecFinished(TecTreeType.AEROSPACE, t("星厂Ⅲ"))) factoryWeight = 5;
+    else if (tm.isTecFinished(TecTreeType.AEROSPACE, t("星厂Ⅱ"))) factoryWeight = 4;
+    else if (tm.isTecFinished(TecTreeType.AEROSPACE, t("星厂Ⅰ"))) factoryWeight = 3;
 
     let totalEco = 0;
     for (const idx of this.starIndices) {
       const star = game.starManager.getStar(idx);
       if (!star || !star.hasFactory) continue;
       let add = Math.floor((workersPerFactory + leaderBonus) * factoryWeight / 2);
-      if (tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅰ型")) {
-        const engineLevel = tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型") ? 2.5 :
-                            tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅱ型") ? 2.0 : 1.5;
+      if (tm.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅰ型"))) {
+        const engineLevel = tm.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅲ型")) ? 2.5 :
+                            tm.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅱ型")) ? 2.0 : 1.5;
         add = Math.floor(add * engineLevel);
       }
       const treacheryFactor = Math.max(1, 100 - this.treachery);
       add = Math.floor(add * treacheryFactor / 100);
-      const maxEco = tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型") ? 500 :
-                     tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅱ型") ? 350 :
-                     tm.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅰ型") ? 200 : 100;
+      const maxEco = tm.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅲ型")) ? 500 :
+                     tm.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅱ型")) ? 350 :
+                     tm.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅰ型")) ? 200 : 100;
       add = Math.min(add, maxEco);
 
-      const hasMassConversion = tm.isTecFinished(TecTreeType.INFORMATION, "质能转换");
+      const hasMassConversion = tm.isTecFinished(TecTreeType.INFORMATION, t("质能转换"));
       if (!hasMassConversion) {
         const resCost = add * 2;
         if (resCost > this.resource) add = Math.floor(this.resource / 2);
@@ -564,9 +565,9 @@ export class EarthCivilization extends Civilization {
 
     let weight = 2;
     const tm = this.tecTreeManager;
-    if (tm.isTecFinished(TecTreeType.INFORMATION, "思想钢印Ⅲ")) weight = 5;
-    else if (tm.isTecFinished(TecTreeType.INFORMATION, "思想钢印Ⅱ")) weight = 4;
-    else if (tm.isTecFinished(TecTreeType.INFORMATION, "思想钢印Ⅰ")) weight = 3;
+    if (tm.isTecFinished(TecTreeType.INFORMATION, t("思想钢印Ⅲ"))) weight = 5;
+    else if (tm.isTecFinished(TecTreeType.INFORMATION, t("思想钢印Ⅱ"))) weight = 4;
+    else if (tm.isTecFinished(TecTreeType.INFORMATION, t("思想钢印Ⅰ"))) weight = 3;
 
     let cultureGain = Math.floor((this.cultureWorkers + leaderBonus) * weight / 15) + deptBase;
     cultureGain = Math.min(cultureGain, 100);
@@ -622,8 +623,8 @@ export class EarthCivilization extends Civilization {
             let parentFinished = !node.parentName || tree.isFinished(node.parentName);
 
             // Cross-tree dependency constraint: 行星发动机基础 and 行星发动机Ⅰ型 require 强相互作用力材料
-            if (parentFinished && (node.name === "行星发动机Ⅰ型" || node.name === "行星发动机基础")) {
-              if (!this.tecTreeManager.isTecFinishedAnywhere("强相互作用力材料")) {
+            if (parentFinished && (node.name === t("行星发动机Ⅰ型") || node.name === t("行星发动机基础"))) {
+              if (!this.tecTreeManager.isTecFinishedAnywhere(t("强相互作用力材料"))) {
                 parentFinished = false;
               }
             }
@@ -636,7 +637,7 @@ export class EarthCivilization extends Civilization {
         }
         if (bestNode) {
           bestNode.inResearch = true;
-          game.addHistory(`自动开始研究: ${bestNode.name}`);
+          game.addHistory(t("自动开始研究: {param0}", { param0: bestNode.name }));
         }
       }
 
@@ -654,7 +655,7 @@ export class EarthCivilization extends Civilization {
             node.currentWorkload = node.totalWorkload;
             node.finished = true;
             node.inResearch = false;
-            game.addHistory(`科技研发完成: ${node.name}`);
+            game.addHistory(t("科技研发完成: {param0}", { param0: node.name }));
             StatisticsManager.recordTechUnlock(node.name);
             game.eventBus.emitLegacy('game:tech:completed', { techName: node.name, treeType });
           }
@@ -666,9 +667,9 @@ export class EarthCivilization extends Civilization {
   private processPopulationGrowth(game: any): void {
     let growthWeight = 2;
     const tm = this.tecTreeManager;
-    if (tm.isTecFinished(TecTreeType.AEROSPACE, "殖民城Ⅲ")) growthWeight = 5;
-    else if (tm.isTecFinished(TecTreeType.AEROSPACE, "殖民城Ⅱ")) growthWeight = 4;
-    else if (tm.isTecFinished(TecTreeType.AEROSPACE, "殖民城Ⅰ")) growthWeight = 3;
+    if (tm.isTecFinished(TecTreeType.AEROSPACE, t("殖民城Ⅲ"))) growthWeight = 5;
+    else if (tm.isTecFinished(TecTreeType.AEROSPACE, t("殖民城Ⅱ"))) growthWeight = 4;
+    else if (tm.isTecFinished(TecTreeType.AEROSPACE, t("殖民城Ⅰ"))) growthWeight = 3;
 
     let cityCount = 0;
     for (const idx of this.starIndices) {
@@ -718,7 +719,7 @@ export class EarthCivilization extends Civilization {
     
     this.treachery = Math.min(100, this.treachery + randomGain);
     if (this.treachery > 80) {
-      game.addHistory(`【警告】逃亡主义上升至 ${this.treachery}，文明面临内部分裂风险！`);
+      game.addHistory(t("【警告】逃亡主义上升至 {param0}，文明面临内部分裂风险！", { param0: this.treachery }));
     }
   }
 
@@ -741,7 +742,7 @@ export class EarthCivilization extends Civilization {
       const built = Math.floor(actualCost / 30);
       this.army += built * 5;
       if (built > 0) {
-        game.addHistory(`【后勤维修】自动重建了部分损失兵力，消耗 ${actualCost} 经济。`);
+        game.addHistory(t("【后勤维修】自动重建了部分损失兵力，消耗 {param0} 经济。", { param0: actualCost }));
       }
     }
     this._lastFleetCount = this.fleets.length;
@@ -751,7 +752,7 @@ export class EarthCivilization extends Civilization {
       if (fleet.eta > 0) {
         fleet.eta--;
         if (fleet.eta === 0) {
-          game.addHistory(`舰队 [${fleet.name}] 已抵达目的地星系 ${fleet.targetStarIndex}！`);
+          game.addHistory(t("舰队 [{param0}] 已抵达目的地星系 {param1}！", { param0: fleet.name, param1: fleet.targetStarIndex }));
           const targetStar = game.starManager.getStar(fleet.targetStarIndex);
           if (targetStar && targetStar.belongToCivi !== this.name) {
             const tempDef = createBarback("temp_def", fleet.targetStarIndex);
@@ -761,10 +762,10 @@ export class EarthCivilization extends Civilization {
               const oldOwner = targetStar.belongToCivi;
               targetStar.belongToCivi = this.name;
               this.starIndices.add(fleet.targetStarIndex);
-              if (oldOwner && oldOwner !== "无" && game.alienCiviManager) {
+              if (oldOwner && oldOwner !== t("无") && game.alienCiviManager) {
                 game.alienCiviManager.loseStar(oldOwner, fleet.targetStarIndex);
               }
-              game.addHistory(`【胜利】成功占领星系 ${targetStar.name}！`);
+              game.addHistory(t("【胜利】成功占领星系 {param0}！", { param0: targetStar.name }));
               this.fleets.splice(i, 1);
             } else {
               this.fleets.splice(i, 1);

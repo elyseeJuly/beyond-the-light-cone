@@ -80,60 +80,60 @@ export const RightInspector: React.FC = () => {
     );
   }
 
-  const isEarth = star.belongToCivi === "地球";
+  const isEarth = star.belongToCivi === t("地球");
   const earth = game.earthCivi;
 
   const handleBuildStope = () => {
-    if (star.belongToCivi !== "地球") {
-      alert("该星球不属于地球文明，无法在此建造！");
+    if (star.belongToCivi !== t("地球")) {
+      alert(t("该星球不属于地球文明，无法在此建造！"));
       return;
     }
     if (!star.hasStope && !star.buildingProgress?.stope && earth.economy >= 30) {
       earth.economy -= 30;
       star.buildingProgress = star.buildingProgress || {};
       star.buildingProgress.stope = { currentBuild: 0, totalBuild: 100, buildPerRound: 20 };
-      game.addHistory(`在 ${star.name} 开始建造采矿场（预计5回合完成），消耗 30 经济。`);
+      game.addHistory(t("在 {param0} 开始建造采矿场（预计5回合完成），消耗 30 经济。", { param0: star.name }));
       forceUpdate(n => n + 1);
     } else if (star.buildingProgress?.stope) {
-      alert("该星球正在建造采矿场！");
+      alert(t("该星球正在建造采矿场！"));
     } else if (!star.hasStope) {
-      alert("经济不足 30 点！");
+      alert(t("经济不足 30 点！"));
     }
   };
 
   const handleBuildFactory = () => {
-    if (star.belongToCivi !== "地球") {
-      alert("该星球不属于地球文明，无法在此建造！");
+    if (star.belongToCivi !== t("地球")) {
+      alert(t("该星球不属于地球文明，无法在此建造！"));
       return;
     }
     if (!star.hasFactory && !star.buildingProgress?.factory && earth.economy >= 50) {
       earth.economy -= 50;
       star.buildingProgress = star.buildingProgress || {};
       star.buildingProgress.factory = { currentBuild: 0, totalBuild: 150, buildPerRound: 25 };
-      game.addHistory(`在 ${star.name} 开始建造加工厂（预计6回合完成），消耗 50 经济。`);
+      game.addHistory(t("在 {param0} 开始建造加工厂（预计6回合完成），消耗 50 经济。", { param0: star.name }));
       forceUpdate(n => n + 1);
     } else if (star.buildingProgress?.factory) {
-      alert("该星球正在建造加工厂！");
+      alert(t("该星球正在建造加工厂！"));
     } else if (!star.hasFactory) {
-      alert("经济不足 50 点！");
+      alert(t("经济不足 50 点！"));
     }
   };
 
   const handleBuildCity = () => {
-    if (star.belongToCivi !== "地球") {
-      alert("该星球不属于地球文明，无法在此建造！");
+    if (star.belongToCivi !== t("地球")) {
+      alert(t("该星球不属于地球文明，无法在此建造！"));
       return;
     }
     if (!star.hasCity && !star.buildingProgress?.city && earth.economy >= 80) {
       earth.economy -= 80;
       star.buildingProgress = star.buildingProgress || {};
       star.buildingProgress.city = { currentBuild: 0, totalBuild: 200, buildPerRound: 30 };
-      game.addHistory(`在 ${star.name} 开始建造太空城市（预计7回合完成），消耗 80 经济。`);
+      game.addHistory(t("在 {param0} 开始建造太空城市（预计7回合完成），消耗 80 经济。", { param0: star.name }));
       forceUpdate(n => n + 1);
     } else if (star.buildingProgress?.city) {
-      alert("该星球正在建造太空城市！");
+      alert(t("该星球正在建造太空城市！"));
     } else if (!star.hasCity) {
-      alert("经济不足 80 点！");
+      alert(t("经济不足 80 点！"));
     }
   };
 
@@ -147,7 +147,7 @@ export const RightInspector: React.FC = () => {
         <h2 className="text-xl font-extrabold text-white tracking-wide">{star.name}</h2>
         <div className="text-[10px] text-[var(--text-secondary)] flex items-center gap-1 font-mono">
           <Target size={10} className="stroke-[1.5]" />
-          <span>{t("所属")}: {t(star.belongToCivi || "无主星域")} | {t("资源")}: {star.currentResource}/{star.totalResource}</span>
+          <span>{t("所属")}: {t(star.belongToCivi || t("无主星域"))} | {t("资源")}: {star.currentResource}/{star.totalResource}</span>
         </div>
       </div>
 
@@ -183,11 +183,11 @@ export const RightInspector: React.FC = () => {
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="bg-[#070B14]/40 p-2.5 rounded border border-[#243245]/30">
                   <div className="text-[9px] text-[var(--text-secondary)] uppercase">{t("人口承载限额")}</div>
-                  <div className="text-sm font-bold font-data mt-0.5">{star.populationLimit} {lang === 'en' ? 'M' : '万'}</div>
+                  <div className="text-sm font-bold font-data mt-0.5">{star.populationLimit} {lang === 'en' ? 'M' : t("万")}</div>
                 </div>
                 <div className="bg-[#070B14]/40 p-2.5 rounded border border-[#243245]/30">
                   <div className="text-[9px] text-[var(--text-secondary)] uppercase">{t("常驻殖民人口")}</div>
-                  <div className="text-sm font-bold font-data mt-0.5">{star.currentPopulation} {lang === 'en' ? 'M' : '万'}</div>
+                  <div className="text-sm font-bold font-data mt-0.5">{star.currentPopulation} {lang === 'en' ? 'M' : t("万")}</div>
                 </div>
               </div>
             </section>
@@ -223,9 +223,9 @@ export const RightInspector: React.FC = () => {
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${miningShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
                               {t("采矿占比")}: {localMiningRatio}% ({t("实际")}: {actualMiningPct}%)
-                              {miningShortage && ` (${t("缺工")})`}
+                              {miningShortage && t(" ({param0})", { param0: t("缺工") })}
                             </span>
-                            <span className={`font-bold font-data ${miningShortage ? 'text-orange-400' : 'text-[var(--color-primary)]'}`}>{earth.miningWorkers}{lang === 'en' ? 'M' : '万人'}</span>
+                            <span className={`font-bold font-data ${miningShortage ? 'text-orange-400' : 'text-[var(--color-primary)]'}`}>{earth.miningWorkers}{lang === 'en' ? 'M' : t("万人")}</span>
                           </div>
                           <input
                             type="range"
@@ -245,9 +245,9 @@ export const RightInspector: React.FC = () => {
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className={`${factoryShortage ? 'text-orange-400 font-bold animate-pulse' : 'text-[var(--text-secondary)]'}`}>
                               {t("加工占比")}: {localFactoryRatio}% ({t("实际")}: {actualFactoryPct}%)
-                              {factoryShortage && ` (${t("缺工")})`}
+                              {factoryShortage && t(" ({param0})", { param0: t("缺工") })}
                             </span>
-                            <span className={`font-bold font-data ${factoryShortage ? 'text-orange-400' : 'text-emerald-400'}`}>{earth.factoryWorkers}{lang === 'en' ? 'M' : '万人'}</span>
+                            <span className={`font-bold font-data ${factoryShortage ? 'text-orange-400' : 'text-emerald-400'}`}>{earth.factoryWorkers}{lang === 'en' ? 'M' : t("万人")}</span>
                           </div>
                           <input
                             type="range"
@@ -266,7 +266,7 @@ export const RightInspector: React.FC = () => {
                         <div className="space-y-1 p-1 rounded">
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-[var(--text-secondary)]">{t("文化占比")}: {localCultureRatio}% ({t("实际")}: {actualCulturePct}%)</span>
-                            <span className="font-bold text-amber-400 font-data">{earth.cultureWorkers}{lang === 'en' ? 'M' : '万人'}</span>
+                            <span className="font-bold text-amber-400 font-data">{earth.cultureWorkers}{lang === 'en' ? 'M' : t("万人")}</span>
                           </div>
                           <input
                             type="range"
@@ -284,7 +284,7 @@ export const RightInspector: React.FC = () => {
                         {/* Idle workers */}
                         <div className="flex justify-between text-[10px] font-mono pt-1.5 border-t border-[#243245]/20 px-1">
                           <span className="text-[var(--text-secondary)]">{t("闲置科研与劳动力")}</span>
-                          <span className="font-bold text-slate-300 font-data">{earth.idleWorkers}{lang === 'en' ? 'M' : '万人'}</span>
+                          <span className="font-bold text-slate-300 font-data">{earth.idleWorkers}{lang === 'en' ? 'M' : t("万人")}</span>
                         </div>
                       </div>
                     );
@@ -386,13 +386,13 @@ export const RightInspector: React.FC = () => {
             {isEarth ? (
               <div className="bg-[#070B14]/40 p-3 rounded border border-[#243245]/30 space-y-2">
                 <div className="text-white font-bold">{t("【母星历史记录】")}</div>
-                <p>自大低谷期与公元纪元结束以来，地球作为人类文明的绝对摇篮与联合政府心脏，已进入「危机纪元」。</p>
-                <p>本行政星拥有人类最古老的遗存，也是各大面壁工程与防御阵地的战术中枢。</p>
+                <p>{t("自大低谷期与公元纪元结束以来，地球作为人类文明的绝对摇篮与联合政府心脏，已进入「危机纪元」。")}</p>
+                <p>{t("本行政星拥有人类最古老的遗存，也是各大面壁工程与防御阵地的战术中枢。")}</p>
               </div>
             ) : (
               <div className="bg-[#070B14]/40 p-3 rounded border border-[#243245]/30 space-y-2">
                 <div className="text-white font-bold">{t("【殖民档案记载】")}</div>
-                <p>探测并建立该星港的前哨基地。根据银河星图指令，此星球已被划分为人类太空防御战术外围支点。</p>
+                <p>{t("探测并建立该星港的前哨基地。根据银河星图指令，此星球已被划分为人类太空防御战术外围支点。")}</p>
               </div>
             )}
           </div>

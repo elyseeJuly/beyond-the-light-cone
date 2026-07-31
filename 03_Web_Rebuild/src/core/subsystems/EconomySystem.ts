@@ -1,4 +1,5 @@
 import type { Game } from '../Game';
+import { t } from "../../utils/i18n";
 
 /**
  * EconomySystem - 经济与文化子系统
@@ -19,7 +20,7 @@ export class EconomySystem {
       c >= 70 ? 1 : 0;
 
     if (this.game.earthCivi.civiLevel > 0 && oldCulture < this.getLevelThreshold(this.game.earthCivi.civiLevel)) {
-      this.game.addHistory(`【文明升级】人类文明达到「${this.game.earthCivi.getCiviLevelLabel()}」等级！军队战斗力获得强化。`);
+      this.game.addHistory(t("【文明升级】人类文明达到「{param0}」等级！军队战斗力获得强化。", { param0: this.game.earthCivi.getCiviLevelLabel() }));
       this.game.earthCivi.army += 20;
     }
   }

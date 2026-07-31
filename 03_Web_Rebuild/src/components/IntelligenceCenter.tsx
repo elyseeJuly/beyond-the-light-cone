@@ -19,15 +19,15 @@ export const IntelligenceCenter: React.FC = () => {
       
       const text = log.trim();
       
-      if (text.includes('警报') || text.includes('死神') || text.includes('二向箔') || text.includes('破壁人') || text.includes('坍缩') || text.includes('崩溃') || text.includes('威胁') || text.includes('警告') || text.includes('资源枯竭')) {
+      if (text.includes(t("警报")) || text.includes(t("死神")) || text.includes(t("二向箔")) || text.includes(t("破壁人")) || text.includes(t("坍缩")) || text.includes(t("崩溃")) || text.includes(t("威胁")) || text.includes(t("警告")) || text.includes(t("资源枯竭"))) {
         category = 'crisis';
-      } else if (text.includes('外交') || text.includes('联络') || text.includes('友好') || text.includes('同盟') || text.includes('广播') || text.includes('援助')) {
+      } else if (text.includes(t("外交")) || text.includes(t("联络")) || text.includes(t("友好")) || text.includes(t("同盟")) || text.includes(t("广播")) || text.includes(t("援助"))) {
         category = 'diplomacy';
-      } else if (text.includes('科技') || text.includes('研发') || text.includes('科研') || text.includes('数字生命') || text.includes('意识') || text.includes('永生')) {
+      } else if (text.includes(t("科技")) || text.includes(t("研发")) || text.includes(t("科研")) || text.includes(t("数字生命")) || text.includes(t("意识")) || text.includes(t("永生"))) {
         category = 'research';
-      } else if (text.includes('战报') || text.includes('后勤') || text.includes('舰队') || text.includes('水滴') || text.includes('击退') || text.includes('防御') || text.includes('兵力') || text.includes('侦测')) {
+      } else if (text.includes(t("战报")) || text.includes(t("后勤")) || text.includes(t("舰队")) || text.includes(t("水滴")) || text.includes(t("击退")) || text.includes(t("防御")) || text.includes(t("兵力")) || text.includes(t("侦测"))) {
         category = 'military';
-      } else if (text.includes('人口') || text.includes('民生') || text.includes('城市') || text.includes('逃亡') || text.includes('经济') || text.includes('采矿') || text.includes('资源')) {
+      } else if (text.includes(t("人口")) || text.includes(t("民生")) || text.includes(t("城市")) || text.includes(t("逃亡")) || text.includes(t("经济")) || text.includes(t("采矿")) || text.includes(t("资源"))) {
         category = 'livelihood';
       }
       

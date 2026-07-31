@@ -1,6 +1,7 @@
 import { Star } from "../core/Star";
 import { GameInstance } from "../core/Game";
 import { StarArea } from "../types/enums";
+import { t } from "../utils/i18n";
 
 interface RenderStar {
   star: Star;
@@ -193,7 +194,7 @@ export class StarMapRenderer {
     const viewportCenterY = rect.top + rect.height / 2;
     if (Math.abs(viewport.x - viewportCenterX) > 1 || Math.abs(viewport.y - viewportCenterY) > 1) {
       console.warn(
-        `[StarMapRenderer] focusOnStar 居中偏差超 1px: dx=${(viewport.x - viewportCenterX).toFixed(2)}, dy=${(viewport.y - viewportCenterY).toFixed(2)}`,
+        t("[StarMapRenderer] focusOnStar 居中偏差超 1px: dx={param0}, dy={param1}", { param0: (viewport.x - viewportCenterX).toFixed(2), param1: (viewport.y - viewportCenterY).toFixed(2) }),
       );
     }
     return true;
@@ -730,10 +731,10 @@ export class StarMapRenderer {
       if (star.index === 0) {
         color = "#FFD54F";
         glowColor = "rgba(255, 213, 79, 0.4)";
-      } else if (star.belongToCivi === "地球") {
+      } else if (star.belongToCivi === t("地球")) {
         color = primaryColor;
         glowColor = `rgba(${primaryColorRgb}, 0.5)`;
-      } else if (star.belongToCivi && star.belongToCivi !== "地球") {
+      } else if (star.belongToCivi && star.belongToCivi !== t("地球")) {
         color = "#FF5252";
         glowColor = "rgba(255, 82, 82, 0.4)";
       } else if (star.found) {
@@ -765,7 +766,7 @@ export class StarMapRenderer {
         this.ctx.stroke();
         this.ctx.restore();
 
-        this.ctx.fillStyle = star.belongToCivi === "地球" ? "rgba(0, 184, 255, 0.5)" : "rgba(255, 82, 82, 0.5)";
+        this.ctx.fillStyle = star.belongToCivi === t("地球") ? "rgba(0, 184, 255, 0.5)" : "rgba(255, 82, 82, 0.5)";
         this.ctx.font = "8px JetBrains Mono, monospace";
         this.ctx.fillText(`[${star.belongToCivi}]`, x - 15, y + radius + 11);
       }
@@ -788,11 +789,11 @@ export class StarMapRenderer {
       if (star.status === 'rebellion') {
         this.ctx.font = "bold 10px Inter, sans-serif";
         this.ctx.fillStyle = "#FF5252";
-        this.ctx.fillText("⚠ 叛乱", x + radius + 6, y - radius - 22);
+        this.ctx.fillText(t("⚠ 叛乱"), x + radius + 6, y - radius - 22);
       } else if (star.status === 'building') {
         this.ctx.font = "bold 10px Inter, sans-serif";
         this.ctx.fillStyle = "#66BB6A";
-        this.ctx.fillText("🔨 建设", x + radius + 6, y - radius - 22);
+        this.ctx.fillText(t("🔨 建设"), x + radius + 6, y - radius - 22);
       }
 
       // Anomaly & Ruin markers
@@ -800,10 +801,10 @@ export class StarMapRenderer {
         this.ctx.font = "9px Inter, sans-serif";
         if (star.index === 13 || star.index === 17 || star.index === 23) {
           this.ctx.fillStyle = "#FFB300";
-          this.ctx.fillText("⚠ 异常", x - 14, y - radius - 15);
+          this.ctx.fillText(t("⚠ 异常"), x - 14, y - radius - 15);
         } else if (star.index === 15 || star.index === 21 || star.index === 28) {
           this.ctx.fillStyle = "#66BB6A";
-          this.ctx.fillText("⬢ 遗迹", x - 14, y - radius - 15);
+          this.ctx.fillText(t("⬢ 遗迹"), x - 14, y - radius - 15);
         }
       }
 
@@ -880,7 +881,7 @@ export class StarMapRenderer {
         const dstStar = this.renderStarMap.get(fleet.targetStarIndex);
         if (srcStar && dstStar) {
           if (!this.isStarInActiveArea(srcStar.star) || !this.isStarInActiveArea(dstStar.star)) return;
-          const isEarth = fleet.belongToCivi === "地球";
+          const isEarth = fleet.belongToCivi === t("地球");
           this.ctx.beginPath();
           this.ctx.moveTo(srcStar.x, srcStar.y);
           this.ctx.lineTo(dstStar.x, dstStar.y);

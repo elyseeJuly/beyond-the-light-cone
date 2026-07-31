@@ -28,12 +28,12 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
     if (earth.economy >= 100) {
       earth.economy -= 100;
       const earthStar = game.starManager.getStar(STAR_INDEX.EARTH);
-      const fleet = createFleet(`第${earth.fleets.length + 1}舰队`, "地球", STAR_INDEX.EARTH, 0, 0);
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
+      const fleet = createFleet(t("第{param0}舰队", { param0: earth.fleets.length + 1 }), t("地球"), STAR_INDEX.EARTH, 0, 0);
+      fleet.weapons.push({ weaponName: t("恒星级战舰"), currentBuild: 10 });
+      fleet.weapons.push({ weaponName: t("恒星级战舰"), currentBuild: 10 });
+      fleet.weapons.push({ weaponName: t("恒星级战舰"), currentBuild: 10 });
       earth.fleets.push(fleet);
-      game.addHistory(`在 ${earthStar?.name || '地球'} 开始建造恒星级战舰编队（3艘，消耗 100 经济）。`);
+      game.addHistory(t("在 {param0} 开始建造恒星级战舰编队（3艘，消耗 100 经济）。", { param0: earthStar?.name || t("地球") }));
       forceUpdate(n => n + 1);
       window.dispatchEvent(new CustomEvent('game-turn-complete'));
     } else {
@@ -55,23 +55,23 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
       let baseEta = 3;
       if (targetIdx > STAR_INDEX.PLUTO) {
         // Interstellar travel
-        if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("光速飞船")) {
+        if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("光速飞船"))) {
           baseEta = 1;
-        } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("99%光速飞船")) {
+        } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("99%光速飞船"))) {
           baseEta = 2;
-        } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("50%光速飞船")) {
+        } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("50%光速飞船"))) {
           baseEta = 3;
-        } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船")) {
+        } else if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("10%光速飞船"))) {
           baseEta = 5;
         } else {
           baseEta = 8;
         }
       } else {
         // Intra-solar travel
-        if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船") || 
-            game.earthCivi.tecTreeManager.isTecFinishedAnywhere("50%光速飞船") || 
-            game.earthCivi.tecTreeManager.isTecFinishedAnywhere("99%光速飞船") || 
-            game.earthCivi.tecTreeManager.isTecFinishedAnywhere("光速飞船")) {
+        if (game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("10%光速飞船")) || 
+            game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("50%光速飞船")) || 
+            game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("99%光速飞船")) || 
+            game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("光速飞船"))) {
           baseEta = 1;
         } else {
           baseEta = 3;
@@ -80,7 +80,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
       fleet.eta = baseEta;
       fleet.totalEta = fleet.eta;
       
-      game.addHistory(`【出征】${fleet.name} 离开 ${source.name}，目标 ${target.name}，预计 ${fleet.eta} 回合后抵达。`);
+      game.addHistory(t("【出征】{param0} 离开 {param1}，目标 {param2}，预计 {param3} 回合后抵达。", { param0: fleet.name, param1: source.name, param2: target.name, param3: fleet.eta }));
       forceUpdate(n => n + 1);
       window.dispatchEvent(new CustomEvent('game-turn-complete'));
     }
@@ -106,9 +106,9 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
 
   // 2. Check if advanced propulsion/observatory technologies are completed, to unlock nearby star systems (indices 11 to 17)
   const isInterstellarUnlocked = 
-    game.earthCivi.tecTreeManager.isTecFinishedAnywhere("50光年远镜") ||
-    game.earthCivi.tecTreeManager.isTecFinishedAnywhere("10%光速飞船") ||
-    game.earthCivi.tecTreeManager.isTecFinishedAnywhere("太阳波放大器50光年");
+    game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("50光年远镜")) ||
+    game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("10%光速飞船")) ||
+    game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("太阳波放大器50光年"));
 
   if (isInterstellarUnlocked) {
     for (let idx = 11; idx <= 17; idx++) {
@@ -186,7 +186,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 rounded-[2px] text-[9px] font-bold bg-green-500/10 text-green-400 border border-green-500/25">
-                            {t("驻防中")} · {t(source?.name || '未知')}
+                            {t("驻防中")} · {t(source?.name || t("未知"))}
                           </span>
                         )}
                       </div>
@@ -211,7 +211,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                           className="bg-[#070B14] border border-[#243245]/60 text-white text-[11px] outline-none rounded px-2 py-1 focus:border-[var(--color-primary)] disabled:opacity-50"
                           disabled={isTraveling} // Cannot change leader while traveling
                         >
-                          <option value="">未指派</option>
+                          <option value="">{t("未指派")}</option>
                           {Array.from(game.personManager.availablePersons).map(name => {
                             const p = game.personManager.getPerson(name);
                             if (p && p.army > 0) return <option key={name} value={name}>{name}</option>;
@@ -234,7 +234,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                             <ArrowRight size={12} className="animate-pulse" />
                             <span>{target?.name}</span>
                           </div>
-                          <div className="text-[10px] text-white/40">预计抵达：还剩 {fleet.eta} 回合</div>
+                          <div className="text-[10px] text-white/40">{t("预计抵达：还剩")}{fleet.eta} {t("回合")}</div>
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
@@ -243,10 +243,10 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                             className="bg-[#070B14] border border-[#243245]/60 text-white text-[11px] outline-none rounded px-2 py-1.5 focus:border-[var(--color-primary)]"
                             defaultValue=""
                           >
-                            <option value="" disabled>选择折跃目标星系...</option>
+                            <option value="" disabled>{t("选择折跃目标星系...")}</option>
                             {knownStars.map(s => (
                               s && s.index !== fleet.sourceStarIndex && (
-                                <option key={s.index} value={s.index}>{s.name} ({s.belongToCivi || '无主'})</option>
+                                <option key={s.index} value={s.index}>{s.name} ({s.belongToCivi || t("无主")})</option>
                               )
                             ))}
                           </select>
@@ -256,13 +256,12 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                               if (select && select.value) {
                                 handleDispatch(fleet, select.value);
                               } else {
-                                alert("请先选择目标星系！");
+                                alert(t("请先选择目标星系！"));
                               }
                             }}
                             className="px-4 py-1.5 bg-cyan-950/20 hover:bg-cyan-950/40 border border-[var(--color-primary)]/50 text-[var(--color-primary)] font-bold text-xs rounded transition-colors cursor-pointer"
                           >
-                            派遣
-                          </button>
+                            {t("派遣")}</button>
                         </div>
                       )}
                     </div>
@@ -272,7 +271,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                   <div className="mt-4 pt-4 border-t border-[#243245]/20 space-y-2">
                     <div className="flex items-center gap-2 mb-2">
                       <Wrench size={11} className="text-white/30" />
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-white/30 font-title">舰载战术武器序列与维护指数</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-white/30 font-title">{t("舰载战术武器序列与维护指数")}</span>
                     </div>
                     {fleet.weapons.map((wp, wi) => {
                       const proto = (weaponsData as any[]).find((w: any) => w.name === wp.weaponName);
@@ -290,7 +289,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                             />
                           </div>
                           <span className={`font-bold w-12 text-right ${isFinished ? 'text-[var(--color-primary)]' : 'text-amber-500'}`}>
-                            {isFinished ? '就绪' : `${Math.floor(pct)}%`}
+                            {isFinished ? t("就绪") : `${Math.floor(pct)}%`}
                           </span>
                         </div>
                       );

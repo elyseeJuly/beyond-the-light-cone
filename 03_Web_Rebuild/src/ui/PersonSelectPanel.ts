@@ -15,17 +15,7 @@ export class PersonSelectPanel {
     this.container.className = "modal-overlay hidden";
     this.container.style.zIndex = "2000"; // 比部门面板高一层
     
-    this.container.innerHTML = `
-      <div class="modal-box glass-panel" style="max-width: 800px; height: 70vh;">
-        <div class="modal-header">
-          <h2>${t("指派人员")}</h2>
-          <button class="btn-close" id="btn-person-modal-close">&times;</button>
-        </div>
-        <div class="modal-content" id="person-list-content">
-          <!-- Person list renders here -->
-        </div>
-      </div>
-    `;
+    this.container.innerHTML = t("\n      <div class=\"modal-box glass-panel\" style=\"max-width: 800px; height: 70vh;\">\n        <div class=\"modal-header\">\n          <h2>{param0}</h2>\n          <button class=\"btn-close\" id=\"btn-person-modal-close\">&times;</button>\n        </div>\n        <div class=\"modal-content\" id=\"person-list-content\">\n          <!-- Person list renders here -->\n        </div>\n      </div>\n    ", { param0: t("指派人员") });
     
     const btnClose = this.container.querySelector("#btn-person-modal-close");
     if (btnClose) {
@@ -57,7 +47,7 @@ export class PersonSelectPanel {
     const availableNames = Array.from(game.personManager.availablePersons);
     
     if (availableNames.length === 0) {
-      content.innerHTML = `<p style="color: var(--text-secondary);">${t("当前没有可用的自由人员。")}</p>`;
+      content.innerHTML = t("<p style=\"color: var(--text-secondary);\">{param0}</p>", { param0: t("当前没有可用的自由人员。") });
       return;
     }
 
@@ -97,37 +87,14 @@ export class PersonSelectPanel {
       if (!p) return;
 
       const isTopChoice = index === 0 && this.sortCriteria !== "";
-      const topBadgeHtml = isTopChoice ? `<span style="background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 8px;">${t("最适合")}</span>` : "";
+      const topBadgeHtml = isTopChoice ? t("<span style=\"background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 8px;\">{param0}</span>", { param0: t("最适合") }) : "";
 
       const avatarUrl = p.faceFile ? getImageUrl(p.faceFile) : '';
       const avatarHtml = avatarUrl 
         ? `<img src="${avatarUrl}" onerror="this.style.display='none'" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--color-primary);margin-right:12px;" />`
         : `<div style="width:48px;height:48px;border-radius:50%;background:var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-right:12px;">${(t(p.name) || '?')[0]}</div>`;
 
-      html += `
-        <div class="person-card" data-name="${p.name}" style="
-          display: flex; justify-content: space-between; align-items: center; 
-          padding: 12px; background: var(--border-glass); border: 1px solid var(--border-glass-strong);
-          border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-          
-          <div style="display: flex; align-items: center; flex: 1;">
-            ${avatarHtml}
-            <div>
-              <h4 style="margin: 0 0 8px 0; color: var(--color-primary); display: flex; align-items: center;">
-                ${t(p.name)} ${topBadgeHtml}
-              </h4>
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 0.8rem; color: var(--text-secondary);">
-                <span>${t("科研")}: <b style="color:var(--text-primary)">${p.science}</b></span>
-                <span>${t("领导")}: <b style="color:var(--text-primary)">${p.leadership}</b></span>
-                <span>${t("经济")}: <b style="color:var(--text-primary)">${p.economy}</b></span>
-                <span>${t("军事")}: <b style="color:var(--text-primary)">${p.army}</b></span>
-              </div>
-            </div>
-          </div>
-          
-          <button class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">${t("任命")}</button>
-        </div>
-      `;
+      html += t("\n        <div class=\"person-card\" data-name=\"{param0}\" style=\"\n          display: flex; justify-content: space-between; align-items: center; \n          padding: 12px; background: var(--border-glass); border: 1px solid var(--border-glass-strong);\n          border-radius: 8px; cursor: pointer; transition: all 0.2s;\">\n          \n          <div style=\"display: flex; align-items: center; flex: 1;\">\n            {param1}\n            <div>\n              <h4 style=\"margin: 0 0 8px 0; color: var(--color-primary); display: flex; align-items: center;\">\n                {param2} {param3}\n              </h4>\n              <div style=\"display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 0.8rem; color: var(--text-secondary);\">\n                <span>{param4}: <b style=\"color:var(--text-primary)\">{param5}</b></span>\n                <span>{param6}: <b style=\"color:var(--text-primary)\">{param7}</b></span>\n                <span>{param8}: <b style=\"color:var(--text-primary)\">{param9}</b></span>\n                <span>{param10}: <b style=\"color:var(--text-primary)\">{param11}</b></span>\n              </div>\n            </div>\n          </div>\n          \n          <button class=\"btn-primary\" style=\"padding: 8px 16px; font-size: 0.9rem;\">{param12}</button>\n        </div>\n      ", { param0: p.name, param1: avatarHtml, param2: t(p.name), param3: topBadgeHtml, param4: t("科研"), param5: p.science, param6: t("领导"), param7: p.leadership, param8: t("经济"), param9: p.economy, param10: t("军事"), param11: p.army, param12: t("任命") });
     });
 
     html += `</div>`;

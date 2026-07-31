@@ -8,6 +8,7 @@
 
 import { VictoryType, DefeatType, NeutralType } from '../types/enums';
 import { getImageUrl } from '../utils/assetUrl';
+import { t } from "../utils/i18n";
 
 export type EndingKey =
   | 'CONQUEST'
@@ -75,23 +76,23 @@ export const ENDING_BGM_PATHS = {
 
 /** Credits 制作人员名单 */
 export const CREDITS_LIST = [
-  { role: '策划 & 原始设计', name: '宇宙群英传 原作团队' },
-  { role: 'Web 重构开发', name: 'Emberois Studio' },
-  { role: '叙事系统设计', name: 'Emberois Studio' },
-  { role: '角色美术', name: 'AI Assisted Generation' },
-  { role: '音乐', name: '待定 (TBD)' },
-  { role: '灵感来源', name: '《三体》三部曲 — 刘慈欣' },
-  { role: '特别感谢', name: '所有试玩者与贡献者' },
+  { role: t("策划 & 原始设计"), name: t("宇宙群英传 原作团队") },
+  { role: t("Web 重构开发"), name: 'Emberois Studio' },
+  { role: t("叙事系统设计"), name: 'Emberois Studio' },
+  { role: t("角色美术"), name: 'AI Assisted Generation' },
+  { role: t("音乐"), name: t("待定 (TBD)") },
+  { role: t("灵感来源"), name: t("《三体》三部曲 — 刘慈欣") },
+  { role: t("特别感谢"), name: t("所有试玩者与贡献者") },
 ];
 
 /** 9 种结局配置 */
 export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   CONQUEST: {
     key: 'CONQUEST',
-    title: '征服胜利',
-    subtitle: '暗夜之猎 · 最终裁决',
-    declaration: '黑暗森林的猎手倒在了自己的猎场。当最后一个异星文明的旗帜降下，人类第一次在这片冰冷的宇宙中，以绝对的力量宣告了自己的存在。',
-    epilogue: '这是用铁与火书写的篇章。或许有一天，银河系的废墟之上会有新的文明诞生，而他们会在古老的信号残骸中读到人类的名字——并颤抖。',
+    title: t("征服胜利"),
+    subtitle: t("暗夜之猎 · 最终裁决"),
+    declaration: t("黑暗森林的猎手倒在了自己的猎场。当最后一个异星文明的旗帜降下，人类第一次在这片冰冷的宇宙中，以绝对的力量宣告了自己的存在。"),
+    epilogue: t("这是用铁与火书写的篇章。或许有一天，银河系的废墟之上会有新的文明诞生，而他们会在古老的信号残骸中读到人类的名字——并颤抖。"),
     gradientFrom: '#1a0000',
     gradientTo: '#FF4500',
     accentColor: '#FFD700',
@@ -103,10 +104,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DETERRENCE: {
     key: 'DETERRENCE',
-    title: '威慑胜利',
-    subtitle: '剑柄之握 · 脆弱的和平',
-    declaration: '手持毁灭的按钮，守住了脆弱的和平。执剑人从未按下按钮，但正是这份按下按钮的决心，让黑暗森林中的每一个猎手都选择了沉默。',
-    epilogue: '和平不是友善的馈赠，而是恐惧的产物。执剑人孤独地站在人类文明的最前沿，用自己的灵魂为全人类铸起了一面看不见的盾牌。',
+    title: t("威慑胜利"),
+    subtitle: t("剑柄之握 · 脆弱的和平"),
+    declaration: t("手持毁灭的按钮，守住了脆弱的和平。执剑人从未按下按钮，但正是这份按下按钮的决心，让黑暗森林中的每一个猎手都选择了沉默。"),
+    epilogue: t("和平不是友善的馈赠，而是恐惧的产物。执剑人孤独地站在人类文明的最前沿，用自己的灵魂为全人类铸起了一面看不见的盾牌。"),
     gradientFrom: '#050A2E',
     gradientTo: '#6A1B9A',
     accentColor: '#B388FF',
@@ -118,10 +119,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DARK_DOMAIN: {
     key: 'DARK_DOMAIN',
-    title: '黑域胜利',
-    subtitle: '光速墓碑 · 永恒琥珀',
-    declaration: '将家园永远封印在时间的琥珀中。当光速在这片区域降至零，太阳系变成了一个安全的宇宙孤岛——黑暗森林的法则在这里失效了。',
-    epilogue: '这是人类向宇宙发出的安全声明：我们不会伤害任何人，也请不要伤害我们。从此，太阳系成为银河中一颗永远不会熄灭的琥珀。',
+    title: t("黑域胜利"),
+    subtitle: t("光速墓碑 · 永恒琥珀"),
+    declaration: t("将家园永远封印在时间的琥珀中。当光速在这片区域降至零，太阳系变成了一个安全的宇宙孤岛——黑暗森林的法则在这里失效了。"),
+    epilogue: t("这是人类向宇宙发出的安全声明：我们不会伤害任何人，也请不要伤害我们。从此，太阳系成为银河中一颗永远不会熄灭的琥珀。"),
     gradientFrom: '#0A0A0A',
     gradientTo: '#1A1A2E',
     accentColor: '#CFD8DC',
@@ -133,10 +134,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   WANDERING: {
     key: 'WANDERING',
-    title: '流浪胜利',
-    subtitle: '星辰大海 · 行星远征',
-    declaration: '太阳即将毁灭，而我们带着故乡远行。地球脱离了太阳系的引力束缚，行星发动机的蓝色火焰划破了亿万年来未曾改变的夜空。',
-    epilogue: '流浪的旅途将持续两千五百年。在漫长的航行中，一代又一代人出生、成长、老去，从未见过真正的太阳。但他们知道，前方有一颗新的恒星在等待。',
+    title: t("流浪胜利"),
+    subtitle: t("星辰大海 · 行星远征"),
+    declaration: t("太阳即将毁灭，而我们带着故乡远行。地球脱离了太阳系的引力束缚，行星发动机的蓝色火焰划破了亿万年来未曾改变的夜空。"),
+    epilogue: t("流浪的旅途将持续两千五百年。在漫长的航行中，一代又一代人出生、成长、老去，从未见过真正的太阳。但他们知道，前方有一颗新的恒星在等待。"),
     gradientFrom: '#1A0A00',
     gradientTo: '#FF6F00',
     accentColor: '#FFE082',
@@ -148,10 +149,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DIGITAL: {
     key: 'DIGITAL',
-    title: '数字永生',
-    subtitle: '意识方舟 · 超越碳基',
-    declaration: '肉体消逝，但人类文明化为永恒的代码。当最后一批意识完成上传，数字方舟载着全人类的记忆、情感和梦想，驶向了虚拟的无限宇宙。',
-    epilogue: '在数字世界中，每个人都拥有无限的时间 and 空间。死亡被定义为"选择性离线"，而爱则是两段代码的永恒纠缠。人类终于超越了宇宙对碳基生命的一切限制。',
+    title: t("数字永生"),
+    subtitle: t("意识方舟 · 超越碳基"),
+    declaration: t("肉体消逝，但人类文明化为永恒的代码。当最后一批意识完成上传，数字方舟载着全人类的记忆、情感和梦想，驶向了虚拟的无限宇宙。"),
+    epilogue: t("在数字世界中，每个人都拥有无限的时间 and 空间。死亡被定义为\"选择性离线\"，而爱则是两段代码的永恒纠缠。人类终于超越了宇宙对碳基生命的一切限制。"),
     gradientFrom: '#001A33',
     gradientTo: '#AA00FF',
     accentColor: '#00E5FF',
@@ -163,10 +164,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   HIDDEN: {
     key: 'HIDDEN',
-    title: '死神永生 · 小宇宙',
-    subtitle: '归零之选 · 宇宙很大，生活更大',
-    declaration: '归零者的讯息穿越了亿万光年到达你的手中："尊敬的文明，大宇宙正在因质量缺失而走向热寂。请将您的小宇宙中的质量归还。"你望着这片只属于人类的伊甸园，做出了最终的选择——',
-    epilogue: '"把质量还给大宇宙吧——为了那些还没有诞生的故事。" 人类文明的火种化为一枚生态球，漂浮在新宇宙的起点。五磅的世界里，蓝色地球永恒旋转。宇宙很大，生活更大。',
+    title: t("死神永生 · 小宇宙"),
+    subtitle: t("归零之选 · 宇宙很大，生活更大"),
+    declaration: t("归零者的讯息穿越了亿万光年到达你的手中：\"尊敬的文明，大宇宙正在因质量缺失而走向热寂。请将您的小宇宙中的质量归还。\"你望着这片只属于人类的伊甸园，做出了最终的选择——"),
+    epilogue: t("\"把质量还给大宇宙吧——为了那些还没有诞生的故事。\" 人类文明的火种化为一枚生态球，漂浮在新宇宙的起点。五磅的世界里，蓝色地球永恒旋转。宇宙很大，生活更大。"),
     gradientFrom: '#FAFAFA',
     gradientTo: '#E8D5B7',
     accentColor: '#FFD700',
@@ -178,10 +179,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DEFEAT_TREACHERY: {
     key: 'DEFEAT_TREACHERY',
-    title: '文明崩溃',
-    subtitle: '逃亡主义失控 · 内部瓦解',
-    declaration: '人类在恐惧中抛弃了彼此。当逃亡主义的浪潮吞没了最后的秩序，没有外敌入侵，没有宇宙灾难——文明在自己的内耗中走向了终结。',
-    epilogue: '散落在银河各处的逃亡飞船再也没有汇聚。每一个孤独的殖民地都在沉默中衰落，最终化为星际尘埃。黑暗森林不需要猎手——恐惧本身就是最好的猎手。',
+    title: t("文明崩溃"),
+    subtitle: t("逃亡主义失控 · 内部瓦解"),
+    declaration: t("人类在恐惧中抛弃了彼此。当逃亡主义的浪潮吞没了最后的秩序，没有外敌入侵，没有宇宙灾难——文明在自己的内耗中走向了终结。"),
+    epilogue: t("散落在银河各处的逃亡飞船再也没有汇聚。每一个孤独的殖民地都在沉默中衰落，最终化为星际尘埃。黑暗森林不需要猎手——恐惧本身就是最好的猎手。"),
     gradientFrom: '#1C1C1C',
     gradientTo: '#8B0000',
     accentColor: '#FF5252',
@@ -193,10 +194,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DEFEAT_EXTINCTION: {
     key: 'DEFEAT_EXTINCTION',
-    title: '文明灭绝',
-    subtitle: '最后的沉默 · 死寂星球',
-    declaration: '最后的光芒，也在沉默中熄灭。地球已成为一颗死寂的星球，曾经繁华的城市被尘埃覆盖，曾经的喧嚣化为永恒的寂静。',
-    epilogue: '亿万年后，某个路过太阳系的文明探测器扫描到了第三颗行星。它们在报告中写道："该行星曾存在初级文明 activity 迹象，但已完全消亡。原因不明。"',
+    title: t("文明灭绝"),
+    subtitle: t("最后的沉默 · 死寂星球"),
+    declaration: t("最后的光芒，也在沉默中熄灭。地球已成为一颗死寂的星球，曾经繁华的城市被尘埃覆盖，曾经的喧嚣化为永恒的寂静。"),
+    epilogue: t("亿万年后，某个路过太阳系的文明探测器扫描到了第三颗行星。它们在报告中写道：\"该行星曾存在初级文明 activity 迹象，但已完全消亡。原因不明。\""),
     gradientFrom: '#000000',
     gradientTo: '#2C2C2C',
     accentColor: '#616161',
@@ -208,10 +209,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DEFEAT_HELIUM_FLASH: {
     key: 'DEFEAT_HELIUM_FLASH',
-    title: '太阳氦闪',
-    subtitle: '恒星终焉 · 灰飞烟灭',
-    declaration: '当恒星燃尽，一切皆成灰烬。太阳在膨胀中吞噬了水星、金星，最终的耀眼白光瞬间蒸发了地球上的一切。漫长的等待终结于刺眼的光芒。',
-    epilogue: '人类曾有四百年的时间准备逃离。但争吵、犹豫、内斗消耗了一切。当氦闪的白光穿透大气层的那一刻，所有的遗憾都来不及说出口。',
+    title: t("太阳氦闪"),
+    subtitle: t("恒星终焉 · 灰飞烟灭"),
+    declaration: t("当恒星燃尽，一切皆成灰烬。太阳在膨胀中吞噬了水星、金星，最终的耀眼白光瞬间蒸发了地球上的一切。漫长的等待终结于刺眼的光芒。"),
+    epilogue: t("人类曾有四百年的时间准备逃离。但争吵、犹豫、内斗消耗了一切。当氦闪的白光穿透大气层的那一刻，所有的遗憾都来不及说出口。"),
     gradientFrom: '#FFFFFF',
     gradientTo: '#1A0A00',
     accentColor: '#FF6F00',
@@ -223,10 +224,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   DEFEAT_DIMENSION_STRIKE: {
     key: 'DEFEAT_DIMENSION_STRIKE',
-    title: '二向箔降维',
-    subtitle: '空间坍缩 · 降维打击',
-    declaration: '二向箔降临，太阳系沦为一幅没有厚度的平面画作。三维世界的物理规律被剥离，所有物质在跌落二维的深渊中化为了永恒的信息与线条。',
-    epilogue: '这是一场无声的毁灭。地球、恒星、乃至整个星系都被二维化，平铺在宇宙的画布上。高维的物理规律是不可逆的，你们作为三维生命，在此画作中彻底永眠。',
+    title: t("二向箔降维"),
+    subtitle: t("空间坍缩 · 降维打击"),
+    declaration: t("二向箔降临，太阳系沦为一幅没有厚度的平面画作。三维世界的物理规律被剥离，所有物质在跌落二维的深渊中化为了永恒的信息与线条。"),
+    epilogue: t("这是一场无声的毁灭。地球、恒星、乃至整个星系都被二维化，平铺在宇宙的画布上。高维的物理规律是不可逆的，你们作为三维生命，在此画作中彻底永眠。"),
     gradientFrom: '#020202',
     gradientTo: '#0C0F26',
     accentColor: '#00E5FF',
@@ -238,10 +239,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   NEUTRAL_ETERNAL_EXILE: {
     key: 'NEUTRAL_ETERNAL_EXILE',
-    title: '永恒的流亡',
-    subtitle: '星舰文明 · 无尽漂流',
-    declaration: '地球已被遗弃，部分人类乘坐星舰逃离。没有明确的目的地，只能在黑暗的宇宙中无尽地流浪，成为永远的星际游牧民族。',
-    epilogue: '这是一场没有终点的远征。失去故乡的文明在星海中如浮萍般漂泊，他们将带着人类最后的基因与记忆，消失在宇宙深处。',
+    title: t("永恒的流亡"),
+    subtitle: t("星舰文明 · 无尽漂流"),
+    declaration: t("地球已被遗弃，部分人类乘坐星舰逃离。没有明确的目的地，只能在黑暗的宇宙中无尽地流浪，成为永远的星际游牧民族。"),
+    epilogue: t("这是一场没有终点的远征。失去故乡的文明在星海中如浮萍般漂泊，他们将带着人类最后的基因与记忆，消失在宇宙深处。"),
     gradientFrom: '#0A1128',
     gradientTo: '#1C2E4A',
     accentColor: '#4A90E2',
@@ -253,10 +254,10 @@ export const ENDING_CONFIGS: Record<EndingKey, EndingConfig> = {
   },
   NEUTRAL_COSMIC_SILENCE: {
     key: 'NEUTRAL_COSMIC_SILENCE',
-    title: '宇宙静默',
-    subtitle: '文明归零 · 绝对静止',
-    declaration: '战争与扩张失去了意义，文明选择了向内探索或进入深度休眠。我们不再发出任何声音，彻底融入了宇宙的背景辐射之中。',
-    epilogue: '这不是毁灭，而是终极的宁静。星空中少了一个喧闹的种族，多了一块沉默的墓碑。我们还在，但对于宇宙而言，我们已经消失。',
+    title: t("宇宙静默"),
+    subtitle: t("文明归零 · 绝对静止"),
+    declaration: t("战争与扩张失去了意义，文明选择了向内探索或进入深度休眠。我们不再发出任何声音，彻底融入了宇宙的背景辐射之中。"),
+    epilogue: t("这不是毁灭，而是终极的宁静。星空中少了一个喧闹的种族，多了一块沉默的墓碑。我们还在，但对于宇宙而言，我们已经消失。"),
     gradientFrom: '#000000',
     gradientTo: '#0F172A',
     accentColor: '#64748B',
@@ -312,27 +313,27 @@ export function resolveEndingKey(
 /** 新周目 (New Game Plus) 加成配置 */
 export const NG_PLUS_BONUSES: Record<string, { name: string; desc: string }> = {
   unlocked_victory_HIDDEN: {
-    name: '死神永生之火种',
-    desc: '新周目初始自动解锁“观察者视角”功能，窥探更深层的宇宙法则。'
+    name: t("死神永生之火种"),
+    desc: t("新周目初始自动解锁“观察者视角”功能，窥探更深层的宇宙法则。")
   },
   unlocked_victory_DIGITAL: {
-    name: '数字方舟协议',
-    desc: '初始经济 +500，文化 +200。数字意识形态提前播种。'
+    name: t("数字方舟协议"),
+    desc: t("初始经济 +500，文化 +200。数字意识形态提前播种。")
   },
   unlocked_victory_WANDERING: {
-    name: '重力喷流核心',
-    desc: '初始星际军队战力 +50。行星发动机工程获取军事加成。'
+    name: t("重力喷流核心"),
+    desc: t("初始星际军队战力 +50。行星发动机工程获取军事加成。")
   },
   unlocked_victory_DETERRENCE: {
-    name: '执剑人威慑链',
-    desc: '初始威慑度 +20。三体世界对人类产生天然忌惮。'
+    name: t("执剑人威慑链"),
+    desc: t("初始威慑度 +20。三体世界对人类产生天然忌惮。")
   },
   unlocked_victory_CONQUEST: {
-    name: '全知深空网络',
-    desc: '开局自动解锁与所有异星文明（三体、歌者等）的通信信道。'
+    name: t("全知深空网络"),
+    desc: t("开局自动解锁与所有异星文明（三体、歌者等）的通信信道。")
   },
   unlocked_victory_DARK_DOMAIN: {
-    name: '低维安全声明',
-    desc: '初始资源 +500。黑域降速的物理法则对人类生产力产生额外加成。'
+    name: t("低维安全声明"),
+    desc: t("初始资源 +500。黑域降速的物理法则对人类生产力产生额外加成。")
   }
 };

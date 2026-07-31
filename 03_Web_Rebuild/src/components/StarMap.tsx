@@ -4,6 +4,7 @@ import { GameInstance } from '../core/Game';
 import { CrisisWarningPanel } from './CrisisWarningPanel';
 import { StarArea } from '../types/enums';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { t } from "../utils/i18n";
 
 export const StarMap: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -73,10 +74,10 @@ export const StarMap: React.FC = () => {
   }, []);
 
   const areas = [
-    { key: StarArea.SOLARSYSTEM, label: "太阳系", shortLabel: "系内" },
-    { key: StarArea.LIGHTYEAR_50, label: "50光年", shortLabel: "50LY" },
-    { key: StarArea.LIGHTYEAR_1W, label: "1万光年", shortLabel: "1WLY" },
-    { key: StarArea.GALAXY, label: "银河系", shortLabel: "银河" },
+    { key: StarArea.SOLARSYSTEM, label: t("太阳系"), shortLabel: t("系内") },
+    { key: StarArea.LIGHTYEAR_50, label: t("50光年"), shortLabel: "50LY" },
+    { key: StarArea.LIGHTYEAR_1W, label: t("1万光年"), shortLabel: "1WLY" },
+    { key: StarArea.GALAXY, label: t("银河系"), shortLabel: t("银河") },
   ];
 
   return (
@@ -90,7 +91,7 @@ export const StarMap: React.FC = () => {
             onClick={() => setShowAreaDropdown(!showAreaDropdown)}
             className="px-3 py-1.5 text-[10px] font-title uppercase tracking-wider rounded bg-[#070B14]/80 backdrop-blur-sm border border-[#243245]/50 text-white cursor-pointer"
           >
-            {areas.find(a => a.key === activeArea)?.shortLabel || "星区"} ▾
+            {areas.find(a => a.key === activeArea)?.shortLabel || t("星区")} ▾
           </button>
           {showAreaDropdown && (
             <div className="absolute top-9 left-0 bg-[#070B14]/95 border border-[#243245]/50 rounded shadow-xl z-[61] backdrop-blur-md">
@@ -148,7 +149,7 @@ export const StarMap: React.FC = () => {
         <button 
           onClick={handleZoomOut}
           className="text-[11px] sm:text-xs hover:text-[var(--color-primary)] transition-colors font-bold cursor-pointer px-2 select-none"
-          title="缩小"
+          title={t("缩小")}
         >
           −
         </button>
@@ -158,7 +159,7 @@ export const StarMap: React.FC = () => {
         <button 
           onClick={handleZoomIn}
           className="text-[11px] sm:text-xs hover:text-[var(--color-primary)] transition-colors font-bold cursor-pointer px-2 select-none"
-          title="放大"
+          title={t("放大")}
         >
           +
         </button>
@@ -166,7 +167,7 @@ export const StarMap: React.FC = () => {
         <button 
           onClick={handleResetView}
           className="text-[9px] sm:text-[10px] hover:text-[var(--color-primary)] transition-colors font-bold uppercase cursor-pointer hidden sm:block select-none"
-          title="重置视角"
+          title={t("重置视角")}
         >
           Reset
         </button>
@@ -175,8 +176,7 @@ export const StarMap: React.FC = () => {
       {/* Mobile touch hint (shown briefly on first load) */}
       {isMobile && (
         <div className="absolute bottom-[120px] left-1/2 -translate-x-1/2 text-[9px] text-[var(--text-secondary)] opacity-50 pointer-events-none select-none whitespace-nowrap z-10">
-          单指拖动 · 双指缩放 · 点击星辰
-        </div>
+          {t("单指拖动 · 双指缩放 · 点击星辰")}</div>
       )}
 
       {/* Decorative corners — smaller on mobile */}

@@ -8,6 +8,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { AtmosphereConfig, AtmosphereState } from '../core/AtmosphereEngine';
 import { getPerformanceConfig } from './ending/particlePerformance';
+import { t } from "../utils/i18n";
 
 const AtmosphereContext = createContext<AtmosphereConfig | null>(null);
 
@@ -29,8 +30,8 @@ export const AtmosphereProvider: React.FC<Props> = ({ engineRef, children }) => 
     vignetteIntensity: 0.1,
     textGlowColor: 'rgba(0, 229, 255, 0.3)',
     transitionMs: 2000,
-    label: '正常',
-    description: '人类文明处于相对稳定状态',
+    label: t("正常"),
+    description: t("人类文明处于相对稳定状态"),
   });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);

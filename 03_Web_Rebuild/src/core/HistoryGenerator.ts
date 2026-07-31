@@ -1,3 +1,5 @@
+import { t } from "../utils/i18n";
+
 /**
  * HistoryGenerator - 动态编年史生成器 (UEE Layer 8)
  *
@@ -34,7 +36,7 @@ export interface TimelineEntry {
   turnNumber: number;
 }
 
-const EPOCH_NAMES = ['危机纪元', '威慑纪元', '广播纪元', '掩体纪元', '银河纪元'];
+const EPOCH_NAMES = [t("危机纪元"), t("威慑纪元"), t("广播纪元"), t("掩体纪元"), t("银河纪元")];
 
 export class HistoryGenerator {
   public entries: TimelineEntry[] = [];
@@ -55,7 +57,7 @@ export class HistoryGenerator {
   ): void {
     this.entries.push({
       year,
-      epochName: EPOCH_NAMES[epoch] ?? `纪元${epoch}`,
+      epochName: EPOCH_NAMES[epoch] ?? t("纪元{param0}", { param0: epoch }),
       entryType: 'MILESTONE',
       title,
       description,
@@ -76,7 +78,7 @@ export class HistoryGenerator {
   ): void {
     this.entries.push({
       year,
-      epochName: EPOCH_NAMES[epoch] ?? `纪元${epoch}`,
+      epochName: EPOCH_NAMES[epoch] ?? t("纪元{param0}", { param0: epoch }),
       entryType: 'EVENT',
       title,
       description,
@@ -96,12 +98,12 @@ export class HistoryGenerator {
   ): void {
     this.entries.push({
       year,
-      epochName: EPOCH_NAMES[epoch] ?? `纪元${epoch}`,
+      epochName: EPOCH_NAMES[epoch] ?? t("纪元{param0}", { param0: epoch }),
       entryType: applied ? 'TAG_APPLIED' : 'TAG_REMOVED',
-      title: applied ? `世界状态变化：${tagName}` : `世界状态消失：${tagName}`,
+      title: applied ? t("世界状态变化：{param0}", { param0: tagName }) : t("世界状态消失：{param0}", { param0: tagName }),
       description: applied
-        ? `"${tagName}" 状态开始在世界上产生影响。`
-        : `"${tagName}" 状态已消散。`,
+        ? t("\"{param0}\" 状态开始在世界上产生影响。", { param0: tagName })
+        : t("\"{param0}\" 状态已消散。", { param0: tagName }),
       relatedTags: [tagId],
       relatedPersons: [],
       turnNumber: this.turnCounter,
@@ -117,7 +119,7 @@ export class HistoryGenerator {
   ): void {
     this.entries.push({
       year,
-      epochName: EPOCH_NAMES[epoch] ?? `纪元${epoch}`,
+      epochName: EPOCH_NAMES[epoch] ?? t("纪元{param0}", { param0: epoch }),
       entryType: 'CRISIS',
       title,
       description,
@@ -136,7 +138,7 @@ export class HistoryGenerator {
   ): void {
     this.entries.push({
       year,
-      epochName: EPOCH_NAMES[epoch] ?? `纪元${epoch}`,
+      epochName: EPOCH_NAMES[epoch] ?? t("纪元{param0}", { param0: epoch }),
       entryType: 'VICTORY',
       title,
       description,
@@ -148,11 +150,11 @@ export class HistoryGenerator {
 
   /** 生成编年史文本 */
   generateChronicle(): string {
-    if (this.entries.length === 0) return '暂无历史记录。';
+    if (this.entries.length === 0) return t("暂无历史记录。");
 
     return this.entries
       .map(e => {
-        const prefix = `[${e.epochName} 第${e.year}年] `;
+        const prefix = t("[{param0} 第{param1}年] ", { param0: e.epochName, param1: e.year });
         const tagInfo = e.relatedTags.length > 0 ? ` (${e.relatedTags.join(', ')})` : '';
         const personInfo = e.relatedPersons.length > 0 ? ` [${e.relatedPersons.join(', ')}]` : '';
         return `${prefix}${e.title}：${e.description}${tagInfo}${personInfo}`;

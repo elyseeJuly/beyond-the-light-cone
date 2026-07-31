@@ -1,4 +1,5 @@
 import { WeaponInstance } from "./Weapon";
+import { t } from "../utils/i18n";
 
 export interface Barback {
   id: string; // 唯一标识符
@@ -25,7 +26,7 @@ export function createBarback(id: string, planetIndex: number): Barback {
     isFriend: false,
     alignmentYear: 0,
     departmentLeaderName: null,
-    departmentName: "基地防御部",
+    departmentName: t("基地防御部"),
     totalBuild: 100,
     currentBuild: 0,
     buildPerRound: 10,

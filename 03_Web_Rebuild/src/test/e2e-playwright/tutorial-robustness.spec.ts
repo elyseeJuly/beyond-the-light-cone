@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { dismissOrientationPrompt, startTutorialToReadStatus } from './helpers';
+import { t } from "../../utils/i18n";
 
 /**
  * 教程鲁棒性测试（审计 P0 流程问题 #2 硬性合并门槛）
@@ -15,10 +16,10 @@ import { dismissOrientationPrompt, startTutorialToReadStatus } from './helpers';
  * 本测试通过让教程进入一个 highlightTarget 指向不存在元素的步骤来模拟目标缺失。
  */
 
-test.describe('教程鲁棒性：目标缺失不锁屏', () => {
+test.describe(t("教程鲁棒性：目标缺失不锁屏"), () => {
   test.use({ hasTouch: false, viewport: { width: 1440, height: 900 } });
 
-  test('目标元素缺失时渲染 missing 遮罩而非 full 遮罩', async ({ page }) => {
+  test(t("目标元素缺失时渲染 missing 遮罩而非 full 遮罩"), async ({ page }) => {
     test.setTimeout(30000);
 
     await page.goto('/');
@@ -44,7 +45,7 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     await expect(page.locator('[data-testid="tutorial-overlay-full"]')).not.toBeVisible();
   });
 
-  test('目标元素缺失时玩家仍可点击游戏 UI（不锁屏）', async ({ page }) => {
+  test(t("目标元素缺失时玩家仍可点击游戏 UI（不锁屏）"), async ({ page }) => {
     test.setTimeout(30000);
 
     await page.goto('/');
@@ -82,7 +83,7 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     await expect(skipBtn).toBeEnabled();
   });
 
-  test('目标元素缺失时教程卡片的跳过按钮可用', async ({ page }) => {
+  test(t("目标元素缺失时教程卡片的跳过按钮可用"), async ({ page }) => {
     test.setTimeout(30000);
 
     await page.goto('/');
@@ -117,7 +118,7 @@ test.describe('教程鲁棒性：目标缺失不锁屏', () => {
     expect(progress.version).toBeTruthy();
   });
 
-  test('目标元素延迟挂载后高亮框自动恢复', async ({ page }) => {
+  test(t("目标元素延迟挂载后高亮框自动恢复"), async ({ page }) => {
     test.setTimeout(40000);
 
     await page.goto('/');

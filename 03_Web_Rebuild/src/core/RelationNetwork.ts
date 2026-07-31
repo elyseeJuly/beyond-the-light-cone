@@ -13,6 +13,7 @@
  */
 
 import { TagManager } from "./TagManager";
+import { t } from "../utils/i18n";
 
 export type RelationType = 'ALLY' | 'RIVAL' | 'BETRAYER' | 'MENTOR' | 'NEUTRAL';
 
@@ -122,21 +123,21 @@ export class RelationNetwork {
   /** 初始化原著经典关系 */
   initCanonicalRelations(year: number): void {
     // 面壁者与破壁人的关系
-    this.establishRelation('泰勒', '破壁人1号', 'RIVAL', year, 'canon', 90);
-    this.establishRelation('雷迪亚兹', '破壁人2号', 'RIVAL', year, 'canon', 90);
-    this.establishRelation('希恩斯', '破壁人3号', 'BETRAYER', year, 'canon', 95);
-    this.establishRelation('罗辑', '破壁人', 'RIVAL', year, 'canon', 80);
+    this.establishRelation(t("泰勒"), t("破壁人1号"), 'RIVAL', year, 'canon', 90);
+    this.establishRelation(t("雷迪亚兹"), t("破壁人2号"), 'RIVAL', year, 'canon', 90);
+    this.establishRelation(t("希恩斯"), t("破壁人3号"), 'BETRAYER', year, 'canon', 95);
+    this.establishRelation(t("罗辑"), t("破壁人"), 'RIVAL', year, 'canon', 80);
 
     // 核心人物关系
-    this.establishRelation('罗辑', '史强', 'ALLY', year, 'canon', 85);
-    this.establishRelation('罗辑', '庄颜', 'ALLY', year, 'canon', 90);
-    this.establishRelation('程心', '云天明', 'ALLY', year, 'canon', 85);
-    this.establishRelation('程心', '艾AA', 'ALLY', year, 'canon', 80);
-    this.establishRelation('章北海', '东方延续', 'MENTOR', year, 'canon', 80);
+    this.establishRelation(t("罗辑"), t("史强"), 'ALLY', year, 'canon', 85);
+    this.establishRelation(t("罗辑"), t("庄颜"), 'ALLY', year, 'canon', 90);
+    this.establishRelation(t("程心"), t("云天明"), 'ALLY', year, 'canon', 85);
+    this.establishRelation(t("程心"), t("艾AA"), 'ALLY', year, 'canon', 80);
+    this.establishRelation(t("章北海"), t("东方延续"), 'MENTOR', year, 'canon', 80);
 
     // 敌对关系
-    this.establishRelation('伊文斯', '罗辑', 'RIVAL', year, 'canon', 95);
-    this.establishRelation('伊文斯', '史强', 'RIVAL', year, 'canon', 85);
+    this.establishRelation(t("伊文斯"), t("罗辑"), 'RIVAL', year, 'canon', 95);
+    this.establishRelation(t("伊文斯"), t("史强"), 'RIVAL', year, 'canon', 85);
   }
 
   // ===== 序列化 =====

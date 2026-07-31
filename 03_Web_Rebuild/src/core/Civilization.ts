@@ -1,6 +1,7 @@
 import { TecTreeManager } from "./TecTreeManager";
 import { Fleet } from "./Fleet";
 import { FriendshipType } from "../types/enums";
+import { t } from "../utils/i18n";
 
 export class Civilization {
   public name: string = "";
@@ -33,7 +34,7 @@ export class Civilization {
   }
 
   public getCiviLevelLabel(): string {
-    const levels = ["荒蛮文明", "工业文明", "星际文明", "银河文明", "超维文明"];
+    const levels = [t("荒蛮文明"), t("工业文明"), t("星际文明"), t("银河文明"), t("超维文明")];
     return levels[Math.min(this.civiLevel, levels.length - 1)];
   }
 }

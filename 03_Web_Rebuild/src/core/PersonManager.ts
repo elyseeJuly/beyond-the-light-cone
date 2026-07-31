@@ -1,5 +1,6 @@
 import { Person, createEmptyPerson } from "./Person";
 import personsData from "../data/persons.json";
+import { t } from "../utils/i18n";
 
 export class PersonManager {
   public persons: Map<string, Person> = new Map();
@@ -21,7 +22,7 @@ export class PersonManager {
       p.leadership = data.leadership ?? 0;
       p.social = data.social ?? 0;
       
-      const initialWhitelist = ["丁仪", "汪淼", "常伟思", "大史", "雷志成", "杨卫宁", "叶文洁"];
+      const initialWhitelist = [t("丁仪"), t("汪淼"), t("常伟思"), t("大史"), t("雷志成"), t("杨卫宁"), t("叶文洁")];
       this.persons.set(p.name, p);
       if (initialWhitelist.includes(p.name)) {
         this.availablePersons.add(p.name);

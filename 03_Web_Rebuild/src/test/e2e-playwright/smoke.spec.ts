@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { disableTutorial, skipTutorial, waitForMainUI } from './helpers';
+import { t } from "../../utils/i18n";
 
 test.describe('Smoke Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -8,7 +9,7 @@ test.describe('Smoke Tests', () => {
     await skipTutorial(page);
   });
 
-  test('页面标题与核心布局元素存在', async ({ page }) => {
+  test(t("页面标题与核心布局元素存在"), async ({ page }) => {
     await expect(page).toHaveTitle(/光锥之外|Beyond-the-Light-Cone|Beyond the Light Cone/);
     await waitForMainUI(page);
 
@@ -25,7 +26,7 @@ test.describe('Smoke Tests', () => {
     await expect(page.locator('canvas#star-canvas-react')).toBeAttached();
   });
 
-  test('代码分割 chunk 按需加载', async ({ page }) => {
+  test(t("代码分割 chunk 按需加载"), async ({ page }) => {
     const requests: string[] = [];
     page.on('request', req => requests.push(req.url()));
 
@@ -48,7 +49,7 @@ test.describe('Smoke Tests', () => {
     }
   });
 
-  test('全局错误监控无未捕获异常', async ({ page }) => {
+  test(t("全局错误监控无未捕获异常"), async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', err => errors.push(err.message));
 

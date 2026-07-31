@@ -1,5 +1,6 @@
 import type { Game } from '../Game';
 import type { Star } from '../Star';
+import { t } from "../../utils/i18n";
 
 /**
  * PopulationSystem - 人口与殖民地子系统
@@ -16,7 +17,7 @@ export class PopulationSystem {
   public getColonyPopulationCapacity(): number {
     let capacity = 0;
     for (const star of this.game.starManager.getAllStars()) {
-      if (star.belongToCivi === '地球' && star.hasCity) {
+      if (star.belongToCivi === t("地球") && star.hasCity) {
         capacity += star.populationLimit * 3;
       }
     }
@@ -25,7 +26,7 @@ export class PopulationSystem {
 
   /** 获取地球本体人口上限（基础容量），从地球星球的 populationLimit 读取 */
   public getEarthPopulationCapacity(): number {
-    const earth = this.game.starManager.getAllStars().find(s => s.name === '地球');
+    const earth = this.game.starManager.getAllStars().find(s => s.name === t("地球"));
     return earth?.populationLimit ?? 300;
   }
 
@@ -43,7 +44,7 @@ export class PopulationSystem {
   /** 获取已殖民星球列表 */
   public getColonizedStars(): Star[] {
     return this.game.starManager.getAllStars().filter(
-      star => star.belongToCivi === '地球' && star.hasCity
+      star => star.belongToCivi === t("地球") && star.hasCity
     );
   }
 }

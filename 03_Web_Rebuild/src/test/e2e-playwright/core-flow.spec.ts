@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { disableTutorial, skipTutorial, waitForMainUI, dismissOrientationPrompt, clickNextTurn, switchView } from './helpers';
+import { t } from "../../utils/i18n";
 
 test.describe('Core User Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -10,32 +11,32 @@ test.describe('Core User Flow', () => {
     await dismissOrientationPrompt(page);
   });
 
-  test('新游戏 → 跳过教程 → 主星图可见', async ({ page }) => {
+  test(t("新游戏 → 跳过教程 → 主星图可见"), async ({ page }) => {
     await expect(page.locator('canvas#star-canvas-main')).toBeAttached();
     await expect(page.locator('canvas#star-canvas-react')).toBeAttached();
   });
 
-  test('切换各中心视图（星图/科技/情报/政府/档案）', async ({ page }) => {
+  test(t("切换各中心视图（星图/科技/情报/政府/档案）"), async ({ page }) => {
     const views = ['techtree', 'intelligence', 'government', 'archive', 'starmap'];
     for (const view of views) {
       await switchView(page, view);
       await page.waitForTimeout(300);
 
       if (view === 'techtree') {
-        await expect(page.getByRole('heading', { name: '科技研发中心' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: t("科技研发中心") })).toBeVisible();
       } else if (view === 'intelligence') {
-        await expect(page.getByRole('heading', { name: '情报防御与战略监控中心' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: t("情报防御与战略监控中心") })).toBeVisible();
       } else if (view === 'government') {
-        await expect(page.getByRole('heading', { name: '执政官政府内阁总署' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: t("执政官政府内阁总署") })).toBeVisible();
       } else if (view === 'archive') {
-        await expect(page.getByRole('heading', { name: '岁月史书' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: t("岁月史书") })).toBeVisible();
       } else {
         await expect(page.locator('canvas#star-canvas-main')).toBeVisible();
       }
     }
   });
 
-  test('按空格推进回合且资源非负', async ({ page }) => {
+  test(t("按空格推进回合且资源非负"), async ({ page }) => {
     const initialYear = await page.evaluate(() => {
       const game = (window as any).GameInstance?.get?.();
       return game?.year ?? null;
@@ -75,7 +76,7 @@ test.describe('Core User Flow', () => {
     }
   });
 
-  test('事件弹窗出现后可选择选项', async ({ page }) => {
+  test(t("事件弹窗出现后可选择选项"), async ({ page }) => {
     test.setTimeout(60000);
 
     // 使用确定性 RNG 加速事件触发

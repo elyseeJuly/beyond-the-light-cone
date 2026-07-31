@@ -65,7 +65,7 @@ export const TopHUD: React.FC = () => {
 
   const game = GameInstance.get();
   const earth = game.earthCivi;
-  const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
+  const epochNames = [t("黄金岁月"), t("危机纪元"), t("威慑纪元"), t("广播纪元"), t("掩体纪元"), t("银河纪元"), t("星屑纪元")];
   const epochNamesEn = ["GOLDEN ERA", "CRISIS ERA", "DETERRENCE ERA", "BROADCAST ERA", "BUNKER ERA", "GALACTIC ERA", "STARDUST ERA"];
   
   const pop = earth.population;
@@ -111,7 +111,7 @@ export const TopHUD: React.FC = () => {
   const stats = {
     year: game.year,
     epoch: game.epoch,
-    epochName: t(epochNames[game.epoch] || "未知纪元"),
+    epochName: t(epochNames[game.epoch] || t("未知纪元")),
     epochNameEn: epochNamesEn[game.epoch] || "UNKNOWN ERA",
     pop,
     eco,
@@ -258,7 +258,7 @@ export const TopHUD: React.FC = () => {
                 </div>
                 <div className="flex justify-between border-b border-[#243245]/30 pb-1">
                   <span className="text-[var(--text-secondary)]">{t("在位执剑人")}</span>
-                  <span className="text-white font-bold">{t(stats.swordholder || '空缺')}</span>
+                  <span className="text-white font-bold">{t(stats.swordholder || t("空缺"))}</span>
                 </div>
               </div>
             </div>
@@ -272,7 +272,7 @@ export const TopHUD: React.FC = () => {
           {stats.epochNameEn}
         </span>
         <span className="text-xs md:text-lg font-extrabold tracking-widest text-[var(--text-primary)] mt-0.5">
-          {stats.epochName} · {lang === 'en' ? `Year ${stats.year}` : `第 ${stats.year} 年`}
+          {stats.epochName} · {lang === 'en' ? `Year ${stats.year}` : t("第 {param0} 年", { param0: stats.year })}
         </span>
       </div>
 
@@ -332,9 +332,9 @@ export const TopHUD: React.FC = () => {
             stats.hasEvent ? t("请先处理完当前的事件或决策") :
             (isTutorialActive && currentTutorialStepId !== 'next-turn') ? t("请跟随教程指引操作") :
             (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0)
-              ? `${t("无法推进回合，存在以下阻断事务：")}\n${stats.turnBlockers.map(b => `• ${t(b)}`).join('\n')}`
+              ? t("{param0}\n{param1}", { param0: t("无法推进回合，存在以下阻断事务："), param1: stats.turnBlockers.map(b => `• ${t(b)}`).join('\n') })
               : stats.turnWarnings.length > 0
-                ? `${t("警告（不影响回合推进）：")}\n${stats.turnWarnings.map(w => `• ${t(w)}`).join('\n')}`
+                ? t("{param0}\n{param1}", { param0: t("警告（不影响回合推进）："), param1: stats.turnWarnings.map(w => `• ${t(w)}`).join('\n') })
                 : t("进入下一回合")
           }
           className={`btn-next-turn flex items-center gap-1 md:gap-2 text-[10px] md:text-xs ${

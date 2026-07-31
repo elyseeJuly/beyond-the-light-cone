@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { disableTutorial, skipTutorial, waitForMainUI } from './helpers';
+import { t } from "../../utils/i18n";
 
 test.describe('Responsive Layout', () => {
-  test('桌面端显示 LeftHub 与 RightInspector', async ({ page }) => {
+  test(t("桌面端显示 LeftHub 与 RightInspector"), async ({ page }) => {
     await disableTutorial(page);
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
@@ -15,7 +16,7 @@ test.describe('Responsive Layout', () => {
     await expect(asides).toHaveCount(2);
   });
 
-  test('移动端隐藏侧边栏并显示底部导航', async ({ page }) => {
+  test(t("移动端隐藏侧边栏并显示底部导航"), async ({ page }) => {
     await disableTutorial(page);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
@@ -28,7 +29,7 @@ test.describe('Responsive Layout', () => {
     await expect(visibleAsides).toHaveCount(0);
   });
 
-  test('窗口尺寸切换时布局正确响应', async ({ page }) => {
+  test(t("窗口尺寸切换时布局正确响应"), async ({ page }) => {
     await disableTutorial(page);
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');

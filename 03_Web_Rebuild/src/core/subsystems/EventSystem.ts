@@ -2,6 +2,7 @@ import type { Game } from '../Game';
 import { EventEffect, FriendshipType, TecTreeType } from '../../types/enums';
 import { CombatEngine } from '../CombatEngine';
 import { createBarback } from '../Barback';
+import { t } from "../../utils/i18n";
 
 /**
  * EventSystem - 事件与效果子系统
@@ -28,27 +29,27 @@ export class EventSystem {
       case EventEffect.ADDPOP: this.game.earthCivi.population = Math.max(0, this.game.earthCivi.population + 20); break;
       case EventEffect.REDUCE_TREACHERY: this.game.earthCivi.treachery = Math.max(0, this.game.earthCivi.treachery - 15); break;
       case EventEffect.WAR: {
-        const sanTi = this.game.alienCiviManager.aliens.get("三体");
+        const sanTi = this.game.alienCiviManager.aliens.get(t("三体"));
         if (sanTi && !sanTi.isDieOut()) {
           sanTi.friendshipType = FriendshipType.VERYANGRY;
-          this.game.addHistory("【战争】与三体文明进入战争状态！");
+          this.game.addHistory(t("【战争】与三体文明进入战争状态！"));
         }
         break;
       }
       case EventEffect.MOON_CRISIS:
         if (this.game.earthCivi.resource >= 500) {
           this.game.earthCivi.resource -= 500;
-          this.game.addHistory("月球坠落危机被成功化解！消耗了500资源。");
+          this.game.addHistory(t("月球坠落危机被成功化解！消耗了500资源。"));
         } else {
           this.game.earthCivi.population = Math.floor(this.game.earthCivi.population / 2);
-          this.game.addHistory("月球坠入地球，人口减半！");
+          this.game.addHistory(t("月球坠入地球，人口减半！"));
         }
         break;
       case EventEffect.WANDERING_EARTH:
-        if (this.game.earthCivi.tecTreeManager.isTecFinished(TecTreeType.AEROSPACE, "行星发动机Ⅲ型")) {
-          this.game.addHistory("流浪地球计划启动！");
+        if (this.game.earthCivi.tecTreeManager.isTecFinished(TecTreeType.AEROSPACE, t("行星发动机Ⅲ型"))) {
+          this.game.addHistory(t("流浪地球计划启动！"));
         } else {
-          this.game.addHistory("缺少行星发动机技术，无法启动流浪地球计划！");
+          this.game.addHistory(t("缺少行星发动机技术，无法启动流浪地球计划！"));
         }
         break;
       default:
@@ -63,7 +64,7 @@ export class EventSystem {
         this.game.year++;
         this.game.updateEpoch();
         this.game.checkVictoryConditions();
-        this.game.addHistory(`回合推进完成：${this.game.year - 1} -> ${this.game.year} (存活异星文明: ${this.game.alienCiviManager.aliens.size}, 待处理事件: ${this.game.eventQueue.length})`);
+        this.game.addHistory(t("回合推进完成：{param0} -> {param1} (存活异星文明: {param2}, 待处理事件: {param3})", { param0: this.game.year - 1, param1: this.game.year, param2: this.game.alienCiviManager.aliens.size, param3: this.game.eventQueue.length }));
         this.game.eventBus.emitLegacy('game-turn-complete');
       }
       this.game._yearJustAdvanced = false;
@@ -133,7 +134,7 @@ export class EventSystem {
         }
       } else if (eff.type === 'flag') {
         this.game.addFlag(eff.target);
-        this.game.addHistory(`[因果标记] 已激活: ${eff.target}`);
+        this.game.addHistory(t("[因果标记] 已激活: {param0}", { param0: eff.target }));
       } else if (eff.type === 'unlock_person') {
         this.applyUnlockPerson(eff.target);
       } else if (eff.type === 'event_effect') {
@@ -145,7 +146,7 @@ export class EventSystem {
           alien.friendshipType = newFt;
           if (newFt >= FriendshipType.VERYFRIEND) {
             alien.isBund = true;
-            this.game.addHistory(`【外交】与${eff.target}结成同盟！`);
+            this.game.addHistory(t("【外交】与{param0}结成同盟！", { param0: eff.target }));
           }
         }
       } else if (eff.type === 'spawn_barback') {
@@ -159,23 +160,23 @@ export class EventSystem {
           let rebelWins = false;
           if (defender && rebel.soldierCount > defender.soldierCount) {
             rebelWins = true;
-            this.game.addHistory(`【紧急军情】${targetStar.name} 爆发大规模叛乱，星系已沦陷！`);
+            this.game.addHistory(t("【紧急军情】{param0} 爆发大规模叛乱，星系已沦陷！", { param0: targetStar.name }));
           } else {
             rebelWins = CombatEngine.resolveBarbackRaid(targetStar, rebel);
-            this.game.addHistory(`【军情】${targetStar.name} 爆发叛乱，驻军正在镇压中。`);
+            this.game.addHistory(t("【军情】{param0} 爆发叛乱，驻军正在镇压中。", { param0: targetStar.name }));
           }
 
           if (rebelWins) {
             const oldOwner = targetStar.belongToCivi;
             targetStar.belongToCivi = '';
-            if (oldOwner && oldOwner !== '地球' && oldOwner !== '') {
+            if (oldOwner && oldOwner !== t("地球") && oldOwner !== '') {
               this.game.alienCiviManager.loseStar(oldOwner, starIdx);
             }
             this.game.earthCivi.starIndices.delete(starIdx);
           }
 
           this.game.starManager.markStarStatus(targetStar, 'rebellion');
-          this.game.addHistory(`[状态清除] ${targetStar.name} 的叛乱状态已记录，后续回合将自动清除。`);
+          this.game.addHistory(t("[状态清除] {param0} 的叛乱状态已记录，后续回合将自动清除。", { param0: targetStar.name }));
         }
       } else if (eff.type === 'lock_ratio') {
         if (eff.target && eff.duration) {
@@ -184,7 +185,7 @@ export class EventSystem {
             max: eff.value ?? 50,
             duration: eff.duration,
           });
-          this.game.addHistory(`【政策】${eff.target} 工种比例被强制限制在 ${eff.value ?? 50}% 以内，持续 ${eff.duration} 回合。`);
+          this.game.addHistory(t("【政策】{param0} 工种比例被强制限制在 {param1}% 以内，持续 {param2} 回合。", { param0: eff.target, param1: eff.value ?? 50, param2: eff.duration }));
         }
       } else if (eff.type === 'rush_tech') {
         const treeType = this.parseTecTreeType(eff.target);
@@ -193,9 +194,9 @@ export class EventSystem {
           const currentResearch = this.game.earthCivi.getResearchTarget(treeType);
           if (currentResearch) {
             const finished = this.game.earthCivi.tecTreeManager.addProgress(treeType, currentResearch, amount);
-            this.game.addHistory(`【科技】${eff.target} 研究取得突破性进展，进度 +${amount}。`);
+            this.game.addHistory(t("【科技】{param0} 研究取得突破性进展，进度 +{param1}。", { param0: eff.target, param1: amount }));
             if (finished) {
-              this.game.addHistory(`【科技】${currentResearch} 研究完成！`);
+              this.game.addHistory(t("【科技】{param0} 研究完成！", { param0: currentResearch }));
             }
           }
         }
@@ -206,7 +207,7 @@ export class EventSystem {
           const infraType = eff.target;
           const success = this.game.starManager.buildInfrastructure(targetStar, infraType, eff.value ?? 10);
           if (success) {
-            this.game.addHistory(`【建设】${targetStar.name} 新建了 ${infraType} 设施。`);
+            this.game.addHistory(t("【建设】{param0} 新建了 {param1} 设施。", { param0: targetStar.name, param1: infraType }));
             this.game.starManager.markStarStatus(targetStar, 'building');
           }
         }
@@ -218,8 +219,8 @@ export class EventSystem {
         if (person && person.isAlive) {
           person.isAlive = false;
           person.deathYear = this.game.year;
-          this.game.addHistory(`【讣告】${eff.target} 于 ${this.game.year} 年逝世。`);
-          this.game.tickerMessages.push(`讣告：${eff.target} 逝世。`);
+          this.game.addHistory(t("【讣告】{param0} 于 {param1} 年逝世。", { param0: eff.target, param1: this.game.year }));
+          this.game.tickerMessages.push(t("讣告：{param0} 逝世。", { param0: eff.target }));
           this.game.eventBus.emitLegacy('ticker-message-added');
         }
       }
@@ -246,37 +247,37 @@ export class EventSystem {
 
   private applyUnlockPerson(target: string): void {
     this.game.personManager.unlockPerson(target);
-    this.game.addHistory(`【人员加入】${target} 加入了您的阵营！`);
-    this.game.playerTimeline.push({ year: this.game.year, event: `重要历史人物 ${target} 正式登场` });
+    this.game.addHistory(t("【人员加入】{param0} 加入了您的阵营！", { param0: target }));
+    this.game.playerTimeline.push({ year: this.game.year, event: t("重要历史人物 {param0} 正式登场", { param0: target }) });
 
     const introData: Record<string, { role: string; content: string }> = {
-      "伊文斯": { role: "降临派领袖", content: "建造审判日号，与三体文明建立深海直接联系。" },
-      "林云": { role: "天才武器科学家", content: "对球状闪电和宏原子武器具有执着的研究。" },
-      "罗辑": { role: "第四位面壁者", content: "人类唯一的破壁人，宇宙黑暗森林法则的悟道者。" },
-      "泰勒": { role: "第一位面壁者", content: "筹备量子化舰队，试图以死去的幽灵抵抗侵略。" },
-      "雷迪亚兹": { role: "第二位面壁者", content: "筹划水星核爆，拟用与太阳系同归于尽的方式实施威慑。" },
-      "希恩斯": { role: "第三位面壁者", content: "脑科学家，暗中打下思想钢印，开启逃亡计划。" },
-      "章北海": { role: "太空军政委", content: "增援未来实施者，谋划百年逃亡，自然选择号逆天启航。" },
-      "庄颜": { role: "画中人", content: "罗辑的挚爱，面壁计划中最温柔的人性火种与背景图景。" },
-      "程心": { role: "第二代执剑人", content: "爱的圣母，在冷酷宇宙博弈中让地球错失两次生存良机。" },
-      "维德": { role: "PIA首任局长", content: "终身践行「前进！前进！不择手段地前进」的冷酷钢铁人物。" },
-      "艾AA": { role: "星空企业家", content: "活泼聪颖的商业天才，在世界末日中维系人类生的希望。" },
-      "云天明": { role: "大脑流浪者", content: "被三体捕获重构，以三个童话故事破译并传递最后的宇宙生路。" },
-      "智子": { role: "三体文明代言人", content: "优雅日本女性形态，美丽之下操控超维计算，宣判人类流放。" },
-      "关一帆": { role: "星舰探索员", content: "深空探索先驱，于宇宙二维化的宏大边缘守望最后的余晖。" }
+      "伊文斯": { role: t("降临派领袖"), content: t("建造审判日号，与三体文明建立深海直接联系。") },
+      "林云": { role: t("天才武器科学家"), content: t("对球状闪电和宏原子武器具有执着的研究。") },
+      "罗辑": { role: t("第四位面壁者"), content: t("人类唯一的破壁人，宇宙黑暗森林法则的悟道者。") },
+      "泰勒": { role: t("第一位面壁者"), content: t("筹备量子化舰队，试图以死去的幽灵抵抗侵略。") },
+      "雷迪亚兹": { role: t("第二位面壁者"), content: t("筹划水星核爆，拟用与太阳系同归于尽的方式实施威慑。") },
+      "希恩斯": { role: t("第三位面壁者"), content: t("脑科学家，暗中打下思想钢印，开启逃亡计划。") },
+      "章北海": { role: t("太空军政委"), content: t("增援未来实施者，谋划百年逃亡，自然选择号逆天启航。") },
+      "庄颜": { role: t("画中人"), content: t("罗辑的挚爱，面壁计划中最温柔的人性火种与背景图景。") },
+      "程心": { role: t("第二代执剑人"), content: t("爱的圣母，在冷酷宇宙博弈中让地球错失两次生存良机。") },
+      "维德": { role: t("PIA首任局长"), content: t("终身践行「前进！前进！不择手段地前进」的冷酷钢铁人物。") },
+      "艾AA": { role: t("星空企业家"), content: t("活泼聪颖的商业天才，在世界末日中维系人类生的希望。") },
+      "云天明": { role: t("大脑流浪者"), content: t("被三体捕获重构，以三个童话故事破译并传递最后的宇宙生路。") },
+      "智子": { role: t("三体文明代言人"), content: t("优雅日本女性形态，美丽之下操控超维计算，宣判人类流放。") },
+      "关一帆": { role: t("星舰探索员"), content: t("深空探索先驱，于宇宙二维化的宏大边缘守望最后的余晖。") }
     };
     const intro = introData[target];
-    const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-    const epName = epochNames[this.game.epoch] || "未知纪元";
+    const epochNames = [t("黄金岁月"), t("危机纪元"), t("威慑纪元"), t("广播纪元"), t("掩体纪元"), t("银河纪元"), t("星屑纪元")];
+    const epName = epochNames[this.game.epoch] || t("未知纪元");
     if (intro) {
-      this.game.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.game.year} 年 - 【重要人物正式入列】${target} (${intro.role})。"${intro.content}"`);
+      this.game.tickerMessages.push(t("👥 [战略人事公报] {param0} {param1} 年 - 【重要人物正式入列】{param2} ({param3})。\"{param4}\"", { param0: epName, param1: this.game.year, param2: target, param3: intro.role, param4: intro.content }));
     } else {
-      this.game.tickerMessages.push(`👥 [战略人事公报] ${epName} ${this.game.year} 年 - 【人员加入】重要人物 ${target} 正式加入统帅部。`);
+      this.game.tickerMessages.push(t("👥 [战略人事公报] {param0} {param1} 年 - 【人员加入】重要人物 {param2} 正式加入统帅部。", { param0: epName, param1: this.game.year, param2: target }));
     }
 
-    if (["罗辑", "泰勒", "雷迪亚兹", "希恩斯"].includes(target)) {
+    if ([t("罗辑"), t("泰勒"), t("雷迪亚兹"), t("希恩斯")].includes(target)) {
       this.game.earthCivi.wallfacers.add(target);
-      this.game.addHistory(`【系统提醒】面壁者 ${target} 已自动列入宇宙社会学-面壁计划执行名单。`);
+      this.game.addHistory(t("【系统提醒】面壁者 {param0} 已自动列入宇宙社会学-面壁计划执行名单。", { param0: target }));
     }
 
     this.game.eventBus.emitLegacy('ticker-message-added');

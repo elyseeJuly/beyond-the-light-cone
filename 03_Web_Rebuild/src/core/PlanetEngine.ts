@@ -1,5 +1,6 @@
 import { GameInstance } from "./Game";
 import { FLAG } from "./GameFlags";
+import { t } from "../utils/i18n";
 
 export class PlanetEngine {
   public totalEngines: number = 12000; // Original wandering earth requires 12000 engines
@@ -22,7 +23,7 @@ export class PlanetEngine {
     const cost = amount * 10; // 10 resources per engine
 
     if (game.earthCivi.resource < cost) {
-      return `资源不足！建造 ${amount} 台行星发动机需要 ${cost} 资源。`;
+      return t("资源不足！建造 {param0} 台行星发动机需要 {param1} 资源。", { param0: amount, param1: cost });
     }
 
     game.earthCivi.resource -= cost;
@@ -34,38 +35,38 @@ export class PlanetEngine {
 
     if (this.enginesBuilt >= this.totalEngines && this.status === 'CONSTRUCTING') {
       this.status = 'ORBIT_SHIFT';
-      game.addHistory("【行星发动机】全球12000台重元素聚变行星发动机全部建造完成！地球已具备启航变轨能力！");
+      game.addHistory(t("【行星发动机】全球12000台重元素聚变行星发动机全部建造完成！地球已具备启航变轨能力！"));
     }
 
-    return `成功建造 ${amount} 台行星发动机。当前进度: ${this.enginesBuilt}/${this.totalEngines}。`;
+    return t("成功建造 {param0} 台行星发动机。当前进度: {param1}/{param2}。", { param0: amount, param1: this.enginesBuilt, param2: this.totalEngines });
   }
 
   public initiateOrbitShift(): string {
     if (this.status !== 'ORBIT_SHIFT') {
-      return `无法启动变轨！当前状态: ${this.status} (需要发动机全部建造完毕)。`;
+      return t("无法启动变轨！当前状态: {param0} (需要发动机全部建造完毕)。", { param0: this.status });
     }
 
     const game = GameInstance.get();
     this.status = 'FLIGHT';
     this.thrustLevel = 100;
     game.addFlag(FLAG.WANDERING_EARTH_STARTED);
-    game.addHistory("【启航】地球发动机全功率启动！巨大的等离子蓝色尾焰直冲云霄，地球正式脱离太阳轨道，向比邻星启航！");
-    return "地球发动机全力启动，变轨逃逸计划正式执行！";
+    game.addHistory(t("【启航】地球发动机全功率启动！巨大的等离子蓝色尾焰直冲云霄，地球正式脱离太阳轨道，向比邻星启航！"));
+    return t("地球发动机全力启动，变轨逃逸计划正式执行！");
   }
 
   public processTurn(): void {
     if (this.status === 'FLIGHT') {
       const game = GameInstance.get();
       // Distance grows by thrust and technology levels
-      const speed = 0.05 + (game.earthCivi.tecTreeManager.isTecFinishedAnywhere("重元素聚变") ? 0.03 : 0);
+      const speed = 0.05 + (game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("重元素聚变")) ? 0.03 : 0);
       this.currentDistanceTravelled = Math.min(this.targetDistance, this.currentDistanceTravelled + speed);
 
-      game.addHistory(`【航行纪实】地球在太空中高速行驶，距目标比邻星还有 ${(this.targetDistance - this.currentDistanceTravelled).toFixed(2)} 光年。`);
+      game.addHistory(t("【航行纪实】地球在太空中高速行驶，距目标比邻星还有 {param0} 光年。", { param0: (this.targetDistance - this.currentDistanceTravelled).toFixed(2) }));
 
       if (this.currentDistanceTravelled >= this.targetDistance) {
         this.status = 'COMPLETED';
         game.addFlag(FLAG.WANDERING_COMPLETED);
-        game.addHistory("【抵达】人类文明经历了漫长的流浪，地球终于滑入了比邻星引力轨道，流浪地球计划大获成功！");
+        game.addHistory(t("【抵达】人类文明经历了漫长的流浪，地球终于滑入了比邻星引力轨道，流浪地球计划大获成功！"));
       }
     }
   }

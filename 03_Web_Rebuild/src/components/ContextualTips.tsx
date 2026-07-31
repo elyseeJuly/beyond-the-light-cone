@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { GameInstance } from '../core/Game';
+import { t } from "../utils/i18n";
 
 /**
  * 智脑情境提示组件：监听游戏事件与回合状态，
@@ -8,7 +9,7 @@ import { GameInstance } from '../core/Game';
  */
 const STORAGE_PREFIX = 'session:tip-shown:';
 
-function showTipOnce(key: string, text: string, category = '【智脑提示】'): void {
+function showTipOnce(key: string, text: string, category = t("【智脑提示】")): void {
   if (typeof window === 'undefined') return;
   if (localStorage.getItem(STORAGE_PREFIX + key) === 'true') return;
   localStorage.setItem(STORAGE_PREFIX + key, 'true');
@@ -17,7 +18,7 @@ function showTipOnce(key: string, text: string, category = '【智脑提示】')
   }));
 }
 
-function showTipWithCooldown(key: string, text: string, currentTurn: number, cooldownTurns: number, category = '【智脑警告】'): void {
+function showTipWithCooldown(key: string, text: string, currentTurn: number, cooldownTurns: number, category = t("【智脑警告】")): void {
   if (typeof window === 'undefined') return;
   const lastShownKey = `session:tip-last-turn:${key}`;
   const lastTurn = parseInt(localStorage.getItem(lastShownKey) || '-999', 10);
@@ -42,23 +43,23 @@ export const ContextualTips: React.FC = () => {
     // ── AP 不足警告（5回合冷却） ──
     const handleApInsufficient = () => {
       const g = GameInstance.get();
-      showTipWithCooldown('ap-insufficient', 'AP 是本回合指令点。可在内阁任命更多部长以加快 AP 恢复。', g.year, 5, '【智脑提示】');
+      showTipWithCooldown('ap-insufficient', t("AP 是本回合指令点。可在内阁任命更多部长以加快 AP 恢复。"), g.year, 5, t("【智脑提示】"));
     };
 
     // ── 界面首次切换 ──
     const handleViewChange = (e: Event) => {
       const view = (e as CustomEvent).detail;
       if (view === 'techtree') {
-        showTipOnce('enter-techtree', '选择可研究的科技节点，科研会随着回合推进自动积累。');
+        showTipOnce('enter-techtree', t("选择可研究的科技节点，科研会随着回合推进自动积累。"));
       } else if (view === 'government') {
-        showTipOnce('enter-government', '任命官员可强化对应部门产出并提供 AP 回复加成。');
+        showTipOnce('enter-government', t("任命官员可强化对应部门产出并提供 AP 回复加成。"));
       }
     };
 
     // ── 回合阻断 ──
     const handleTurnBlocked = () => {
       const g = GameInstance.get();
-      showTipWithCooldown('turn-blocked', '当前存在未处理事项（如科研停滞或未解决事件）。', g.year, 3, '【智脑提示】');
+      showTipWithCooldown('turn-blocked', t("当前存在未处理事项（如科研停滞或未解决事件）。"), g.year, 3, t("【智脑提示】"));
     };
 
     // ── 回合完成：检查资源赤字与威慑报警 ──
@@ -71,7 +72,7 @@ export const ContextualTips: React.FC = () => {
       if (earth.resource < prevResourceRef.current) {
         resourceDropTurnsRef.current += 1;
         if (resourceDropTurnsRef.current >= 3) {
-          showTipWithCooldown('resource-decay', '检测到矿产储备连续 3 回合下降！建议调高采矿比例或新建采矿场。', turn, 8, '【智脑警告】');
+          showTipWithCooldown('resource-decay', t("检测到矿产储备连续 3 回合下降！建议调高采矿比例或新建采矿场。"), turn, 8, t("【智脑警告】"));
           resourceDropTurnsRef.current = 0;
         }
       } else {
@@ -81,7 +82,7 @@ export const ContextualTips: React.FC = () => {
 
       // 2. 威慑度危急检查（威慑纪元及以后）
       if (g.epoch >= 1 && earth.deterrenceValue < 30) {
-        showTipWithCooldown('deterrence-low', '战略威慑度处于极危险低位！三体舰队进攻风险剧增。', turn, 5, '【智脑警告】');
+        showTipWithCooldown('deterrence-low', t("战略威慑度处于极危险低位！三体舰队进攻风险剧增。"), turn, 5, t("【智脑警告】"));
       }
 
       // 3. 稳定度低警告
@@ -107,12 +108,12 @@ export const ContextualTips: React.FC = () => {
       const stability = Math.max(5, Math.min(100, Math.floor(econFactor + armyFactor + popFactor + techFactor + cultureFactor + (40 - treacheryPenalty))));
 
       if (stability < 40) {
-        showTipWithCooldown('stability-low', '社会稳定度已降至 40% 以下！稳定度归零将导致政权崩溃。', turn, 6, '【智脑警告】');
+        showTipWithCooldown('stability-low', t("社会稳定度已降至 40% 以下！稳定度归零将导致政权崩溃。"), turn, 6, t("【智脑警告】"));
       }
 
       // 4. 纪元切换
       if (prevEpochRef.current !== -1 && g.epoch !== prevEpochRef.current) {
-        showTipOnce(`epoch-${g.epoch}`, `已跨入新纪元。解锁全新战略目标与智脑数据库。`, '【纪元新篇】');
+        showTipOnce(`epoch-${g.epoch}`, t("已跨入新纪元。解锁全新战略目标与智脑数据库。"), t("【纪元新篇】"));
         prevEpochRef.current = g.epoch;
       }
     };

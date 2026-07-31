@@ -45,21 +45,21 @@ export const BottomEventBar: React.FC = () => {
   }, [messages.length]);
 
   const activeMessage = useMemo(() => {
-    if (messages.length === 0) return "银河深空遥测监测中... 文明档案数据链正常。";
+    if (messages.length === 0) return t("银河深空遥测监测中... 文明档案数据链正常。");
     return messages[currentIndex] || messages[messages.length - 1];
   }, [messages, currentIndex]);
 
   const getIcon = (text: string) => {
-    if (text.includes('👥') || text.includes('人员') || text.includes('人口') || text.includes('人物')) {
+    if (text.includes('👥') || text.includes(t("人员")) || text.includes(t("人口")) || text.includes(t("人物"))) {
       return <Terminal className="w-4 h-4 text-[var(--color-primary)] shrink-0" />;
     }
-    if (text.includes('警报') || text.includes('威胁') || text.includes('三体') || text.includes('危机')) {
+    if (text.includes(t("警报")) || text.includes(t("威胁")) || text.includes(t("三体")) || text.includes(t("危机"))) {
       return <Shield className="w-4 h-4 text-red-500 shrink-0 animate-pulse" />;
     }
-    if (text.includes('外交') || text.includes('联络') || text.includes('友好')) {
+    if (text.includes(t("外交")) || text.includes(t("联络")) || text.includes(t("友好"))) {
       return <Globe className="w-4 h-4 text-emerald-400 shrink-0" />;
     }
-    if (text.includes('科技') || text.includes('研发') || text.includes('物理') || text.includes('推进器')) {
+    if (text.includes(t("科技")) || text.includes(t("研发")) || text.includes(t("物理")) || text.includes(t("推进器"))) {
       return <Cpu className="w-4 h-4 text-blue-400 shrink-0" />;
     }
     return <Terminal className="w-4 h-4 text-amber-400 shrink-0" />;
@@ -104,7 +104,7 @@ export const BottomEventBar: React.FC = () => {
         <button 
           onClick={() => setCurrentIndex((prev) => (prev + 1) % Math.max(1, messages.length))}
           className="p-1 hover:bg-white/5 rounded text-[var(--text-secondary)] hover:text-white transition-colors cursor-pointer"
-          title="切换下一条通知"
+          title={t("切换下一条通知")}
         >
           <RefreshCw className="w-3.5 h-3.5" />
         </button>

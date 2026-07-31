@@ -1,4 +1,5 @@
 import { WeaponInstance } from "./Weapon";
+import { t } from "../utils/i18n";
 
 export interface Fleet {
   id: string;
@@ -35,13 +36,13 @@ export function createFleet(
   };
 
   if (autoEquip) {
-    if (belongToCivi === "地球") {
-      fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 20 });
-    } else if (belongToCivi === "三体") {
-      fleet.weapons.push({ weaponName: "水滴型战舰", currentBuild: 80 });
-      fleet.weapons.push({ weaponName: "强互作用探测器", currentBuild: 40 });
+    if (belongToCivi === t("地球")) {
+      fleet.weapons.push({ weaponName: t("恒星级战舰"), currentBuild: 20 });
+    } else if (belongToCivi === t("三体")) {
+      fleet.weapons.push({ weaponName: t("水滴型战舰"), currentBuild: 80 });
+      fleet.weapons.push({ weaponName: t("强互作用探测器"), currentBuild: 40 });
     } else {
-      fleet.weapons.push({ weaponName: "星际无畏舰", currentBuild: 50 });
+      fleet.weapons.push({ weaponName: t("星际无畏舰"), currentBuild: 50 });
     }
   }
 

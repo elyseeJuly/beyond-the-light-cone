@@ -11,6 +11,7 @@
  */
 
 import { GameInstance } from "./Game";
+import { t } from "../utils/i18n";
 
 // ===== 类型定义 =====
 
@@ -44,48 +45,48 @@ export const STANDARD_TAGS: Record<string, {
   description: string;
 }> = {
   /** 资源/经济状态 */
-  resource_depleted:    { name: "资源枯竭",       category: 'state',    isMilestone: false, description: "核心资源低于阈值" },
-  resource_surplus:     { name: "资源盈余",       category: 'state',    isMilestone: false, description: "核心资源远超需求" },
-  tech_boom:            { name: "科技爆发期",     category: 'state',    isMilestone: false, description: "持续有科技突破" },
-  population_crisis:    { name: "人口危机",       category: 'state',    isMilestone: false, description: "人口严重不足" },
+  resource_depleted:    { name: t("资源枯竭"),       category: 'state',    isMilestone: false, description: t("核心资源低于阈值") },
+  resource_surplus:     { name: t("资源盈余"),       category: 'state',    isMilestone: false, description: t("核心资源远超需求") },
+  tech_boom:            { name: t("科技爆发期"),     category: 'state',    isMilestone: false, description: t("持续有科技突破") },
+  population_crisis:    { name: t("人口危机"),       category: 'state',    isMilestone: false, description: t("人口严重不足") },
 
   /** 社会状态 */
-  civil_unrest:         { name: "民心不稳",       category: 'social',   isMilestone: false, description: "社会动荡加剧" },
-  eto_remnant:          { name: "ETO 残余",       category: 'social',   isMilestone: false, description: "地球三体组织残余活动" },
-  diplomatic_warming:   { name: "外交缓和",       category: 'social',   isMilestone: false, description: "文明间外交关系趋于缓和" },
-  diplomatic_crisis:    { name: "外交危机",       category: 'social',   isMilestone: false, description: "文明间外交关系趋于紧张" },
-  new_apostle:          { name: "新降临派",       category: 'social',   isMilestone: false, description: "新降临派思潮蔓延" },
-  exile_sentiment:      { name: "逃亡主义蔓延",   category: 'social',   isMilestone: false, description: "逃亡主义成为主流思潮" },
-  social_split:         { name: "社会分裂",       category: 'social',   isMilestone: false, description: "社会已分裂为多个派系" },
-  underground_gangs:    { name: "地下帮派",       category: 'social',   isMilestone: false, description: "地下世界黑社会组织形成" },
-  digital_religion:     { name: "数字教派兴起",   category: 'social',   isMilestone: false, description: "数字生命教派影响力扩大" },
+  civil_unrest:         { name: t("民心不稳"),       category: 'social',   isMilestone: false, description: t("社会动荡加剧") },
+  eto_remnant:          { name: t("ETO 残余"),       category: 'social',   isMilestone: false, description: t("地球三体组织残余活动") },
+  diplomatic_warming:   { name: t("外交缓和"),       category: 'social',   isMilestone: false, description: t("文明间外交关系趋于缓和") },
+  diplomatic_crisis:    { name: t("外交危机"),       category: 'social',   isMilestone: false, description: t("文明间外交关系趋于紧张") },
+  new_apostle:          { name: t("新降临派"),       category: 'social',   isMilestone: false, description: t("新降临派思潮蔓延") },
+  exile_sentiment:      { name: t("逃亡主义蔓延"),   category: 'social',   isMilestone: false, description: t("逃亡主义成为主流思潮") },
+  social_split:         { name: t("社会分裂"),       category: 'social',   isMilestone: false, description: t("社会已分裂为多个派系") },
+  underground_gangs:    { name: t("地下帮派"),       category: 'social',   isMilestone: false, description: t("地下世界黑社会组织形成") },
+  digital_religion:     { name: t("数字教派兴起"),   category: 'social',   isMilestone: false, description: t("数字生命教派影响力扩大") },
 
   /** 军事状态 */
-  space_force_built:    { name: "太空军建成",     category: 'military', isMilestone: true,  description: "地球太空军正式成立" },
-  deterrence_steady:    { name: "威慑稳固",       category: 'military', isMilestone: false, description: "黑暗森林威慑体系稳定运行" },
-  deterrence_unstable:  { name: "威慑不稳",       category: 'military', isMilestone: false, description: "威慑度处于危险水平" },
-  waterdrop_used:       { name: "水滴已使用",     category: 'military', isMilestone: true,  description: "三体水滴已被部署" },
-  foil_imminent:        { name: "二向箔逼近",     category: 'military', isMilestone: true,  description: "二向箔已开始攻击" },
-  mil_threat:           { name: "军事威胁升级",   category: 'military', isMilestone: false, description: "外星文明军事威胁加剧" },
+  space_force_built:    { name: t("太空军建成"),     category: 'military', isMilestone: true,  description: t("地球太空军正式成立") },
+  deterrence_steady:    { name: t("威慑稳固"),       category: 'military', isMilestone: false, description: t("黑暗森林威慑体系稳定运行") },
+  deterrence_unstable:  { name: t("威慑不稳"),       category: 'military', isMilestone: false, description: t("威慑度处于危险水平") },
+  waterdrop_used:       { name: t("水滴已使用"),     category: 'military', isMilestone: true,  description: t("三体水滴已被部署") },
+  foil_imminent:        { name: t("二向箔逼近"),     category: 'military', isMilestone: true,  description: t("二向箔已开始攻击") },
+  mil_threat:           { name: t("军事威胁升级"),   category: 'military', isMilestone: false, description: t("外星文明军事威胁加剧") },
 
   /** 纪元状态 */
-  golden_age_deep:      { name: "黄金岁月",       category: 'epoch',    isMilestone: true,  description: "红岸基地建立，发送及接收三体信号，ETO成立前夜" },
-  crisis_era_deep:      { name: "危机时代",       category: 'epoch',    isMilestone: true,  description: "人类处于危难时期" },
-  deterrence_era:       { name: "威慑纪元",       category: 'epoch',    isMilestone: true,  description: "威慑纪元的主要特征" },
-  broadcast_era:        { name: "广播纪元",       category: 'epoch',    isMilestone: true,  description: "广播纪元的事件特征" },
-  bunker_era_deep:      { name: "掩体纪元特征",   category: 'epoch',    isMilestone: true,  description: "掩体纪元的事件特征" },
-  galaxy_era_deep:      { name: "银河纪元特征",   category: 'epoch',    isMilestone: true,  description: "银河纪元的事件特征" },
-  stardust_era_deep:    { name: "星屑纪元特征",   category: 'epoch',    isMilestone: true,  description: "星屑纪元的事件特征" },
+  golden_age_deep:      { name: t("黄金岁月"),       category: 'epoch',    isMilestone: true,  description: t("红岸基地建立，发送及接收三体信号，ETO成立前夜") },
+  crisis_era_deep:      { name: t("危机时代"),       category: 'epoch',    isMilestone: true,  description: t("人类处于危难时期") },
+  deterrence_era:       { name: t("威慑纪元"),       category: 'epoch',    isMilestone: true,  description: t("威慑纪元的主要特征") },
+  broadcast_era:        { name: t("广播纪元"),       category: 'epoch',    isMilestone: true,  description: t("广播纪元的事件特征") },
+  bunker_era_deep:      { name: t("掩体纪元特征"),   category: 'epoch',    isMilestone: true,  description: t("掩体纪元的事件特征") },
+  galaxy_era_deep:      { name: t("银河纪元特征"),   category: 'epoch',    isMilestone: true,  description: t("银河纪元的事件特征") },
+  stardust_era_deep:    { name: t("星屑纪元特征"),   category: 'epoch',    isMilestone: true,  description: t("星屑纪元的事件特征") },
 
   /** 结局与 NG+ 标记 */
-  victory_wandering:    { name: "流浪胜利",       category: 'state',    isMilestone: true,  description: "达成流浪地球胜利结局" },
-  victory_digital:      { name: "数字永生胜利",   category: 'state',    isMilestone: true,  description: "达成数字永生胜利结局" },
-  victory_deterrence:   { name: "威慑胜利",       category: 'state',    isMilestone: true,  description: "达成威慑胜利结局" },
-  victory_conquest:     { name: "征服胜利",       category: 'state',    isMilestone: true,  description: "达成征服胜利结局" },
-  victory_dark_domain:  { name: "黑域胜利",       category: 'state',    isMilestone: true,  description: "达成黑域胜利结局" },
-  victory_hidden:       { name: "隐藏胜利",       category: 'state',    isMilestone: true,  description: "达成隐藏胜利结局" },
-  ending_completed:     { name: "结局完成",       category: 'state',    isMilestone: true,  description: "游戏结局已完成" },
-  echo_of_past_ending:  { name: "往世回响",       category: 'state',    isMilestone: true,  description: "New Game+ 继承前周目结局标记" },
+  victory_wandering:    { name: t("流浪胜利"),       category: 'state',    isMilestone: true,  description: t("达成流浪地球胜利结局") },
+  victory_digital:      { name: t("数字永生胜利"),   category: 'state',    isMilestone: true,  description: t("达成数字永生胜利结局") },
+  victory_deterrence:   { name: t("威慑胜利"),       category: 'state',    isMilestone: true,  description: t("达成威慑胜利结局") },
+  victory_conquest:     { name: t("征服胜利"),       category: 'state',    isMilestone: true,  description: t("达成征服胜利结局") },
+  victory_dark_domain:  { name: t("黑域胜利"),       category: 'state',    isMilestone: true,  description: t("达成黑域胜利结局") },
+  victory_hidden:       { name: t("隐藏胜利"),       category: 'state',    isMilestone: true,  description: t("达成隐藏胜利结局") },
+  ending_completed:     { name: t("结局完成"),       category: 'state',    isMilestone: true,  description: t("游戏结局已完成") },
+  echo_of_past_ending:  { name: t("往世回响"),       category: 'state',    isMilestone: true,  description: t("New Game+ 继承前周目结局标记") },
 };
 
 /** 标准角色立场 Tag 定义 */
@@ -93,12 +94,12 @@ export const CHARACTER_STANCE_TAGS: Record<string, {
   name: string;
   description: string;
 }> = {
-  pro_humanity:       { name: "为人类做贡献",     description: "坚定的拯救人类派" },
-  detached:           { name: "脱离社会",         description: "对人类社会失去信心" },
-  exile_faction:      { name: "逃亡派",           description: "认为逃亡是唯一出路" },
-  betrayer:           { name: "人类叛徒",         description: "转向三体阵营" },
-  dark_forest_believer: { name: "黑暗森林信徒",   description: "坚信黑暗森林法则" },
-  digital_pursuer:    { name: "数字永生追求者",   description: "追求意识上传" },
+  pro_humanity:       { name: t("为人类做贡献"),     description: t("坚定的拯救人类派") },
+  detached:           { name: t("脱离社会"),         description: t("对人类社会失去信心") },
+  exile_faction:      { name: t("逃亡派"),           description: t("认为逃亡是唯一出路") },
+  betrayer:           { name: t("人类叛徒"),         description: t("转向三体阵营") },
+  dark_forest_believer: { name: t("黑暗森林信徒"),   description: t("坚信黑暗森林法则") },
+  digital_pursuer:    { name: t("数字永生追求者"),   description: t("追求意识上传") },
 };
 
 // ===== TagManager 类 =====

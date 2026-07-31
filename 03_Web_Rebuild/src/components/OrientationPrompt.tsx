@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { t } from "../utils/i18n";
 
 /**
  * OrientationPrompt - 横屏提示组件
@@ -52,16 +53,14 @@ export const OrientationPrompt: React.FC = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
         </div>
-        <h3 className="text-lg font-bold text-[#DDEEFF] mb-2">建议横屏游玩</h3>
+        <h3 className="text-lg font-bold text-[#DDEEFF] mb-2">{t("建议横屏游玩")}</h3>
         <p className="text-sm text-[#8899BB] mb-6">
-          光锥之外是一款策略游戏，横屏模式能提供更好的游戏体验。
-        </p>
+          {t("光锥之外是一款策略游戏，横屏模式能提供更好的游戏体验。")}</p>
         <button
           onClick={() => setDismissed(true)}
           className="px-6 py-2 text-sm text-white bg-[#1A3A6A] hover:bg-[#2A4A8A] transition-colors rounded-lg font-medium"
         >
-          我知道了
-        </button>
+          {t("我知道了")}</button>
       </div>
     </div>
   );

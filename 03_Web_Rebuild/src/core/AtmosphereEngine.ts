@@ -6,6 +6,7 @@
  */
 
 import { GameInstance } from "./Game";
+import { t } from "../utils/i18n";
 
 export type AtmosphereState =
   | 'NORMAL'        // 正常
@@ -41,8 +42,8 @@ export class AtmosphereEngine {
       vignetteIntensity: 0.1,
       textGlowColor: 'rgba(0, 229, 255, 0.3)',
       transitionMs: 2000,
-      label: '正常',
-      description: '人类文明处于相对稳定状态',
+      label: t("正常"),
+      description: t("人类文明处于相对稳定状态"),
     },
     TENSE: {
       state: 'TENSE',
@@ -53,8 +54,8 @@ export class AtmosphereEngine {
       vignetteIntensity: 0.2,
       textGlowColor: 'rgba(255, 87, 34, 0.4)',
       transitionMs: 1500,
-      label: '紧张',
-      description: '局势紧张，危机若隐若现',
+      label: t("紧张"),
+      description: t("局势紧张，危机若隐若现"),
     },
     CRITICAL: {
       state: 'CRITICAL',
@@ -65,8 +66,8 @@ export class AtmosphereEngine {
       vignetteIntensity: 0.35,
       textGlowColor: 'rgba(255, 0, 0, 0.5)',
       transitionMs: 1000,
-      label: '危急',
-      description: '人类文明濒临崩溃边缘',
+      label: t("危急"),
+      description: t("人类文明濒临崩溃边缘"),
     },
     DARK: {
       state: 'DARK',
@@ -77,8 +78,8 @@ export class AtmosphereEngine {
       vignetteIntensity: 0.5,
       textGlowColor: 'rgba(0, 0, 0, 0)',
       transitionMs: 3000,
-      label: '黑暗',
-      description: '黑暗森林打击逼近，绝望弥漫',
+      label: t("黑暗"),
+      description: t("黑暗森林打击逼近，绝望弥漫"),
     },
     HOPEFUL: {
       state: 'HOPEFUL',
@@ -89,8 +90,8 @@ export class AtmosphereEngine {
       vignetteIntensity: 0.05,
       textGlowColor: 'rgba(0, 200, 255, 0.5)',
       transitionMs: 2000,
-      label: '希望',
-      description: '科技突破带来新的希望',
+      label: t("希望"),
+      description: t("科技突破带来新的希望"),
     },
     TRANSCENDENT: {
       state: 'TRANSCENDENT',
@@ -101,8 +102,8 @@ export class AtmosphereEngine {
       vignetteIntensity: 0.15,
       textGlowColor: 'rgba(100, 0, 255, 0.5)',
       transitionMs: 4000,
-      label: '超越',
-      description: '人类文明进入全新的维度',
+      label: t("超越"),
+      description: t("人类文明进入全新的维度"),
     },
   };
 

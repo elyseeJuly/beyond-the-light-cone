@@ -4,6 +4,7 @@ import type {
   SimulationInvariant,
   SimulationSnapshot,
 } from './types';
+import { t } from "../../utils/i18n";
 
 const NON_NEGATIVE_FIELDS: Array<keyof Pick<
   SimulationSnapshot,
@@ -85,7 +86,7 @@ export const warningFreeInvariant: SimulationInvariant = (
   current,
 ) => {
   const warnings = game.historyLogs.filter(
-    (entry) => entry.includes('[警告]') || entry.includes('[UEE警告]'),
+    (entry) => entry.includes(t("[警告]")) || entry.includes(t("[UEE警告]")),
   );
   return warnings.length > 0
     ? [

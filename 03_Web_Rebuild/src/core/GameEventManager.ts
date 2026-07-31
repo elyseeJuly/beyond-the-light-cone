@@ -7,6 +7,7 @@ import { getImageUrl } from "../utils/assetUrl";
 import { normalizeEventMeta, pickWeightedEvent, isEventEligible } from "./EventCadence";
 import { EventLane } from "../types/enums";
 import { GameInstance } from "./Game";
+import { t } from "../utils/i18n";
 
 export class GameEventManager {
   public events: GameEvent[] = [];
@@ -93,42 +94,42 @@ export class GameEventManager {
     // 2. Intercept speakerName for all 36 major characters to prevent default mechanical head fallbacks
     if (speakerName) {
       const lowerSpeaker = speakerName.toLowerCase();
-      if (lowerSpeaker.includes("丁仪")) return getImageUrl("unified_dingyi_1779691512032.png");
-      if (lowerSpeaker.includes("智子")) return getImageUrl("unified_sophon_1778921509458.png");
-      if (lowerSpeaker.includes("艾aa") || lowerSpeaker.includes("aa")) return getImageUrl("unified_aiaa_1779691888124.png");
-      if (lowerSpeaker.includes("罗辑")) return getImageUrl("unified_luoji_1778921262534.png");
-      if (lowerSpeaker.includes("大史") || lowerSpeaker.includes("史强")) return getImageUrl("unified_dashi_1778921331273.png");
-      if (lowerSpeaker.includes("章北海")) return getImageUrl("unified_beihai_1778921366897.png");
-      if (lowerSpeaker.includes("程心")) return getImageUrl("unified_chengxin_1778921400346.png");
-      if (lowerSpeaker.includes("叶文洁")) return getImageUrl("unified_yewenjie_1778921299091.png");
-      if (lowerSpeaker.includes("维德")) return getImageUrl("unified_wade_1778921437022.png");
-      if (lowerSpeaker.includes("云天明")) return getImageUrl("unified_tianming_1778921470963.png");
-      if (lowerSpeaker.includes("汪淼")) return getImageUrl("unified_wangmiao_1779691527760.png");
-      if (lowerSpeaker.includes("希恩斯")) return getImageUrl("unified_hines_1779691718751.png");
-      if (lowerSpeaker.includes("雷迪亚兹")) return getImageUrl("unified_reydiaz_1779691732536.png");
-      if (lowerSpeaker.includes("泰勒")) return getImageUrl("unified_tyler_1779691745991.png");
-      if (lowerSpeaker.includes("关一帆")) return getImageUrl("unified_guanyifan_1779691901857.png");
-      if (lowerSpeaker.includes("林云")) return getImageUrl("unified_linyun_1779691542667.png");
-      if (lowerSpeaker.includes("伊文斯")) return getImageUrl("unified_evans_1779691557999.png");
-      if (lowerSpeaker.includes("杨冬")) return getImageUrl("unified_yangdong_1779691583143.png");
-      if (lowerSpeaker.includes("常伟思")) return getImageUrl("unified_changweisi_1779691759159.png");
-      if (lowerSpeaker.includes("东方延绪")) return getImageUrl("unified_dongfang_1779691773663.png");
-      if (lowerSpeaker.includes("沈渊")) return getImageUrl("unified_shenyuan_1779691919176.png");
-      if (lowerSpeaker.includes("华华")) return getImageUrl("unified_huahua_1780649946315.png");
-      if (lowerSpeaker.includes("伊依")) return getImageUrl("unified_yiyi_1780649999542.png");
-      if (lowerSpeaker.includes("霍金")) return getImageUrl("unified_hawking_1780649926625.png");
-      if (lowerSpeaker.includes("庄颜")) return getImageUrl("unified_zhuangyan_1779712921189.png");
-      if (lowerSpeaker.includes("水娃")) return getImageUrl("unified_shuiwa_1779712987486.png");
-      if (lowerSpeaker.includes("雷志成")) return getImageUrl("unified_leizhicheng_1779713006589.png");
-      if (lowerSpeaker.includes("杨卫宁")) return getImageUrl("unified_yangweining_1779713020653.png");
-      if (lowerSpeaker.includes("严井")) return getImageUrl("unified_yanjing_1780649978771.png");
-      if (lowerSpeaker.includes("白冰")) return getImageUrl("unified_baibing_1779713036549.png");
-      if (lowerSpeaker.includes("苗福全")) return getImageUrl("unified_miaofuquan_1779713095135.png");
-      if (lowerSpeaker.includes("滑膛") || lowerSpeaker.includes("华堂")) return getImageUrl("unified_huatang_1779713110568.png");
-      if (lowerSpeaker.includes("朱汉扬")) return getImageUrl("unified_zhuhanyang_1779713125007.png");
-      if (lowerSpeaker.includes("刘慈欣")) return getImageUrl("unified_liucixin_1779712937103.png");
-      if (lowerSpeaker.includes("山杉惠子")) return getImageUrl("unified_keiko_1779713141458.png");
-      if (lowerSpeaker.includes("萨伊")) return getImageUrl("unified_say_1780649885202.png");
+      if (lowerSpeaker.includes(t("丁仪"))) return getImageUrl("unified_dingyi_1779691512032.png");
+      if (lowerSpeaker.includes(t("智子"))) return getImageUrl("unified_sophon_1778921509458.png");
+      if (lowerSpeaker.includes(t("艾aa")) || lowerSpeaker.includes("aa")) return getImageUrl("unified_aiaa_1779691888124.png");
+      if (lowerSpeaker.includes(t("罗辑"))) return getImageUrl("unified_luoji_1778921262534.png");
+      if (lowerSpeaker.includes(t("大史")) || lowerSpeaker.includes(t("史强"))) return getImageUrl("unified_dashi_1778921331273.png");
+      if (lowerSpeaker.includes(t("章北海"))) return getImageUrl("unified_beihai_1778921366897.png");
+      if (lowerSpeaker.includes(t("程心"))) return getImageUrl("unified_chengxin_1778921400346.png");
+      if (lowerSpeaker.includes(t("叶文洁"))) return getImageUrl("unified_yewenjie_1778921299091.png");
+      if (lowerSpeaker.includes(t("维德"))) return getImageUrl("unified_wade_1778921437022.png");
+      if (lowerSpeaker.includes(t("云天明"))) return getImageUrl("unified_tianming_1778921470963.png");
+      if (lowerSpeaker.includes(t("汪淼"))) return getImageUrl("unified_wangmiao_1779691527760.png");
+      if (lowerSpeaker.includes(t("希恩斯"))) return getImageUrl("unified_hines_1779691718751.png");
+      if (lowerSpeaker.includes(t("雷迪亚兹"))) return getImageUrl("unified_reydiaz_1779691732536.png");
+      if (lowerSpeaker.includes(t("泰勒"))) return getImageUrl("unified_tyler_1779691745991.png");
+      if (lowerSpeaker.includes(t("关一帆"))) return getImageUrl("unified_guanyifan_1779691901857.png");
+      if (lowerSpeaker.includes(t("林云"))) return getImageUrl("unified_linyun_1779691542667.png");
+      if (lowerSpeaker.includes(t("伊文斯"))) return getImageUrl("unified_evans_1779691557999.png");
+      if (lowerSpeaker.includes(t("杨冬"))) return getImageUrl("unified_yangdong_1779691583143.png");
+      if (lowerSpeaker.includes(t("常伟思"))) return getImageUrl("unified_changweisi_1779691759159.png");
+      if (lowerSpeaker.includes(t("东方延绪"))) return getImageUrl("unified_dongfang_1779691773663.png");
+      if (lowerSpeaker.includes(t("沈渊"))) return getImageUrl("unified_shenyuan_1779691919176.png");
+      if (lowerSpeaker.includes(t("华华"))) return getImageUrl("unified_huahua_1780649946315.png");
+      if (lowerSpeaker.includes(t("伊依"))) return getImageUrl("unified_yiyi_1780649999542.png");
+      if (lowerSpeaker.includes(t("霍金"))) return getImageUrl("unified_hawking_1780649926625.png");
+      if (lowerSpeaker.includes(t("庄颜"))) return getImageUrl("unified_zhuangyan_1779712921189.png");
+      if (lowerSpeaker.includes(t("水娃"))) return getImageUrl("unified_shuiwa_1779712987486.png");
+      if (lowerSpeaker.includes(t("雷志成"))) return getImageUrl("unified_leizhicheng_1779713006589.png");
+      if (lowerSpeaker.includes(t("杨卫宁"))) return getImageUrl("unified_yangweining_1779713020653.png");
+      if (lowerSpeaker.includes(t("严井"))) return getImageUrl("unified_yanjing_1780649978771.png");
+      if (lowerSpeaker.includes(t("白冰"))) return getImageUrl("unified_baibing_1779713036549.png");
+      if (lowerSpeaker.includes(t("苗福全"))) return getImageUrl("unified_miaofuquan_1779713095135.png");
+      if (lowerSpeaker.includes(t("滑膛")) || lowerSpeaker.includes(t("华堂"))) return getImageUrl("unified_huatang_1779713110568.png");
+      if (lowerSpeaker.includes(t("朱汉扬"))) return getImageUrl("unified_zhuhanyang_1779713125007.png");
+      if (lowerSpeaker.includes(t("刘慈欣"))) return getImageUrl("unified_liucixin_1779712937103.png");
+      if (lowerSpeaker.includes(t("山杉惠子"))) return getImageUrl("unified_keiko_1779713141458.png");
+      if (lowerSpeaker.includes(t("萨伊"))) return getImageUrl("unified_say_1780649885202.png");
     }
 
     if (!bmpName || bmpName === "default") {
@@ -313,10 +314,10 @@ export class GameEventManager {
     if (this.events.length === 0) {
       console.warn("Event data empty, adding fallback welcome event.");
       this.events.push(createGameEvent(
-        "系统初始化完成",
-        0, 0, "模拟器叙事系统已就绪。",
+        t("系统初始化完成"),
+        0, 0, t("模拟器叙事系统已就绪。"),
         0,
-        [{ speakerName: "系统 AI", content: "欢迎来到《Beyond-the-Light-Cone》模拟器。当前叙事引擎已由于数据缺失进入紧急备用模式。", avatarUrl: getImageUrl("character_default.png") }]
+        [{ speakerName: t("系统 AI"), content: t("欢迎来到《Beyond-the-Light-Cone》模拟器。当前叙事引擎已由于数据缺失进入紧急备用模式。"), avatarUrl: getImageUrl("character_default.png") }]
       ));
     }
   }
@@ -325,211 +326,211 @@ export class GameEventManager {
     this.filteredEvents = [
       {
         id: "wallfacer_election",
-        title: "面壁者选拔",
-        tip: "联合国行星防御理事会(PCD)正在选拔面壁者。",
+        title: t("面壁者选拔"),
+        tip: t("联合国行星防御理事会(PCD)正在选拔面壁者。"),
         dialogQueue: [
-          { speakerName: "联合国秘书长", content: "女士们先生们，现在是人类文明存亡的危急关头。我们正式启动面壁计划。", avatarUrl: this.mapAvatar("default", "联合国秘书长") },
-          { speakerName: "萨伊", content: "四位面壁者将获得人类文明的全部资源支持。", avatarUrl: this.mapAvatar("say") }
+          { speakerName: t("联合国秘书长"), content: t("女士们先生们，现在是人类文明存亡的危急关头。我们正式启动面壁计划。"), avatarUrl: this.mapAvatar("default", t("联合国秘书长")) },
+          { speakerName: t("萨伊"), content: t("四位面壁者将获得人类文明的全部资源支持。"), avatarUrl: this.mapAvatar("say") }
         ],
         condition: { minYear: 10, maxYear: 50, epoch: "CRISIS", minCulture: 10 },
         choices: [
-          { label: "全力支持面壁计划", effects: [{ type: "flag", target: "wallfacer_project", value: 1 }, { type: "resource", target: "culture", value: 20 }] },
-          { label: "谨慎观望", effects: [{ type: "flag", target: "wallfacer_cautious", value: 1 }, { type: "resource", target: "military", value: 2 }] }
+          { label: t("全力支持面壁计划"), effects: [{ type: "flag", target: "wallfacer_project", value: 1 }, { type: "resource", target: "culture", value: 20 }] },
+          { label: t("谨慎观望"), effects: [{ type: "flag", target: "wallfacer_cautious", value: 1 }, { type: "resource", target: "military", value: 2 }] }
         ]
       },
       {
         id: "deterrence_establishment",
-        title: "建立威慑体系",
-        tip: "罗辑博士提出了黑暗森林威慑理论。",
+        title: t("建立威慑体系"),
+        tip: t("罗辑博士提出了黑暗森林威慑理论。"),
         dialogQueue: [
-          { speakerName: "罗辑", content: "我找到了对抗三体文明的终极方案。", avatarUrl: this.mapAvatar("luoji") },
-          { speakerName: "大史", content: "罗老弟，你确定这能行？", avatarUrl: this.mapAvatar("shiqiang") }
+          { speakerName: t("罗辑"), content: t("我找到了对抗三体文明的终极方案。"), avatarUrl: this.mapAvatar("luoji") },
+          { speakerName: t("大史"), content: t("罗老弟，你确定这能行？"), avatarUrl: this.mapAvatar("shiqiang") }
         ],
-        condition: { minYear: 50, epoch: "CRISIS", reqTech: "黑暗森林威慑", minDeterrence: 50 },
+        condition: { minYear: 50, epoch: "CRISIS", reqTech: t("黑暗森林威慑"), minDeterrence: 50 },
         choices: [
-          { label: "任命罗辑为执剑人", effects: [{ type: "flag", target: "swordholder_appointed", value: 1 }, { type: "resource", target: "prestige", value: 50 }] },
-          { label: "暂缓威慑体系建设", effects: [{ type: "flag", target: "deterrence_delayed", value: 1 }, { type: "resource", target: "treachery", value: 10 }] }
+          { label: t("任命罗辑为执剑人"), effects: [{ type: "flag", target: "swordholder_appointed", value: 1 }, { type: "resource", target: "prestige", value: 50 }] },
+          { label: t("暂缓威慑体系建设"), effects: [{ type: "flag", target: "deterrence_delayed", value: 1 }, { type: "resource", target: "treachery", value: 10 }] }
         ]
       },
       {
         id: "sophon_blockade",
-        title: "智子封锁生效",
-        tip: "三体文明正式启动了智子对地球科技的全方位封锁。",
+        title: t("智子封锁生效"),
+        tip: t("三体文明正式启动了智子对地球科技的全方位封锁。"),
         dialogQueue: [
-          { speakerName: "智子", content: "你们是虫子。", avatarUrl: this.mapAvatar("sophon") },
-          { speakerName: "丁仪", content: "我们的基础物理学...被锁死了。", avatarUrl: this.mapAvatar("dingyi") }
+          { speakerName: t("智子"), content: t("你们是虫子。"), avatarUrl: this.mapAvatar("sophon") },
+          { speakerName: t("丁仪"), content: t("我们的基础物理学...被锁死了。"), avatarUrl: this.mapAvatar("dingyi") }
         ],
         condition: { minYear: 10, maxYear: 300, epoch: "CRISIS", reqNotFlag: "sophon_broken" },
         choices: [
-          { label: "加速研发量子计算机", effects: [{ type: "flag", target: "quantum_focus", value: 1 }, { type: "resource", target: "economy", value: -20 }] },
-          { label: "放弃基础物理，主攻应用技术", effects: [{ type: "flag", target: "applied_tech_focus", value: 1 }, { type: "resource", target: "economy", value: 30 }] }
+          { label: t("加速研发量子计算机"), effects: [{ type: "flag", target: "quantum_focus", value: 1 }, { type: "resource", target: "economy", value: -20 }] },
+          { label: t("放弃基础物理，主攻应用技术"), effects: [{ type: "flag", target: "applied_tech_focus", value: 1 }, { type: "resource", target: "economy", value: 30 }] }
         ]
       },
       {
         id: "wandering_earth_decision",
-        title: "流浪地球大辩论",
-        tip: "面对即将到来的太阳氦闪，人类必须在多个方案中做出选择。",
+        title: t("流浪地球大辩论"),
+        tip: t("面对即将到来的太阳氦闪，人类必须在多个方案中做出选择。"),
         dialogQueue: [
-          { speakerName: "联合政府发言人", content: "经过充分论证，流浪地球计划是人类唯一的生路。", avatarUrl: this.mapAvatar("default", "联合政府发言人") },
-          { speakerName: "反对派", content: "这是拿全人类的生命在赌博！我们需要数字方舟方案！", avatarUrl: this.mapAvatar("default", "反对派") }
+          { speakerName: t("联合政府发言人"), content: t("经过充分论证，流浪地球计划是人类唯一的生路。"), avatarUrl: this.mapAvatar("default", t("联合政府发言人")) },
+          { speakerName: t("反对派"), content: t("这是拿全人类的生命在赌博！我们需要数字方舟方案！"), avatarUrl: this.mapAvatar("default", t("反对派")) }
         ],
-        condition: { minYear: 100, epoch: "CRISIS", reqTech: "行星发动机基础" },
+        condition: { minYear: 100, epoch: "CRISIS", reqTech: t("行星发动机基础") },
         choices: [
-          { label: "启动流浪地球计划", effects: [{ type: "flag", target: "wandering_completed", value: 1 }, { type: "resource", target: "economy", value: -100 }, { type: "resource", target: "prestige", value: 30 }] },
-          { label: "转向数字方舟方案", effects: [{ type: "flag", target: "digital_ark_upgrade", value: 1 }, { type: "resource", target: "culture", value: 50 }] }
+          { label: t("启动流浪地球计划"), effects: [{ type: "flag", target: "wandering_completed", value: 1 }, { type: "resource", target: "economy", value: -100 }, { type: "resource", target: "prestige", value: 30 }] },
+          { label: t("转向数字方舟方案"), effects: [{ type: "flag", target: "digital_ark_upgrade", value: 1 }, { type: "resource", target: "culture", value: 50 }] }
         ]
       },
       {
         id: "alien_first_contact",
-        title: "地外文明初接触",
-        tip: "我们的深空探测阵列发现了一个新的地外文明信号。",
+        title: t("地外文明初接触"),
+        tip: t("我们的深空探测阵列发现了一个新的地外文明信号。"),
         dialogQueue: [
-          { speakerName: "林云", content: "长官，我们接收到一个极其复杂的数学信号。", avatarUrl: this.mapAvatar("lin_yun") },
-          { speakerName: "维德", content: "不回应。不要暴露我们的坐标。", avatarUrl: this.mapAvatar("weide") }
+          { speakerName: t("林云"), content: t("长官，我们接收到一个极其复杂的数学信号。"), avatarUrl: this.mapAvatar("lin_yun") },
+          { speakerName: t("维德"), content: t("不回应。不要暴露我们的坐标。"), avatarUrl: this.mapAvatar("weide") }
         ],
-        condition: { minYear: 80, epoch: "CRISIS", reqTech: "50光年远镜" },
+        condition: { minYear: 80, epoch: "CRISIS", reqTech: t("50光年远镜") },
         choices: [
-          { label: "保持静默", effects: [{ type: "flag", target: "silent_contact", value: 1 }, { type: "resource", target: "prestige", value: 10 }] },
-          { label: "发送友好信号", effects: [{ type: "flag", target: "friendly_broadcast", value: 1 }, { type: "resource", target: "culture", value: -20 }] }
+          { label: t("保持静默"), effects: [{ type: "flag", target: "silent_contact", value: 1 }, { type: "resource", target: "prestige", value: 10 }] },
+          { label: t("发送友好信号"), effects: [{ type: "flag", target: "friendly_broadcast", value: 1 }, { type: "resource", target: "culture", value: -20 }] }
         ]
       },
       {
         id: "rebellion_crisis",
-        title: "逃亡主义叛乱",
-        tip: "逃亡主义的蔓延正在撕裂人类社会的根基。",
+        title: t("逃亡主义叛乱"),
+        tip: t("逃亡主义的蔓延正在撕裂人类社会的根基。"),
         dialogQueue: [
-          { speakerName: "褚岩", content: "我们有权离开！我们有权活下去！", avatarUrl: this.mapAvatar("default", "褚岩") },
-          { speakerName: "联合政府发言人", content: "请保持冷静，逃亡即是背叛全人类。", avatarUrl: this.mapAvatar("default", "联合政府发言人") }
+          { speakerName: t("褚岩"), content: t("我们有权离开！我们有权活下去！"), avatarUrl: this.mapAvatar("default", t("褚岩")) },
+          { speakerName: t("联合政府发言人"), content: t("请保持冷静，逃亡即是背叛全人类。"), avatarUrl: this.mapAvatar("default", t("联合政府发言人")) }
         ],
         condition: { minYear: 60, maxTreachery: 30, epoch: "CRISIS" },
         choices: [
-          { label: "严厉打击逃亡主义", effects: [{ type: "resource", target: "treachery", value: -15 }, { type: "resource", target: "military", value: 3 }] },
-          { label: "疏导安抚民心", effects: [{ type: "resource", target: "treachery", value: -5 }, { type: "resource", target: "culture", value: 15 }] }
+          { label: t("严厉打击逃亡主义"), effects: [{ type: "resource", target: "treachery", value: -15 }, { type: "resource", target: "military", value: 3 }] },
+          { label: t("疏导安抚民心"), effects: [{ type: "resource", target: "treachery", value: -5 }, { type: "resource", target: "culture", value: 15 }] }
         ]
       },
       {
         id: "sophon_countermeasure",
-        title: "智子反制突破",
-        tip: "550W量子计算机研制成功，智子科技封锁出现破口。",
+        title: t("智子反制突破"),
+        tip: t("550W量子计算机研制成功，智子科技封锁出现破口。"),
         dialogQueue: [
-          { speakerName: "罗辑", content: "智子的监视盲区被我们找到了。", avatarUrl: this.mapAvatar("luoji") },
-          { speakerName: "面壁者", content: "从这一刻开始，真正的面壁计划正式开始。", avatarUrl: this.mapAvatar("default", "面壁者") }
+          { speakerName: t("罗辑"), content: t("智子的监视盲区被我们找到了。"), avatarUrl: this.mapAvatar("luoji") },
+          { speakerName: t("面壁者"), content: t("从这一刻开始，真正的面壁计划正式开始。"), avatarUrl: this.mapAvatar("default", t("面壁者")) }
         ],
-        condition: { minYear: 30, reqTech: "550W量子计算机", reqNotFlag: "sophon_countermeasure_activated" },
+        condition: { minYear: 30, reqTech: t("550W量子计算机"), reqNotFlag: "sophon_countermeasure_activated" },
         choices: [
-          { label: "秘密启动面壁会议室", effects: [{ type: "flag", target: "sophon_countermeasure_activated", value: 1 }, { type: "flag", target: "sophon_broken", value: 1 }, { type: "resource", target: "prestige", value: 40 }] }
+          { label: t("秘密启动面壁会议室"), effects: [{ type: "flag", target: "sophon_countermeasure_activated", value: 1 }, { type: "flag", target: "sophon_broken", value: 1 }, { type: "resource", target: "prestige", value: 40 }] }
         ]
       },
       {
         id: "resource_crisis",
-        title: "全球资源危机",
-        tip: "工业扩张导致地球资源链濒临崩溃，各国代表齐聚联合国紧急会议。",
+        title: t("全球资源危机"),
+        tip: t("工业扩张导致地球资源链濒临崩溃，各国代表齐聚联合国紧急会议。"),
         dialogQueue: [
-          { speakerName: "联合国秘书长", content: "诸位，我们正在消耗地球最后的气力。", avatarUrl: this.mapAvatar("default", "联合国秘书长") },
-          { speakerName: "雷迪亚兹", content: "核爆采矿可以在小行星带提供无限资源。", avatarUrl: this.mapAvatar("reydiaz") }
+          { speakerName: t("联合国秘书长"), content: t("诸位，我们正在消耗地球最后的气力。"), avatarUrl: this.mapAvatar("default", t("联合国秘书长")) },
+          { speakerName: t("雷迪亚兹"), content: t("核爆采矿可以在小行星带提供无限资源。"), avatarUrl: this.mapAvatar("reydiaz") }
         ],
         condition: { minYear: 25, epoch: "CRISIS", minEconomy: 30 },
         choices: [
-          { label: "推进小行星带采矿计划", effects: [{ type: "flag", target: "asteroid_mining", value: 1 }, { type: "resource", target: "economy", value: -40 }, { type: "resource", target: "resource", value: 80 }] },
-          { label: "实施全球资源配给制", effects: [{ type: "resource", target: "economy", value: -10 }, { type: "resource", target: "treachery", value: 10 }, { type: "resource", target: "prestige", value: -10 }] }
+          { label: t("推进小行星带采矿计划"), effects: [{ type: "flag", target: "asteroid_mining", value: 1 }, { type: "resource", target: "economy", value: -40 }, { type: "resource", target: "resource", value: 80 }] },
+          { label: t("实施全球资源配给制"), effects: [{ type: "resource", target: "economy", value: -10 }, { type: "resource", target: "treachery", value: 10 }, { type: "resource", target: "prestige", value: -10 }] }
         ]
       },
       {
         id: "united_nations_assembly",
-        title: "联合国紧急大会",
-        tip: "面对危机，联合国召开全球领导人大会，决定人类未来的战略方向。",
+        title: t("联合国紧急大会"),
+        tip: t("面对危机，联合国召开全球领导人大会，决定人类未来的战略方向。"),
         dialogQueue: [
-          { speakerName: "萨伊", content: "我们必须在全面军备和文明存续之间做出选择。", avatarUrl: this.mapAvatar("say") },
-          { speakerName: "泰勒", content: "只有最强大的军队才能保障我们的生存。", avatarUrl: this.mapAvatar("tyler") }
+          { speakerName: t("萨伊"), content: t("我们必须在全面军备和文明存续之间做出选择。"), avatarUrl: this.mapAvatar("say") },
+          { speakerName: t("泰勒"), content: t("只有最强大的军队才能保障我们的生存。"), avatarUrl: this.mapAvatar("tyler") }
         ],
         condition: { minYear: 15, epoch: "CRISIS", minPopulation: 100 },
         choices: [
-          { label: "以军事为优先", effects: [{ type: "flag", target: "military_first", value: 1 }, { type: "resource", target: "military", value: 5 }, { type: "resource", target: "culture", value: -10 }] },
-          { label: "科技与文化并重", effects: [{ type: "flag", target: "balanced_approach", value: 1 }, { type: "resource", target: "culture", value: 15 }, { type: "resource", target: "prestige", value: 10 }] }
+          { label: t("以军事为优先"), effects: [{ type: "flag", target: "military_first", value: 1 }, { type: "resource", target: "military", value: 5 }, { type: "resource", target: "culture", value: -10 }] },
+          { label: t("科技与文化并重"), effects: [{ type: "flag", target: "balanced_approach", value: 1 }, { type: "resource", target: "culture", value: 15 }, { type: "resource", target: "prestige", value: 10 }] }
         ]
       },
       {
         id: "technological_breakthrough",
-        title: "科学突破时刻",
-        tip: "全球顶级物理学家在日内瓦联合宣布了一项可能改变人类命运的重大发现。",
+        title: t("科学突破时刻"),
+        tip: t("全球顶级物理学家在日内瓦联合宣布了一项可能改变人类命运的重大发现。"),
         dialogQueue: [
-          { speakerName: "丁仪", content: "我们的理论物理在智子封锁下找到了新的出路！", avatarUrl: this.mapAvatar("dingyi") },
-          { speakerName: "杨冬", content: "这是...我们从未想象过的可能性。", avatarUrl: this.mapAvatar("yangdong") }
+          { speakerName: t("丁仪"), content: t("我们的理论物理在智子封锁下找到了新的出路！"), avatarUrl: this.mapAvatar("dingyi") },
+          { speakerName: t("杨冬"), content: t("这是...我们从未想象过的可能性。"), avatarUrl: this.mapAvatar("yangdong") }
         ],
         condition: { minYear: 20, epoch: "CRISIS", minCulture: 40 },
         choices: [
-          { label: "全力资助新理论研究", effects: [{ type: "flag", target: "scientific_push", value: 1 }, { type: "resource", target: "economy", value: -30 }, { type: "resource", target: "prestige", value: 30 }] },
-          { label: "谨慎观望，继续应用研究", effects: [{ type: "resource", target: "economy", value: 15 }, { type: "resource", target: "prestige", value: -5 }] }
+          { label: t("全力资助新理论研究"), effects: [{ type: "flag", target: "scientific_push", value: 1 }, { type: "resource", target: "economy", value: -30 }, { type: "resource", target: "prestige", value: 30 }] },
+          { label: t("谨慎观望，继续应用研究"), effects: [{ type: "resource", target: "economy", value: 15 }, { type: "resource", target: "prestige", value: -5 }] }
         ]
       },
       {
         id: "stf_formation",
-        title: "太空军正式成军",
-        tip: "太阳系舰队（STF）宣告成立，人类第一次拥有了成建制的太空武装力量。",
+        title: t("太空军正式成军"),
+        tip: t("太阳系舰队（STF）宣告成立，人类第一次拥有了成建制的太空武装力量。"),
         dialogQueue: [
-          { speakerName: "常伟思", content: "从今天起，我们是太空人类了。", avatarUrl: this.mapAvatar("changweisi") },
-          { speakerName: "章北海", content: "首长，我申请调往前线舰队。", avatarUrl: this.mapAvatar("beihai") }
+          { speakerName: t("常伟思"), content: t("从今天起，我们是太空人类了。"), avatarUrl: this.mapAvatar("changweisi") },
+          { speakerName: t("章北海"), content: t("首长，我申请调往前线舰队。"), avatarUrl: this.mapAvatar("beihai") }
         ],
         condition: { minYear: 20, epoch: "CRISIS", minEconomy: 50 },
         choices: [
-          { label: "任命常伟思为太空军总司令", effects: [{ type: "flag", target: "stf_established", value: 1 }, { type: "resource", target: "military", value: 8 }, { type: "resource", target: "prestige", value: 20 }] },
-          { label: "暂缓太空军建设", effects: [{ type: "resource", target: "economy", value: 20 }, { type: "resource", target: "military", value: 1 }] }
+          { label: t("任命常伟思为太空军总司令"), effects: [{ type: "flag", target: "stf_established", value: 1 }, { type: "resource", target: "military", value: 8 }, { type: "resource", target: "prestige", value: 20 }] },
+          { label: t("暂缓太空军建设"), effects: [{ type: "resource", target: "economy", value: 20 }, { type: "resource", target: "military", value: 1 }] }
         ]
       },
       {
         id: "deterrence_strain",
-        title: "威慑天平倾斜",
-        tip: "黑暗森林威慑体系面临严峻考验，人类需要决定如何应对日益紧张的国际局势。",
+        title: t("威慑天平倾斜"),
+        tip: t("黑暗森林威慑体系面临严峻考验，人类需要决定如何应对日益紧张的国际局势。"),
         dialogQueue: [
-          { speakerName: "程心", content: "我们必须坚持爱的选择，威慑不能靠恐惧来维持。", avatarUrl: this.mapAvatar("chengxin") },
-          { speakerName: "维德", content: "失去兽性，失去一切。把按钮给我。", avatarUrl: this.mapAvatar("wade") }
+          { speakerName: t("程心"), content: t("我们必须坚持爱的选择，威慑不能靠恐惧来维持。"), avatarUrl: this.mapAvatar("chengxin") },
+          { speakerName: t("维德"), content: t("失去兽性，失去一切。把按钮给我。"), avatarUrl: this.mapAvatar("wade") }
         ],
         condition: { minYear: 70, epoch: "DETERRENCE", reqFlag: "swordholder_appointed", minDeterrence: 40 },
         choices: [
-          { label: "坚守威慑底线，增加投入", effects: [{ type: "resource", target: "economy", value: -30 }] },
-          { label: "推行和平共处外交", effects: [{ type: "resource", target: "culture", value: 25 }, { type: "resource", target: "treachery", value: -5 }] }
+          { label: t("坚守威慑底线，增加投入"), effects: [{ type: "resource", target: "economy", value: -30 }] },
+          { label: t("推行和平共处外交"), effects: [{ type: "resource", target: "culture", value: 25 }, { type: "resource", target: "treachery", value: -5 }] }
         ]
       },
       {
         id: "lightspeed_project",
-        title: "光速飞船提案",
-        tip: "少数科学家提出了一个疯狂的方案：建造光速飞船逃离太阳系。",
+        title: t("光速飞船提案"),
+        tip: t("少数科学家提出了一个疯狂的方案：建造光速飞船逃离太阳系。"),
         dialogQueue: [
-          { speakerName: "希恩斯", content: "曲率驱动在理论上是可行的。", avatarUrl: this.mapAvatar("hines") },
-          { speakerName: "维德", content: "前进！不择手段地前进！", avatarUrl: this.mapAvatar("wade") }
+          { speakerName: t("希恩斯"), content: t("曲率驱动在理论上是可行的。"), avatarUrl: this.mapAvatar("hines") },
+          { speakerName: t("维德"), content: t("前进！不择手段地前进！"), avatarUrl: this.mapAvatar("wade") }
         ],
-        condition: { minYear: 90, epoch: "DETERRENCE", reqTech: "曲率驱动理论", reqNotFlag: "lightspeed_project_approved" },
+        condition: { minYear: 90, epoch: "DETERRENCE", reqTech: t("曲率驱动理论"), reqNotFlag: "lightspeed_project_approved" },
         choices: [
-          { label: "秘密资助光速飞船研究", effects: [{ type: "flag", target: "lightspeed_project_approved", value: 1 }, { type: "resource", target: "economy", value: -50 }, { type: "resource", target: "prestige", value: 30 }] },
-          { label: "公开否决，维护威慑体系", effects: [{ type: "resource", target: "prestige", value: -15 }] }
+          { label: t("秘密资助光速飞船研究"), effects: [{ type: "flag", target: "lightspeed_project_approved", value: 1 }, { type: "resource", target: "economy", value: -50 }, { type: "resource", target: "prestige", value: 30 }] },
+          { label: t("公开否决，维护威慑体系"), effects: [{ type: "resource", target: "prestige", value: -15 }] }
         ]
       },
       {
         id: "broadcast_era_dawn",
-        title: "广播纪元开幕",
-        tip: "黑暗森林威慑被打破，人类被迫向全宇宙广播三体坐标。广播纪元正式来临。",
+        title: t("广播纪元开幕"),
+        tip: t("黑暗森林威慑被打破，人类被迫向全宇宙广播三体坐标。广播纪元正式来临。"),
         dialogQueue: [
-          { speakerName: "智子", content: "你们输了。三体星系即将被摧毁，但你们也暴露了自己。", avatarUrl: this.mapAvatar("sophon") },
-          { speakerName: "罗辑", content: "我早就说过，黑暗森林不是闹着玩的。", avatarUrl: this.mapAvatar("luoji") }
+          { speakerName: t("智子"), content: t("你们输了。三体星系即将被摧毁，但你们也暴露了自己。"), avatarUrl: this.mapAvatar("sophon") },
+          { speakerName: t("罗辑"), content: t("我早就说过，黑暗森林不是闹着玩的。"), avatarUrl: this.mapAvatar("luoji") }
         ],
         condition: { minYear: 120, epoch: "BROADCAST", reqNotFlag: "broadcast_dawn_seen" },
         choices: [
-          { label: "加速建设掩体计划", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "economy", value: -40 }] },
-          { label: "全力发展逃亡科技", effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "culture", value: -10 }] }
+          { label: t("加速建设掩体计划"), effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "economy", value: -40 }] },
+          { label: t("全力发展逃亡科技"), effects: [{ type: "flag", target: "broadcast_dawn_seen", value: 1 }, { type: "resource", target: "culture", value: -10 }] }
         ]
       },
       {
         id: "bunker_project_debate",
-        title: "掩体计划大辩论",
-        tip: "面对可能的黑暗森林打击，人类在掩体计划和光速飞船之间激烈争论。",
+        title: t("掩体计划大辩论"),
+        tip: t("面对可能的黑暗森林打击，人类在掩体计划和光速飞船之间激烈争论。"),
         dialogQueue: [
-          { speakerName: "艾AA", content: "掩体计划是最现实的选择，我们已经在木星背后建造了基地。", avatarUrl: this.mapAvatar("aa") },
-          { speakerName: "关一帆", content: "如果打击不是光粒，掩体毫无意义。只有逃走才有用。", avatarUrl: this.mapAvatar("guanyifan") }
+          { speakerName: t("艾AA"), content: t("掩体计划是最现实的选择，我们已经在木星背后建造了基地。"), avatarUrl: this.mapAvatar("aa") },
+          { speakerName: t("关一帆"), content: t("如果打击不是光粒，掩体毫无意义。只有逃走才有用。"), avatarUrl: this.mapAvatar("guanyifan") }
         ],
         condition: { minYear: 150, epoch: "BROADCAST", reqFlag: "broadcast_dawn_seen" },
         choices: [
-          { label: "全面推行掩体计划", effects: [{ type: "resource", target: "economy", value: -80 }, { type: "resource", target: "military", value: 5 }] },
-          { label: "掩体与光速飞船并行", effects: [{ type: "resource", target: "economy", value: -120 }, { type: "resource", target: "prestige", value: 20 }] }
+          { label: t("全面推行掩体计划"), effects: [{ type: "resource", target: "economy", value: -80 }, { type: "resource", target: "military", value: 5 }] },
+          { label: t("掩体与光速飞船并行"), effects: [{ type: "resource", target: "economy", value: -120 }, { type: "resource", target: "prestige", value: 20 }] }
         ]
       },
       {
@@ -537,87 +538,87 @@ export class GameEventManager {
         // 设计意图：filteredEvent 提供条件性早期路径（minYear=180），events.json 提供固定里程碑（year=340）。
         // reqNotFlag 保证幂等：任一路径写入后另一路径不再触发。
         id: "dimensional_threat_alert",
-        title: "维度打击警报",
-        tip: "深空探测器发现异常空间曲率波动——这可能意味着二向箔攻击正在逼近。",
+        title: t("维度打击警报"),
+        tip: t("深空探测器发现异常空间曲率波动——这可能意味着二向箔攻击正在逼近。"),
         dialogQueue: [
-          { speakerName: "系统警告", content: "深空探测器发现异常空间曲率波动——这可能意味着二向箔攻击正在逼近。", avatarUrl: this.mapAvatar("event_dimensional_strike") },
-          { speakerName: "林云", content: "空间曲率读数异常，长官。这不是自然现象。", avatarUrl: this.mapAvatar("linyun") },
-          { speakerName: "关一帆", content: "这就是传说中的降维打击...我们必须离开这个星系。", avatarUrl: this.mapAvatar("guanyifan") }
+          { speakerName: t("系统警告"), content: t("深空探测器发现异常空间曲率波动——这可能意味着二向箔攻击正在逼近。"), avatarUrl: this.mapAvatar("event_dimensional_strike") },
+          { speakerName: t("林云"), content: t("空间曲率读数异常，长官。这不是自然现象。"), avatarUrl: this.mapAvatar("linyun") },
+          { speakerName: t("关一帆"), content: t("这就是传说中的降维打击...我们必须离开这个星系。"), avatarUrl: this.mapAvatar("guanyifan") }
         ],
         condition: { minYear: 180, epoch: "BUNKER", reqNotFlag: "dimensional_alert_seen" },
         choices: [
-          { label: "启动紧急撤离预案", effects: [{ type: "flag", target: "dimensional_alert_seen", value: 1 }, { type: "resource", target: "economy", value: -60 }, { type: "resource", target: "prestige", value: 15 }] },
-          { label: "加强掩体防御工事", effects: [{ type: "flag", target: "dimensional_alert_seen", value: 1 }, { type: "resource", target: "military", value: 8 }, { type: "resource", target: "prestige", value: -10 }] }
+          { label: t("启动紧急撤离预案"), effects: [{ type: "flag", target: "dimensional_alert_seen", value: 1 }, { type: "resource", target: "economy", value: -60 }, { type: "resource", target: "prestige", value: 15 }] },
+          { label: t("加强掩体防御工事"), effects: [{ type: "flag", target: "dimensional_alert_seen", value: 1 }, { type: "resource", target: "military", value: 8 }, { type: "resource", target: "prestige", value: -10 }] }
         ]
       },
       {
         id: "galaxy_era_exodus",
-        title: "银河纪元启航",
-        tip: "人类终于跨出了银河系殖民的第一步，文明进入全新的篇章。",
+        title: t("银河纪元启航"),
+        tip: t("人类终于跨出了银河系殖民的第一步，文明进入全新的篇章。"),
         dialogQueue: [
-          { speakerName: "云天明", content: "整个银河系都在我们眼前展开。", avatarUrl: this.mapAvatar("tianming") },
-          { speakerName: "程心", content: "我们还能回到地球吗？", avatarUrl: this.mapAvatar("chengxin") }
+          { speakerName: t("云天明"), content: t("整个银河系都在我们眼前展开。"), avatarUrl: this.mapAvatar("tianming") },
+          { speakerName: t("程心"), content: t("我们还能回到地球吗？"), avatarUrl: this.mapAvatar("chengxin") }
         ],
         condition: { minYear: 220, epoch: "GALAXY", reqNotFlag: "galaxy_exodus_seen" },
         choices: [
-          { label: "向银河系深处进发", effects: [{ type: "flag", target: "galaxy_exodus_seen", value: 1 }, { type: "resource", target: "prestige", value: 50 }, { type: "resource", target: "culture", value: 30 }] },
-          { label: "先稳固现有殖民地", effects: [{ type: "flag", target: "galaxy_exodus_seen", value: 1 }, { type: "resource", target: "economy", value: 40 }, { type: "resource", target: "resource", value: 60 }] }
+          { label: t("向银河系深处进发"), effects: [{ type: "flag", target: "galaxy_exodus_seen", value: 1 }, { type: "resource", target: "prestige", value: 50 }, { type: "resource", target: "culture", value: 30 }] },
+          { label: t("先稳固现有殖民地"), effects: [{ type: "flag", target: "galaxy_exodus_seen", value: 1 }, { type: "resource", target: "economy", value: 40 }, { type: "resource", target: "resource", value: 60 }] }
         ]
       },
       {
         id: "alien_civilization_diplomacy",
-        title: "异星文明外交",
-        tip: "我们在银河系边缘遇到了一个古老的非碳基文明，它们发出了善意的接触信号。",
+        title: t("异星文明外交"),
+        tip: t("我们在银河系边缘遇到了一个古老的非碳基文明，它们发出了善意的接触信号。"),
         dialogQueue: [
-          { speakerName: "关一帆", content: "他们的科技至少领先我们一千年，但似乎没有敌意。", avatarUrl: this.mapAvatar("guanyifan") },
-          { speakerName: "云天明", content: "黑暗森林法则之外，也许存在着第三种可能。", avatarUrl: this.mapAvatar("tianming") }
+          { speakerName: t("关一帆"), content: t("他们的科技至少领先我们一千年，但似乎没有敌意。"), avatarUrl: this.mapAvatar("guanyifan") },
+          { speakerName: t("云天明"), content: t("黑暗森林法则之外，也许存在着第三种可能。"), avatarUrl: this.mapAvatar("tianming") }
         ],
         condition: { minYear: 200, epoch: "GALAXY", minCulture: 60, reqNotFlag: "alien_diplomacy_seen" },
         choices: [
-          { label: "建立外交关系", effects: [{ type: "flag", target: "alien_diplomacy_seen", value: 1 }, { type: "flag", target: "alien_alliance", value: 1 }, { type: "resource", target: "prestige", value: 60 }, { type: "resource", target: "culture", value: 40 }] },
-          { label: "保持距离，暗中观察", effects: [{ type: "flag", target: "alien_diplomacy_seen", value: 1 }, { type: "resource", target: "military", value: 5 }, { type: "resource", target: "prestige", value: 15 }] }
+          { label: t("建立外交关系"), effects: [{ type: "flag", target: "alien_diplomacy_seen", value: 1 }, { type: "flag", target: "alien_alliance", value: 1 }, { type: "resource", target: "prestige", value: 60 }, { type: "resource", target: "culture", value: 40 }] },
+          { label: t("保持距离，暗中观察"), effects: [{ type: "flag", target: "alien_diplomacy_seen", value: 1 }, { type: "resource", target: "military", value: 5 }, { type: "resource", target: "prestige", value: 15 }] }
         ]
       },
       {
         id: "reunion_homeworld",
-        title: "故土重归",
-        tip: "银河系流浪数百年后，人类舰队收到了来自太阳系的微弱信号。",
+        title: t("故土重归"),
+        tip: t("银河系流浪数百年后，人类舰队收到了来自太阳系的微弱信号。"),
         dialogQueue: [
-          { speakerName: "程心", content: "那是...那是地球的频率。", avatarUrl: this.mapAvatar("chengxin") },
-          { speakerName: "云天明", content: "回家了，我们终于可以回家了。", avatarUrl: this.mapAvatar("tianming") }
+          { speakerName: t("程心"), content: t("那是...那是地球的频率。"), avatarUrl: this.mapAvatar("chengxin") },
+          { speakerName: t("云天明"), content: t("回家了，我们终于可以回家了。"), avatarUrl: this.mapAvatar("tianming") }
         ],
         condition: { minYear: 280, epoch: "GALAXY", reqFlag: "galaxy_exodus_seen", minCulture: 80 },
         choices: [
-          { label: "全速返回太阳系", effects: [{ type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "culture", value: 50 }] },
-          { label: "派遣探测器先行侦察", effects: [{ type: "resource", target: "prestige", value: 30 }, { type: "resource", target: "military", value: 5 }] }
+          { label: t("全速返回太阳系"), effects: [{ type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "culture", value: 50 }] },
+          { label: t("派遣探测器先行侦察"), effects: [{ type: "resource", target: "prestige", value: 30 }, { type: "resource", target: "military", value: 5 }] }
         ]
       },
       {
         id: "inner_conflict_resolution",
-        title: "文明内讧危机",
-        tip: "长期的星际航行导致了社会分裂，舰队内部出现了两个对立的派系。",
+        title: t("文明内讧危机"),
+        tip: t("长期的星际航行导致了社会分裂，舰队内部出现了两个对立的派系。"),
         dialogQueue: [
-          { speakerName: "褚岩", content: "我们已经不是地球人类了，应该有新的规则。", avatarUrl: this.mapAvatar("default", "褚岩") },
-          { speakerName: "庄颜", content: "但我们的根永远在那里。分崩离析只会毁灭我们自己。", avatarUrl: this.mapAvatar("zhuangyan") }
+          { speakerName: t("褚岩"), content: t("我们已经不是地球人类了，应该有新的规则。"), avatarUrl: this.mapAvatar("default", t("褚岩")) },
+          { speakerName: t("庄颜"), content: t("但我们的根永远在那里。分崩离析只会毁灭我们自己。"), avatarUrl: this.mapAvatar("zhuangyan") }
         ],
         condition: { minYear: 160, epoch: "BROADCAST", minCulture: 40 },
         choices: [
-          { label: "武力镇压分裂势力", effects: [{ type: "resource", target: "treachery", value: -15 }, { type: "resource", target: "military", value: 3 }, { type: "resource", target: "prestige", value: -15 }] },
-          { label: "召开全民公决大会", effects: [{ type: "resource", target: "treachery", value: -5 }, { type: "resource", target: "culture", value: 25 }, { type: "resource", target: "prestige", value: 10 }] }
+          { label: t("武力镇压分裂势力"), effects: [{ type: "resource", target: "treachery", value: -15 }, { type: "resource", target: "military", value: 3 }, { type: "resource", target: "prestige", value: -15 }] },
+          { label: t("召开全民公决大会"), effects: [{ type: "resource", target: "treachery", value: -5 }, { type: "resource", target: "culture", value: 25 }, { type: "resource", target: "prestige", value: 10 }] }
         ]
       },
       {
         id: "great_filter_confrontation",
-        title: "大过滤器降临",
-        tip: "一个远超我们认知的文明探测器抵达了银河系边缘，它是猎手，还是观察者？",
+        title: t("大过滤器降临"),
+        tip: t("一个远超我们认知的文明探测器抵达了银河系边缘，它是猎手，还是观察者？"),
         dialogQueue: [
-          { speakerName: "智子", content: "这个文明的科技水平...我无法分析。他们超越了所有已知模型。", avatarUrl: this.mapAvatar("sophon") },
-          { speakerName: "罗辑", content: "黑暗森林的终极猎手现身了。我们现在只有一条路：保持静默。", avatarUrl: this.mapAvatar("luoji") }
+          { speakerName: t("智子"), content: t("这个文明的科技水平...我无法分析。他们超越了所有已知模型。"), avatarUrl: this.mapAvatar("sophon") },
+          { speakerName: t("罗辑"), content: t("黑暗森林的终极猎手现身了。我们现在只有一条路：保持静默。"), avatarUrl: this.mapAvatar("luoji") }
         ],
         condition: { minYear: 260, epoch: "GALAXY", reqFlag: "galaxy_exodus_seen", minDeterrence: 70 },
         choices: [
-          { label: "全文明进入静默状态", effects: [{ type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -50 }] },
-          { label: "尝试建立联系", effects: [{ type: "resource", target: "prestige", value: -30 }] }
+          { label: t("全文明进入静默状态"), effects: [{ type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -50 }] },
+          { label: t("尝试建立联系"), effects: [{ type: "resource", target: "prestige", value: -30 }] }
         ]
       },
 
@@ -625,44 +626,44 @@ export class GameEventManager {
 
       {
         id: "digital_ark_upgrade_event",
-        title: "意识上传公投",
-        tip: "数字方舟的容量已趋于饱和，人类需要决定是否将数字方舟升级为文明级意识容器。",
+        title: t("意识上传公投"),
+        tip: t("数字方舟的容量已趋于饱和，人类需要决定是否将数字方舟升级为文明级意识容器。"),
         dialogQueue: [
-          { speakerName: "科学执政官", content: "数字方舟已经可以承载超过50亿份意识数据。我们是否将全人类的意识上传至虚拟世界？", avatarUrl: this.mapAvatar("default", "科学执政官") },
-          { speakerName: "反对派", content: "这是对碳基生命的背叛！我们不应该放弃肉体。", avatarUrl: this.mapAvatar("default", "反对派") }
+          { speakerName: t("科学执政官"), content: t("数字方舟已经可以承载超过50亿份意识数据。我们是否将全人类的意识上传至虚拟世界？"), avatarUrl: this.mapAvatar("default", t("科学执政官")) },
+          { speakerName: t("反对派"), content: t("这是对碳基生命的背叛！我们不应该放弃肉体。"), avatarUrl: this.mapAvatar("default", t("反对派")) }
         ],
-        condition: { minYear: 200, epoch: "BUNKER", reqTech: "数字方舟", minPopulation: 50, minCulture: 60 },
+        condition: { minYear: 200, epoch: "BUNKER", reqTech: t("数字方舟"), minPopulation: 50, minCulture: 60 },
         choices: [
-          { label: "启动意识上传工程", effects: [{ type: "flag", target: "digital_ark_upgrade", value: 1 }, { type: "resource", target: "culture", value: 80 }, { type: "resource", target: "economy", value: -50 }] },
-          { label: "暂缓上传，保留肉体文明", effects: [{ type: "resource", target: "prestige", value: 20 }, { type: "resource", target: "treachery", value: 5 }] }
+          { label: t("启动意识上传工程"), effects: [{ type: "flag", target: "digital_ark_upgrade", value: 1 }, { type: "resource", target: "culture", value: 80 }, { type: "resource", target: "economy", value: -50 }] },
+          { label: t("暂缓上传，保留肉体文明"), effects: [{ type: "resource", target: "prestige", value: 20 }, { type: "resource", target: "treachery", value: 5 }] }
         ]
       },
       {
         id: "dark_domain_decision_event",
-        title: "黑域宣言",
-        tip: "黑域生成技术已经完善，人类可以发布'宇宙安全声明'，将太阳系变为一个光速为零的绝对安全区。",
+        title: t("黑域宣言"),
+        tip: t("黑域生成技术已经完善，人类可以发布'宇宙安全声明'，将太阳系变为一个光速为零的绝对安全区。"),
         dialogQueue: [
-          { speakerName: "科学执政官", content: "一旦启动黑域生成，太阳系的光速将降至零。我们永远无法离开，但黑暗森林的猎手也无法伤害我们。", avatarUrl: this.mapAvatar("default", "科学执政官") },
-          { speakerName: "罗辑", content: "这是终极的宇宙安全声明——我们自愿放弃星际扩张，换取永恒的安宁。", avatarUrl: this.mapAvatar("luoji") }
+          { speakerName: t("科学执政官"), content: t("一旦启动黑域生成，太阳系的光速将降至零。我们永远无法离开，但黑暗森林的猎手也无法伤害我们。"), avatarUrl: this.mapAvatar("default", t("科学执政官")) },
+          { speakerName: t("罗辑"), content: t("这是终极的宇宙安全声明——我们自愿放弃星际扩张，换取永恒的安宁。"), avatarUrl: this.mapAvatar("luoji") }
         ],
-        condition: { minYear: 250, epoch: "BUNKER", reqTech: "黑域生成", reqNotFlag: "dark_domain_decision", minCulture: 50 },
+        condition: { minYear: 250, epoch: "BUNKER", reqTech: t("黑域生成"), reqNotFlag: "dark_domain_decision", minCulture: 50 },
         choices: [
-          { label: "启动黑域生成，发布安全声明", effects: [{ type: "flag", target: "dark_domain_decision", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -80 }] },
-          { label: "拒绝自我封印，继续探索星空", effects: [{ type: "resource", target: "culture", value: 30 }, { type: "resource", target: "treachery", value: 10 }] }
+          { label: t("启动黑域生成，发布安全声明"), effects: [{ type: "flag", target: "dark_domain_decision", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -80 }] },
+          { label: t("拒绝自我封印，继续探索星空"), effects: [{ type: "resource", target: "culture", value: 30 }, { type: "resource", target: "treachery", value: 10 }] }
         ]
       },
       {
         id: "conquest_declaration_event",
-        title: "星际扩张宣言",
-        tip: "人类舰队已经具备了征服一切异星文明的实力。统帅部收到了一份大胆的提案：向全宇宙发布征服宣言。",
+        title: t("星际扩张宣言"),
+        tip: t("人类舰队已经具备了征服一切异星文明的实力。统帅部收到了一份大胆的提案：向全宇宙发布征服宣言。"),
         dialogQueue: [
-          { speakerName: "维德", content: "前进！不择手段地前进！人类的命运不是躲避，而是征服。", avatarUrl: this.mapAvatar("wade") },
-          { speakerName: "章北海", content: "父亲说过，要多想。但在这个宇宙中，不想被毁灭，就要先毁灭别人。", avatarUrl: this.mapAvatar("beihai") }
+          { speakerName: t("维德"), content: t("前进！不择手段地前进！人类的命运不是躲避，而是征服。"), avatarUrl: this.mapAvatar("wade") },
+          { speakerName: t("章北海"), content: t("父亲说过，要多想。但在这个宇宙中，不想被毁灭，就要先毁灭别人。"), avatarUrl: this.mapAvatar("beihai") }
         ],
         condition: { minYear: 200, epoch: "BROADCAST", reqNotFlag: "conquest_declared", minMilitary: 30, minDeterrence: 60 },
         choices: [
-          { label: "发布星际征服宣言", effects: [{ type: "flag", target: "conquest_declared", value: 1 }, { type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "treachery", value: 15 }] },
-          { label: "保持克制，维持防御姿态", effects: [{ type: "resource", target: "prestige", value: 20 }, { type: "resource", target: "culture", value: 15 }] }
+          { label: t("发布星际征服宣言"), effects: [{ type: "flag", target: "conquest_declared", value: 1 }, { type: "resource", target: "prestige", value: 80 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "treachery", value: 15 }] },
+          { label: t("保持克制，维持防御姿态"), effects: [{ type: "resource", target: "prestige", value: 20 }, { type: "resource", target: "culture", value: 15 }] }
         ]
       },
       {
@@ -670,16 +671,16 @@ export class GameEventManager {
         // 设计意图：filteredEvent 提供条件性早期路径（minYear=300, minCulture=80, minDeterrence=50），
         // events.json 提供固定里程碑（year=400）。reqNotFlag 保证幂等。
         id: "zero_homer_contact_event",
-        title: "归零者接触",
-        tip: "一股来自宇宙深处的超维广播穿透了所有物理屏障——归零者向全宇宙发出了最后的讯息。",
+        title: t("归零者接触"),
+        tip: t("一股来自宇宙深处的超维广播穿透了所有物理屏障——归零者向全宇宙发出了最后的讯息。"),
         dialogQueue: [
-          { speakerName: "关一帆", content: "这不是自然信号...这是来自宇宙诞生之初的文明。他们自称'归零者'。", avatarUrl: this.mapAvatar("guanyifan") },
-          { speakerName: "云天明", content: "他们想要重启宇宙，让一切重归奇点。我们有机会参与其中。", avatarUrl: this.mapAvatar("tianming") }
+          { speakerName: t("关一帆"), content: t("这不是自然信号...这是来自宇宙诞生之初的文明。他们自称'归零者'。"), avatarUrl: this.mapAvatar("guanyifan") },
+          { speakerName: t("云天明"), content: t("他们想要重启宇宙，让一切重归奇点。我们有机会参与其中。"), avatarUrl: this.mapAvatar("tianming") }
         ],
         condition: { minYear: 300, epoch: "GALAXY", reqNotFlag: "zero_homer_contacted", minCulture: 80, minDeterrence: 50 },
         choices: [
-          { label: "回应归零者的召唤", effects: [{ type: "flag", target: "zero_homer_contacted", value: 1 }, { type: "resource", target: "culture", value: 100 }, { type: "resource", target: "prestige", value: 50 }] },
-          { label: "保持沉默，暗中观察", effects: [{ type: "resource", target: "military", value: 10 }, { type: "resource", target: "prestige", value: 10 }] }
+          { label: t("回应归零者的召唤"), effects: [{ type: "flag", target: "zero_homer_contacted", value: 1 }, { type: "resource", target: "culture", value: 100 }, { type: "resource", target: "prestige", value: 50 }] },
+          { label: t("保持沉默，暗中观察"), effects: [{ type: "resource", target: "military", value: 10 }, { type: "resource", target: "prestige", value: 10 }] }
         ]
       },
       {
@@ -687,43 +688,43 @@ export class GameEventManager {
         // 设计意图：filteredEvent 提供条件性早期路径（minYear=350, reqTech=宇宙重启理论, minCulture=90），
         // events.json 提供固定里程碑（year=405）。reqNotFlag 保证幂等。
         id: "mini_universe_build_event",
-        title: "小宇宙之门",
-        tip: "归零者向人类提供了建造小宇宙的终极技术。一个独立于大宇宙的微型时空泡即将诞生。",
+        title: t("小宇宙之门"),
+        tip: t("归零者向人类提供了建造小宇宙的终极技术。一个独立于大宇宙的微型时空泡即将诞生。"),
         dialogQueue: [
-          { speakerName: "程心", content: "我们可以在小宇宙中保存人类文明的火种，等待新宇宙的诞生。", avatarUrl: this.mapAvatar("chengxin") },
-          { speakerName: "云天明", content: "这是归零者送给我们的最后礼物——一个可以逃离大宇宙末日的小型生态球。", avatarUrl: this.mapAvatar("tianming") }
+          { speakerName: t("程心"), content: t("我们可以在小宇宙中保存人类文明的火种，等待新宇宙的诞生。"), avatarUrl: this.mapAvatar("chengxin") },
+          { speakerName: t("云天明"), content: t("这是归零者送给我们的最后礼物——一个可以逃离大宇宙末日的小型生态球。"), avatarUrl: this.mapAvatar("tianming") }
         ],
-        condition: { minYear: 350, epoch: "GALAXY", reqFlag: "zero_homer_contacted", reqNotFlag: "mini_universe_built", reqTech: "宇宙重启理论", minCulture: 90 },
+        condition: { minYear: 350, epoch: "GALAXY", reqFlag: "zero_homer_contacted", reqNotFlag: "mini_universe_built", reqTech: t("宇宙重启理论"), minCulture: 90 },
         choices: [
-          { label: "建造小宇宙，保存人类火种", effects: [{ type: "flag", target: "mini_universe_built", value: 1 }, { type: "resource", target: "culture", value: 150 }, { type: "resource", target: "economy", value: -100 }] },
-          { label: "拒绝建造，将质量归还大宇宙", effects: [{ type: "resource", target: "prestige", value: 200 }, { type: "resource", target: "culture", value: 50 }] }
+          { label: t("建造小宇宙，保存人类火种"), effects: [{ type: "flag", target: "mini_universe_built", value: 1 }, { type: "resource", target: "culture", value: 150 }, { type: "resource", target: "economy", value: -100 }] },
+          { label: t("拒绝建造，将质量归还大宇宙"), effects: [{ type: "resource", target: "prestige", value: 200 }, { type: "resource", target: "culture", value: 50 }] }
         ]
       },
       {
         id: "dimensional_defense_research_event",
-        title: "维度防御研究",
-        tip: "面对二向箔的威胁，人类科学家提出了维度防御理论——通过制造局部空间曲率屏障来抵御降维打击。",
+        title: t("维度防御研究"),
+        tip: t("面对二向箔的威胁，人类科学家提出了维度防御理论——通过制造局部空间曲率屏障来抵御降维打击。"),
         dialogQueue: [
-          { speakerName: "丁仪", content: "如果我们能在目标区域制造一个反向空间曲率场，二向箔的降维效应将被中和。", avatarUrl: this.mapAvatar("dingyi") },
-          { speakerName: "林云", content: "这需要巨大的能量，但至少我们有了对抗降维打击的可能性。", avatarUrl: this.mapAvatar("linyun") }
+          { speakerName: t("丁仪"), content: t("如果我们能在目标区域制造一个反向空间曲率场，二向箔的降维效应将被中和。"), avatarUrl: this.mapAvatar("dingyi") },
+          { speakerName: t("林云"), content: t("这需要巨大的能量，但至少我们有了对抗降维打击的可能性。"), avatarUrl: this.mapAvatar("linyun") }
         ],
-        condition: { minYear: 200, epoch: "BUNKER", reqNotFlag: "dimensional_defense", reqTech: "空间曲率理论", minCulture: 60 },
+        condition: { minYear: 200, epoch: "BUNKER", reqNotFlag: "dimensional_defense", reqTech: t("空间曲率理论"), minCulture: 60 },
         choices: [
-          { label: "全力资助维度防御研究", effects: [{ type: "flag", target: "dimensional_defense", value: 1 }, { type: "resource", target: "economy", value: -60 }, { type: "resource", target: "prestige", value: 30 }] },
-          { label: "优先发展逃亡科技", effects: [{ type: "resource", target: "culture", value: 20 }, { type: "resource", target: "treachery", value: 10 }] }
+          { label: t("全力资助维度防御研究"), effects: [{ type: "flag", target: "dimensional_defense", value: 1 }, { type: "resource", target: "economy", value: -60 }, { type: "resource", target: "prestige", value: 30 }] },
+          { label: t("优先发展逃亡科技"), effects: [{ type: "resource", target: "culture", value: 20 }, { type: "resource", target: "treachery", value: 10 }] }
         ]
       },
       {
         id: "dimensional_defense_completed_event",
-        title: "维度防御屏障完工",
-        tip: "维度防御系统正式建成，人类终于拥有了防御二向箔降维打击的能力。",
+        title: t("维度防御屏障完工"),
+        tip: t("维度防御系统正式建成，人类终于拥有了防御二向箔降维打击的能力。"),
         dialogQueue: [
-          { speakerName: "科学执政官", content: "空间曲率屏障已经部署完毕。任何试图穿透这道屏障的降维打击都将被反向中和。", avatarUrl: this.mapAvatar("default", "科学执政官") },
-          { speakerName: "关一帆", content: "我们证明了一件事：宇宙中的物理法则不是绝对的，它们可以被智谋和勇气改变。", avatarUrl: this.mapAvatar("guanyifan") }
+          { speakerName: t("科学执政官"), content: t("空间曲率屏障已经部署完毕。任何试图穿透这道屏障的降维打击都将被反向中和。"), avatarUrl: this.mapAvatar("default", t("科学执政官")) },
+          { speakerName: t("关一帆"), content: t("我们证明了一件事：宇宙中的物理法则不是绝对的，它们可以被智谋和勇气改变。"), avatarUrl: this.mapAvatar("guanyifan") }
         ],
         condition: { minYear: 250, epoch: "BUNKER", reqFlag: "dimensional_defense", reqNotFlag: "dimensional_defense_completed", minCulture: 70 },
         choices: [
-          { label: "启动维度防御屏障", effects: [{ type: "flag", target: "dimensional_defense_completed", value: 1 }, { type: "resource", target: "prestige", value: 150 }, { type: "resource", target: "economy", value: -40 }] }
+          { label: t("启动维度防御屏障"), effects: [{ type: "flag", target: "dimensional_defense_completed", value: 1 }, { type: "resource", target: "prestige", value: 150 }, { type: "resource", target: "economy", value: -40 }] }
         ]
       },
     ];
@@ -906,7 +907,7 @@ export class GameEventManager {
       }
 
       const e = createGameEvent(
-        data.title || (typeof data.name === 'string' ? data.name : `纪元大事记_${inYear}`),
+        data.title || (typeof data.name === 'string' ? data.name : t("纪元大事记_{param0}", { param0: inYear })),
         data.eventtype ?? 0,
         inYear,
         data.tip || (dialogNodes.length > 0 ? dialogNodes[0].content : ""),
@@ -1015,8 +1016,8 @@ export class GameEventManager {
 
     // These core story characters must be locked until officially unlocked in events.json
     const coreStoryPersons = [
-      "伊文斯", "林云", "罗辑", "泰勒", "雷迪亚兹", "希恩斯",
-      "章北海", "庄颜", "程心", "维德", "艾AA", "云天明", "智子", "关一帆"
+      t("伊文斯"), t("林云"), t("罗辑"), t("泰勒"), t("雷迪亚兹"), t("希恩斯"),
+      t("章北海"), t("庄颜"), t("程心"), t("维德"), t("艾AA"), t("云天明"), t("智子"), t("关一帆")
     ];
 
     const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
@@ -1029,7 +1030,7 @@ export class GameEventManager {
         const speaker = node.speakerName;
         if (speaker) {
           // Skip alive check for historical records/playbacks/inspections
-          if (speaker.includes("历史") || speaker.includes("录像") || speaker.includes("档案") || speaker.includes("遗言")) {
+          if (speaker.includes(t("历史")) || speaker.includes(t("录像")) || speaker.includes(t("档案")) || speaker.includes(t("遗言"))) {
             continue;
           }
           // Check if speaker contains any core person name (e.g., "安全官 维德" contains "维德")
@@ -1075,7 +1076,7 @@ export class GameEventManager {
 
         if (e.triggerCondition.reqStar) {
           const star = game.starManager.getStarByName(e.triggerCondition.reqStar);
-          if (!star || star.belongToCivi !== "地球") {
+          if (!star || star.belongToCivi !== t("地球")) {
             continue;
           }
         }

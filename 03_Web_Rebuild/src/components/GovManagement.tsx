@@ -141,7 +141,7 @@ export const GovManagement: React.FC = () => {
               </div>
               
               <button 
-                onClick={() => openLegacyDept(DepartmentType.ECONOMY, "经济部")}
+                onClick={() => openLegacyDept(DepartmentType.ECONOMY, t("经济部"))}
                 data-tutorial-id="btn-gov-finance-dept"
                 className="w-full py-2.5 rounded border border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] text-[var(--color-primary)] text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
@@ -181,7 +181,7 @@ export const GovManagement: React.FC = () => {
                   {t("星舰建造与舰队编成")}
                 </button>
                 <button
-                  onClick={() => openLegacyDept(DepartmentType.ARMY, "军事部")}
+                  onClick={() => openLegacyDept(DepartmentType.ARMY, t("军事部"))}
                   data-tutorial-id="btn-gov-military-dept"
                   className="w-full py-2.5 rounded border border-orange-500 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
                 >
@@ -204,7 +204,7 @@ export const GovManagement: React.FC = () => {
               </div>
               
               <button 
-                onClick={() => openLegacyDept(DepartmentType.ASTROPHYSICS, "前沿研究所")}
+                onClick={() => openLegacyDept(DepartmentType.ASTROPHYSICS, t("前沿研究所"))}
                 data-tutorial-id="btn-gov-tech-dept"
                 className="w-full py-2.5 rounded border border-blue-500 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >
@@ -236,7 +236,7 @@ export const GovManagement: React.FC = () => {
               </div>
               
               <button 
-                onClick={() => openLegacyDept(DepartmentType.CULTURE, "文化部")}
+                onClick={() => openLegacyDept(DepartmentType.CULTURE, t("文化部"))}
                 data-tutorial-id="btn-gov-social-dept"
                 className="w-full py-2.5 rounded border border-purple-500 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-xs font-bold font-title tracking-wider uppercase transition-all cursor-pointer text-center"
               >

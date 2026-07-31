@@ -7,6 +7,7 @@ import { StatisticsManager } from "./core/StatisticsManager";
 import { assetLoader } from "./core/AssetLoader";
 import { patchManager } from "./core/PatchManager";
 import { initializeDistributionChannel } from "./core/DistributionChannel";
+import { t } from "./utils/i18n";
 
 console.log('Legend of Uni Web (React) started');
 
@@ -46,7 +47,7 @@ async function bootstrap() {
         return [];
       });
       if (appliedPatches.length > 0) {
-        console.log(`[Bootstrap] 已应用 ${appliedPatches.length} 个热更新补丁`);
+        console.log(t("[Bootstrap] 已应用 {param0} 个热更新补丁", { param0: appliedPatches.length }));
       }
     }
 
@@ -74,13 +75,7 @@ async function bootstrap() {
     console.error("Bootstrap Failed:", err);
     const rootElement = document.getElementById('app');
     if (rootElement) {
-      rootElement.innerHTML = `
-        <div style="padding: 40px; color: #E65100; font-family: sans-serif; background: #050A1F; height: 100vh;">
-          <h1 style="font-size: 2rem; margin-bottom: 1rem;">系统引导失败 (Bootstrap Error)</h1>
-          <p>核心引擎初始化过程中发生异常，无法进入沉浸式视图。</p>
-          <pre style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; overflow: auto;">${err}</pre>
-        </div>
-      `;
+      rootElement.innerHTML = t("\n        <div style=\"padding: 40px; color: #E65100; font-family: sans-serif; background: #050A1F; height: 100vh;\">\n          <h1 style=\"font-size: 2rem; margin-bottom: 1rem;\">系统引导失败 (Bootstrap Error)</h1>\n          <p>核心引擎初始化过程中发生异常，无法进入沉浸式视图。</p>\n          <pre style=\"background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; overflow: auto;\">{param0}</pre>\n        </div>\n      ", { param0: err instanceof Error ? err.stack || err.message : String(err) });
     }
   }
 }

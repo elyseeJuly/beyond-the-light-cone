@@ -15,7 +15,7 @@ export class TecTreeView {
     const tree = game.earthCivi.tecTreeManager.trees.get(type);
 
     if (!tree) {
-      this.container.innerHTML = `<p style="color: red;">${t("该科技树尚未初始化。")}</p>`;
+      this.container.innerHTML = t("<p style=\"color: red;\">{param0}</p>", { param0: t("该科技树尚未初始化。") });
       return;
     }
 
@@ -29,17 +29,7 @@ export class TecTreeView {
 
       const progress = node.finished ? 100 : (node.currentWorkload / node.totalWorkload) * 100;
 
-      html += `
-        <div class="tech-node ${statusClass}" data-tech="${name}" data-tutorial-id="tech-node-${name}">
-          <h4>${t(name)}</h4>
-          <p>${t("前置")}: ${t(node.parentName || '无')}</p>
-          <p>${t("花费")}: ${node.cost} | ${t("总量")}: ${node.totalWorkload}</p>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width: ${progress}%"></div>
-          </div>
-          <p style="margin-top: 8px; font-size: 0.75rem;">${t(node.tip)}</p>
-        </div>
-      `;
+      html += t("\n        <div class=\"tech-node {param0}\" data-tech=\"{param1}\" data-tutorial-id=\"tech-node-{param2}\">\n          <h4>{param3}</h4>\n          <p>{param4}: {param5}</p>\n          <p>{param6}: {param7} | {param8}: {param9}</p>\n          <div class=\"progress-bar-bg\">\n            <div class=\"progress-bar-fill\" style=\"width: {param10}%\"></div>\n          </div>\n          <p style=\"margin-top: 8px; font-size: 0.75rem;\">{param11}</p>\n        </div>\n      ", { param0: statusClass, param1: name, param2: name, param3: t(name), param4: t("前置"), param5: t(node.parentName || t("无")), param6: t("花费"), param7: node.cost, param8: t("总量"), param9: node.totalWorkload, param10: progress, param11: t(node.tip) });
     });
 
     html += `</div>`;

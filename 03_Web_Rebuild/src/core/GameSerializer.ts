@@ -31,6 +31,7 @@ import { SaveManager, SaveDataCorruptedError } from "./SaveManager";
 import { FlagManager } from "./FlagManager";
 import { GameInstance } from "./Game";
 import type { Game } from "./Game";
+import { t } from "../utils/i18n";
 
 /**
  * JSON replacer — 处理 Map/Set 序列化及排除非持久化字段
@@ -174,7 +175,7 @@ export function serializeAndSave(inst: Game): void {
   if (inst.historyGenerator) {
     inst.historyGenerator.prune(500);
   }
-  inst.addHistory("游戏已保存到本地存储。");
+  inst.addHistory(t("游戏已保存到本地存储。"));
   SaveManager.save(() => JSON.stringify(inst, gameReplacer));
 }
 
@@ -205,7 +206,7 @@ export function loadAndDeserialize(
       return null;
     }
 
-    inst.addHistory("【系统】游戏读取成功。");
+    inst.addHistory(t("【系统】游戏读取成功。"));
     if (typeof window !== 'undefined') {
       GameInstance.get().eventBus.emitLegacy('game-loaded');
       GameInstance.get().eventBus.emitLegacy('ticker-message-added');
@@ -214,7 +215,7 @@ export function loadAndDeserialize(
     return inst;
   } catch (e) {
     if (e instanceof SaveDataCorruptedError) {
-      if (e.message.includes("无效的 JSON 格式")) {
+      if (e.message.includes(t("无效的 JSON 格式"))) {
         console.error("Save load failed with invalid JSON format:", e.message);
         return null;
       }
@@ -257,7 +258,7 @@ export function rollbackToFateDivergence(
     inst.eventQueue = [];
     inst.isObserverMode = false;
 
-    inst.addHistory("【系统】时间线已回溯至分歧点（约 10 回合前）。");
+    inst.addHistory(t("【系统】时间线已回溯至分歧点（约 10 回合前）。"));
     if (typeof window !== 'undefined') {
       GameInstance.get().eventBus.emitLegacy('game-loaded');
       GameInstance.get().eventBus.emitLegacy('ticker-message-added');

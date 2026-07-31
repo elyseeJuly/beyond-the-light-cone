@@ -4,6 +4,7 @@ import { FLAG } from '../../core/GameFlags';
 import { DefeatType, EpochType, NeutralType, VictoryType } from '../../types/enums';
 import { scanFlagReachability, type FlagReachabilityReport } from './FlagReachability';
 import type { SimulationSuiteSummary } from './SimulationSuite';
+import { t } from "../../utils/i18n";
 
 export interface ReachabilityReport {
   generatedAt: string;
@@ -134,7 +135,7 @@ export function buildReachabilityReport(summary: SimulationSuiteSummary): Reacha
   };
 }
 
-function markdownList(values: Array<string | number>, empty = '无'): string {
+function markdownList(values: Array<string | number>, empty = t("无")): string {
   return values.length > 0 ? values.map((value) => `- \`${value}\``).join('\n') : `- ${empty}`;
 }
 
@@ -147,64 +148,16 @@ export function renderReachabilityMarkdown(report: ReachabilityReport): string {
   const flagIssues = report.flagScan.entries
     .filter((entry) => entry.status === 'producer-only' || entry.status === 'consumer-only' || entry.status === 'orphan')
     .map((entry) => `| \`${entry.value}\` | ${entry.status} | ${entry.producers.length} | ${entry.consumers.length} |`)
-    .join('\n') || '| — | 无 | 0 | 0 |';
+    .join('\n') || t("| — | 无 | 0 | 0 |");
 
   const legacyAliases = report.flagScan.entries
     .filter((entry) => entry.status === 'legacy-alias')
     .map((entry) => `| \`${entry.value}\` | \`${entry.aliasOf ?? 'unknown'}\` |`)
     .join('\n') || '| — | — |';
 
-  return `# Headless Simulation Reachability Report
-
-> Generated: ${report.generatedAt}
-> Runs: ${report.runCount}
-> Production source files scanned: ${report.flagScan.scannedFileCount}
-
-## Coverage summary
-
-| Domain | Observed | Known | Ratio |
-|---|---:|---:|---:|
-${coverageRow('Events', report.observed.events.length, report.known.events.length)}
-${coverageRow('Canonical flags', report.observed.flags.length, report.known.flags.length)}
-${coverageRow('Epochs', report.observed.epochs.length, report.known.epochs.length)}
-${coverageRow('Endings', report.observed.endings.length, report.known.endings.length)}
-
-## Termination distribution
-
-\`\`\`json
-${JSON.stringify(report.terminationCounts, null, 2)}
-\`\`\`
-
-## Unobserved endings
-
-${markdownList(report.unobserved.endings)}
-
-## Unobserved epochs
-
-${markdownList(report.unobserved.epochs)}
-
-## Flag producer/consumer findings
-
-| Flag | Status | Producers | Consumers |
-|---|---|---:|---:|
-${flagIssues}
-
-## Legacy aliases
-
-| Historical flag | Canonical flag |
-|---|---|
-${legacyAliases}
-
-## Failed seeds
-
-${report.failures.length > 0
-    ? report.failures.map((failure) => `- seed=${failure.seed}, policy=${failure.policyId}, reason=${failure.terminationReason}\n  - replay: \`${failure.replayCommand}\``).join('\n')
-    : '- 无'}
-
-## Interpretation boundary
-
-“未观测到”只表示当前 seed × policy × turn matrix 没有到达该节点，不自动等同于代码不可达。Flag 扫描中的 consumer-only、producer-only 与 orphan 项需要结合设计文档和具体因果链复核；legacy-alias 已由统一等价读取层处理，不作为断链问题。
-`;
+  return t("# Headless Simulation Reachability Report\n\n> Generated: {param0}\n> Runs: {param1}\n> Production source files scanned: {param2}\n\n## Coverage summary\n\n| Domain | Observed | Known | Ratio |\n|---|---:|---:|---:|\n{param3}\n{param4}\n{param5}\n{param6}\n\n## Termination distribution\n\n```json\n{param7}\n```\n\n## Unobserved endings\n\n{param8}\n\n## Unobserved epochs\n\n{param9}\n\n## Flag producer/consumer findings\n\n| Flag | Status | Producers | Consumers |\n|---|---|---:|---:|\n{param10}\n\n## Legacy aliases\n\n| Historical flag | Canonical flag |\n|---|---|\n{param11}\n\n## Failed seeds\n\n{param12}\n\n## Interpretation boundary\n\n“未观测到”只表示当前 seed × policy × turn matrix 没有到达该节点，不自动等同于代码不可达。Flag 扫描中的 consumer-only、producer-only 与 orphan 项需要结合设计文档和具体因果链复核；legacy-alias 已由统一等价读取层处理，不作为断链问题。\n", { param0: report.generatedAt, param1: report.runCount, param2: report.flagScan.scannedFileCount, param3: coverageRow('Events', report.observed.events.length, report.known.events.length), param4: coverageRow('Canonical flags', report.observed.flags.length, report.known.flags.length), param5: coverageRow('Epochs', report.observed.epochs.length, report.known.epochs.length), param6: coverageRow('Endings', report.observed.endings.length, report.known.endings.length), param7: JSON.stringify(report.terminationCounts, null, 2), param8: markdownList(report.unobserved.endings), param9: markdownList(report.unobserved.epochs), param10: flagIssues, param11: legacyAliases, param12: report.failures.length > 0
+      ? report.failures.map((failure) => `- seed=${failure.seed}, policy=${failure.policyId}, reason=${failure.terminationReason}\n  - replay: \`${failure.replayCommand}\``).join('\n')
+      : t("- 无") });
 }
 
 export async function writeReachabilityReport(

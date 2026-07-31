@@ -11,15 +11,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Volume2, VolumeX, Play } from 'lucide-react';
 import { GAMEPLAY_BGM_PATH, ERA_BGM_PATHS } from '../config/endingConfig';
 import { getAssetUrl } from '../utils/assetUrl';
+import { t } from "../utils/i18n";
 
 const SONG_NAME_MAP: Record<string, string> = {
-  '/audio/era_years_base.mp3': '岁月底座',
-  '/audio/era_crisis.mp3': '危机之潮',
-  '/audio/era_deterrence.mp3': '执剑低吟',
-  '/audio/era_broadcast.mp3': '广播回响',
-  '/audio/era_bunker.mp3': '深空掩体',
-  '/audio/era_galaxy.mp3': '银河孤舟',
-  '/audio/era_stardust.mp3': '星屑余晖',
+  '/audio/era_years_base.mp3': t("岁月底座"),
+  '/audio/era_crisis.mp3': t("危机之潮"),
+  '/audio/era_deterrence.mp3': t("执剑低吟"),
+  '/audio/era_broadcast.mp3': t("广播回响"),
+  '/audio/era_bunker.mp3': t("深空掩体"),
+  '/audio/era_galaxy.mp3': t("银河孤舟"),
+  '/audio/era_stardust.mp3': t("星屑余晖"),
 };
 
 interface BgmPlayerProps {
@@ -277,8 +278,8 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
     }
   };
 
-  const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-  const currentEpochName = epochNames[epoch] || "主背景";
+  const epochNames = [t("黄金岁月"), t("危机纪元"), t("威慑纪元"), t("广播纪元"), t("掩体纪元"), t("银河纪元"), t("星屑纪元")];
+  const currentEpochName = epochNames[epoch] || t("主背景");
 
   if (!isAvailable) {
     if (compact) {
@@ -288,14 +289,14 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
           className="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-lg opacity-40 cursor-not-allowed"
         >
           <VolumeX size={20} className="stroke-[1.5]" />
-          <span className="text-[9px] font-bold tracking-wider uppercase">无曲</span>
+          <span className="text-[9px] font-bold tracking-wider uppercase">{t("无曲")}</span>
         </button>
       );
     }
     return (
       <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-sm text-[10px] text-white/30 tracking-widest uppercase">
         <VolumeX size={12} className="opacity-50" />
-        <span>《{currentEpochName} BGM》待加入</span>
+        <span>《{currentEpochName} {t("BGM》待加入")}</span>
       </div>
     );
   }
@@ -309,7 +310,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
           isPlaying ? 'text-[var(--color-primary)]' : 'text-[var(--text-secondary)] hover:text-white hover:bg-white/5'
         }`}
         style={isPlaying ? { textShadow: '0 0 8px rgba(var(--color-primary-rgb), 0.5)' } : undefined}
-        title={isPlaying ? '暂停 BGM' : '播放 BGM'}
+        title={isPlaying ? t("暂停 BGM") : t("播放 BGM")}
       >
         {isPlaying ? (
           <div className="flex gap-0.5 items-end h-5 w-5 justify-center">
@@ -327,7 +328,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
         ) : (
           <Play size={20} className="fill-current stroke-[1.5]" />
         )}
-        <span className="text-[9px] font-bold tracking-wider uppercase">{isPlaying ? '播放中' : '音乐'}</span>
+        <span className="text-[9px] font-bold tracking-wider uppercase">{isPlaying ? t("播放中") : t("音乐")}</span>
       </button>
     );
   }
@@ -337,7 +338,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
       <button 
         onClick={togglePlay}
         className="text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors p-1"
-        title={isPlaying ? "暂停 BGM" : "播放 BGM"}
+        title={isPlaying ? t("暂停 BGM") : t("播放 BGM")}
       >
         {isPlaying ? (
           <div className="flex gap-0.5 items-end h-3 w-3">
@@ -360,7 +361,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
       <button 
         onClick={toggleMute}
         className="text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors p-1"
-        title={isMuted ? "取消静音" : "静音"}
+        title={isMuted ? t("取消静音") : t("静音")}
       >
         {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
       </button>
@@ -382,7 +383,7 @@ export const BgmPlayer: React.FC<BgmPlayerProps> = ({ isGameOver, epoch, compact
       />
 
       <span className="text-[10px] text-white/40 tracking-wider font-bold select-none hidden md:inline">
-        {customBgmPath ? `《${SONG_NAME_MAP[customBgmPath] || '自定义背景'} (自定义)》` : (loadedPath === GAMEPLAY_BGM_PATH ? "《岁月底座》" : `《${currentEpochName}》`)}
+        {customBgmPath ? t("《{param0} (自定义)》", { param0: SONG_NAME_MAP[customBgmPath] || t("自定义背景") }) : (loadedPath === GAMEPLAY_BGM_PATH ? t("《岁月底座》") : `《${currentEpochName}》`)}
       </span>
 
       <style>{`

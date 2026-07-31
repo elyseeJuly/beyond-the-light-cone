@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { t } from "../../utils/i18n";
 
 export interface ToastMessage {
   id: string;
@@ -18,7 +19,7 @@ export const Toast: React.FC = () => {
         const newToast: ToastMessage = {
           id: Math.random().toString(36).substring(2, 9),
           text: detail.text,
-          category: detail.category || '【系统消息】',
+          category: detail.category || t("【系统消息】"),
           onClick: detail.onClick,
         };
         setToasts((prev) => [...prev, newToast]);

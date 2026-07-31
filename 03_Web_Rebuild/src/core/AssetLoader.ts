@@ -18,6 +18,7 @@ import type {
 } from '../types/asset';
 import { getAssetUrl } from '../utils/assetUrl';
 import { isPackagedRelease } from './DistributionChannel';
+import { t } from "../utils/i18n";
 
 const MANIFEST_URL = getAssetUrl('asset_manifest.json');
 
@@ -49,9 +50,9 @@ export class AssetLoader {
       ]);
       this.manifest = manifest;
       await this.loadAssetRecords();
-      console.log(`[AssetLoader] 初始化完成：${manifest.core.length} 核心 + ${manifest.expansion.assets.length} 扩展 + ${(manifest.patches || []).length} 补丁`);
+      console.log(t("[AssetLoader] 初始化完成：{param0} 核心 + {param1} 扩展 + {param2} 补丁", { param0: manifest.core.length, param1: manifest.expansion.assets.length, param2: (manifest.patches || []).length }));
     } catch (err) {
-      console.error('[AssetLoader] 初始化失败:', err);
+      console.error(t("[AssetLoader] 初始化失败:"), err);
       throw err;
     }
   }
@@ -122,7 +123,7 @@ export class AssetLoader {
     const packId = `pack_${eraKey}`;
     await this.downloadPack(packId, (progress) => {
       if (progress.state === 'complete') {
-        console.log(`[AssetLoader] 📦 ${eraKey} 资源包下载完成`);
+        console.log(t("[AssetLoader] 📦 {param0} 资源包下载完成", { param0: eraKey }));
       }
     });
   }
@@ -154,7 +155,7 @@ export class AssetLoader {
     });
     if (allComplete) return;
 
-    console.log(`[AssetLoader] 🔮 预加载下一纪元资源: ${nextEra}`);
+    console.log(t("[AssetLoader] 🔮 预加载下一纪元资源: {param0}", { param0: nextEra }));
     // 后台静默下载
     this.downloadPack(packId).catch(() => {
       // 预加载失败不阻塞游戏
@@ -492,7 +493,7 @@ export class AssetLoader {
 
         emitProgress('downloading');
       } catch (err) {
-        console.error(`[AssetLoader] 下载失败: ${asset.path}`, err);
+        console.error(t("[AssetLoader] 下载失败: {param0}", { param0: asset.path }), err);
         const record: AssetRecord = {
           assetId,
           state: 'error',

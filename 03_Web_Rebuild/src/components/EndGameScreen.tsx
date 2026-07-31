@@ -19,6 +19,7 @@ import { EndingCinematic } from './ending/EndingCinematic';
 import { TimelineRetrospective } from './ending/TimelineRetrospective';
 import { CreditsRoll } from './ending/CreditsRoll';
 import { getAssetUrl } from '../utils/assetUrl';
+import { t } from "../utils/i18n";
 
 type Phase = 'declaration' | 'cinematic' | 'retrospective' | 'credits';
 
@@ -174,7 +175,7 @@ export const EndGameScreen: React.FC = () => {
       window.dispatchEvent(new CustomEvent('observer-mode-activated'));
       window.location.reload();
     } else {
-      alert("回溯失败，未找到有效的分歧点快照。");
+      alert(t("回溯失败，未找到有效的分歧点快照。"));
     }
   }, []);
 
@@ -183,7 +184,7 @@ export const EndGameScreen: React.FC = () => {
     game.isObserverMode = true;
     game.isGameOver = false;
     window.dispatchEvent(new CustomEvent('observer-mode-activated'));
-    game.addHistory("【观察者模式】人类文明已静默，您当前以量子幽灵视点静观宇宙流转。");
+    game.addHistory(t("【观察者模式】人类文明已静默，您当前以量子幽灵视点静观宇宙流转。"));
   }, []);
 
   const advanceTo = useCallback((next: Phase) => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GameInstance } from '../../core/Game';
 import { AlertTriangle, Shield } from 'lucide-react';
+import { t } from "../../utils/i18n";
 
 export const EndingForecastPanel: React.FC = () => {
   const [forecast, setForecast] = useState<Array<{ name: string; progress: number; isThreat: boolean }>>([]);
@@ -18,19 +19,19 @@ export const EndingForecastPanel: React.FC = () => {
     const victoryItem = f.find(item => !item.isThreat && item.progress >= 85);
 
     if (threatItem) {
-      alertMsg = `🚨 警告：${threatItem.name} 临界度已达 ${threatItem.progress}%！文明即将毁灭！`;
+      alertMsg = t("🚨 警告：{param0} 临界度已达 {param1}%！文明即将毁灭！", { param0: threatItem.name, param1: threatItem.progress });
     } else if (victoryItem) {
-      alertMsg = `✨ 契机：${victoryItem.name} 完成度已达 ${victoryItem.progress}%！胜利在此一举！`;
+      alertMsg = t("✨ 契机：{param0} 完成度已达 {param1}%！胜利在此一举！", { param0: victoryItem.name, param1: victoryItem.progress });
     }
 
     // Special check for final 3 turns of Helium flash (approx year 347+)
     if (game.year >= 347 && game.year < 350) {
-      const isSafe = game.earthCivi.tecTreeManager.isTecFinishedAnywhere("黑域生成") ||
-                     game.earthCivi.tecTreeManager.isTecFinishedAnywhere("数字方舟") ||
+      const isSafe = game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("黑域生成")) ||
+                     game.earthCivi.tecTreeManager.isTecFinishedAnywhere(t("数字方舟")) ||
                      game.hasFlag("dimensional_defense") ||
                      game.hasFlag("wandering_completed");
       if (!isSafe) {
-        alertMsg = `🚨 PDC终极警报：太阳氦闪/二向箔打击将在 ${350 - game.year} 回合内降临太阳系！无生还记录！`;
+        alertMsg = t("🚨 PDC终极警报：太阳氦闪/二向箔打击将在 {param0} 回合内降临太阳系！无生还记录！", { param0: 350 - game.year });
       }
     }
 
@@ -60,7 +61,7 @@ export const EndingForecastPanel: React.FC = () => {
 
       <div className="bg-black/10 dark:bg-white/5 p-3 rounded-lg border border-white/5 space-y-3">
         <div className="flex justify-between items-center border-b border-white/5 pb-1.5">
-          <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">结局趋势雷达</span>
+          <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">{t("结局趋势雷达")}</span>
           <span className="text-[9px] font-mono text-[var(--text-secondary)]">FORECAST CENTER</span>
         </div>
 

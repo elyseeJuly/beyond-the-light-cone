@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+import { t } from "../../utils/i18n";
 
 /**
  * E2E 测试公共辅助函数
@@ -17,7 +18,7 @@ export async function disableTutorial(page: Page): Promise<void> {
 
 /** 跳过首次教程弹窗（兼容 localStorage 未生效时兜底） */
 export async function skipTutorial(page: Page): Promise<void> {
-  const skipBtn = page.locator('button:has-text("跳过教程")');
+  const skipBtn = page.locator(t("button:has-text(\"跳过教程\")"));
   try {
     await expect(skipBtn).toBeVisible({ timeout: 5000 });
     await skipBtn.click();
@@ -44,7 +45,7 @@ export async function waitForMainUI(page: Page): Promise<void> {
 
 /** 关闭移动端横屏提示弹窗 */
 export async function dismissOrientationPrompt(page: Page): Promise<void> {
-  const okBtn = page.locator('button:has-text("我知道了")');
+  const okBtn = page.locator(t("button:has-text(\"我知道了\")"));
   try {
     await expect(okBtn).toBeVisible({ timeout: 3000 });
     await okBtn.click();
@@ -56,21 +57,21 @@ export async function dismissOrientationPrompt(page: Page): Promise<void> {
 
 /** 从封面启动引导，并通过真实交互推进到 read-status 步骤 */
 export async function startTutorialToReadStatus(page: Page): Promise<void> {
-  const newGameBtn = page.locator('button:has-text("重新构想 (开启引导)")');
+  const newGameBtn = page.locator(t("button:has-text(\"重新构想 (开启引导)\")"));
   await expect(newGameBtn).toBeVisible();
   await newGameBtn.click();
 
   const skipBtn = page.getByTestId('tutorial-skip-btn');
   await expect(skipBtn).toBeVisible({ timeout: 10000 });
-  await page.getByRole('button', { name: '开始校准' }).click();
-  await expect(page.locator('text=选中家园星系')).toBeVisible({ timeout: 10000 });
+  await page.getByRole('button', { name: t("开始校准") }).click();
+  await expect(page.locator(t("text=选中家园星系"))).toBeVisible({ timeout: 10000 });
 
-  const earthHotspot = page.getByRole('button', { name: '选中地球' });
+  const earthHotspot = page.getByRole('button', { name: t("选中地球") });
   await expect(earthHotspot).toBeVisible();
   await earthHotspot.focus();
   await page.keyboard.press('Enter');
 
-  await expect(page.locator('text=监控三维产出')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator(t("text=监控三维产出"))).toBeVisible({ timeout: 5000 });
 }
 
 /** 点击下一回合（优先使用键盘空格，兼容按钮点击） */

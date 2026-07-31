@@ -4,6 +4,7 @@ import { generateStars } from "./StarGenerator";
 import { StarArea } from "../types/enums";
 import { STAR_INDEX } from "../config/starIndices";
 import { Barback, createBarback } from "./Barback";
+import { t } from "../utils/i18n";
 
 export class StarManager {
   public stars: Map<number, Star> = new Map();
@@ -45,7 +46,7 @@ export class StarManager {
     // Initialize Earth
     const earth = this.stars.get(STAR_INDEX.EARTH);
     if (earth) {
-      earth.belongToCivi = "地球";
+      earth.belongToCivi = t("地球");
       earth.found = true;
       earth.populationLimit = 1000;
       earth.currentPopulation = 100;

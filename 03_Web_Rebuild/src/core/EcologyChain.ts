@@ -1,3 +1,5 @@
+import { t } from "../utils/i18n";
+
 /**
  * EcologyChain - 生态链涟漪效应系统 (UEE Layer 3-5)
  *
@@ -44,7 +46,7 @@ export class EcologyChain {
       // === 经济危机链 ===
       {
         id: 'ration_to_riot',
-        name: '配给减少引发的社会动荡链',
+        name: t("配给减少引发的社会动荡链"),
         conditionEventId: 'random_resource_rationing',
         triggerDelay: 3,
         resultEventId: 'random_underground_riot',
@@ -55,7 +57,7 @@ export class EcologyChain {
       },
       {
         id: 'riot_to_crisis',
-        name: '地下骚乱升级为殖民危机',
+        name: t("地下骚乱升级为殖民危机"),
         conditionEventId: 'random_underground_riot',
         triggerDelay: 5,
         resultEventId: 'random_colony_crisis',
@@ -68,7 +70,7 @@ export class EcologyChain {
       // === 社会动荡链 ===
       {
         id: 'eto_to_social_unrest',
-        name: 'ETO 活动引发社会动荡',
+        name: t("ETO 活动引发社会动荡"),
         conditionEventId: 'random_eto_activity',
         triggerDelay: 2,
         resultEventId: 'random_civil_protest',
@@ -79,7 +81,7 @@ export class EcologyChain {
       },
       {
         id: 'protest_to_exile',
-        name: '抗议升级为逃亡主义',
+        name: t("抗议升级为逃亡主义"),
         conditionEventId: 'random_civil_protest',
         triggerDelay: 4,
         resultEventId: 'random_exile_movement',
@@ -92,7 +94,7 @@ export class EcologyChain {
       // === 科技危机链 ===
       {
         id: 'experiment_accident',
-        name: '实验事故引发连锁反应',
+        name: t("实验事故引发连锁反应"),
         conditionEventId: 'random_experiment_failure',
         triggerDelay: 2,
         resultEventId: 'random_tech_disaster',
@@ -105,7 +107,7 @@ export class EcologyChain {
       // === 军事链 ===
       {
         id: 'fleet_loss_to_unrest',
-        name: '舰队损失引发民心不稳',
+        name: t("舰队损失引发民心不稳"),
         conditionEventId: 'random_fleet_ambush',
         triggerDelay: 2,
         resultEventId: 'random_military_setback_aftermath',
@@ -118,7 +120,7 @@ export class EcologyChain {
       // === 威慑危机链 ===
       {
         id: 'deterrence_drop_to_crisis',
-        name: '威慑度下降引发危机',
+        name: t("威慑度下降引发危机"),
         conditionEventId: 'random_deterrence_incident',
         triggerDelay: 3,
         resultEventId: 'random_foil_warning',
@@ -131,7 +133,7 @@ export class EcologyChain {
       // === 生存链 ===
       {
         id: 'famine_to_population',
-        name: '饥荒引发人口危机',
+        name: t("饥荒引发人口危机"),
         conditionEventId: 'random_famine_event',
         triggerDelay: 4,
         resultEventId: 'random_population_collapse',

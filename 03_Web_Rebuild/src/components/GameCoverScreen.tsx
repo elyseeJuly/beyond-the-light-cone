@@ -249,8 +249,8 @@ export const GameCoverScreen: React.FC<GameCoverScreenProps> = ({
       <footer className="relative z-20 p-5 bg-black/60 border-t border-[var(--color-primary)]/10 backdrop-blur-sm flex flex-col sm:flex-row items-center justify-between text-[10px] text-[var(--text-secondary)]/50 gap-2 shrink-0">
         <div>© 2026 EMBEROIS GAME STUDIO. ALL RIGHTS RESERVED.</div>
         <div className="flex items-center gap-4">
-          <span>美术：银河全息美术馆</span>
-          <span>系统重构：Google DeepMind - Antigravity</span>
+          <span>{t("美术：银河全息美术馆")}</span>
+          <span>{t("系统重构：Google DeepMind - Antigravity")}</span>
         </div>
       </footer>
 

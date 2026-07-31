@@ -31,24 +31,11 @@ export class WallfacerPanel {
         ? `<img src="${avatarUrl}" onerror="this.style.display='none'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--color-primary);margin-right:12px;" />`
         : `<div style="width:32px;height:32px;border-radius:50%;background:var(--border-glass);display:flex;align-items:center;justify-content:center;font-size:0.8rem;margin-right:12px;">${(t(name) || '?')[0]}</div>`;
 
-      wallfacersHtml += `
-        <div style="padding: 8px 16px; background: var(--color-primary-glass); border: 1px solid var(--color-primary); border-radius: 8px; display: flex; align-items: center; margin-bottom: 8px;">
-          ${avatarHtml}
-          <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: var(--text-primary); font-weight: bold;">${t(name)}</span>
-            <span style="color: var(--text-secondary); font-size: 0.9rem;">(${t("建立效率")}: ${(p?.leadership || 0) + (p?.art || 0)})</span>
-            <button class="btn-glass btn-remove-wallfacer" data-name="${name}" style="padding: 4px 8px; border-color: #E65100; color: #E65100;">${t("撤销")}</button>
-          </div>
-        </div>
-      `;
+      wallfacersHtml += t("\n        <div style=\"padding: 8px 16px; background: var(--color-primary-glass); border: 1px solid var(--color-primary); border-radius: 8px; display: flex; align-items: center; margin-bottom: 8px;\">\n          {param0}\n          <div style=\"flex: 1; display: flex; justify-content: space-between; align-items: center;\">\n            <span style=\"color: var(--text-primary); font-weight: bold;\">{param1}</span>\n            <span style=\"color: var(--text-secondary); font-size: 0.9rem;\">({param2}: {param3})</span>\n            <button class=\"btn-glass btn-remove-wallfacer\" data-name=\"{param4}\" style=\"padding: 4px 8px; border-color: #E65100; color: #E65100;\">{param5}</button>\n          </div>\n        </div>\n      ", { param0: avatarHtml, param1: t(name), param2: t("建立效率"), param3: (p?.leadership || 0) + (p?.art || 0), param4: name, param5: t("撤销") });
     });
 
     if (earth.wallfacers.size < 4) {
-      wallfacersHtml += `
-        <button class="btn-primary" id="btn-add-wallfacer" style="width: 100%; padding: 12px; margin-top: 8px;">
-          ➕ ${t("选定新面壁者")} (${earth.wallfacers.size}/4)
-        </button>
-      `;
+      wallfacersHtml += t("\n        <button class=\"btn-primary\" id=\"btn-add-wallfacer\" style=\"width: 100%; padding: 12px; margin-top: 8px;\">\n          ➕ {param0} ({param1}/4)\n        </button>\n      ", { param0: t("选定新面壁者"), param1: earth.wallfacers.size });
     }
 
     // 执剑人渲染
@@ -60,61 +47,23 @@ export class WallfacerPanel {
         ? `<img src="${avatarUrl}" onerror="this.style.display='none'" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--color-primary);margin-bottom:12px;" />`
         : `<div style="width:80px;height:80px;border-radius:50%;background:var(--color-primary-glass);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--color-primary);margin:0 auto 12px;">${(t(earth.swordholder) || '?')[0]}</div>`;
 
-      swordholderHtml = `
-        <div style="padding: 16px; background: var(--color-primary-glass); border: 1px solid var(--color-primary); border-radius: 8px; text-align: center;">
-          ${avatarHtml}
-          <h3 style="color: var(--color-primary); margin: 0 0 8px 0;">${t("现任执剑人")}: ${t(earth.swordholder)}</h3>
-          <p style="color: var(--text-secondary); margin: 0 0 12px 0;">${t("该执剑人的威慑度评估为")}: <b style="color: var(--text-primary);">${sh?.leadership || 0}%</b></p>
-          <button class="btn-glass" id="btn-change-swordholder">${t("更换执剑人")}</button>
-        </div>
-      `;
+      swordholderHtml = t("\n        <div style=\"padding: 16px; background: var(--color-primary-glass); border: 1px solid var(--color-primary); border-radius: 8px; text-align: center;\">\n          {param0}\n          <h3 style=\"color: var(--color-primary); margin: 0 0 8px 0;\">{param1}: {param2}</h3>\n          <p style=\"color: var(--text-secondary); margin: 0 0 12px 0;\">{param3}: <b style=\"color: var(--text-primary);\">{param4}%</b></p>\n          <button class=\"btn-glass\" id=\"btn-change-swordholder\">{param5}</button>\n        </div>\n      ", { param0: avatarHtml, param1: t("现任执剑人"), param2: t(earth.swordholder), param3: t("该执剑人的威慑度评估为"), param4: sh?.leadership || 0, param5: t("更换执剑人") });
     } else {
-      swordholderHtml = `
-        <div style="padding: 16px; background: var(--border-glass); border: 1px dashed var(--border-glass-strong); border-radius: 8px; text-align: center;">
-          <p style="color: var(--text-secondary); margin: 0 0 12px 0;">${t("当前未设立执剑人，地球时刻面临异星打击风险。")}</p>
-          <button class="btn-primary" id="btn-change-swordholder">${t("设立执剑人")}</button>
-        </div>
-      `;
+      swordholderHtml = t("\n        <div style=\"padding: 16px; background: var(--border-glass); border: 1px dashed var(--border-glass-strong); border-radius: 8px; text-align: center;\">\n          <p style=\"color: var(--text-secondary); margin: 0 0 12px 0;\">{param0}</p>\n          <button class=\"btn-primary\" id=\"btn-change-swordholder\">{param1}</button>\n        </div>\n      ", { param0: t("当前未设立执剑人，地球时刻面临异星打击风险。"), param1: t("设立执剑人") });
     }
 
-    this.content.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-        <!-- 左侧：面壁者 -->
-        <div>
-          <h3 style="color: var(--color-primary); border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
-            ${t("面壁计划")}
-          </h3>
-          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
-            ${t("面壁者不需要向外界解释自己的计划。他们的高维属性将隐性地快速累加地球的威慑值。")}
-          </p>
-          ${wallfacersHtml}
-        </div>
-
-        <!-- 右侧：执剑人与威慑 -->
-        <div>
-          <h3 style="color: var(--color-primary); border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
-            ${t("黑暗森林威慑")}
-          </h3>
-          <div style="margin-bottom: 24px;">
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">${t("当前文明威慑值积累")}：</p>
-            <div style="width: 100%; height: 8px; background: var(--border-glass); border-radius: 4px; overflow: hidden;">
-              <div style="width: ${Math.min(earth.deterrenceValue, 100)}%; height: 100%; background: var(--color-primary); transition: width 0.3s;"></div>
-            </div>
-            <p style="text-align: right; color: var(--color-primary); font-size: 0.8rem; margin-top: 4px;">${Math.floor(earth.deterrenceValue)} / 100</p>
-          </div>
-          
-          ${swordholderHtml}
-
-          <!-- 终极广播按钮 -->
-          <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(231, 76, 60, 0.3); text-align: center;">
-            <button class="btn-primary" id="btn-broadcast" style="background: rgba(231, 76, 60, 0.1); border-color: #E74C3C; color: #E74C3C; width: 100%;">
-              ⚠️ 广播宇宙坐标 (终极威慑)
-            </button>
-            <p style="color: var(--color-danger); font-size: 0.8rem; margin-top: 8px;">一旦按下，太阳系坐标将暴露，敌我双方将共同走向毁灭。</p>
-          </div>
-        </div>
-      </div>
-    `;
+    this.content.innerHTML = t("\n      <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 24px;\">\n        <!-- Left: Wallfacers -->\n        <div>\n          <h3 style=\"color: var(--color-primary); border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;\">\n            {param0}\n          </h3>\n          <p style=\"color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;\">\n            {param1}\n          </p>\n          {param2}\n        </div>\n\n        <!-- Right: Swordholder and Deterrence -->\n        <div>\n          <h3 style=\"color: var(--color-primary); border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;\">\n            {param3}\n          </h3>\n          <div style=\"margin-bottom: 24px;\">\n            <p style=\"color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;\">{param4}</p>\n            <div style=\"width: 100%; height: 8px; background: var(--border-glass); border-radius: 4px; overflow: hidden;\">\n              <div style=\"width: {param5}%; height: 100%; background: var(--color-primary); transition: width 0.3s;\"></div>\n            </div>\n            <p style=\"text-align: right; color: var(--color-primary); font-size: 0.8rem; margin-top: 4px;\">{param6} / 100</p>\n          </div>\n          \n          {param7}\n\n          <!-- Ultimate Broadcast Button -->\n          <div style=\"margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(231, 76, 60, 0.3); text-align: center;\">\n            <button class=\"btn-primary\" id=\"btn-broadcast\" style=\"background: rgba(231, 76, 60, 0.1); border-color: #E74C3C; color: #E74C3C; width: 100%;\">\n              {param8}\n            </button>\n            <p style=\"color: var(--color-danger); font-size: 0.8rem; margin-top: 8px;\">{param9}</p>\n          </div>\n        </div>\n      </div>\n    ", { 
+      param0: t("面壁计划"), 
+      param1: t("面壁者不需要向外界解释自己的计划。他们的高维属性将隐性地快速累加地球的威慑值。"), 
+      param2: wallfacersHtml, 
+      param3: t("黑暗森林威慑"), 
+      param4: t("当前文明威慑值积累："), 
+      param5: Math.min(earth.deterrenceValue, 100), 
+      param6: Math.floor(earth.deterrenceValue), 
+      param7: swordholderHtml,
+      param8: t("⚠️ 广播宇宙坐标 (终极威慑)"),
+      param9: t("一旦按下，太阳系坐标将暴露，敌我双方将共同走向毁灭。")
+    });
 
     this.bindEvents(game, earth);
   }
@@ -160,12 +109,12 @@ export class WallfacerPanel {
     const btnBroadcast = document.getElementById("btn-broadcast");
     if (btnBroadcast) {
       btnBroadcast.addEventListener("click", () => {
-        if (confirm("警告：您确定要广播宇宙坐标吗？游戏将以双方毁灭告终！")) {
+        if (confirm(t("警告：您确定要广播宇宙坐标吗？游戏将以双方毁灭告终！"))) {
           const game = GameInstance.get();
           const tm = earth.tecTreeManager;
-          const survives = tm.isTecFinishedAnywhere("黑域生成") || 
-                           tm.isTecFinishedAnywhere("数字方舟") || 
-                           tm.isTecFinishedAnywhere("新家园选址") ||
+          const survives = tm.isTecFinishedAnywhere(t("黑域生成")) || 
+                           tm.isTecFinishedAnywhere(t("数字方舟")) || 
+                           tm.isTecFinishedAnywhere(t("新家园选址")) ||
                            game.hasFlag("galaxy_exodus_seen") || 
                            game.hasFlag("wandering_completed");
 

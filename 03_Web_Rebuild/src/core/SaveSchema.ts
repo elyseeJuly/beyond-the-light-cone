@@ -1,5 +1,5 @@
 import { z } from 'zod';
-
+import { t } from "../utils/i18n";
 
 /**
  * SaveSchema - 使用 Zod 定义存档相关数据契约
@@ -64,7 +64,7 @@ export type ValidatedRuinRecord = z.infer<typeof ruinRecordSchema>;
 export function validateSavePackage(value: unknown): ValidatedSavePackage {
   const result = savePackageSchema.safeParse(value);
   if (!result.success) {
-    throw new Error(`SavePackage 校验失败: ${result.error.message}`);
+    throw new Error(t("SavePackage 校验失败: {param0}", { param0: result.error.message }));
   }
   return result.data;
 }
@@ -75,7 +75,7 @@ export function validateSavePackage(value: unknown): ValidatedSavePackage {
 export function validateSaveMeta(value: unknown): ValidatedSaveMeta {
   const result = saveMetaSchema.safeParse(value);
   if (!result.success) {
-    throw new Error(`SaveMeta 校验失败: ${result.error.message}`);
+    throw new Error(t("SaveMeta 校验失败: {param0}", { param0: result.error.message }));
   }
   return result.data;
 }
@@ -86,7 +86,7 @@ export function validateSaveMeta(value: unknown): ValidatedSaveMeta {
 export function validateSaveIndex(value: unknown): ValidatedSaveIndex {
   const result = saveIndexSchema.safeParse(value);
   if (!result.success) {
-    throw new Error(`SaveIndex 校验失败: ${result.error.message}`);
+    throw new Error(t("SaveIndex 校验失败: {param0}", { param0: result.error.message }));
   }
   return result.data;
 }

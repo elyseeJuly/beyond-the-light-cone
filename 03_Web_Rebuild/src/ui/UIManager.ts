@@ -5,6 +5,7 @@ import { Star } from "../core/Star";
 import { DepartmentPanel } from "./DepartmentPanel";
 import { wallfacerPanel } from "./WallfacerPanel";
 import { createFleet } from "../core/Fleet";
+import { t } from "../utils/i18n";
 
 export class UIManager {
   private starMap: StarMapRenderer;
@@ -55,7 +56,7 @@ export class UIManager {
             if (deptType === 4) {
               wallfacerPanel.open();
             } else {
-              this.deptPanel.open(deptType, target.textContent || "部门");
+              this.deptPanel.open(deptType, target.textContent || t("部门"));
             }
           }
         }
@@ -90,10 +91,10 @@ export class UIManager {
     const earth = game.earthCivi;
 
     // Update Top Bar Stats
-    const epochNames = ["黄金岁月", "危机纪元", "威慑纪元", "广播纪元", "掩体纪元", "银河纪元", "星屑纪元"];
-    const epochStr = epochNames[game.getEpoch()] || "未知纪元";
+    const epochNames = [t("黄金岁月"), t("危机纪元"), t("威慑纪元"), t("广播纪元"), t("掩体纪元"), t("银河纪元"), t("星屑纪元")];
+    const epochStr = epochNames[game.getEpoch()] || t("未知纪元");
     
-    this.setText("ui-epoch", `${epochStr} ${game.getYear()} 年`);
+    this.setText("ui-epoch", t("{param0} {param1} 年", { param0: epochStr, param1: game.getYear() }));
     this.setText("ui-population", earth.population.toString());
     this.setText("ui-economy", earth.economy.toString());
     this.setText("ui-culture", earth.culture.toString());
@@ -107,48 +108,34 @@ export class UIManager {
     this.setText("panel-title", star.name);
     
     const game = GameInstance.get();
-    const isEarth = star.belongToCivi === "地球";
+    const isEarth = star.belongToCivi === t("地球");
 
-    let html = `
-      <div style="margin-bottom: 12px;">
-        <span style="color: var(--text-accent)">所属:</span> 
-        <span style="color: ${isEarth ? '#00E5FF' : '#fff'}">${star.belongToCivi || "无"}</span>
-      </div>
-      <div style="margin-bottom: 12px;">
-        <span style="color: var(--text-accent)">资源总量:</span> ${star.totalResource}
-      </div>
-      <div style="margin-bottom: 12px;">
-        <span style="color: var(--text-accent)">人口限制:</span> ${star.populationLimit}
-      </div>
-    `;
+    let html = t("\n      <div style=\"margin-bottom: 12px;\">\n        <span style=\"color: var(--text-accent)\">{param4}:</span> \n        <span style=\"color: {param0}\">{param1}</span>\n      </div>\n      <div style=\"margin-bottom: 12px;\">\n        <span style=\"color: var(--text-accent)\">{param5}:</span> {param2}\n      </div>\n      <div style=\"margin-bottom: 12px;\">\n        <span style=\"color: var(--text-accent)\">{param6}:</span> {param3}\n      </div>\n    ", { 
+      param0: isEarth ? '#00E5FF' : '#fff', 
+      param1: star.belongToCivi || t("无"), 
+      param2: star.totalResource, 
+      param3: star.populationLimit,
+      param4: t("所属"),
+      param5: t("资源总量"),
+      param6: t("人口限制")
+    });
 
     if (isEarth) {
-      html += `
-        <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
-          <h4 style="color: var(--text-secondary); margin: 0 0 8px 0;">行星设施</h4>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn-glass" id="btn-build-stope" style="width: 100%; text-align: left; ${star.hasStope ? 'color: #00E5FF;' : ''}">
-              ${star.hasStope ? '✅' : '➕'} 采矿场
-            </button>
-            <button class="btn-glass" id="btn-build-factory" style="width: 100%; text-align: left; ${star.hasFactory ? 'color: #00E5FF;' : ''}">
-              ${star.hasFactory ? '✅' : '➕'} 加工厂
-            </button>
-            <button class="btn-glass" id="btn-build-city" style="width: 100%; text-align: left; ${star.hasCity ? 'color: #00E5FF;' : ''}">
-              ${star.hasCity ? '✅' : '➕'} 太空城市
-            </button>
-          </div>
-        </div>
-
-        <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
-          <h4 style="color: var(--text-secondary); margin: 0 0 8px 0;">军工与舰队</h4>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn-primary" id="btn-build-fleet" style="width: 100%; padding: 8px;">建造恒星级战舰 (10 艘)</button>
-            <button class="btn-glass" id="btn-dispatch-fleet" style="width: 100%; border-color: #FF5500; color: #FF5500;">
-              🚀 组建并派遣第一舰队
-            </button>
-          </div>
-        </div>
-      `;
+      html += t("\n        <div style=\"margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;\">\n          <h4 style=\"color: var(--text-secondary); margin: 0 0 8px 0;\">{param6}</h4>\n          <div style=\"display: flex; flex-direction: column; gap: 8px;\">\n            <button class=\"btn-glass\" id=\"btn-build-stope\" style=\"width: 100%; text-align: left; {param0}\">\n              {param1} {param7}\n            </button>\n            <button class=\"btn-glass\" id=\"btn-build-factory\" style=\"width: 100%; text-align: left; {param2}\">\n              {param3} {param8}\n            </button>\n            <button class=\"btn-glass\" id=\"btn-build-city\" style=\"width: 100%; text-align: left; {param4}\">\n              {param5} {param9}\n            </button>\n          </div>\n        </div>\n\n        <div style=\"margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;\">\n          <h4 style=\"color: var(--text-secondary); margin: 0 0 8px 0;\">{param10}</h4>\n          <div style=\"display: flex; flex-direction: column; gap: 8px;\">\n            <button class=\"btn-primary\" id=\"btn-build-fleet\" style=\"width: 100%; padding: 8px;\">{param11}</button>\n            <button class=\"btn-glass\" id=\"btn-dispatch-fleet\" style=\"width: 100%; border-color: #FF5500; color: #FF5500;\">\n              {param12}\n            </button>\n          </div>\n        </div>\n      ", { 
+        param0: star.hasStope ? 'color: #00E5FF;' : '', 
+        param1: star.hasStope ? '✅' : '➕', 
+        param2: star.hasFactory ? 'color: #00E5FF;' : '', 
+        param3: star.hasFactory ? '✅' : '➕', 
+        param4: star.hasCity ? 'color: #00E5FF;' : '', 
+        param5: star.hasCity ? '✅' : '➕',
+        param6: t("行星设施"),
+        param7: t("采矿场"),
+        param8: t("加工厂"),
+        param9: t("太空城市"),
+        param10: t("军工与舰队"),
+        param11: t("建造恒星级战舰 (10 艘)"),
+        param12: t("🚀 组建并派遣第一舰队")
+      });
     }
 
     const content = document.getElementById("panel-content");
@@ -171,23 +158,23 @@ export class UIManager {
         document.getElementById("btn-build-fleet")?.addEventListener("click", () => {
           if (game.earthCivi.economy >= 100) {
             game.earthCivi.economy -= 100;
-            game.addHistory(`在 ${star.name} 开始建造恒星级战舰 10 艘！`);
+            game.addHistory(t("在 {param0} 开始建造恒星级战舰 10 艘！", { param0: star.name }));
             this.updateUI();
           } else {
-            alert("经济不足 100 点！");
+            alert(t("经济不足 100 点！"));
           }
         });
 
         document.getElementById("btn-dispatch-fleet")?.addEventListener("click", () => {
           // 组建舰队向目标出击（这里简单演示写死派往木星 index=5）
-          const fleet = createFleet("地球第一舰队", "地球", star.index, 5, 3);
+          const fleet = createFleet(t("地球第一舰队"), t("地球"), star.index, 5, 3);
           // 舰队统帅假设选章北海 (如果有的话，没有就是null)
-          fleet.leaderName = "章北海";
+          fleet.leaderName = t("章北海");
           // 加入刚才建造的武器
-          fleet.weapons.push({ weaponName: "恒星级战舰", currentBuild: 10 });
+          fleet.weapons.push({ weaponName: t("恒星级战舰"), currentBuild: 10 });
           
           game.earthCivi.fleets.push(fleet);
-          game.addHistory(`【出征】组建 ${fleet.name} 离开 ${star.name}，目标木星，预计 3 回合后抵达。`);
+          game.addHistory(t("【出征】组建 {param0} 离开 {param1}，目标木星，预计 3 回合后抵达。", { param0: fleet.name, param1: star.name }));
         });
       }
     }

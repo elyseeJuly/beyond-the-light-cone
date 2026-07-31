@@ -10,6 +10,7 @@
  */
 
 import type { HotPatch, PatchType, AssetManifest } from '../types/asset';
+import { t } from "../utils/i18n";
 
 /** IndexedDB Store 名 */
 const PATCH_DB_NAME = 'BeyondLightCone_Patches';
@@ -38,9 +39,9 @@ export class PatchManager {
     try {
       await this.openDB();
       await this.loadHistory();
-      console.log(`[PatchManager] 初始化完成：${this.patches.length} 个补丁可用，${this.history.length} 个已应用`);
+      console.log(t("[PatchManager] 初始化完成：{param0} 个补丁可用，{param1} 个已应用", { param0: this.patches.length, param1: this.history.length }));
     } catch (err) {
-      console.warn('[PatchManager] IndexedDB 不可用，使用内存模式:', err);
+      console.warn(t("[PatchManager] IndexedDB 不可用，使用内存模式:"), err);
     }
   }
 
@@ -89,7 +90,7 @@ export class PatchManager {
         await this.applySinglePatch(patch);
         applied.push(patch);
       } catch (err) {
-        console.error(`[PatchManager] 补丁 ${patch.version} 应用失败:`, err);
+        console.error(t("[PatchManager] 补丁 {param0} 应用失败:", { param0: patch.version }), err);
       }
     }
 
@@ -187,7 +188,7 @@ export class PatchManager {
   private async applySinglePatch(patch: HotPatch): Promise<void> {
     // 验证兼容性
     if (patch.minCompatibleVersion > this.currentGameVersion) {
-      throw new Error(`补丁 ${patch.version} 需要游戏版本 >= ${patch.minCompatibleVersion}`);
+      throw new Error(t("补丁 {param0} 需要游戏版本 >= {param1}", { param0: patch.version, param1: patch.minCompatibleVersion }));
     }
 
     // 记录到历史
@@ -210,7 +211,7 @@ export class PatchManager {
       });
     }
 
-    console.log(`[PatchManager] ✅ 补丁 ${patch.version} 已应用: ${patch.description}`);
+    console.log(t("[PatchManager] ✅ 补丁 {param0} 已应用: {param1}", { param0: patch.version, param1: patch.description }));
   }
 
   /** 释放数据库连接 */

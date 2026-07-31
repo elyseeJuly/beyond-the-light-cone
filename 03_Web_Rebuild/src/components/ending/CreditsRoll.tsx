@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { KeyDecisionRetrospective } from './KeyDecisionRetrospective';
 import { GameInstance } from '../../core/Game';
+import { t } from "../../utils/i18n";
 
 interface Props {
   config: EndingConfig;
@@ -82,7 +83,7 @@ export const CreditsRoll: React.FC<Props> = ({
                 />
               ))}
             </div>
-            <span className="tracking-widest uppercase text-white/50">主题曲：《Stardust Exodus》</span>
+            <span className="tracking-widest uppercase text-white/50">{t("主题曲：《Stardust Exodus》")}</span>
           </div>
         </div>
       )}
@@ -90,8 +91,7 @@ export const CreditsRoll: React.FC<Props> = ({
       {!musicAvailable && (
         <div className="absolute top-6 right-6 z-20">
           <p className="text-white/15 text-[10px] tracking-widest uppercase">
-            🎵 主题曲：《Stardust Exodus》 待添加 → public/audio/ending_stardust_exodus.mp3
-          </p>
+            {t("🎵 主题曲：《Stardust Exodus》 待添加 → public/audio/ending_stardust_exodus.mp3")}</p>
         </div>
       )}
 
@@ -119,10 +119,9 @@ export const CreditsRoll: React.FC<Props> = ({
               className="text-4xl font-black tracking-tight mb-3"
               style={{ color: config.accentColor }}
             >
-              光锥之外：纪元往事
-            </h1>
+              {t("光锥之外：纪元往事")}</h1>
             <p className="text-lg text-white/50 italic tracking-wider">Beyond the Light Cone: Epoch Chronicles</p>
-            <p className="text-[10px] text-white/30 tracking-[0.25em] uppercase mt-2">— 宇宙群英传重构计划 / Legend of Uni Rebuild —</p>
+            <p className="text-[10px] text-white/30 tracking-[0.25em] uppercase mt-2">{t("— 宇宙群英传重构计划 / Legend of Uni Rebuild —")}</p>
           </div>
 
           {/* Ending achieved */}
@@ -156,9 +155,8 @@ export const CreditsRoll: React.FC<Props> = ({
               style={{ backgroundColor: config.accentColor + '44' }}
             />
             <p className="text-white/40 text-lg italic max-w-md leading-relaxed">
-              "给岁月以文明，而不是给文明以岁月。"
-            </p>
-            <p className="text-white/20 text-xs mt-4 tracking-widest">— 大低谷纪念碑铭文</p>
+              {t("\"给岁月以文明，而不是给文明以岁月。\"")}</p>
+            <p className="text-white/20 text-xs mt-4 tracking-widest">{t("— 大低谷纪念碑铭文")}</p>
           </div>
 
           {/* Thank you */}
@@ -167,8 +165,7 @@ export const CreditsRoll: React.FC<Props> = ({
               className="text-3xl font-black tracking-wider"
               style={{ color: config.accentColor + 'AA' }}
             >
-              感谢您的游玩
-            </p>
+              {t("感谢您的游玩")}</p>
             <p className="text-white/20 text-sm mt-4 tracking-widest uppercase">
               Thank You For Playing
             </p>
@@ -196,8 +193,7 @@ export const CreditsRoll: React.FC<Props> = ({
           {/* Right: Actions */}
           <div className="flex flex-col gap-4 w-full md:w-auto max-w-xs shrink-0 pointer-events-auto">
             <h4 className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-white/45 text-center md:text-left mb-2">
-              Timeline Command // 时间线指令
-            </h4>
+              {t("Timeline Command // 时间线指令")}</h4>
             
             {/* 1. 重新启航 */}
             <button
@@ -209,8 +205,7 @@ export const CreditsRoll: React.FC<Props> = ({
               }}
             >
               <RefreshCw size={16} className="group-hover:rotate-180 transition-transform duration-700 text-yellow-400" />
-              重新启航 (新周目)
-            </button>
+              {t("重新启航 (新周目)")}</button>
 
             {/* 2. 时间回溯 */}
             <button
@@ -223,8 +218,7 @@ export const CreditsRoll: React.FC<Props> = ({
               }}
             >
               <RotateCcw size={16} className="group-hover:-rotate-180 transition-transform duration-700 text-cyan-400" />
-              时间回溯 (穿梭)
-            </button>
+              {t("时间回溯 (穿梭)")}</button>
 
             {/* 3. 观察者模式 */}
             <button
@@ -236,8 +230,7 @@ export const CreditsRoll: React.FC<Props> = ({
               }}
             >
               <Eye size={16} className="group-hover:scale-110 transition-transform duration-300 text-purple-400" />
-              宇宙观察者模式
-            </button>
+              {t("宇宙观察者模式")}</button>
           </div>
         </div>
       )}

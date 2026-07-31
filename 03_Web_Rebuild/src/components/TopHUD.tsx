@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Brain, Zap } from 'lucide-react';
+import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Brain, Zap, BookOpen } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { useTranslation } from '../utils/i18n';
 
@@ -296,7 +296,7 @@ export const TopHUD: React.FC = () => {
           className="flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-500/20 text-cyan-300 text-[10px] md:text-xs transition-colors cursor-pointer"
           title={t("智脑顾问")}
         >
-          <Brain className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5] text-cyan-400" />
+          <BookOpen className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5] text-cyan-400" />
           <span className="font-title font-bold hidden md:inline">{t("智脑顾问")}</span>
         </button>
 
@@ -305,7 +305,7 @@ export const TopHUD: React.FC = () => {
           onClick={toggleAiBrain}
           disabled={isTutorialActive}
           data-tutorial-id="btn-ai-brain"
-          className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors ${
+          className={`flex items-center justify-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 rounded border text-[10px] md:text-xs transition-colors ${
             isTutorialActive ? 'opacity-40 cursor-not-allowed pointer-events-none border-gray-700/50 text-gray-600' :
             stats.isAiBrainEnabled
               ? 'bg-purple-500/20 border-purple-500/50 text-purple-300 cursor-pointer'
@@ -313,6 +313,10 @@ export const TopHUD: React.FC = () => {
           }`}
           title={isTutorialActive ? t("教程期间不可切换智脑托管") : (stats.isAiBrainEnabled ? t("智脑托管") : t("手动"))}
         >
+          <Brain className={`w-3 h-3 md:w-3.5 md:h-3.5 stroke-[1.5] ${
+            isTutorialActive ? 'text-gray-600 opacity-60' :
+            stats.isAiBrainEnabled ? 'text-purple-400' : 'text-gray-400 opacity-80'
+          }`} />
           <span className="font-title font-bold hidden md:inline">
             {isTutorialActive ? t("教程中") : (stats.isAiBrainEnabled ? t("智脑托管") : t("手动"))}
           </span>
@@ -323,6 +327,16 @@ export const TopHUD: React.FC = () => {
           onClick={handleNextTurn}
           disabled={stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) || (isTutorialActive && currentTutorialStepId !== 'next-turn')}
           data-tutorial-id="btn-next-turn"
+          title={
+            stats.isGameOver ? t("游戏已结束") :
+            stats.hasEvent ? t("请先处理完当前的事件或决策") :
+            (isTutorialActive && currentTutorialStepId !== 'next-turn') ? t("请跟随教程指引操作") :
+            (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0)
+              ? `${t("无法推进回合，存在以下阻断事务：")}\n${stats.turnBlockers.map(b => `• ${t(b)}`).join('\n')}`
+              : stats.turnWarnings.length > 0
+                ? `${t("警告（不影响回合推进）：")}\n${stats.turnWarnings.map(w => `• ${t(w)}`).join('\n')}`
+                : t("进入下一回合")
+          }
           className={`btn-next-turn flex items-center gap-1 md:gap-2 text-[10px] md:text-xs ${
             (stats.hasEvent || stats.isGameOver || (!stats.isAiBrainEnabled && stats.turnBlockers.length > 0) || (isTutorialActive && currentTutorialStepId !== 'next-turn'))
               ? 'opacity-40 cursor-not-allowed pointer-events-none'

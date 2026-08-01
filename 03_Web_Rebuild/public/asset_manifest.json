@@ -1,7 +1,7 @@
 {
   "version": "1.0.7",
   "gameVersion": "1.0.7",
-  "generatedAt": 1785142575383,
+  "generatedAt": 1785565076094,
   "core": [
     {
       "id": "distribution",
@@ -433,9 +433,9 @@
           "deterrence_era"
         ],
         "era": "deterrence_era",
-        "size": 7543470,
+        "size": 1742117,
         "displayName": "deterrence_established",
-        "hash": "469f0004",
+        "hash": "ca2cd67",
         "isDefault": false
       },
       {
@@ -991,9 +991,9 @@
           "endings"
         ],
         "era": "endings",
-        "size": 6636474,
+        "size": 1336775,
         "displayName": "defeat_dimension_strike",
-        "hash": "50839a0c",
+        "hash": "5e2140ea",
         "isDefault": false
       },
       {
@@ -1215,9 +1215,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1093076,
+        "size": 756209,
         "displayName": "civilian",
-        "hash": "3dd3619a",
+        "hash": "35cb0a7f",
         "isDefault": false
       },
       {
@@ -1243,9 +1243,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 917568,
+        "size": 812993,
         "displayName": "engineer",
-        "hash": "66112e00",
+        "hash": "67c83d1e",
         "isDefault": false
       },
       {
@@ -1271,9 +1271,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 943033,
+        "size": 674779,
         "displayName": "merchant",
-        "hash": "17691c07",
+        "hash": "1c5cd039",
         "isDefault": false
       },
       {
@@ -1285,9 +1285,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1032659,
+        "size": 759134,
         "displayName": "military_commander",
-        "hash": "31853f1d",
+        "hash": "3dab93f6",
         "isDefault": false
       },
       {
@@ -1327,9 +1327,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 937373,
+        "size": 708549,
         "displayName": "politician",
-        "hash": "2c9f432f",
+        "hash": "290bc6f8",
         "isDefault": false
       },
       {
@@ -1355,9 +1355,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 986891,
+        "size": 779982,
         "displayName": "refugee",
-        "hash": "175f665",
+        "hash": "4ec5e64",
         "isDefault": false
       },
       {
@@ -1369,9 +1369,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1137958,
+        "size": 812241,
         "displayName": "scientist",
-        "hash": "3781b7d",
+        "hash": "2df9b515",
         "isDefault": false
       },
       {
@@ -1453,9 +1453,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1051369,
+        "size": 795748,
         "displayName": "dashi_1778921331273",
-        "hash": "577f29c7",
+        "hash": "2f59564",
         "isDefault": false
       },
       {
@@ -1509,9 +1509,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 878902,
+        "size": 787180,
         "displayName": "guanyifan_1779691901857",
-        "hash": "c3f81bf",
+        "hash": "a982f30",
         "isDefault": false
       },
       {
@@ -1551,9 +1551,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 879347,
+        "size": 875804,
         "displayName": "huahua_1780649946315",
-        "hash": "a8b4ac2",
+        "hash": "a8d09f8",
         "isDefault": false
       },
       {
@@ -1579,9 +1579,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 874306,
+        "size": 785384,
         "displayName": "keiko_1779713141458",
-        "hash": "3a79e880",
+        "hash": "38d39cb7",
         "isDefault": false
       },
       {
@@ -1635,9 +1635,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 815503,
+        "size": 967654,
         "displayName": "luoji_1778921262534",
-        "hash": "78ea0ad7",
+        "hash": "76edcf98",
         "isDefault": false
       },
       {
@@ -1761,9 +1761,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 848446,
+        "size": 1072349,
         "displayName": "wade_1778921437022",
-        "hash": "18d13b7",
+        "hash": "4918a21f",
         "isDefault": false
       },
       {
@@ -1817,9 +1817,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 969653,
+        "size": 765909,
         "displayName": "yanjing_1780649978771",
-        "hash": "5df01ae7",
+        "hash": "615b92f3",
         "isDefault": false
       },
       {
@@ -1831,9 +1831,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 830601,
+        "size": 762961,
         "displayName": "yewenjie_1778921299091",
-        "hash": "17610d84",
+        "hash": "15d77023",
         "isDefault": false
       },
       {
@@ -1845,9 +1845,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1121778,
+        "size": 883353,
         "displayName": "yiyi_1780649999542",
-        "hash": "4e13c719",
+        "hash": "592c657e",
         "isDefault": false
       },
       {
@@ -1885,7 +1885,7 @@
         "name": "人物立绘包",
         "description": "全部角色与 NPC 立绘资源",
         "type": "character_pack",
-        "totalSize": 46291321,
+        "totalSize": 43973087,
         "assetIds": [
           "npc_ai_terminal",
           "npc_civilian",
@@ -1970,7 +1970,7 @@
         "name": "威慑纪元包",
         "description": "威慑纪元事件 CG 资源",
         "type": "era_pack",
-        "totalSize": 39658612,
+        "totalSize": 33857259,
         "assetIds": [
           "cg_australia_migration",
           "cg_black_domain_debate",
@@ -2064,7 +2064,7 @@
         "name": "结局 CG 包",
         "description": "全部结局插画资源",
         "type": "cg_pack",
-        "totalSize": 148406355,
+        "totalSize": 143106656,
         "assetIds": [
           "ending_conquest",
           "ending_death_of_the_light_cone",

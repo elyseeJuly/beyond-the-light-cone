@@ -53,31 +53,46 @@ const MinimalistTitleCard: React.FC<{ mainText: string; subText?: string; durati
   );
 };
 
-const MinimalistGameplayWithText: React.FC<{ src: string; startFrame: number; duration: number; speed?: number; text?: string }> = ({ src, startFrame, duration, speed = 1, text }) => {
+// Pure Text Overlay that spans multiple clips
+const OverlayText: React.FC<{ text: string; duration: number }> = ({ text, duration }) => {
   const frame = useCurrentFrame();
   const textOpacity = interpolate(frame, [10, 25, duration - 25, duration - 10], [0, 1, 1, 0], { extrapolateRight: 'clamp' });
+  
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+      <h2 style={{
+        color: '#fff',
+        fontSize: 48,
+        fontWeight: 200,
+        letterSpacing: '0.4em',
+        opacity: textOpacity,
+        textShadow: '0 0 40px rgba(0,0,0,0.8)'
+      }}>
+        {text}
+      </h2>
+    </div>
+  );
+};
+
+// Fast Climax Clip with dynamic alternating scaling and optional dimming
+const ClimaxClip: React.FC<{ src: string; isCg?: boolean; startFrame: number; duration: number; speed?: number; index: number; dim?: boolean }> = ({ src, isCg, startFrame, duration, speed = 1, index, dim = false }) => {
+  const frame = useCurrentFrame();
+  
+  const scale = index % 2 === 0 
+    ? interpolate(frame, [0, duration], [1.1, 1.0]) 
+    : interpolate(frame, [0, duration], [1.0, 1.1]);
 
   return (
-    <div style={{ flex: 1, backgroundColor: '#000', opacity: 1, position: 'relative' }}>
-      <Video 
-        src={staticFile(src)} 
-        startFrom={startFrame} 
-        playbackRate={speed} 
-        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: text ? 0.6 : 1.0 }} 
-      />
-      {text && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <h2 style={{
-            color: '#fff',
-            fontSize: 48,
-            fontWeight: 200,
-            letterSpacing: '0.4em',
-            opacity: textOpacity,
-            textShadow: '0 0 40px rgba(0,0,0,0.8)'
-          }}>
-            {text}
-          </h2>
-        </div>
+    <div style={{ flex: 1, backgroundColor: '#000', opacity: 1, position: 'relative', overflow: 'hidden' }}>
+      {isCg ? (
+        <Img src={staticFile(src)} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${scale})` }} />
+      ) : (
+        <Video 
+          src={staticFile(src)} 
+          startFrom={startFrame} 
+          playbackRate={speed} 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${scale})`, opacity: dim ? 0.6 : 1.0 }} 
+        />
       )}
     </div>
   );
@@ -87,15 +102,16 @@ const MinimalistGameplayWithText: React.FC<{ src: string; startFrame: number; du
 const PhotoWall3D: React.FC<{ portraits: string[]; duration: number; lang?: 'en' | 'zh' }> = ({ portraits, duration, lang = 'en' }) => {
   const frame = useCurrentFrame();
   
-  const opacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: 'clamp' });
-  const cameraZ = interpolate(frame, [0, duration], [-500, 4500]);
+  const cameraZ = interpolate(frame, [0, duration], [-200, 4200]);
 
   const photos = useMemo(() => {
     return portraits.map((src, i) => {
       const seed = i;
       const x = random(`x-${seed}`) * 3000 - 1500; 
       const y = random(`y-${seed}`) * 1500 - 750;
-      const z = random(`z-${seed}`) * 5500;
+      // Evenly distribute Z so characters appear instantly and continuously
+      const baseZ = (i / portraits.length) * 4000;
+      const z = baseZ + (random(`z-${seed}`) * 100 - 50);
       const rotateY = random(`ry-${seed}`) * 40 - 20;
       const rotateX = random(`rx-${seed}`) * 20 - 10;
       const scale = random(`scale-${seed}`) * 0.5 + 0.8;
@@ -108,7 +124,7 @@ const PhotoWall3D: React.FC<{ portraits: string[]; duration: number; lang?: 'en'
     <div style={{ 
       flex: 1, 
       backgroundColor: '#030303', 
-      opacity, 
+      opacity: 1, // Hard cut for punchiness
       perspective: '800px', 
       overflow: 'hidden', 
       position: 'relative' 
@@ -150,6 +166,7 @@ const PhotoWall3D: React.FC<{ portraits: string[]; duration: number; lang?: 'en'
         })}
       </div>
       
+      {/* Overlay Text */}
       <div style={{ position: 'absolute', bottom: '15%', width: '100%', display: 'flex', justifyContent: 'center' }}>
         <h2 style={{
           color: '#ffffff',
@@ -163,30 +180,6 @@ const PhotoWall3D: React.FC<{ portraits: string[]; duration: number; lang?: 'en'
           {lang === 'zh' ? '36位史诗人物' : '36 EPIC CHARACTERS'}
         </h2>
       </div>
-    </div>
-  );
-};
-
-// Fast Climax Clip with dynamic alternating scaling
-const ClimaxClip: React.FC<{ src: string; isCg?: boolean; startFrame: number; duration: number; speed?: number; index: number }> = ({ src, isCg, startFrame, duration, speed = 1, index }) => {
-  const frame = useCurrentFrame();
-  
-  const scale = index % 2 === 0 
-    ? interpolate(frame, [0, duration], [1.1, 1.0]) 
-    : interpolate(frame, [0, duration], [1.0, 1.1]);
-
-  return (
-    <div style={{ flex: 1, backgroundColor: '#000', opacity: 1, position: 'relative', overflow: 'hidden' }}>
-      {isCg ? (
-        <Img src={staticFile(src)} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${scale})` }} />
-      ) : (
-        <Video 
-          src={staticFile(src)} 
-          startFrom={startFrame} 
-          playbackRate={speed} 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${scale})` }} 
-        />
-      )}
     </div>
   );
 };
@@ -219,14 +212,32 @@ export const BeyondTheLightConePromo: React.FC<{ lang?: 'en' | 'zh' }> = ({ lang
       <Sequence from={0} durationInFrames={100} layout="absolute-fill">
         <MinimalistTitleCard mainText={lang === 'zh' ? "光锥之外" : "BEYOND THE LIGHT CONE"} subText="基于三体宇宙的4x硬核策略同人单机游戏" duration={100} fadeOut={false} />
       </Sequence>
-      <Sequence from={100} durationInFrames={275} layout="absolute-fill">
-        <MinimalistGameplayWithText src="segments/02-crisis-and-deterrence-era-cinematics.mp4" startFrame={0} duration={275} speed={1.5} text={lang === 'zh' ? "六大文明纪元" : "SIX CIVILIZATION ERAS"} />
+      
+      {/* SIX ERAS (100-450) - 3 Fast Cuts */}
+      <Sequence from={100} durationInFrames={116} layout="absolute-fill">
+        <ClimaxClip src="segments/06-chronicles-and-civilization-museum.mp4" startFrame={0} duration={116} speed={1.5} index={0} dim={true} />
       </Sequence>
-      <Sequence from={375} durationInFrames={125} layout="absolute-fill">
-        <MinimalistGameplayWithText src="segments/03-technology-research-and-unlock.mp4" startFrame={0} duration={125} speed={1.5} text={lang === 'zh' ? "85项核心科技" : "85-NODE TECH TREE"} />
+      <Sequence from={216} durationInFrames={117} layout="absolute-fill">
+        <ClimaxClip src="segments/04-government-cabinets-and-diplomacy.mp4" startFrame={0} duration={117} speed={1.5} index={1} dim={true} />
       </Sequence>
-      <Sequence from={500} durationInFrames={125} layout="absolute-fill">
-        <MinimalistGameplayWithText src="segments/03-technology-research-and-unlock.mp4" startFrame={250} duration={125} speed={1.2} />
+      <Sequence from={333} durationInFrames={117} layout="absolute-fill">
+        <ClimaxClip src="segments/02-crisis-and-deterrence-era-cinematics.mp4" startFrame={0} duration={117} speed={1.5} index={2} dim={true} />
+      </Sequence>
+      <Sequence from={100} durationInFrames={350} layout="absolute-fill">
+        <OverlayText text={lang === 'zh' ? "六大文明纪元" : "SIX CIVILIZATION ERAS"} duration={350} />
+      </Sequence>
+
+      {/* TECH TREE (450-550) - Reduced duration */}
+      <Sequence from={450} durationInFrames={100} layout="absolute-fill">
+        <ClimaxClip src="segments/03-technology-research-and-unlock.mp4" startFrame={300} duration={100} speed={1.5} index={3} dim={true} />
+      </Sequence>
+      <Sequence from={450} durationInFrames={100} layout="absolute-fill">
+        <OverlayText text={lang === 'zh' ? "85项核心科技" : "85-NODE TECH TREE"} duration={100} />
+      </Sequence>
+
+      {/* STAR MAP TRANSITION (550-625) */}
+      <Sequence from={550} durationInFrames={75} layout="absolute-fill">
+        <ClimaxClip src="segments/01-cover-star-map-and-construction.mp4" startFrame={0} duration={75} speed={1.5} index={4} />
       </Sequence>
 
       <Sequence from={625} durationInFrames={375} layout="absolute-fill">
@@ -234,26 +245,26 @@ export const BeyondTheLightConePromo: React.FC<{ lang?: 'en' | 'zh' }> = ({ lang
       </Sequence>
 
       <Sequence from={1000} durationInFrames={125} layout="absolute-fill">
-        <MinimalistGameplayWithText src="segments/04-government-cabinets-and-diplomacy.mp4" startFrame={0} duration={125} speed={1.2} />
+        <ClimaxClip src="segments/04-government-cabinets-and-diplomacy.mp4" startFrame={400} duration={125} speed={1.5} index={5} />
       </Sequence>
 
-      <Sequence from={1125} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/05-intelligence-and-space-battle.mp4" startFrame={100} duration={100} speed={1.5} index={0} /></Sequence>
-      <Sequence from={1225} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_droplet_attack.png" isCg startFrame={0} duration={60} index={1} /></Sequence>
+      <Sequence from={1125} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/05-intelligence-and-space-battle.mp4" startFrame={100} duration={100} speed={1.5} index={6} /></Sequence>
+      <Sequence from={1225} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_droplet_attack.png" isCg startFrame={0} duration={60} index={7} /></Sequence>
       
-      <Sequence from={1285} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/01-cover-star-map-and-construction.mp4" startFrame={250} duration={100} speed={2.0} index={2} /></Sequence>
-      <Sequence from={1385} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_dimensional_strike.png" isCg startFrame={0} duration={60} index={3} /></Sequence>
+      <Sequence from={1285} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/01-cover-star-map-and-construction.mp4" startFrame={280} duration={100} speed={2.0} index={8} /></Sequence>
+      <Sequence from={1385} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_dimensional_strike.png" isCg startFrame={0} duration={60} index={9} /></Sequence>
       
-      <Sequence from={1445} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/06-chronicles-and-civilization-museum.mp4" startFrame={100} duration={100} speed={1.5} index={4} /></Sequence>
-      <Sequence from={1545} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_solar_system_flattened.png" isCg startFrame={0} duration={60} index={5} /></Sequence>
+      <Sequence from={1445} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/06-chronicles-and-civilization-museum.mp4" startFrame={450} duration={100} speed={2.0} index={10} /></Sequence>
+      <Sequence from={1545} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_solar_system_flattened.png" isCg startFrame={0} duration={60} index={11} /></Sequence>
       
-      <Sequence from={1605} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/04-government-cabinets-and-diplomacy.mp4" startFrame={400} duration={100} speed={1.5} index={6} /></Sequence>
-      <Sequence from={1705} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_trisolaris_destroyed.png" isCg startFrame={0} duration={60} index={7} /></Sequence>
+      <Sequence from={1605} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/03-technology-research-and-unlock.mp4" startFrame={50} duration={100} speed={2.0} index={12} /></Sequence>
+      <Sequence from={1705} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_trisolaris_destroyed.png" isCg startFrame={0} duration={60} index={13} /></Sequence>
       
-      <Sequence from={1765} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/02-crisis-and-deterrence-era-cinematics.mp4" startFrame={450} duration={100} speed={2.0} index={8} /></Sequence>
-      <Sequence from={1865} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_moon_crisis.png" isCg startFrame={0} duration={60} index={9} /></Sequence>
+      <Sequence from={1765} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/02-crisis-and-deterrence-era-cinematics.mp4" startFrame={400} duration={100} speed={2.0} index={14} /></Sequence>
+      <Sequence from={1865} durationInFrames={60} layout="absolute-fill"><ClimaxClip src="images/cg_moon_crisis.png" isCg startFrame={0} duration={60} index={15} /></Sequence>
       
-      <Sequence from={1925} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/05-intelligence-and-space-battle.mp4" startFrame={450} duration={100} speed={2.0} index={10} /></Sequence>
-      <Sequence from={2025} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="images/cg_wandering_earth.png" isCg startFrame={0} duration={100} index={11} /></Sequence>
+      <Sequence from={1925} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="segments/05-intelligence-and-space-battle.mp4" startFrame={450} duration={100} speed={2.0} index={16} /></Sequence>
+      <Sequence from={2025} durationInFrames={100} layout="absolute-fill"><ClimaxClip src="images/cg_wandering_earth.png" isCg startFrame={0} duration={100} index={17} /></Sequence>
 
       <Sequence from={2125} durationInFrames={125} layout="absolute-fill">
         <MinimalistTitleCard mainText="光锥之外·纪年往事现已正式发布" duration={125} fadeOut={true} />

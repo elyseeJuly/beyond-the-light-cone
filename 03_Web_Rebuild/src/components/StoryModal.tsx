@@ -5,6 +5,7 @@ import { GameInstance } from '../core/Game';
 import { getImageUrl } from '../utils/assetUrl';
 import { useTranslation } from '../utils/i18n';
 import { t } from "../utils/i18n";
+import { localizeNarrative } from '../data/locales/narrative.en';
 
 interface StoryModalProps {
   event: GameEventPayload;
@@ -81,7 +82,11 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
   const [cgSrc, setCgSrc] = useState<string>("");
   const typeIndexRef = useRef(0);
 
-  const currentNode = event.dialogQueue[currentNodeIndex];
+  const localizedEvent = useMemo(
+    () => localizeNarrative(event, lang),
+    [event, lang],
+  );
+  const currentNode = localizedEvent.dialogQueue[currentNodeIndex];
 
   // Sync cgSrc when currentNode changes
   useEffect(() => {
@@ -123,29 +128,29 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
       } else {
         clearInterval(timer);
         setIsTyping(false);
-        if (currentNodeIndex === event.dialogQueue.length - 1) {
+        if (currentNodeIndex === localizedEvent.dialogQueue.length - 1) {
           setShowChoices(true);
         }
       }
     }, 20);
 
     return () => clearInterval(timer);
-  }, [currentNode, currentNodeIndex, event.id, event.dialogQueue.length, t]);
+  }, [currentNode, currentNodeIndex, event.id, localizedEvent.dialogQueue.length, t]);
 
   const handleNext = useCallback(() => {
     if (isTyping) {
       setDisplayedText(t(currentNode.content));
       setIsTyping(false);
-      if (currentNodeIndex === event.dialogQueue.length - 1) {
+      if (currentNodeIndex === localizedEvent.dialogQueue.length - 1) {
         setShowChoices(true);
       }
       return;
     }
 
-    if (currentNodeIndex < event.dialogQueue.length - 1) {
+    if (currentNodeIndex < localizedEvent.dialogQueue.length - 1) {
       setCurrentNodeIndex(prev => prev + 1);
     }
-  }, [isTyping, currentNode, currentNodeIndex, event.dialogQueue.length, t]);
+  }, [isTyping, currentNode, currentNodeIndex, localizedEvent.dialogQueue.length, t]);
 
   // Generate a mock archive number from event ID/title
   const archiveNumber = useMemo(() => {
@@ -272,7 +277,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           {/* 2. Main Title */}
           <div className="my-4 shrink-0 text-center">
             <h2 className="text-lg font-extrabold text-white tracking-widest font-title">
-              《 {t(event.title.trim().replace(/^【|】$/g, ''))} 》
+              《 {localizedEvent.title.trim().replace(/^【|】$/g, '')} 》
             </h2>
           </div>
 
@@ -324,8 +329,8 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                   {t("执政官指令签署授权区")}
                 </div>
                 <div className="flex flex-col gap-2 w-full max-h-36 overflow-y-auto">
-                  {event.choices && event.choices.length > 0 ? (
-                    event.choices.map((choice, idx) => (
+                  {localizedEvent.choices && localizedEvent.choices.length > 0 ? (
+                    localizedEvent.choices.map((choice, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleSelectChoice(choice, idx)}
@@ -335,7 +340,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                           <span className="text-[10px] font-mono text-[var(--text-secondary)]/50 group-hover:text-[var(--color-primary)] shrink-0">
                             {t("指令")} {idx + 1}
                           </span>
-                          <span className="font-bold tracking-wide">{t(choice.label)}</span>
+                          <span className="font-bold tracking-wide">{choice.label}</span>
                         </div>
                         <span className="text-[9px] font-mono text-[var(--color-primary)] opacity-0 group-hover:opacity-100 transition-opacity">
                           [ {t("签署决策")} ]

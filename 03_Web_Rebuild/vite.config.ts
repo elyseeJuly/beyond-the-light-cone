@@ -210,7 +210,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
     testTimeout: 60000,
-    exclude: ['node_modules', 'src/test/e2e-playwright/**'],
+    exclude: [
+      '**/node_modules/**',
+      'video-output/**',
+      'src/test/e2e-playwright/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary', 'html'],

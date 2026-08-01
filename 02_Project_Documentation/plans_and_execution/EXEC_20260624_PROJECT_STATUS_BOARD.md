@@ -1,6 +1,6 @@
 # 项目状态看板
 
-> 最后更新：2026-07-13  
+> 最后更新：2026-08-01  
 > 更新方式：本文件在任务完成后手动更新；TASK-HYGIENE 完成后可由 `npm run status` 脚本自动生成
 
 ## 核心指标
@@ -8,19 +8,30 @@
 | 指标 | 值 | 命令 |
 |------|-----|------|
 | TypeScript 编译 | ✅ 通过 | `npx tsc --noEmit` |
-| 测试总数 | 1074 | `npx vitest run` |
+| 测试总数 | 1102 (1099通过, 3跳过) | `npm test` |
 | 测试通过率 | 100% | ↑ |
-| 测试文件数 | 52 | ↑ |
+| 测试文件数 | 65 (62通过, 3跳过) | ↑ |
 
 ## 当前活跃任务状态
 
 - [x] TASK-P0: Beta 发布红线修复
 - [x] TASK-AP: 执政指令点与 AI 智脑
 - [x] TASK-EVENT: 事件实体化集成
-- [ ] TASK-ARCH: 架构债务清理
-- [ ] TASK-HYGIENE: 项目卫生清理
+- [ ] TASK-ARCH: 架构债务清理 (包含 Playwright 端口冲突与 E2E 覆盖待办)
+- [x] TASK-HYGIENE: 项目卫生清理 (文档重组、空文件夹清理与冗余图标清除)
+- [x] TASK-VIDEO: Remotion 宣传预告片生成
+- [x] TASK-LOCALIZATION: 英文剧情本地化框架与测试
+- [x] TASK-ART-RACE: CG与结局人种一致性审计与修复
 
 ## 近期完成任务
+
+### 2026-08-01: 文档重组、人种修复、英文测试与 Remotion 预告片生成
+
+*   **文档库重组与卫生清理**: 批量重组并整理了 238 份 Markdown 文档，消除重复并将其归入五大分类子目录；清理了 Tauri 构建生成的冗余 iOS 图标及 `deliverables/` 空文件夹。
+*   **二向箔结局 CG 升级**: 替换了原降维打击结局占位图为全新的二维死静余波概念图，大幅压缩体积（6.6MB → 1.3MB），并发布了 `ASSET_20260801_NEW_DEFEAT_ENDING_CG.md` 规格书。
+*   **人种一致性审计与罗辑 CG 修复**: 视觉核对 17 张结局图和 43 张剧情 CG，出具了 `AUDIT_20260801_CG_CHARACTER_RACE_AUDIT.md` 专项审计报告。使用 AI 生成工具成功重绘并实装了具有东亚华人特征及电路大衣的罗辑威慑建立对峙图（`cg_deterrence_established.png`），将原偏离人种图归入备份文件夹。
+*   **英文剧情本地化验证**: 编写 `NarrativeLocalization.test.ts` 测试以覆盖本地化剧情加载，并在 `StoryModal.tsx` 中验证了其双语文本映射。
+*   **Remotion 视频创作与测试审计**: 使用 Remotion 完成了 90 秒交响卡点实机宣传片制作并输出复盘总结报告 `EXEC_20260801_PROMO_VIDEO_CREATION_JOURNEY.md`；出具 `AUDIT_20260801_TEST_SYSTEM_COMPREHENSIVE.md` 报告，并在 `vite.config.ts` 中完成对 nested Remotion 依赖项的隔离。
 
 ### 2026-07-13: 新手教程误触修复与重设计
 
@@ -47,8 +58,11 @@
 - [x] **FIX-17**: 全链路回归测试（19 个测试覆盖 FIX-01~FIX-13）
 - **文档**: `AUDIT_20260712_FIX_EXECUTION_REPORT.md`
 
-### 待办
+## 待办
 
 - [ ] UC-1~UC-18: 18 项未确认问题，待 Autoplay500 运行时验证
 - [ ] FIX-14: 判定与预报统一，待结局系统重构时处理
 - [ ] 威慑纪元～星屑纪元单纪元审计（如需继续）
+- [ ] Playwright E2E 端口冲突与目标站点断言 (来自 2026-08-01 测试审计待办)
+- [ ] 英文剧情用户路径完整集成测试覆盖 (来自 2026-08-01 测试审计待办)
+- [ ] PWA 激活生命周期与 IndexedDB 真实离线存档链路覆盖 (来自 2026-08-01 测试审计待办)

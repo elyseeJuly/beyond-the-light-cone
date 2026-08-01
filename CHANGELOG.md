@@ -7,6 +7,24 @@
 
 ## [Unreleased]
 
+### 新增 (Added)
+
+- **人种与立绘一致性审计及修复**：新增 `AUDIT_20260801_CG_CHARACTER_RACE_AUDIT.md` 规范人种重绘，实装全新东亚华人罗辑威慑对峙 CG (`cg_deterrence_established.png`)，重组备份原版偏离设定 CG。
+- **二向箔结局 CG 升级**：新增二维化死静余波结局图 (`ending_defeat_dimension_strike.png`)，提供新规格书 `ASSET_20260801_NEW_DEFEAT_ENDING_CG.md`。
+- **测试体系审计**：新增 `AUDIT_20260801_TEST_SYSTEM_COMPREHENSIVE.md`，对 Vitest 嵌套依赖扫描、Playwright 端口冲突等隐患进行了全面评估。
+- **Remotion 宣传视频生成**：新增 React 代码控制的 90 秒电影级预告片，输出复盘规格书 `EXEC_20260801_PROMO_VIDEO_CREATION_JOURNEY.md`。
+- **英文剧情本地化测试**：新增 `NarrativeLocalization.test.ts` 以验证英文文本映射。
+
+### 变更 (Changed)
+
+- **文档库分类整理**：将 238 份项目文档从 `02_Project_Documentation` 根目录下批量整理移至 `specs_and_architecture`、`plans_and_execution` 等五大分类目录下，保持完整 Git 历史。
+- **Vitest 测试配置隔离**：在 `vite.config.ts` 中排除 `video-output/**` 和 `**/node_modules/**`，解决 Vitest 对嵌套 Remotion 依赖项的误扫描问题。
+
+### 移除 (Removed)
+
+- **冗余图标清理**：删除了 Tauri 构建时冗余生成的 `ios` AppIcon 冗余后缀副本 (`-1.png` 系列文件)。
+- **空目录清理**：移除了无用空目录 `deliverables/gstack` 及其父级。
+
 ## [v1.0.7] - 2026-07-28
 
 本次版本为 v1.0.6 之后的热修复，聚焦解决智脑托管模式下回合推进卡死与角色死亡对账缺失。

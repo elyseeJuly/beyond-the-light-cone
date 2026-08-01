@@ -21,11 +21,11 @@
 
 | # | 任务书 | 优先级 | 可并行 | 预估影响 | 状态 |
 |---|--------|--------|--------|---------|------|
-| 1 | [TASK-P0: Beta 红线修复](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_P0_BETA_REDLINE_FIX.md) | **P0** | 是（任务间并行） | 6 文件，~200 行 | 待执行 |
-| 2 | [TASK-AP: AP 指令点 + AI 智脑](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_AP_AI_BRAIN_IMPLEMENTATION.md) | P1 | 是（独立子系统） | 8 文件，~900 行 | 待执行 |
-| 3 | [TASK-EVENT: 事件实体化集成](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_EVENT_BOARD_INTEGRATION.md) | P1 | 是（纯增量功能） | 5 文件，~400 行 | 待执行 |
-| 4 | [TASK-ARCH: 架构债务清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_ARCHITECTURE_DEBT_CLEANUP.md) | P1 | 否（依赖 TASK-P0） | 15+ 文件，~2000 行 | 待执行 |
-| 5 | [TASK-HYGIENE: 项目卫生清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/EXEC_20260623_PROJECT_HYGIENE_CLEANUP.md) | P2 | 是（完全独立） | 22 文件，~100 行 | 待执行 |
+| 1 | [TASK-P0: Beta 红线修复](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/plans_and_execution/EXEC_20260623_P0_BETA_REDLINE_FIX.md) | **P0** | 是（任务间并行） | 6 文件，~200 行 | **已完成** |
+| 2 | [TASK-AP: AP 指令点 + AI 智脑](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/plans_and_execution/EXEC_20260623_AP_AI_BRAIN_IMPLEMENTATION.md) | P1 | 是（独立子系统） | 8 文件，~900 行 | **已完成** |
+| 3 | [TASK-EVENT: 事件实体化集成](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/plans_and_execution/EXEC_20260623_EVENT_BOARD_INTEGRATION.md) | P1 | 是（纯增量功能） | 5 文件，~400 行 | **已完成** |
+| 4 | [TASK-ARCH: 架构债务清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/plans_and_execution/EXEC_20260623_ARCHITECTURE_DEBT_CLEANUP.md) | P1 | 否（依赖 TASK-P0） | 15+ 文件，~2000 行 | **进行中** |
+| 5 | [TASK-HYGIENE: 项目卫生清理](file:///Users/quantumrose/Documents/Emberois/Beyond-the-Light-Cone/02_Project_Documentation/plans_and_execution/EXEC_20260623_PROJECT_HYGIENE_CLEANUP.md) | P2 | 是（完全独立） | 22 文件，~100 行 | **已完成** |
 
 ---
 

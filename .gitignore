@@ -37,4 +37,9 @@ error_screenshot.png
 
 # OS files
 .DS_Store
-03_Web_Rebuild/video-output/
+# Ignore video files and node_modules in video-output
+03_Web_Rebuild/video-output/**/*.mp4
+03_Web_Rebuild/video-output/**/*.webm
+03_Web_Rebuild/video-output/**/node_modules/
+03_Web_Rebuild/video-output/**/.cache/
+03_Web_Rebuild/video-output/**/.remotion/

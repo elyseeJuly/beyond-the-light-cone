@@ -1,0 +1,21 @@
+{
+  "name": "beyond-the-light-cone-remotion",
+  "version": "1.0.0",
+  "description": "Remotion project for editing beyond-the-light-cone promo video",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "remotion render src/index.ts promo-90s out.mp4",
+    "studio": "remotion studio src/index.ts"
+  },
+  "dependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.190"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.190",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.0.2"
+  }
+}

@@ -291,25 +291,66 @@
   }
 }
 
-/* Mobile Landscape Scaling */
-@media (max-height: 500px) and (orientation: landscape) {
-  .mobile-landscape-scale {
-    transform: scale(0.85);
-    transform-origin: top center;
-    width: 117.64% !important; /* 100 / 0.85 */
-    height: 117.64% !important;
-  }
-  
-  .sidebar-left {
-    width: clamp(140px, 15vw, 200px) !important;
-  }
-  .sidebar-right {
-    width: clamp(200px, 25vw, 280px) !important;
-  }
-  
-  .top-bar-compressed {
-    height: 48px !important;
-  }
+/* ============== Mobile Landscape Hub (A2 方案) ============== */
+.mobile-landscape-hub {
+  width: 56px;
+  height: 100%;
+  background: rgba(7, 11, 20, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(36, 50, 69, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 8px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.mobile-landscape-hub-item {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 150ms ease;
+}
+
+.mobile-landscape-hub-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mobile-landscape-hub-item:active {
+  transform: scale(0.95);
+}
+
+.mobile-landscape-hub-item.active {
+  background: rgba(var(--color-primary-rgb), 0.1);
+}
+
+.mobile-landscape-hub-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 200ms ease;
+}
+
+.mobile-landscape-hub-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 24px;
+  border-radius: 0 2px 2px 0;
+  background: var(--color-primary);
+  box-shadow: 0 0 6px rgba(var(--color-primary-rgb), 0.6);
 }
 
 /* ============== Modal System ============== */

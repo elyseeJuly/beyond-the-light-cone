@@ -9,6 +9,7 @@ import { MuseumGallery } from './components/MuseumGallery';
 import { ChroniclesModal } from './components/ChroniclesModal';
 import { BottomEventBar } from './components/BottomEventBar';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { MobileLandscapeHub } from './components/MobileLandscapeHub';
 import { TecTreeView } from './ui/TecTreeView';
 import { TecTreeType } from './types/enums';
 import { GameInstance } from './core/Game';
@@ -92,7 +93,9 @@ export const App: React.FC = () => {
   const bp = useBreakpoint();
   const isMobile = bp.isMobile;
   const isMobileLandscape = bp.isMobileLandscape;
-  const showDesktopLayout = !isMobile || isMobileLandscape;
+  // A2 方案：移动端横屏不再走桌面三栏布局，而是走独立的移动横屏布局
+  // 左侧 56px 图标栏 + 中央视口 + 右侧 Inspector 抽屉
+  const showDesktopLayout = !isMobile && !isMobileLandscape;
 
   useEffect(() => {
     preloadCoreImages();
@@ -393,15 +396,20 @@ export const App: React.FC = () => {
       <AtmosphereProvider engineRef={atmosphereEngineRef}>
         <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
 
-          {/* Scaled Container for Gameplay */}
-          <div className={`flex-1 flex flex-col w-full overflow-hidden ${isMobileLandscape ? 'mobile-landscape-scale' : ''}`}>
-            {/* Top HUD — rendered inside scaled container to inherit landscape scaling */}
+          {/* Gameplay Container */}
+          <div className="flex-1 flex flex-col w-full overflow-hidden">
+            {/* Top HUD */}
             <TopHUD />
             {/* Main Layout Body */}
             <main className="flex-1 flex overflow-hidden">
-              {/* Left Sidebar — visible on tablet+ and mobile landscape, hidden on mobile portrait (replaced by MobileBottomNav) */}
+              {/* Left Sidebar — visible on desktop/tablet only */}
               {showDesktopLayout && (
                 <LeftHub activeView={activeView} setActiveView={setActiveView} />
+              )}
+
+              {/* Mobile Landscape: 左侧 56px 图标栏 */}
+              {isMobileLandscape && (
+                <MobileLandscapeHub activeView={activeView} setActiveView={setActiveView} />
               )}
 
               {/* Dynamic Center Viewport */}
@@ -409,7 +417,7 @@ export const App: React.FC = () => {
                 {renderCenterView()}
               </div>
 
-              {/* Right Inspector — sidebar on tablet+ and mobile landscape, drawer on mobile portrait */}
+              {/* Right Inspector — sidebar on desktop/tablet, drawer on mobile */}
               {showDesktopLayout ? (
                 <RightInspector />
               ) : (
@@ -434,11 +442,11 @@ export const App: React.FC = () => {
               )}
             </main>
 
-            {/* Bottom Event Bar */}
+            {/* Bottom Event Bar — desktop/tablet only */}
             {showDesktopLayout && <BottomEventBar />}
 
             {/* Mobile Bottom Navigation — only on mobile portrait */}
-            {!showDesktopLayout && (
+            {isMobile && !isMobileLandscape && (
               <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
             )}
           </div>

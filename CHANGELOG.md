@@ -6,6 +6,24 @@
 > ⚠️ **注意**: 每次更新版本都**必须**在此文档中按照格式添加相应的发布更新说明。
 ## [Unreleased]
 
+## [v1.0.9] - 2026-08-05
+
+### 新增 (Added)
+
+- **移动端横屏 A2 独立布局**：新增 `MobileLandscapeHub` 组件，手机横屏时使用左侧 56px 图标栏 + 中央最大化视口 + 右侧 Inspector 抽屉，替代原有桌面三栏缩放方案。
+- **响应式测试矩阵扩充**：`responsive.spec.ts` 从 3 个用例扩充到 22 个，覆盖 320×568 到 1920×1080 的 8 个设备尺寸、TopHUD 紧凑模式、横竖屏切换、断点边界值与阈值一致性。
+- **视口可见性断言工具**：`helpers.ts` 新增 `expectInViewport` / `expectHorizontallyInViewport`，用于断言元素完整位于视口内，防止"显示不全"回归。
+- **响应式审计与方案文档归档**：新增 `AUDIT_20260805_RESPONSIVE_LAYOUT_AUDIT.md`、`SPEC_20260805_MOBILE_LANDSCAPE_A2.md`、`EXEC_20260805_RESPONSIVE_TEST_EXPANSION.md`、`EXEC_20260805_MOBILE_LANDSCAPE_A2_IMPLEMENTATION.md` 及三方案预览图。
+
+### 变更 (Changed)
+
+- **`App.tsx` 布局判定**：`showDesktopLayout` 从 `!isMobile \|\| isMobileLandscape` 改为 `!isMobile && !isMobileLandscape`，移动端横屏不再走桌面三栏布局。
+- **`helpers.ts` 断点对齐**：修复 `switchView` 中断点 640px 与 `useBreakpoint` 768px 不一致的问题；`waitForMainUI` 增加 touch + landscape 判定，与 useBreakpoint 对齐。
+
+### 移除 (Removed)
+
+- **移动端横屏缩放方案**：删除 `index.css` 中 `.mobile-landscape-scale` 的 `transform: scale(0.85) + width: 117.64%` 实现，该方案导致 844×390 视口下 TopHUD 右侧溢出 74.41px。
+
 ## [v1.0.8] - 2026-08-05
 
 ### 新增 (Added)

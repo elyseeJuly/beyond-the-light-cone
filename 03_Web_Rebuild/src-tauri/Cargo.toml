@@ -1,6 +1,6 @@
 [package]
 name = "beyond-the-light-cone"
-version = "1.0.8"
+version = "1.0.9"
 description = "光锥之外：纪元往事 - 三体宇宙策略叙事游戏"
 authors = ["Emberois"]
 edition = "2021"

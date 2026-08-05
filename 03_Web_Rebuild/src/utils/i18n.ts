@@ -3708,17 +3708,32 @@ const enDictionary: Record<string, string> = {
     "，是否立即更新？": ", update immediately?"
 };
 
-let currentLang: Language = (localStorage.getItem('game-lang') as Language) || 'zh';
+// Node/SSR 环境无 localStorage/window，必须守卫以免 Playwright 测试发现阶段即抛 ReferenceError
+const readStoredLang = (): Language => {
+  try {
+    return (localStorage.getItem('game-lang') as Language) || 'zh';
+  } catch {
+    return 'zh';
+  }
+};
+
+let currentLang: Language = readStoredLang();
 const listeners = new Set<() => void>();
 
 export const getLanguage = (): Language => currentLang;
 
 export const setLanguage = (lang: Language): void => {
   currentLang = lang;
-  localStorage.setItem('game-lang', lang);
+  try {
+    localStorage.setItem('game-lang', lang);
+  } catch {
+    // Node/SSR 环境忽略持久化
+  }
   listeners.forEach(l => l());
   // Dispatch global window event to trigger non-React listeners
-  window.dispatchEvent(new CustomEvent('game-language-changed', { detail: lang }));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('game-language-changed', { detail: lang }));
+  }
 };
 
 export const t = (key: string, params?: Record<string, string | number>): string => {

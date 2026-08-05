@@ -5,6 +5,18 @@ import { t } from "../../utils/i18n";
  * E2E 测试公共辅助函数
  */
 
+/**
+ * 身份断言：确保 Playwright 真在测试本应用，而非复用了其他项目占用 4173 端口的 preview。
+ * 每个 spec 的 beforeEach 都应调用。检查页面 title 与 application-name meta。
+ */
+export async function assertIsThisApp(page: Page): Promise<void> {
+  await expect(page).toHaveTitle(/光锥之外|Beyond[- ]?the[- ]?Light[- ]?Cone/i);
+  const appName = await page.evaluate(() =>
+    document.querySelector('meta[name="application-name"]')?.getAttribute('content') || ''
+  );
+  expect(appName).toContain('光锥之外');
+}
+
 /** 通过 localStorage 禁用教程弹窗（写入与当前版本号匹配的完成记录） */
 export async function disableTutorial(page: Page): Promise<void> {
   await page.addInitScript(() => {

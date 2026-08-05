@@ -2,9 +2,11 @@ import js from '@eslint/js'
 import ts from 'typescript-eslint'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import globals from 'globals'
 
 export default ts.config(
-  { ignores: ['dist', 'node_modules', 'src-tauri', 'coverage', 'public', 'vite.config.ts', 'playwright.config.ts', 'scripts', '*.cjs', '*.mjs'] },
+  // video-output 是独立子项目（有自己的 tsconfig.json 与 package.json），不纳入主项目 lint
+  { ignores: ['dist', 'node_modules', 'src-tauri', 'coverage', 'public', 'vite.config.ts', 'playwright.config.ts', 'scripts', '*.cjs', '*.mjs', 'video-output/**'] },
   js.configs.recommended,
   ...ts.configs.recommended,
   {
@@ -13,6 +15,11 @@ export default ts.config(
       parserOptions: {
         project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
+      },
+      // 声明浏览器与 Node 全局，避免 no-undef 误报 i18n / 组件中合法使用的 console/window/localStorage 等
+      globals: {
+        ...globals.browser,
+        ...globals.node,
       },
     },
     plugins: {

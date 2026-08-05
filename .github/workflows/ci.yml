@@ -43,10 +43,10 @@ jobs:
           path: typecheck.log
           retention-days: 7
 
-      - name: ESLint simulation harness
+      - name: ESLint full project
         run: |
           set -o pipefail
-          npm run lint:simulation 2>&1 | tee ../eslint.log
+          npm run lint 2>&1 | tee ../eslint.log
 
       - name: Upload ESLint diagnostics
         if: failure()

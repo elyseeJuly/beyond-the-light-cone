@@ -3760,5 +3760,6 @@ export const useTranslation = () => {
     };
   }, []);
 
+  // t 是模块级稳定引用（不随渲染变化），下游 useMemo/useCallback 可安全将其加入依赖数组
   return { t, lang, setLanguage };
 };

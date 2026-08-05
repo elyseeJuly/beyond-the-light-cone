@@ -4,8 +4,9 @@
 关于版本发布流程及变更日志的书写标准，请参考：[GitHub Release 及版本控制计划规范](02_Project_Documentation/SPEC_20260702_GITHUB_RELEASE_PLAN.md)。
 
 > ⚠️ **注意**: 每次更新版本都**必须**在此文档中按照格式添加相应的发布更新说明。
-
 ## [Unreleased]
+
+## [v1.0.8] - 2026-08-05
 
 ### 新增 (Added)
 

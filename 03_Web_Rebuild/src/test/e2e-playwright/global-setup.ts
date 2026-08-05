@@ -1,5 +1,7 @@
 import { request, expect } from '@playwright/test';
 
+declare const process: any;
+
 /**
  * 全局身份断言：在所有 spec 运行前，对 preview URL 做一次身份核验。
  *

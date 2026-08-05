@@ -147,7 +147,7 @@ export class StatisticsManager {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           app: 'beyond-the-light-cone',
-          version: '1.0.7',
+          version: '1.0.8',
           stats: this.stats,
           timestamp: new Date().toISOString()
         })

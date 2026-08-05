@@ -37,7 +37,7 @@ export const IntelligenceCenter: React.FC = () => {
         timestamp: `CY-${game.year - Math.floor(index / 10)}` // Mock cypher-cycle timestamp
       };
     });
-  }, [game.historyLogs, game.year]);
+  }, [game.historyLogs, game.year, t]);
 
   const filteredLogs = useMemo(() => {
     if (activeTab === 'history') return intelLogs;

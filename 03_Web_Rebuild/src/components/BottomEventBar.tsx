@@ -47,7 +47,7 @@ export const BottomEventBar: React.FC = () => {
   const activeMessage = useMemo(() => {
     if (messages.length === 0) return t("银河深空遥测监测中... 文明档案数据链正常。");
     return messages[currentIndex] || messages[messages.length - 1];
-  }, [messages, currentIndex]);
+  }, [messages, currentIndex, t]);
 
   const getIcon = (text: string) => {
     if (text.includes('👥') || text.includes(t("人员")) || text.includes(t("人口")) || text.includes(t("人物"))) {

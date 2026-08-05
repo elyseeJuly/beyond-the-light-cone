@@ -45,7 +45,7 @@ test.describe.skip('Story i18n User Path', () => {
     await expect(page.locator('header')).toBeVisible();
   });
 
-  test('英文态触发随机剧情验证英文文案', async ({ page }) => {
+  test('英文态触发随机剧情验证英文文案', async ({ page: _page }) => {
     // 骨架：推进回合直至剧情弹出（具体回合数与 data-testid 待补全）
     test.skip(true, '骨架：待补全剧情触发与英文文案断言');
   });

@@ -2,10 +2,12 @@
 > 最后审视：2026-08-05
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 16 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 17 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
+| 测试基础设施 | Playwright E2E 可执行性 | 🟢 | 22 passed / 3 skipped（chromium-desktop，3.0m，首次完整通过） | i18n 顶层 localStorage 守卫已修复，端口硬隔离 + globalSetup 身份断言已落地；后续可跑多浏览器矩阵 |
+| 测试基础设施 | ESLint 全项目门禁 | 🟢 | 0 errors / 0 warnings | video-output 忽略 + globals 声明 + CI 升级为完整 lint；BottomEventBar/IntelligenceCenter useMemo t 依赖已补齐 |
 | 架构 | 单文件最大行数 | 🟡 | Game.ts 约1740行（+GameSerializer.ts 268行） | AP 系统改动小幅增加行数，后续可继续拆分子系统 |
 | 架构 | Flag 系统耦合度 | 🟢 | FlagManager 封装 | FlagManager 包装 flags Set，提供 isSet/set/unset API，与原始 Set 共享引用，100% 存档兼容 |
 | 架构 | AP 系统回路闭合 | 🟢 | 已修复 | 依据 SPEC_20260712_AP_SYSTEM_REDESIGN：UI 接入 AP 消耗、阻断器补全 4 项、AI 走 spendAP 半价、recoverAP 提前至回合入口；8 场景建模无死锁 |
@@ -24,6 +26,7 @@
 | 美术 | 立绘风格统一与文字清理 | 🟢 | 已完成 | 排查并重绘 18 张立绘并实装，彻底清理智子、萨伊、常伟思等人的 AI 乱码、贴字和古装发饰，旧图移入 `images_backup` 目录备份，项目美术资产质量完全闭合。 |
 
 ## 审视日志
+- 2026-08-05: 测试系统修复执行闭环（EXEC_20260804_TEST_FIX_EXECUTION）——基于 AUDIT_20260804_TEST_REPLAY_AND_FINDINGS 审计报告执行 4 套方案，新增 2 个测试基础设施维度为 🟢：①方案 A 修复 `i18n.ts:3711` 顶层 `localStorage` 守卫 + `setLanguage` 守卫，解除 Playwright 7 个 spec 零用例阻断（从 0 tests → 22 passed）；②方案 B `playwright.config.ts` 改为 `--strictPort` + `reuseExistingServer: false` + 新增 `global-setup.ts` 身份断言；③方案 C `eslint.config.js` 加 `video-output/**` 忽略与 `globals` 声明，CI `lint:simulation` 升级为完整 `lint`，ESLint 从 124 errors / 2 warnings 降至 0 errors / 0 warnings；④方案 D 新增 `story-i18n.spec.ts` 英文剧情 E2E 骨架（skip）。验证：Vitest 1099 passed / 3 skipped 不回归，Playwright chromium-desktop 22 passed / 3 skipped（3.0m，首次完整通过），PWA 契约通过。新增 4 条 registry 条目，43 → 45 总计，0 RED。总体健康 🟢（0🔴/1🟡/17🟢）。
 - 2026-08-05: 立绘风格清理与视频代码同步——①全量重绘 18 张立绘并实装：排查出智子、萨伊、常伟思、史强、叶文洁、关云帆、严井（修正为男性戴眼镜学者）以及 7 位通用 NPC 的立绘存在 AI 贴纸字迹、乱码印章或古装发饰，已全量重绘为无文字、纯净工笔画底色搭配赛博蓝色电路的画风，并完成 Git 实装推送；②山杉惠子立绘同步对齐：实装高科技女科学家头像，旧版“执毛笔”立绘移入 `images_backup` 目录备份为备用资源；③视频编辑代码同步 GitHub：调整 `.gitignore` 过滤 `node_modules` 及大容量视频包，将 Remotion 视频编辑工程源码和录制转码脚本同步推送至云端。
 - 2026-07-31: 深度英文本地化收尾与参数化提取——对 HTML 模版中裸写的硬编码中文（包括 `WallfacerPanel.ts` 和 `UIManager.ts`）进行了彻底的参数化解耦与 `t(...)` 包装，移除了含有中文的 HTML 注释以避免假阳性。在 `enDictionary` 中补足了 303 个最新提取的翻译键值对，实现了生产逻辑与界面交互全文本 100% 本地化闭环。TypeScript 0 报错与 744 项单元测试 100% 通过。
 - 2026-07-30: 全量英文本地化 100% 覆盖深化——通过自动化提取与处理脚本 (`build_full_i18n.cjs`) 遍历扫描全项目 `data/*.json` 数据文件与 TS/TSX 组件，提取并补充 2917 项未映射的中英文双语词条至 `i18n.ts` 的 `enDictionary`。实现了《三体》英文原版（Ken Liu 译本）专有名词标准在随机事件、剧情分支、智脑百科、科技节点、人物策略与 UI 交互上的 100% 全覆盖。全量 61 文件 1096 用例测试通过，TypeScript 0 报错，无回归。

@@ -2,7 +2,7 @@
 > 最后更新：2026-08-05
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 v1.0.7 稳定（0 RED / 43 总计）
+## 发布状态：🟢 v1.0.8 稳定（0 RED / 45 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -41,8 +41,14 @@
 | **SCEN-AIBRAIN-EVENT-CLEANUP** | Regression | runAIBrain currentEvent 清理回归测试 | 4 项回归用例：AB01 action 不调用 applyEventEffect 时 currentEvent===null 且 hasEvent===false；AB02 队列中多个 filteredEvent 全部清理；AB03 混合事件（有/无 applyEventEffect）均正确清理；AB04 无事件时安全执行 | 🟢 GREEN | AUDIT_20260728 P2：runAIBrain currentEvent 修复缺少针对性回归断言 | AIBrainEventCleanup.scenario.test.ts |
 | **SCEN-HUD-ICON-REFIT** | UI/UX | HUD 按钮图标自适应重构 | 将“智脑顾问”（查阅手册）图标替换为 BookOpen，将 Brain 图标重新分配给智脑托管切换按钮，并为其配置状态感知着色逻辑。解决小屏下托管按钮塌缩成空白方块的体验问题 | 🟢 GREEN | 托管图标误用智脑、托管开关小屏下显示为空白方块 | TopHUD.tsx |
 | SCEN-ART-GONGBI-CYBERPUNK | 美术 | 立绘工笔赛博风重制 | 排查并重绘 18 张人物与 NPC 立绘，清除文字与印章乱码，统一穿戴电路服装与纯净纸张底色，完成山杉惠子等人的立绘修正与备份 | 🟢 GREEN | 立绘中出现 AI 乱码、古装违和、以及贴字现象 | `persons.json` / `public/images/` |
+| **SCEN-TEST-INFRA-I18N-GUARD** | Infrastructure | i18n 模块 Node 环境守卫 | `i18n.ts` 顶层 `localStorage.getItem` 加 try/catch 守卫，`setLanguage` 同步加 localStorage/window 守卫；解除 Playwright 测试发现阶段 `ReferenceError: localStorage is not defined` 阻断，7 个 spec 从"零用例可发现"恢复为可执行 | 🟢 GREEN | AUDIT_20260804 新发现 P0：i18n 顶层 localStorage 阻断所有 Playwright E2E | `src/utils/i18n.ts` / `src/test/e2e-playwright/*.spec.ts` |
+| **SCEN-TEST-INFRA-PORT-TRUST** | Infrastructure | Playwright 端口可信度硬隔离 | `playwright.config.ts` 改为 `--strictPort` + `reuseExistingServer: false`；新增 `global-setup.ts` 在所有 spec 运行前对 preview URL 做身份断言（title + application-name meta 必须匹配"光锥之外"）；`helpers.ts` 同步新增 `assertIsThisApp` 页面级断言 | 🟢 GREEN | AUDIT_20260801 P0-1：Playwright 端口 4173 + reuseExistingServer 隐性风险 | `playwright.config.ts` / `src/test/e2e-playwright/global-setup.ts` / `src/test/e2e-playwright/helpers.ts` |
+| **SCEN-TEST-INFRA-LINT-GATE** | Infrastructure | ESLint 全项目门禁 | `eslint.config.js` 追加 `video-output/**` 忽略与 `globals.browser/node` 声明；CI `lint:simulation` 升级为完整 `lint`；ESLint 从 124 errors / 2 warnings 降至 **0 errors / 0 warnings**；同步修复 `BottomEventBar.tsx` / `IntelligenceCenter.tsx` 的 useMemo `t` 依赖 | 🟢 GREEN | AUDIT_20260801 P1：CI 不运行完整 lint；AUDIT_20260804 P1：lint 本地无法干净通过 | `eslint.config.js` / `.github/workflows/ci.yml` / `src/components/BottomEventBar.tsx` / `src/components/IntelligenceCenter.tsx` |
+| **SCEN-STORY-I18N-SKELETON** | Feature | 英文剧情 E2E 骨架 | 新增 `story-i18n.spec.ts` 骨架（`describe.skip`），覆盖目标：英文态首屏渲染、SettingsModal 切换中文、英文态随机剧情英文文案。定位策略使用语义 selector 与"中文简体"稳定文案锚点，不依赖单一中文 copy | 🟢 GREEN | AUDIT_20260801 P1：英文剧情用户路径测试缺失（骨架已落地，待后续迭代补全断言取消 skip） | `src/test/e2e-playwright/story-i18n.spec.ts` |
 
 ## 变更日志
+- 2026-08-05: v1.0.8 稳定版正式发布——修复 `global-setup.ts` 类型检查报错以通过发布门禁，更新各平台版本号为 `1.0.8` 并更新资源清单；更新 `README.md` 的试玩链接及 badge，附加防缓存参数（`?v=1.0.8`）。
+- 2026-08-05: 测试系统修复执行闭环（EXEC_20260804_TEST_FIX_EXECUTION）——基于 AUDIT_20260804_TEST_REPLAY_AND_FINDINGS 审计报告执行 4 套方案：①方案 A 修复 `i18n.ts:3711` 顶层 `localStorage` 守卫 + `setLanguage` 守卫，解除 Playwright 7 个 spec 零用例阻断；②方案 B `playwright.config.ts` 改为 `--strictPort` + `reuseExistingServer: false` + 新增 `global-setup.ts` 身份断言；③方案 C `eslint.config.js` 加 `video-output/**` 忽略与 `globals` 声明，CI `lint:simulation` 升级为完整 `lint`，ESLint 从 124 errors → 0 errors；④方案 D 新增 `story-i18n.spec.ts` 英文剧情 E2E 骨架（skip）。验证结果：Vitest 1099 passed / 3 skipped 不回归，Playwright chromium-desktop 22 passed / 3 skipped（3.0m，首次完整通过），ESLint 0 errors / 0 warnings，PWA 契约通过。新增 4 条 registry 条目，43 → 45 总计，0 RED。
 - 2026-08-05: 立绘风格清理与视频代码同步——①排查重绘 18 张立绘并实装：覆盖罗辑、维德、伊依、华华、大史、叶文洁、关云帆、严井（修正为男性戴眼镜学者）、智子、萨伊、常伟思以及 7 位通用 NPC 角色，清理所有文字、印章乱码及传统发饰；②山杉惠子立绘同步对齐：实装高科技女科学家头像，旧版立绘保存于 `images_backup` 用于后备；③视频编辑代码同步 GitHub：调整 `.gitignore` 过滤大文件后推送整个 Remotion 工程与录制转码脚本。
 - 2026-07-31: 深度英文本地化收尾与参数化提取——对 HTML 模版中裸写的硬编码中文（包括 `WallfacerPanel.ts` 和 `UIManager.ts`）进行了彻底的参数化解耦与 `t(...)` 包装，移除了含有中文的 HTML 注释以避免假阳性。在 `enDictionary` 中补足了 303 个最新提取的翻译键值对，实现了生产逻辑与界面交互全文本 100% 本地化闭环。TypeScript 0 报错与 744 项单元测试 100% 通过。
 - 2026-07-30: 全量英文本地化 100% 覆盖深化与自动化提取——编写并执行深度提取与映射脚本 (`build_full_i18n.cjs`)，遍历全项目 `data/*.json` 数据源（包括随机事件、主线剧情、智脑百科、科技树节点、人物档案、星体、面壁者策略、外交选项与 32 个终局结局）以及 TS/TSX 组件文本，提取并处理 2950+ 条未映射中文，生成并扩充 2917 项英文译名填入 `i18n.ts` 的 `enDictionary`。实现了《三体》英文原版（Ken Liu 译本）专有名词标准在全域场景下的 100% 深度英文自适应覆盖。TypeScript 0 报错与 734 项单元测试全部通过。

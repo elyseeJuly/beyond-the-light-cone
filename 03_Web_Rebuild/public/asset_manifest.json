@@ -1,7 +1,7 @@
 {
-  "version": "1.0.7",
-  "gameVersion": "1.0.7",
-  "generatedAt": 1785565076094,
+  "version": "1.0.8",
+  "gameVersion": "1.0.8",
+  "generatedAt": 1785908701968,
   "core": [
     {
       "id": "distribution",
@@ -1425,9 +1425,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1003285,
+        "size": 812663,
         "displayName": "changweisi_1779691759159",
-        "hash": "463d0908",
+        "hash": "6d99f6e1",
         "isDefault": false
       },
       {
@@ -1677,9 +1677,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 1139747,
+        "size": 679720,
         "displayName": "say_1780649885202",
-        "hash": "bfccc82",
+        "hash": "6b954213",
         "isDefault": false
       },
       {
@@ -1719,9 +1719,9 @@
           "characters"
         ],
         "era": "characters",
-        "size": 901389,
+        "size": 836714,
         "displayName": "sophon_1778921509458",
-        "hash": "23373060",
+        "hash": "24bf6e7b",
         "isDefault": false
       },
       {
@@ -1885,7 +1885,7 @@
         "name": "人物立绘包",
         "description": "全部角色与 NPC 立绘资源",
         "type": "character_pack",
-        "totalSize": 43973087,
+        "totalSize": 43257763,
         "assetIds": [
           "npc_ai_terminal",
           "npc_civilian",

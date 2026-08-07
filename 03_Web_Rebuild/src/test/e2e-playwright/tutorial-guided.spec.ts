@@ -82,14 +82,11 @@ test.describe(t("Guided Tutorial E2E - 真实用户交互黄金路径"), () => {
     const miningSlider = page.locator('[data-tutorial-id="mining-ratio-section"] input[type="range"]');
     await expect(miningSlider).toBeVisible({ timeout: 5000 });
     const initialMiningRatio = Number(await miningSlider.inputValue());
-    const miningSliderBox = await miningSlider.boundingBox();
-    expect(miningSliderBox).not.toBeNull();
-    await page.mouse.move(
-      miningSliderBox!.x + miningSliderBox!.width * 0.4,
-      miningSliderBox!.y + miningSliderBox!.height / 2,
-    );
-    await page.mouse.down();
-    await page.mouse.up();
+    await miningSlider.focus();
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
+    await miningSlider.dispatchEvent('mouseup');
+    await miningSlider.dispatchEvent('touchend');
     const committedMiningRatio = Number(await miningSlider.inputValue());
     expect(committedMiningRatio).not.toBe(initialMiningRatio);
 

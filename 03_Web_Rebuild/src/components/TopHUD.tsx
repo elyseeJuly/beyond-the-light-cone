@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Users, Landmark, Swords, Gem, AlertTriangle, SkipForward, Brain, Zap, BookOpen } from 'lucide-react';
 import { GameInstance } from '../core/Game';
 import { useTranslation } from '../utils/i18n';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface TopHUDStatItemProps {
   icon: React.ReactNode;
@@ -31,6 +32,8 @@ const TopHUDStatItem: React.FC<TopHUDStatItemProps> = ({ icon, label, value, col
 
 export const TopHUD: React.FC = () => {
   const { t, lang } = useTranslation();
+  const bp = useBreakpoint();
+  const isMobile = bp.isMobile;
   const [showStabilityDropdown, setShowStabilityDropdown] = useState(false);
   const [showDeterrenceDropdown, setShowDeterrenceDropdown] = useState(false);
 
@@ -167,7 +170,17 @@ export const TopHUD: React.FC = () => {
   };
 
   return (
-    <header data-tutorial-id="top-hud" data-tick={tick} className="h-[56px] md:h-[72px] w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between px-3 md:px-6 z-50 select-none relative shrink-0">
+    <header 
+      data-tutorial-id="top-hud" 
+      data-tick={tick} 
+      className="w-full bg-[#070B14]/80 backdrop-blur-[12px] border-b border-[#243245]/50 flex items-center justify-between z-50 select-none relative shrink-0"
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingLeft: isMobile ? 'calc(12px + env(safe-area-inset-left, 0px))' : '24px',
+        paddingRight: isMobile ? 'calc(12px + env(safe-area-inset-right, 0px))' : '24px',
+        height: isMobile ? 'calc(56px + env(safe-area-inset-top, 0px))' : '72px'
+      }}
+    >
       {/* Dynamic scanline overlay for Top HUD */}
       <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent" />
 

@@ -14,6 +14,7 @@ export const StarMap: React.FC = () => {
   const [showAreaDropdown, setShowAreaDropdown] = useState(false);
   const bp = useBreakpoint();
   const isMobile = bp.isMobile;
+  const isMobileLandscape = bp.isMobileLandscape;
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -144,7 +145,7 @@ export const StarMap: React.FC = () => {
         absolute left-1/2 -translate-x-1/2
         flex items-center gap-3 px-3 sm:px-6 py-2 glass-panel rounded-full border border-white/10
         z-20 transition-opacity duration-300 select-none
-        ${isMobile ? 'opacity-100 bottom-[72px]' : 'opacity-0 group-hover:opacity-100 bottom-6'}
+        ${isMobile ? (isMobileLandscape ? 'opacity-100 bottom-4' : 'opacity-100 bottom-[72px]') : 'opacity-0 group-hover:opacity-100 bottom-6'}
       `}>
         <button 
           onClick={handleZoomOut}

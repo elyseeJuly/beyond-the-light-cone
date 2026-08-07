@@ -116,7 +116,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="relative w-full max-w-4xl h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none"
+        className="relative w-full max-w-4xl h-full h-[560px] max-h-[90vh] md:max-h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none"
       >
         {/* Glow corner decorations */}
         <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/50 pointer-events-none" />

@@ -66,7 +66,10 @@ export const MobileLandscapeHub: React.FC<MobileLandscapeHubProps> = ({
     <aside
       data-tutorial-id="mobile-landscape-hub"
       className="mobile-landscape-hub"
-      style={{ paddingLeft: 'env(safe-area-inset-left, 0px)' }}
+      style={{ 
+        paddingLeft: 'env(safe-area-inset-left, 0px)',
+        width: 'calc(56px + env(safe-area-inset-left, 0px))'
+      }}
     >
       <div className="flex flex-col items-center gap-2">
         {navItems.map((item) => {

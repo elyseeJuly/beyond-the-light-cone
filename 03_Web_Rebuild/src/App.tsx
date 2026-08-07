@@ -97,6 +97,11 @@ export const App: React.FC = () => {
   // 左侧 56px 图标栏 + 中央视口 + 右侧 Inspector 抽屉
   const showDesktopLayout = !isMobile && !isMobileLandscape;
 
+  const showDesktopLayoutRef = useRef(showDesktopLayout);
+  useEffect(() => {
+    showDesktopLayoutRef.current = showDesktopLayout;
+  }, [showDesktopLayout]);
+
   useEffect(() => {
     preloadCoreImages();
     const handleOpenTutorial = () => {
@@ -123,19 +128,19 @@ export const App: React.FC = () => {
     };
     const handleStarSelected = () => {
       // On mobile, open the drawer when a star is selected
-      if (isMobile) {
+      if (!showDesktopLayoutRef.current) {
         setMobileDrawerOpen(true);
       }
     };
     const handleTutorialSetTab = () => {
       // On mobile, open the drawer when tutorial shifts to inspector tabs
-      if (isMobile) {
+      if (!showDesktopLayoutRef.current) {
         setMobileDrawerOpen(true);
       }
     };
     const handleTutorialCloseDrawer = () => {
       // On mobile, close the drawer when tutorial shifts away from inspector tabs
-      if (isMobile) {
+      if (!showDesktopLayoutRef.current) {
         setMobileDrawerOpen(false);
       }
     };
@@ -438,6 +443,21 @@ export const App: React.FC = () => {
                       <RightInspector />
                     </div>
                   </div>
+                  {!mobileDrawerOpen && (
+                    <button
+                      onClick={() => setMobileDrawerOpen(true)}
+                      className="fixed right-0 top-1/2 -translate-y-1/2 bg-[#070B14]/85 border-t border-b border-l border-[var(--color-primary)]/30 text-[var(--color-primary)] hover:text-white hover:bg-[#070B14] px-2 py-4 rounded-l-lg font-title font-bold text-[10px] tracking-widest uppercase z-[90] cursor-pointer flex flex-col items-center gap-1.5 shadow-lg backdrop-blur-md transition-all select-none"
+                      style={{
+                        paddingRight: 'calc(8px + env(safe-area-inset-right, 0px))',
+                      }}
+                      title={t("打开详情")}
+                    >
+                      <span className="text-[8px]">◀</span>
+                      <span className="font-title font-extrabold" style={{ writingMode: 'vertical-lr' }}>
+                        {t("详情")}
+                      </span>
+                    </button>
+                  )}
                 </>
               )}
             </main>

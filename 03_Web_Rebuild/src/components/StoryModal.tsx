@@ -200,7 +200,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
       {/* Main card box (820px width, 520px height) */}
       <div 
-        className={`relative z-20 w-full max-w-[820px] h-[90vh] md:h-[520px] ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-col md:flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
+        className={`relative z-20 w-full max-w-[820px] h-full h-[90vh] md:h-[520px] max-h-[90vh] md:max-h-[520px] story-modal-card ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-col md:flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
       >
         {/* CG Full-bleed background layer */}
         {currentNode.isCG && (
@@ -230,7 +230,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
         {/* Left Panel: Speaker Portrait (split layout) - Hidden during CG events */}
         {hasSpeaker && !currentNode.isCG && (
-          <div className="hidden md:flex w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex-col justify-end items-center relative overflow-hidden group z-10">
+          <div className="story-modal-portrait hidden md:flex w-[240px] shrink-0 border-r border-[#243245]/30 bg-[#070B14]/45 flex-col justify-end items-center relative overflow-hidden group z-10">
             {/* Holographic scanner grids */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-primary),transparent_1px),linear-gradient(to_bottom,var(--color-primary),transparent_1px)] bg-[size:16px_16px] opacity-[0.03]" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070B14]/90 via-transparent to-transparent z-10" />
@@ -259,9 +259,9 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
         )}
 
         {/* Right Panel: Content Section */}
-        <div className={`flex-1 flex flex-col justify-between p-6 relative z-10 ${currentNode.isCG ? 'bg-transparent' : 'bg-[#070B14]/65'} backdrop-blur-[1px]`}>
+        <div className={`story-modal-content-panel flex-1 flex flex-col justify-between p-4 sm:p-6 relative z-10 ${currentNode.isCG ? 'bg-transparent' : 'bg-[#070B14]/65'} backdrop-blur-[1px]`}>
           {/* 1. Header Metadata block */}
-          <div className="flex items-center justify-between border-b border-[#243245]/40 pb-3 shrink-0">
+          <div className="story-modal-header flex items-center justify-between border-b border-[#243245]/40 pb-3 shrink-0">
             <div className="flex items-center gap-2">
               <FileText className="text-[var(--color-primary)] w-4 h-4" />
               <span className="text-xs font-title font-bold text-[var(--color-primary)] tracking-widest uppercase">
@@ -275,7 +275,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           </div>
 
           {/* 2. Main Title */}
-          <div className="my-4 shrink-0 text-center">
+          <div className="story-modal-title-area my-2 sm:my-4 shrink-0 text-center">
             <h2 className="text-lg font-extrabold text-white tracking-widest font-title">
               《 {localizedEvent.title.trim().replace(/^【|】$/g, '')} 》
             </h2>
@@ -285,7 +285,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           <div className="h-px bg-gradient-to-r from-transparent via-[#243245] to-transparent shrink-0 mb-4" />
 
           {/* 4. Text Body */}
-          <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-4 flex flex-col justify-center">
+          <div className="story-modal-text-body flex-1 overflow-y-auto px-4 space-y-4 mb-4 flex flex-col justify-center">
             {/* Speaker label if speaking */}
             {currentNode.speakerName && (
               <div className="flex flex-col items-center shrink-0">
@@ -385,6 +385,40 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           0% { transform: scale(1) translate(0, 0); }
           50% { transform: scale(1.03) translate(-0.3%, -0.3%); }
           100% { transform: scale(1) translate(0, 0); }
+        }
+        @media (max-height: 500px) and (orientation: landscape) {
+          .story-modal-card {
+            height: 95vh !important;
+            max-height: calc(100vh - 16px) !important;
+          }
+          .story-modal-portrait {
+            display: none !important;
+          }
+          .story-modal-content-panel {
+            padding: 0.75rem !important;
+          }
+          .story-modal-header {
+            padding-bottom: 0.5rem !important;
+            margin-bottom: 0.25rem !important;
+          }
+          .story-modal-title-area {
+            margin-top: 0.25rem !important;
+            margin-bottom: 0.25rem !important;
+          }
+          .story-modal-title-area h2 {
+            font-size: 0.95rem !important;
+          }
+          .story-modal-text-body {
+            margin-bottom: 0.25rem !important;
+          }
+          .story-modal-text-body p, .story-modal-text-body div {
+            font-size: 0.8rem !important;
+            line-height: 1.4 !important;
+          }
+          .story-choice-btn {
+            padding-top: 0.35rem !important;
+            padding-bottom: 0.35rem !important;
+          }
         }
       `}</style>
     </div>

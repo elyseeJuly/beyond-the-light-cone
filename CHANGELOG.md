@@ -6,6 +6,23 @@
 > ⚠️ **注意**: 每次更新版本都**必须**在此文档中按照格式添加相应的发布更新说明。
 ## [Unreleased]
 
+## [v1.0.10] - 2026-08-07
+
+### 修复 (Fixed)
+
+- **全局安全区偏移适配**：移除了全局 `body` 的 `safe-area` padding，并在各边缘组件（`TopHUD`、`MobileBottomNav`、`MobileLandscapeHub`、`.drawer-panel`）中实现了精细化的安全区及内边距动态计算，彻底解决了刘海屏下底部导航和右侧面板被强行裁剪的问题。
+- **低高度视口模态框适配**：对 `StoryModal`、`SettingsModal`、`FleetModal`、`BattleScreen` 等所有核心模态窗口添加了 `max-h-[90vh]` 高度约束及内部自适应滚动。
+- **StoryModal 横屏精简布局**：在低高度横屏视口下自动隐藏大肖像，收缩内边距并优化字体，保证剧情文本和决策按钮 100% 可见。
+- **SettingsModal 窄屏布局重构**：移动端下自动切换为顶部水平滚动 Tab 栏及下方流式设置项的垂直布局，极大节约横纵向展示空间。
+- **FleetModal 响应式流式布局**：在窄屏下自动将舰队信息项切换为垂直排版，防止派遣按钮和选择器溢出截断。
+- **详情抽屉边缘呼出按钮**：针对非星图页面关闭 Inspector 后无法拉起的交互死路，引入了 SPEC A2 规范的半透明“详情 ◀”边缘胶囊按钮，允许随时重新呼出抽屉。
+- **React Stale Closure 闭包卡死修复**：修复了 `App.tsx` 中 window 事件监听器在挂载时对 `showDesktopLayout` 的 stale closure 引用，保证了视口切换时抽屉开合控制逻辑的最新有效。
+- **E2E 测试健壮性及可靠性提升**：
+  - 修复 `startFreeExplore` 挂载期间对于 PWA 资源下载授权模态框遮罩的自动检测与关闭逻辑。
+  - 模拟物理点击前引入 Earth 视角聚焦步骤，防止移动端低高度时由于地球处于视口外引发的点击失败。
+  - 将坐标命中测试的 Playwright 模拟物理点击替换为浏览器 native `MouseEvent` 精确派发，绕过 Playwright 物理模拟对于 `pointer-events: none` 覆盖物（`star-canvas-react`）的 hit-testing 局限性。
+  - 将 `tutorial-guided` 的滑块拖动方式替换为键盘 Focus 与 `ArrowRight` 微调，并派发 `mouseup`/`touchend` 触发状态提交，消除 CI 环境中触控轨迹拖曳模拟的不稳定性。
+
 ## [v1.0.9] - 2026-08-05
 
 ### 新增 (Added)

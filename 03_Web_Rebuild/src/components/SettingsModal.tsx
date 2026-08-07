@@ -136,8 +136,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
       role="dialog"
       aria-modal="true"
     >
-      {/* 720x560 Archive Card Modal */}
-      <div className="relative w-[720px] h-[520px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col justify-between p-6 rounded overflow-hidden">
+      {/* 720x520 Archive Card Modal — Responsive width & height */}
+      <div className="relative w-full max-w-[720px] h-full max-h-[90vh] md:max-h-[520px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col justify-between p-4 sm:p-6 rounded overflow-hidden">
         {/* Glow corner decorations */}
         <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/50" />
         <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-[var(--color-primary)]/50" />
@@ -161,68 +161,68 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
         </div>
 
         {/* Content Box */}
-        <div className="flex-1 flex gap-6 overflow-hidden my-4">
+        <div className="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 overflow-hidden my-4">
           {/* Left Navigation */}
-          <div className="w-44 flex flex-col gap-1.5 shrink-0">
+          <div className="w-full md:w-44 flex flex-row md:flex-col gap-1.5 shrink-0 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             <button
               onClick={() => setActiveTab('audio')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('audio')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('audio')}`}
             >
               <Volume2 size={14} /> {t("音频设置")}
             </button>
             
             <button
               onClick={() => setActiveTab('lang')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('lang')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('lang')}`}
             >
               <Globe size={14} /> {t("语言选择")}
             </button>
             
             <button
               onClick={() => setActiveTab('display')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('display')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('display')}`}
             >
               <Monitor size={14} /> {t("显示配置")}
             </button>
             
             <button
               onClick={() => setActiveTab('perf')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('perf')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('perf')}`}
             >
               <Zap size={14} /> {t("性能调度")}
             </button>
             
             <button
               onClick={() => setActiveTab('save')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('save')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('save')}`}
             >
               <Save size={14} /> {t("存档管理")}
             </button>
             
             <button
               onClick={() => setActiveTab('help')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('help')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('help')}`}
             >
               <HelpCircle size={14} /> {t("执政帮助")}
             </button>
 
             <button
               onClick={() => setActiveTab('credits')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('credits')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('credits')}`}
             >
               <Users size={14} /> {t("制作人员")}
             </button>
 
             <button
               onClick={() => setActiveTab('storage')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded border-l-2 text-xs font-title uppercase tracking-wider transition-all cursor-pointer ${getTabStyle('storage')}`}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-2.5 py-2 md:py-2.5 rounded border-l-2 text-[10px] md:text-xs font-title uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${getTabStyle('storage')}`}
             >
               <Database size={14} /> {t("存储与资源")}
             </button>
           </div>
 
           {/* Right Display Area */}
-          <div className="flex-1 bg-[#070B14]/40 border border-[#243245]/30 rounded p-4 flex flex-col justify-center overflow-hidden font-mono text-xs text-[var(--text-secondary)]">
+          <div className="flex-1 bg-[#070B14]/40 border border-[#243245]/30 rounded p-4 flex flex-col justify-start overflow-y-auto font-mono text-xs text-[var(--text-secondary)]">
             
             {activeTab === 'audio' && (
               <div className="space-y-4">

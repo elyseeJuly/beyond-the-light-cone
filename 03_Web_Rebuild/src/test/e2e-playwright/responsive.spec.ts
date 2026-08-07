@@ -234,8 +234,9 @@ test.describe('移动端横屏 A2 布局', () => {
     });
   });
 
-  test('横屏 1024×500（非触控）走桌面布局，无 mobile-landscape-scale', async ({ page }) => {
+  test('横屏 1024×500（非触控）走桌面布局，无 mobile-landscape-scale', async ({ page }, testInfo) => {
     // 桌面浏览器拉到 1024×500：因无 touch，应判为 desktop，不走 A2 横屏分支
+    test.skip(testInfo.project.name.includes('mobile'), 'Touch emulation in mobile project makes non-touch testing invalid');
     await loadAtViewport(page, 1024, 500, { hasTouch: false });
 
     // 缩放方案已彻底移除

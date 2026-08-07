@@ -553,7 +553,15 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[250] bg-slate-950/98 overflow-y-auto flex justify-center p-6 md:p-12 animate-in fade-in duration-300">
+    <div 
+      className="fixed inset-0 z-[250] bg-slate-950/98 overflow-y-auto flex justify-center animate-in fade-in duration-300"
+      style={{
+        paddingTop: 'max(24px, env(safe-area-inset-top, 0px))',
+        paddingBottom: 'max(24px, env(safe-area-inset-bottom, 0px))',
+        paddingLeft: 'max(24px, env(safe-area-inset-left, 0px))',
+        paddingRight: 'max(24px, env(safe-area-inset-right, 0px))',
+      }}
+    >
       {/* Background glow effects */}
       <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[20%] w-[500px] h-[500px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />

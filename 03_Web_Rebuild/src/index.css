@@ -66,11 +66,8 @@
     font-family: var(--font-base);
     @apply overflow-hidden h-screen w-screen;
     transition: background-color 0.5s ease, color 0.5s ease;
-    /* Safe area for iPhone notch and home indicator */
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    padding-left: env(safe-area-inset-left, 0px);
-    padding-right: env(safe-area-inset-right, 0px);
+    padding: 0;
+    margin: 0;
   }
 
   h1, h2, h3, h4 {
@@ -244,7 +241,7 @@
   align-items: center;
   padding: 4px 0;
   padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px));
-  height: 56px;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Drawer overlay for right inspector on mobile */
@@ -274,6 +271,8 @@
   flex-direction: column;
   overflow: hidden;
   padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 @keyframes slide-in-right {

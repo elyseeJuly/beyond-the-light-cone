@@ -123,7 +123,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[600] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in">
-      <div className="relative w-full max-w-4xl h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none">
+      <div className="relative w-full max-w-4xl h-full h-[560px] max-h-[90vh] md:max-h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none">
         
         {/* Glow corner decorations */}
         <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/50 pointer-events-none" />
@@ -174,7 +174,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
 
               return (
                 <div key={fleet.id} className="bg-[#070B14]/40 border border-[#243245]/30 rounded p-4 hover:border-[var(--color-primary)]/50 transition-colors">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-start sm:justify-between mb-4">
                     
                     {/* Left: Info */}
                     <div className="space-y-2">
@@ -226,7 +226,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                     </div>
 
                     {/* Right: Dispatch / Status */}
-                    <div className="text-right">
+                    <div className="text-left sm:text-right flex-shrink-0">
                       {isTraveling ? (
                         <div className="flex flex-col items-end space-y-1">
                           <div className="flex items-center gap-2 text-[11px] text-orange-400 font-bold">
@@ -237,10 +237,10 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                           <div className="text-[10px] text-white/40">{t("预计抵达：还剩")}{fleet.eta} {t("回合")}</div>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
                           <select 
                             id={`dispatch-target-${fleet.id}`}
-                            className="bg-[#070B14] border border-[#243245]/60 text-white text-[11px] outline-none rounded px-2 py-1.5 focus:border-[var(--color-primary)]"
+                            className="w-full sm:w-auto bg-[#070B14] border border-[#243245]/60 text-white text-[11px] outline-none rounded px-2 py-1.5 focus:border-[var(--color-primary)]"
                             defaultValue=""
                           >
                             <option value="" disabled>{t("选择折跃目标星系...")}</option>

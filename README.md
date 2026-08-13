@@ -11,8 +11,8 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-v1.0.10-ff6f00.svg)](#)
-[![Play Online](https://img.shields.io/badge/Play_Online-GitHub_Pages-success.svg)](https://elyseejuly.github.io/beyond-the-light-cone/?v=1.0.10)
+[![Version](https://img.shields.io/badge/Version-v1.0.11-ff6f00.svg)](#)
+[![Play Online](https://img.shields.io/badge/Play_Online-GitHub_Pages-success.svg)](https://elyseejuly.github.io/beyond-the-light-cone/?v=1.0.11)
 [![Stack](https://img.shields.io/badge/Stack-React_19_|_Vite_8_|_TS_5-61dafb.svg)](#-技术栈)
 [![PWA](https://img.shields.io/badge/PWA-支持离线缓存-blueviolet.svg)](#-本地运行)
 [![Tauri](https://img.shields.io/badge/Desktop-Tauri_(Win_/_macOS)-9b59b6.svg)](#-本地运行)
@@ -20,7 +20,7 @@
 
 <br>
 
-👉 **[在线游玩 · Web 正式版 v1.0.10](https://elyseejuly.github.io/beyond-the-light-cone/?v=1.0.10)** 👈
+👉 **[在线游玩 · Web 正式版 v1.0.11](https://elyseejuly.github.io/beyond-the-light-cone/?v=1.0.11)** 👈
 
 </div>
 

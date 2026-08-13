@@ -1,8 +1,8 @@
 # Scenario Registry — 场景测试注册表
-> 最后更新：2026-08-05
+> 最后更新：2026-08-13
 > 发布条件：所有条目为 GREEN
 
-## 发布状态：🟢 v1.0.8 稳定（0 RED / 45 总计）
+## 发布状态：🟢 v1.0.10 稳定（0 RED / 46 总计）
 
 | ID   | 类型 | 场景名称 | 玩家路径 / 测试描述 | 状态  | 对应问题 | 测试文件 |
 |------|------|---------|-------------------|-------|---------|---------|
@@ -45,8 +45,10 @@
 | **SCEN-TEST-INFRA-PORT-TRUST** | Infrastructure | Playwright 端口可信度硬隔离 | `playwright.config.ts` 改为 `--strictPort` + `reuseExistingServer: false`；新增 `global-setup.ts` 在所有 spec 运行前对 preview URL 做身份断言（title + application-name meta 必须匹配"光锥之外"）；`helpers.ts` 同步新增 `assertIsThisApp` 页面级断言 | 🟢 GREEN | AUDIT_20260801 P0-1：Playwright 端口 4173 + reuseExistingServer 隐性风险 | `playwright.config.ts` / `src/test/e2e-playwright/global-setup.ts` / `src/test/e2e-playwright/helpers.ts` |
 | **SCEN-TEST-INFRA-LINT-GATE** | Infrastructure | ESLint 全项目门禁 | `eslint.config.js` 追加 `video-output/**` 忽略与 `globals.browser/node` 声明；CI `lint:simulation` 升级为完整 `lint`；ESLint 从 124 errors / 2 warnings 降至 **0 errors / 0 warnings**；同步修复 `BottomEventBar.tsx` / `IntelligenceCenter.tsx` 的 useMemo `t` 依赖 | 🟢 GREEN | AUDIT_20260801 P1：CI 不运行完整 lint；AUDIT_20260804 P1：lint 本地无法干净通过 | `eslint.config.js` / `.github/workflows/ci.yml` / `src/components/BottomEventBar.tsx` / `src/components/IntelligenceCenter.tsx` |
 | **SCEN-STORY-I18N-SKELETON** | Feature | 英文剧情 E2E 骨架 | 新增 `story-i18n.spec.ts` 骨架（`describe.skip`），覆盖目标：英文态首屏渲染、SettingsModal 切换中文、英文态随机剧情英文文案。定位策略使用语义 selector 与"中文简体"稳定文案锚点，不依赖单一中文 copy | 🟢 GREEN | AUDIT_20260801 P1：英文剧情用户路径测试缺失（骨架已落地，待后续迭代补全断言取消 skip） | `src/test/e2e-playwright/story-i18n.spec.ts` |
+| **SCEN-MOBILE-UI-AUDIT** | UI/UX | 移动端UI审计缺陷修复 | 覆盖 BattleScreen 横屏、StoryModal 滚动死区、SettingsModal 双滚动条、安全区偏移等 20 项移动端自适应和触控靶区问题 | 🟢 GREEN | 移动端UI审计报告 AUDIT_20260812 | `src/test/e2e-playwright/responsive.spec.ts` |
 
 ## 变更日志
+- 2026-08-13: 移动端 UI 审计缺陷专项修复完成 —— 解决全部 20 项移动端自适应布局、安全区与触控靶区等严重与细节问题，全量 22/22 响应式 E2E 测试及 1099/1099 单元测试通过，版本同步至 1.0.10。
 - 2026-08-05: v1.0.8 稳定版正式发布——修复 `global-setup.ts` 类型检查报错以通过发布门禁，更新各平台版本号为 `1.0.8` 并更新资源清单；更新 `README.md` 的试玩链接及 badge，附加防缓存参数（`?v=1.0.8`）。
 - 2026-08-05: 测试系统修复执行闭环（EXEC_20260804_TEST_FIX_EXECUTION）——基于 AUDIT_20260804_TEST_REPLAY_AND_FINDINGS 审计报告执行 4 套方案：①方案 A 修复 `i18n.ts:3711` 顶层 `localStorage` 守卫 + `setLanguage` 守卫，解除 Playwright 7 个 spec 零用例阻断；②方案 B `playwright.config.ts` 改为 `--strictPort` + `reuseExistingServer: false` + 新增 `global-setup.ts` 身份断言；③方案 C `eslint.config.js` 加 `video-output/**` 忽略与 `globals` 声明，CI `lint:simulation` 升级为完整 `lint`，ESLint 从 124 errors → 0 errors；④方案 D 新增 `story-i18n.spec.ts` 英文剧情 E2E 骨架（skip）。验证结果：Vitest 1099 passed / 3 skipped 不回归，Playwright chromium-desktop 22 passed / 3 skipped（3.0m，首次完整通过），ESLint 0 errors / 0 warnings，PWA 契约通过。新增 4 条 registry 条目，43 → 45 总计，0 RED。
 - 2026-08-05: 立绘风格清理与视频代码同步——①排查重绘 18 张立绘并实装：覆盖罗辑、维德、伊依、华华、大史、叶文洁、关云帆、严井（修正为男性戴眼镜学者）、智子、萨伊、常伟思以及 7 位通用 NPC 角色，清理所有文字、印章乱码及传统发饰；②山杉惠子立绘同步对齐：实装高科技女科学家头像，旧版立绘保存于 `images_backup` 用于后备；③视频编辑代码同步 GitHub：调整 `.gitignore` 过滤大文件后推送整个 Remotion 工程与录制转码脚本。

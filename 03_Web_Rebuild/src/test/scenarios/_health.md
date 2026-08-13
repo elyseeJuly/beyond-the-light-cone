@@ -1,8 +1,8 @@
 # Project Health Dashboard — 项目健康仪表盘
-> 最后审视：2026-08-05
+> 最后审视：2026-08-13
 > 审视周期：每周一次 或 里程碑节点
 
-## 总体健康：🟢（0 🔴 / 1 🟡 / 17 🟢）
+## 总体健康：🟢（0 🔴 / 1 🟡 / 18 🟢）
 
 | 维度 | 指标 | 状态 | 具体数据 | 建议行动 |
 |------|------|------|---------|---------|
@@ -23,9 +23,11 @@
 | 内容 | 讣告/死亡对账逻辑 | 🟢 | 已修复 | 恢复被 ae1119e 误删的 reconcilePersonDeaths() 方法体（此前 tsc 报错、死亡对账整段不执行）；讣告播报加登场门控（仅本局已登场角色 via availablePersons 才发布，逻辑死亡仍对全体生效以保证任命正确）；新增 ObituaryAppearanceGate 回归测试 3 项。registry SCEN-OBITUARY-APPEARANCE-GATE GREEN，0 RED / 32 总计。 |
 | 安全 | 生产 sourcemap / 遥测版本号 | 🟢 | 已修复 | vite.config.ts build.sourcemap 从 true 改为 false，生产产物不再包含 .map 文件；StatisticsManager 遥测 payload 版本号从 0.9.0-beta 更新为 1.0.7（遇端点当前为空会提前返回，不作为当前线上信息泄露）。 |
 | UI | HUD 图标重构与移动端适配 | 🟢 | 已完成 | 将“智脑顾问”图标更换为 BookOpen，将 Brain 图标分配给“智脑托管”开关，并引入状态感知着色逻辑。针对“下一回合”阻断反馈，按钮已新增 hover 悬浮框以详细列出 4 类阻断或警告原因，解决空白方块与阻断不透明问题。registry SCEN-HUD-ICON-REFIT GREEN，0 RED / 34 总计。 |
+| UI | 移动端自适应与安全区审计修复 | 🟢 | 已完成 | 修复全部 20 项移动端自适应布局、安全区与触控靶区等缺陷，解决 BattleScreen 横屏、StoryModal 滚动死区、SettingsModal 双滚动条及 global 100dvh 适配。所有 22/22 Playwright 响应式测试通过。 |
 | 美术 | 立绘风格统一与文字清理 | 🟢 | 已完成 | 排查并重绘 18 张立绘并实装，彻底清理智子、萨伊、常伟思等人的 AI 乱码、贴字和古装发饰，旧图移入 `images_backup` 目录备份，项目美术资产质量完全闭合。 |
 
 ## 审视日志
+- 2026-08-13: 移动端 UI 审计缺陷专项修复完成 —— 基于 AUDIT_20260812_MOBILE_UI_AUDIT 审计报告解决全部 20 项移动端自适应布局、安全区与触控靶区等严重与细节问题，全量 22/22 响应式 E2E 测试及 1099/1099 单元测试通过，生产构建成功，文档已归档（EXEC_20260813_MOBILE_UI_AUDIT_FIXES_WALKTHROUGH.md）。新增 1 条 🟢 维度（UI \| 移动端自适应与安全区审计修复）。总体健康 🟢（0🔴/1🟡/18🟢）。
 - 2026-08-05: 测试系统修复执行闭环（EXEC_20260804_TEST_FIX_EXECUTION）——基于 AUDIT_20260804_TEST_REPLAY_AND_FINDINGS 审计报告执行 4 套方案，新增 2 个测试基础设施维度为 🟢：①方案 A 修复 `i18n.ts:3711` 顶层 `localStorage` 守卫 + `setLanguage` 守卫，解除 Playwright 7 个 spec 零用例阻断（从 0 tests → 22 passed）；②方案 B `playwright.config.ts` 改为 `--strictPort` + `reuseExistingServer: false` + 新增 `global-setup.ts` 身份断言；③方案 C `eslint.config.js` 加 `video-output/**` 忽略与 `globals` 声明，CI `lint:simulation` 升级为完整 `lint`，ESLint 从 124 errors / 2 warnings 降至 0 errors / 0 warnings；④方案 D 新增 `story-i18n.spec.ts` 英文剧情 E2E 骨架（skip）。验证：Vitest 1099 passed / 3 skipped 不回归，Playwright chromium-desktop 22 passed / 3 skipped（3.0m，首次完整通过），PWA 契约通过。新增 4 条 registry 条目，43 → 45 总计，0 RED。总体健康 🟢（0🔴/1🟡/17🟢）。
 - 2026-08-05: 立绘风格清理与视频代码同步——①全量重绘 18 张立绘并实装：排查出智子、萨伊、常伟思、史强、叶文洁、关云帆、严井（修正为男性戴眼镜学者）以及 7 位通用 NPC 的立绘存在 AI 贴纸字迹、乱码印章或古装发饰，已全量重绘为无文字、纯净工笔画底色搭配赛博蓝色电路的画风，并完成 Git 实装推送；②山杉惠子立绘同步对齐：实装高科技女科学家头像，旧版“执毛笔”立绘移入 `images_backup` 目录备份为备用资源；③视频编辑代码同步 GitHub：调整 `.gitignore` 过滤 `node_modules` 及大容量视频包，将 Remotion 视频编辑工程源码和录制转码脚本同步推送至云端。
 - 2026-07-31: 深度英文本地化收尾与参数化提取——对 HTML 模版中裸写的硬编码中文（包括 `WallfacerPanel.ts` 和 `UIManager.ts`）进行了彻底的参数化解耦与 `t(...)` 包装，移除了含有中文的 HTML 注释以避免假阳性。在 `enDictionary` 中补足了 303 个最新提取的翻译键值对，实现了生产逻辑与界面交互全文本 100% 本地化闭环。TypeScript 0 报错与 744 项单元测试 100% 通过。

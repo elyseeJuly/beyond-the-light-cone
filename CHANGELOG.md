@@ -6,6 +6,16 @@
 > ⚠️ **注意**: 每次更新版本都**必须**在此文档中按照格式添加相应的发布更新说明。
 ## [Unreleased]
 
+## [v1.0.11] - 2026-08-13
+
+### 修复 (Fixed)
+
+- **Firefox 桌面端 E2E 测试兼容性**：`tutorial-guided.spec.ts` 中 `touchend` 事件派发在 Firefox 桌面端因缺少全局 `TouchEvent` 构造器而报错，添加运行时支持检测，仅在 Chromium/WebKit 环境下派发 `touchend`，消除跨浏览器 CI 失败。
+
+### 变更 (Changed)
+
+- **README 版本号同步**：Version 徽章、Play Online 链接及在线游玩入口从 v1.0.8 更新至 v1.0.11。
+
 ## [v1.0.10] - 2026-08-07
 
 ### 修复 (Fixed)

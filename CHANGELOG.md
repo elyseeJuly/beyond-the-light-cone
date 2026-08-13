@@ -8,13 +8,29 @@
 
 ## [v1.0.11] - 2026-08-13
 
+本次版本聚焦解决移动端 UI 审计中发现的 20 项响应式与安全区缺陷，并修复 Firefox 桌面端 E2E 测试兼容性问题。
+
 ### 修复 (Fixed)
 
+- **BattleScreen 战斗日志横屏压缩至 0px（P0）**：窄屏断点下攻防卡片垂直堆叠导致 `flex-1` 日志区被压缩，改为横屏强制 `grid-cols-2` 并排，降低 padding/gap，主体容器加入 `min-h-0` 预留约 99px 可用高度。
+- **StoryModal 长文本滚动死区（P0）**：文本容器 `justify-center` + `overflow-y-auto` 导致溢出文本顶部超出滚动边界，改为 `justify-start` + `my-auto` 自适应居中，消除滚动盲区。
+- **TopHUD 下拉菜单被刘海遮挡（P1）**：硬编码 `top-[52px]` 改为 `top-full mt-1`，跟随 HUD 实际底线展开。
+- **全局 100vh iOS Safari 地址栏动态裁切（P1）**：`body`、`.modal-overlay`、`App.tsx` 根容器高度从 `100vh` 升级为 `100dvh`（含 fallback），保障浏览器操作栏缩放时底部控件可触及。
+- **SettingsModal 横屏双滚动条（P1）**：移除 Help 及 Storage 子 Tab 内嵌套 `overflow-y-auto max-h-72` 和 `max-h-[160px]`，由右侧主面板统一管理滚动。
+- **FleetModal 窄屏挤压截断（P1）**：清理重复高度属性 `h-full h-[560px]`，Action Bar 重构为 `flex-col sm:flex-row` 响应式布局，派遣区加入 `flex-wrap` 防 320px 截断。
+- **MuseumGallery CG 查看器关闭按钮安全区（P1）**：关闭按钮定位改为 `top: max(24px, env(safe-area-inset-top))` 和 `right: max(24px, env(safe-area-inset-right))`，顶部 Tab 栏加入 `overflow-x-auto scrollbar-none` 支持窄屏横滑。
+- **TopHUD 320-375px 纪元标题重叠（P2）**：`< sm` 断点下隐藏 Era 英文副标题 `hidden sm:inline-block`。
+- **StarMap 移动端控件浮空定位（P2）**：Zoom Bar 从 `bottom-[72px]` 调至 `bottom-4`，Touch Hint 从 `bottom-[120px]` 降至 `bottom-16`，适配星图容器已从 BottomNav 解耦的新布局。
+- **MobileLandscapeHub 底部安全区缺失（P2）**：补齐 `paddingBottom: env(safe-area-inset-bottom, 0px)` 解决系统手势指示条冲突。
+- **StoryModal 窄屏决策区内边距收缩（P2）**：选项区 Padding 从 `px-8` 精简为 `px-3 sm:px-8`，给 320px 竖屏更大排版空间。
+- **RightInspector 劳动力滑块触控靶区过小（P2）**：三个部门 `input[type=range]` 轨道从 `h-1` 升级为 `h-2 sm:h-1.5 py-1`，增加手指触点响应面积。
+- **index.css 局部 safe area 及 padding 响应式（P2）**：`.drawer-panel` 补充 `padding-left: env(safe-area-inset-left)`，`.modal-box` padding 升级为 `clamp(16px, 4vw, 32px)`。
 - **Firefox 桌面端 E2E 测试兼容性**：`tutorial-guided.spec.ts` 中 `touchend` 事件派发在 Firefox 桌面端因缺少全局 `TouchEvent` 构造器而报错，添加运行时支持检测，仅在 Chromium/WebKit 环境下派发 `touchend`，消除跨浏览器 CI 失败。
 
 ### 变更 (Changed)
 
 - **README 版本号同步**：Version 徽章、Play Online 链接及在线游玩入口从 v1.0.8 更新至 v1.0.11。
+- **活文档更新**：`_health.md` 与 `_registry.md` 同步移动端 UI 修复状态。
 
 ## [v1.0.10] - 2026-08-07
 

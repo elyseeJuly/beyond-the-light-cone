@@ -86,7 +86,12 @@ test.describe(t("Guided Tutorial E2E - 真实用户交互黄金路径"), () => {
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     await miningSlider.dispatchEvent('mouseup');
-    await miningSlider.dispatchEvent('touchend');
+    // Firefox 桌面端没有全局 TouchEvent 构造器，仅 Chromium/WebKit 支持，
+    // 需在支持时才派发 touchend，避免跨浏览器 CI 失败。
+    const supportsTouchEvent = await page.evaluate(() => typeof (window as any).TouchEvent !== 'undefined');
+    if (supportsTouchEvent) {
+      await miningSlider.dispatchEvent('touchend');
+    }
     const committedMiningRatio = Number(await miningSlider.inputValue());
     expect(committedMiningRatio).not.toBe(initialMiningRatio);
 

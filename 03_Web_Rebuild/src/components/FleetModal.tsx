@@ -123,7 +123,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[600] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in">
-      <div className="relative w-full max-w-4xl h-full h-[560px] max-h-[90vh] md:max-h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none">
+      <div className="relative w-full max-w-4xl max-h-[90vh] md:h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none">
         
         {/* Glow corner decorations */}
         <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/50 pointer-events-none" />
@@ -132,7 +132,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
         <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[var(--color-primary)]/50 pointer-events-none" />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#243245]/40 bg-[#070B14] shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-[#243245]/40 bg-[#070B14] shrink-0">
           <div className="flex items-center gap-3">
             <Rocket className="text-[var(--color-primary)]" size={20} />
             <div>
@@ -146,13 +146,13 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
         </div>
 
         {/* Action Bar */}
-        <div className="px-6 py-4 border-b border-[#243245]/20 shrink-0 bg-[#070B14]/30 flex justify-between items-center">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[#243245]/20 shrink-0 bg-[#070B14]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
           <div className="text-[10px] font-mono text-[var(--text-secondary)]">
             {t("可用拨款预算")}：<span className="text-white font-bold">{earth.economy} {t("经济单位")}</span>
           </div>
           <button 
             onClick={handleBuildFleet}
-            className="flex items-center gap-2 px-4 py-2 bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] border border-[var(--color-primary)]/40 rounded text-[var(--color-primary)] font-bold text-xs transition-all tracking-wider uppercase cursor-pointer"
+            className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] border border-[var(--color-primary)]/40 rounded text-[var(--color-primary)] font-bold text-[11px] sm:text-xs transition-all tracking-wider uppercase cursor-pointer"
           >
             <Zap size={14} />
             {t("建造恒星级战舰编队 (100 经济)")}
@@ -160,7 +160,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
         </div>
 
         {/* Fleet List */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 font-mono text-xs text-[var(--text-secondary)]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 font-mono text-xs text-[var(--text-secondary)]">
           {earth.fleets.length === 0 ? (
             <div className="text-center py-20 text-white/20 border border-[#243245]/30 rounded border-dashed">
               <Shield size={36} className="mx-auto mb-3 opacity-20" />
@@ -237,7 +237,7 @@ export const FleetModal: React.FC<FleetModalProps> = ({ onClose }) => {
                           <div className="text-[10px] text-white/40">{t("预计抵达：还剩")}{fleet.eta} {t("回合")}</div>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                           <select 
                             id={`dispatch-target-${fleet.id}`}
                             className="w-full sm:w-auto bg-[#070B14] border border-[#243245]/60 text-white text-[11px] outline-none rounded px-2 py-1.5 focus:border-[var(--color-primary)]"

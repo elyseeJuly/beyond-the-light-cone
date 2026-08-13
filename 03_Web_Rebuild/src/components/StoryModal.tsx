@@ -200,7 +200,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
 
       {/* Main card box (820px width, 520px height) */}
       <div 
-        className={`relative z-20 w-full max-w-[820px] h-full h-[90vh] md:h-[520px] max-h-[90vh] md:max-h-[520px] story-modal-card ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-col md:flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
+        className={`relative z-20 w-full max-w-[820px] h-[90vh] md:h-[520px] max-h-[90vh] md:max-h-[520px] story-modal-card ${currentNode.isCG ? 'bg-[#070B14]/20' : 'bg-[#070B14]/90'} border border-[var(--color-primary)]/30 shadow-[0_0_40px_rgba(0,184,255,0.15)] flex flex-col md:flex-row rounded select-none animate-[card-unseal_0.5s_cubic-bezier(0.16,1,0.3,1)] overflow-hidden`}
       >
         {/* CG Full-bleed background layer */}
         {currentNode.isCG && (
@@ -285,7 +285,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
           <div className="h-px bg-gradient-to-r from-transparent via-[#243245] to-transparent shrink-0 mb-4" />
 
           {/* 4. Text Body */}
-          <div className="story-modal-text-body flex-1 overflow-y-auto px-4 space-y-4 mb-4 flex flex-col justify-center">
+          <div className="story-modal-text-body flex-1 overflow-y-auto px-4 space-y-4 mb-4 flex flex-col justify-start">
             {/* Speaker label if speaking */}
             {currentNode.speakerName && (
               <div className="flex flex-col items-center shrink-0">
@@ -296,7 +296,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
             )}
 
             {/* Typing log */}
-            <div className="text-sm font-mono leading-relaxed text-slate-100 text-center tracking-wide px-2 select-text">
+            <div className="text-sm font-mono leading-relaxed text-slate-100 text-center tracking-wide px-2 select-text my-auto">
               {displayedText}
               {isTyping && <span className="inline-block w-1.5 h-4 ml-1 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] animate-pulse" />}
             </div>
@@ -324,7 +324,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ event, onClose }) => {
                 <ChevronRight size={14} className="stroke-[2.5]" />
               </button>
             ) : (
-              <div className="flex flex-col gap-3 w-full px-8">
+              <div className="flex flex-col gap-3 w-full px-3 sm:px-8">
                 <div className="text-[9px] font-title font-bold text-[var(--text-secondary)]/40 tracking-[0.3em] uppercase mb-1 text-center">
                   {t("执政官指令签署授权区")}
                 </div>

@@ -116,7 +116,7 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="relative w-full max-w-4xl h-full h-[560px] max-h-[90vh] md:max-h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none"
+        className="relative w-full max-w-4xl max-h-[90vh] md:h-[560px] bg-[#070B14] border border-[#243245] shadow-[0_0_50px_rgba(0,184,255,0.15)] flex flex-col rounded overflow-hidden select-none"
       >
         {/* Glow corner decorations */}
         <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[var(--color-primary)]/50 pointer-events-none" />
@@ -125,10 +125,10 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[var(--color-primary)]/50 pointer-events-none" />
 
         {/* Header Row */}
-        <div className="bg-[#070B14] border-b border-[#243245]/40 px-6 py-4 flex items-center justify-between shrink-0">
+        <div className="bg-[#070B14] border-b border-[#243245]/40 px-4 py-2.5 sm:px-6 sm:py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <Swords className="text-[var(--color-primary)] w-4 h-4" />
-            <span className="text-[var(--color-primary)] font-title font-bold tracking-widest text-xs uppercase">
+            <span className="text-[var(--color-primary)] font-title font-bold tracking-widest text-[10px] sm:text-xs uppercase">
               {t("PDC 战术演练系统 · 星际遭遇战档案")}
             </span>
           </div>
@@ -150,16 +150,16 @@ export const BattleScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         </div>
 
         {/* Content Body */}
-        <div className="flex-1 flex flex-col gap-4 p-6 overflow-hidden">
+        <div className="flex-1 flex flex-col gap-2 sm:gap-4 p-3 sm:p-6 overflow-hidden min-h-0">
           
           {/* Battle Location banner */}
-          <div className="text-center bg-[#070B14]/40 border border-[#243245]/30 p-2.5 rounded font-mono shrink-0">
-            <span className="text-[var(--text-secondary)]/50 text-[9px] tracking-widest block uppercase">BATTLEZONE COORD</span>
-            <span className="text-white text-sm font-bold tracking-wider">{t("星系")} [{t(planetName)}] {t("边缘空间对决")}</span>
+          <div className="text-center bg-[#070B14]/40 border border-[#243245]/30 p-1.5 sm:p-2.5 rounded font-mono shrink-0">
+            <span className="text-[var(--text-secondary)]/50 text-[8px] sm:text-[9px] tracking-widest block uppercase">BATTLEZONE COORD</span>
+            <span className="text-white text-xs sm:text-sm font-bold tracking-wider">{t("星系")} [{t(planetName)}] {t("边缘空间对决")}</span>
           </div>
 
-          {/* Dueling Parties Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0 font-mono text-xs">
+          {/* Dueling Parties Grid - Keep 2 cols on landscape or sm screen to avoid vertical collapse */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 shrink-0 font-mono text-xs">
             {/* Attacker Panel */}
             <motion.div 
               key={`atk_${displayedRounds.length}`}

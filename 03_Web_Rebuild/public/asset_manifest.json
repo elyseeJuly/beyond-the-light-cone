@@ -1,7 +1,7 @@
 {
-  "version": "1.0.9",
-  "gameVersion": "1.0.9",
-  "generatedAt": 1786077074538,
+  "version": "1.0.10",
+  "gameVersion": "1.0.10",
+  "generatedAt": 1786592175352,
   "core": [
     {
       "id": "distribution",

@@ -14,7 +14,6 @@ export const StarMap: React.FC = () => {
   const [showAreaDropdown, setShowAreaDropdown] = useState(false);
   const bp = useBreakpoint();
   const isMobile = bp.isMobile;
-  const isMobileLandscape = bp.isMobileLandscape;
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -138,14 +137,14 @@ export const StarMap: React.FC = () => {
       
       {/* Zoom controls — always visible on mobile, hover-to-show on desktop */}
       {/*
-        On mobile: raised to bottom-[72px] to clear MobileBottomNav (56px) + safe area.
-        On desktop: stays at bottom-6.
+        Zoom Controls: bottom-4 on mobile (since StarMap container sits above BottomNav in main flex tree),
+        bottom-6 on desktop.
       */}
       <div className={`
         absolute left-1/2 -translate-x-1/2
         flex items-center gap-3 px-3 sm:px-6 py-2 glass-panel rounded-full border border-white/10
         z-20 transition-opacity duration-300 select-none
-        ${isMobile ? (isMobileLandscape ? 'opacity-100 bottom-4' : 'opacity-100 bottom-[72px]') : 'opacity-0 group-hover:opacity-100 bottom-6'}
+        ${isMobile ? 'opacity-100 bottom-4' : 'opacity-0 group-hover:opacity-100 bottom-6'}
       `}>
         <button 
           onClick={handleZoomOut}
@@ -176,7 +175,7 @@ export const StarMap: React.FC = () => {
 
       {/* Mobile touch hint (shown briefly on first load) */}
       {isMobile && (
-        <div className="absolute bottom-[120px] left-1/2 -translate-x-1/2 text-[9px] text-[var(--text-secondary)] opacity-50 pointer-events-none select-none whitespace-nowrap z-10">
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-[9px] text-[var(--text-secondary)] opacity-50 pointer-events-none select-none whitespace-nowrap z-10">
           {t("单指拖动 · 双指缩放 · 点击星辰")}</div>
       )}
 

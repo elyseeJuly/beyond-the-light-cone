@@ -237,7 +237,7 @@ export const RightInspector: React.FC = () => {
                             }}
                             onMouseUp={() => commitRatio('mining', localMiningRatio)}
                             onTouchEnd={() => commitRatio('mining', localMiningRatio)}
-                            className={`w-full h-1 rounded appearance-none cursor-pointer ${miningShortage ? 'bg-orange-950 accent-orange-500' : 'bg-cyan-950 accent-[var(--color-primary)]'}`}
+                            className={`w-full h-2 sm:h-1.5 py-1 rounded appearance-none cursor-pointer ${miningShortage ? 'bg-orange-950 accent-orange-500' : 'bg-cyan-950 accent-[var(--color-primary)]'}`}
                           />
                         </div>
                         {/* Factory */}
@@ -259,7 +259,7 @@ export const RightInspector: React.FC = () => {
                             }}
                             onMouseUp={() => commitRatio('factory', localFactoryRatio)}
                             onTouchEnd={() => commitRatio('factory', localFactoryRatio)}
-                            className={`w-full h-1 rounded appearance-none cursor-pointer ${factoryShortage ? 'bg-orange-950 accent-orange-500' : 'bg-emerald-950 accent-emerald-400'}`}
+                            className={`w-full h-2 sm:h-1.5 py-1 rounded appearance-none cursor-pointer ${factoryShortage ? 'bg-orange-950 accent-orange-500' : 'bg-emerald-950 accent-emerald-400'}`}
                           />
                         </div>
                         {/* Culture */}
@@ -278,7 +278,7 @@ export const RightInspector: React.FC = () => {
                             }}
                             onMouseUp={() => commitRatio('culture', localCultureRatio)}
                             onTouchEnd={() => commitRatio('culture', localCultureRatio)}
-                            className="w-full h-1 bg-amber-950 rounded appearance-none cursor-pointer accent-amber-400"
+                            className="w-full h-2 sm:h-1.5 py-1 rounded appearance-none cursor-pointer bg-amber-950 accent-amber-400"
                           />
                         </div>
                         {/* Idle workers */}

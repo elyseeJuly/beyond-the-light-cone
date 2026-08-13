@@ -399,7 +399,7 @@ export const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <AtmosphereProvider engineRef={atmosphereEngineRef}>
-        <div className="flex flex-col h-screen overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
+        <div className="flex flex-col h-screen h-[100dvh] overflow-hidden bg-[#070B14] text-[#DDEEFF] font-sans selection:bg-[var(--color-primary)] selection:text-black">
 
           {/* Gameplay Container */}
           <div className="flex-1 flex flex-col w-full overflow-hidden">

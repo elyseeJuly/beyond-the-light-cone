@@ -197,7 +197,7 @@ export const TopHUD: React.FC = () => {
             className={showStabilityDropdown ? "bg-white/5" : ""}
           />
           {showStabilityDropdown && (
-            <div className="absolute top-[52px] left-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
+            <div className="absolute top-full mt-1 left-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
               <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-2 uppercase tracking-wider">
                 {t("文明发展指标详情")}
               </div>
@@ -260,7 +260,7 @@ export const TopHUD: React.FC = () => {
             className={showDeterrenceDropdown ? "bg-white/5" : ""}
           />
           {showDeterrenceDropdown && (
-            <div className="absolute top-[52px] right-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
+            <div className="absolute top-full mt-1 right-0 w-52 bg-[#070B14]/95 border border-[#243245] rounded p-4 shadow-2xl z-[100] backdrop-blur-md animate-fade-in">
               <div className="text-[10px] font-title font-bold text-[var(--color-primary)] mb-2 uppercase tracking-wider">
                 {t("全息战略威慑指标详情")}
               </div>
@@ -281,7 +281,7 @@ export const TopHUD: React.FC = () => {
 
       {/* Center: Prominent Era and Year Display */}
       <div data-tutorial-id="top-hud-epoch" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center font-title text-center pointer-events-none">
-        <span className="text-[7px] md:text-[9px] font-bold text-[var(--color-primary)] tracking-[0.25em] md:tracking-[0.35em] uppercase opacity-90">
+        <span className="hidden sm:inline-block text-[7px] md:text-[9px] font-bold text-[var(--color-primary)] tracking-[0.25em] md:tracking-[0.35em] uppercase opacity-90">
           {stats.epochNameEn}
         </span>
         <span className="text-xs md:text-lg font-extrabold tracking-widest text-[var(--text-primary)] mt-0.5">

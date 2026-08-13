@@ -595,7 +595,7 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-4 border-b border-white/10 pb-2 shrink-0">
+        <div className="flex gap-2 sm:gap-4 border-b border-white/10 pb-2 shrink-0 overflow-x-auto scrollbar-none">
           <button 
             onClick={() => setActiveTab('chronicles')}
             className={`px-5 py-2.5 font-mono text-sm tracking-widest uppercase transition-all duration-300 relative cursor-pointer ${
@@ -1148,7 +1148,11 @@ export const MuseumGallery: React.FC<Props> = ({ onClose }) => {
         <div className="fixed inset-0 z-[350] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-300">
           <button 
             onClick={() => setSelectedCg(null)}
-            className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-full border border-white/10 transition-all z-10"
+            className="absolute p-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-full border border-white/10 transition-all z-10 cursor-pointer"
+            style={{
+              top: 'max(24px, env(safe-area-inset-top, 0px))',
+              right: 'max(24px, env(safe-area-inset-right, 0px))',
+            }}
           >
             <X className="w-6 h-6" />
           </button>

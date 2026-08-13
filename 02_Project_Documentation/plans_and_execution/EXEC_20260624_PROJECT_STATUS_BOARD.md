@@ -1,6 +1,6 @@
 # 项目状态看板
 
-> 最后更新：2026-08-07  
+> 最后更新：2026-08-13  
 > 更新方式：本文件在任务完成后手动更新；TASK-HYGIENE 完成后可由 `npm run status` 脚本自动生成
 
 ## 核心指标
@@ -25,6 +25,23 @@
 - [x] TASK-MOBILE-UI: 移动端自适应布局与安全区适配（844x390 横屏及 notched 屏适配）
 
 ## 近期完成任务
+
+### 2026-08-13: 移动端 UI 审计缺陷专项修复
+
+*   **P0 致命级 Bug 修复**:
+    *   **BattleScreen 横屏战斗日志不可见**: 横屏下强制将攻防卡片调整为双列（`grid-cols-2`）流式排版，降低 padding/gap，通过 `min-h-0` 释放 flex 容器，为战斗日志区腾出 **~99px** 的可用滚动高度。
+    *   **StoryModal 长文本滚动死区**: 移除文本主体的 `justify-center`，替换为 `justify-start`，引入 `my-auto` 完美适配短文本居中与长文本滚动的双重需求。
+*   **P1 严重体验问题修复**:
+    *   **TopHUD 下拉菜单漂移**: 将稳定度与威慑度下拉框偏移改为相对 HUD 顶栏 `top-full mt-1` 定位，防范 notched 刘海屏遮挡。
+    *   **全局 100dvh 适配**: `index.css` `body`、`.modal-overlay` 以及 `App.tsx` 根节点高度全部迁移至 `100dvh` (Dynamic Viewport Height)，解决 iOS Safari 工具栏展缩导致的遮挡。
+    *   **SettingsModal 双滚动条**: 去除 Help 与 Storage 的 `overflow-y-auto max-h-*` 嵌套。
+    *   **FleetModal 换行与重复类清除**: 移除 `h-full` 重复样式，重构 Action Bar 预算建造按钮及派遣区下拉框，加入 `flex-wrap` 规避 320px 宽度截断。
+    *   **MuseumGallery 关闭按钮 Safe Area**: CG 详情关闭按钮新增 `top/right: max(24px, env(...))` 安全区保护；Tab 栏支持 `overflow-x-auto scrollbar-none` 横滑。
+*   **P2 / P3 体验与触控调优**:
+    *   **StarMap 控件归位**: 调整 Zoom Bar 为 `bottom-4`，Touch Hint 为 `bottom-16`。
+    *   **MobileLandscapeHub 底部安全区**: inline-style 引入 `paddingBottom: env(safe-area-inset-bottom)` 避让系统指示条。
+    *   **滑块触控靶区倍增**: 三大部门劳动力分配 slider 轨道增厚为 `h-2 sm:h-1.5 py-1`，手感大幅改善。
+    *   **Safe Area 规则修补**: 补充 `.drawer-panel` 左侧安全区与 `.modal-box` 的 `clamp(16px, 4vw, 32px)` 流式边距。
 
 ### 2026-08-07: 移动端安全区及自适应布局适配
 

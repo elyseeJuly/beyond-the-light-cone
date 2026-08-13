@@ -362,7 +362,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
             )}
 
             {activeTab === 'help' && (
-              <div className="space-y-3 leading-relaxed overflow-y-auto max-h-72 pr-1">
+              <div className="space-y-3 leading-relaxed pr-1">
                 <div className="text-xs font-bold text-white uppercase tracking-wider border-b border-[#243245]/30 pb-2">
                   {t("文明执政官操作纲领")}</div>
                 <div className="space-y-2 text-[10px] text-slate-300">
@@ -424,7 +424,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
                   </div>
 
                   {/* Asset Packs List */}
-                  <div className="space-y-1.5 overflow-y-auto max-h-[160px] pr-1">
+                  <div className="space-y-1.5 pr-1">
                     {assetStats.packsDetail.map((pack: any) => (
                       <div key={pack.packId} className="flex justify-between items-center bg-black/35 px-2.5 py-1.5 rounded border border-[#243245]/15 text-[10px]">
                         <div className="flex flex-col">

@@ -68,6 +68,7 @@ export const MobileLandscapeHub: React.FC<MobileLandscapeHubProps> = ({
       className="mobile-landscape-hub"
       style={{ 
         paddingLeft: 'env(safe-area-inset-left, 0px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         width: 'calc(56px + env(safe-area-inset-left, 0px))'
       }}
     >

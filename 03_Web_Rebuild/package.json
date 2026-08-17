@@ -26,6 +26,7 @@
     "test:e2e:report": "playwright show-report playwright-report/html",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "verify:fast": "npm run typecheck && npm run lint && npm run test && npm run build",
     "lint:simulation": "eslint src/test/simulation",
     "lint:fix": "eslint . --fix",
     "tauri": "tauri",

@@ -1,9 +1,7 @@
-name: Release Pipeline
+name: Manual Release Pipeline
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,6 +16,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Require a release tag ref
+        if: github.ref_type != 'tag'
+        run: |
+          echo "::error::Run this workflow manually with the target release tag selected as the workflow ref."
+          exit 1
 
       - uses: actions/setup-node@v4
         with:

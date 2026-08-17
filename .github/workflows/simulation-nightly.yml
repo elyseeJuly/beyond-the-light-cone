@@ -1,8 +1,6 @@
-name: Headless Simulation Nightly
+name: Manual Deep Simulation
 
 on:
-  schedule:
-    - cron: '30 18 * * *'
   workflow_dispatch:
     inputs:
       runs:
@@ -31,8 +29,11 @@ on:
         default: '500'
 
 concurrency:
-  group: headless-simulation-nightly
+  group: manual-deep-simulation
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   simulation-audit:

@@ -140,6 +140,10 @@ npm run test:coverage     # 覆盖率报告
 npm run test:e2e          # Playwright 端到端测试
 ```
 
+## 🧰 维护期工作流
+
+项目进入维护期后，普通 Hotfix 先运行 `npm run verify:fast`；普通 PR 只运行 Lightweight PR Gate。准备发布时，在目标 release tag 上手动运行 Release Pipeline；修改核心数值或长周期机制时，再手动运行 Manual Deep Simulation。
+
 ---
 
 ## 🧭 玩法指引 · 五分钟上手

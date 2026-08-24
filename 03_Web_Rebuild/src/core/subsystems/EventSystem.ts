@@ -104,6 +104,7 @@ export class EventSystem {
 
   public applyNewEffects(effects: any[]): void {
     if (!effects) return;
+    let shouldReconcileEpoch = false;
     effects.forEach(eff => {
       if (eff.type === 'resource') {
         const canonicalTarget = EventSystem.EFFECT_TARGET_ALIAS[eff.target] || eff.target;
@@ -134,6 +135,9 @@ export class EventSystem {
         }
       } else if (eff.type === 'flag') {
         this.game.addFlag(eff.target);
+        if (['deterrence_established', 'coordinates_broadcasted', 'bunker_world_completed', 'galaxy_exodus_seen', 'dimensional_strike', 'stardust_era_declared', 'stardust_era_seen'].includes(eff.target)) {
+          shouldReconcileEpoch = true;
+        }
         this.game.addHistory(t("[因果标记] 已激活: {param0}", { param0: eff.target }));
       } else if (eff.type === 'unlock_person') {
         this.applyUnlockPerson(eff.target);
@@ -219,12 +223,23 @@ export class EventSystem {
         if (person && person.isAlive) {
           person.isAlive = false;
           person.deathYear = this.game.year;
+          const deathFlags: Record<string, string> = {
+            '丁仪': 'dingyi_dead',
+            '杨冬': 'yangdong_dead',
+          };
+          const deathFlag = deathFlags[person.name];
+          if (deathFlag) this.game.addFlag(deathFlag);
           this.game.addHistory(t("【讣告】{param0} 于 {param1} 年逝世。", { param0: eff.target, param1: this.game.year }));
           this.game.tickerMessages.push(t("讣告：{param0} 逝世。", { param0: eff.target }));
           this.game.eventBus.emitLegacy('ticker-message-added');
         }
       }
     });
+
+    // 事件结算可能同时满足文化阈值和纪元门控 Flag。立即重新收敛，
+    // 让状态栏与玩家刚确认的里程碑保持一致，不必再额外点击一个空回合。
+    this.game.syncSwordholderState();
+    if (shouldReconcileEpoch) this.game.updateEpoch();
   }
 
   /** 将科技树类型名称解析为枚举值 */

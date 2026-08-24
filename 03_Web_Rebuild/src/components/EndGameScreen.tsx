@@ -31,7 +31,7 @@ export const EndGameScreen: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Resolve which ending config to use
-  const endingKey = resolveEndingKey(game.victoryType, game.defeatType);
+  const endingKey = resolveEndingKey(game.victoryType, game.defeatType, game.neutralType);
   const config = ENDING_CONFIGS[endingKey];
 
   // Play ending theme music starting from Phase 1

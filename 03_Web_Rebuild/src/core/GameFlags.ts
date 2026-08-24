@@ -32,6 +32,8 @@ export const FLAG = {
   DIGITAL_ARK_UPGRADE: 'digital_ark_upgrade',
   DIGITAL_SINGULARITY_REACHED: 'digital_singularity_reached',
   DARK_DOMAIN_DECISION: 'dark_domain_decision',
+  DARK_DOMAIN_REJECTED: 'dark_domain_rejected',
+  DARK_DOMAIN_RESOLVED: 'dark_domain_resolved',
   BLACK_DOMAIN_DECISION: 'black_domain_decision',
   BLACK_DOMAIN_COMPLETED: 'black_domain_completed',
   CONQUEST_DECLARED: 'conquest_declared',

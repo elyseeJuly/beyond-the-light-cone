@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Game, GameInstance } from '../../core/Game';
-import { TecTreeType } from '../../types/enums';
+import { EpochType, TecTreeType } from '../../types/enums';
 import { FLAG } from '../../core/GameFlags';
 
 /**
@@ -84,6 +84,7 @@ describe('SCEN-ENDING-CONDITIONS', () => {
 
       // 设置 WANDERING 条件所需的所有状态
       game.year = 260;
+      game.epoch = EpochType.BUNKER;
       game.earthCivi.population = 100;
 
       // 直接完成行星发动机Ⅲ型技术

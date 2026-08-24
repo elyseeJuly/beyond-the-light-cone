@@ -59,6 +59,16 @@ export interface GameEventPayload {
   title: string;
   dialogQueue: DialogNode[];
   choices?: EventChoice[];
+  /**
+   * 可恢复的事件结算元数据。
+   * action 是运行时闭包，不能写入存档；保存时依靠这些纯数据重建 action。
+   */
+  continuation?: {
+    eventEffect?: EventEffect;
+    effects?: EventEffectDef[];
+    grantsFlags?: string[];
+    ecologyEventId?: string;
+  };
 }
 
 export interface FilteredEventCondition {
@@ -68,6 +78,7 @@ export interface FilteredEventCondition {
   reqTech?: string;
   reqFlag?: string;
   reqNotFlag?: string;
+  reqNotFlags?: string[];
   reqTag?: string;
   reqNotTag?: string;
   minTagIntensity?: number;
@@ -99,6 +110,7 @@ export interface FilteredEventPayload {
   }[];
   condition: FilteredEventCondition;
   tip: string;
+  grantsFlags?: string[];
   cooldownYears?: number;
   lastTriggeredYear?: number;
 }

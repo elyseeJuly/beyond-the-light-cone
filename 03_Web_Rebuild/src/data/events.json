@@ -667,6 +667,7 @@
         "target": "doomsday_battle_lost"
       }
     ],
+    "grantsFlags": ["doomsday_battle_lost"],
     "triggerCondition": {
       "epoch": "CRISIS",
       "minYear": 200,
@@ -757,6 +758,7 @@
         "value": 30
       }
     ],
+    "grantsFlags": ["deterrence_established"],
     "triggerCondition": {
       "epoch": "CRISIS",
       "minYear": 202,
@@ -1143,6 +1145,7 @@
         "value": 15
       }
     ],
+    "grantsFlags": ["bunker_world_completed"],
     "triggerCondition": {
       "epoch": "BROADCAST",
       "minYear": 280
@@ -1184,20 +1187,29 @@
     "talk0_pic": "event_black_domain.png",
     "talk0_talker": "联邦政府",
     "talk0_content": "今天，我们正式向全宇宙发布安全声明：我们将把太阳系包裹在光速极慢的黑域之中，主动断绝与外界的任何联系，以证明我们对任何文明都不构成威胁。",
-    "effects": [
+    "choices": [
       {
-        "type": "flag",
-        "target": "dark_domain_decision"
+        "label": "启动黑域生成，发布安全声明",
+        "effects": [
+          { "type": "flag", "target": "dark_domain_decision", "value": 1 },
+          { "type": "flag", "target": "dark_domain_resolved", "value": 1 },
+          { "type": "resource", "target": "prestige", "value": -30 }
+        ]
       },
       {
-        "type": "resource",
-        "target": "prestige",
-        "value": -30
+        "label": "拒绝黑域，继续保留星际航行能力",
+        "effects": [
+          { "type": "flag", "target": "dark_domain_rejected", "value": 1 },
+          { "type": "flag", "target": "dark_domain_resolved", "value": 1 },
+          { "type": "resource", "target": "culture", "value": 20 }
+        ]
       }
     ],
     "triggerCondition": {
       "epoch": "BUNKER",
-      "minYear": 290
+      "minYear": 290,
+      "reqTech": "黑域生成",
+      "reqNotFlag": "dark_domain_resolved"
     }
   },
   {
@@ -1490,7 +1502,8 @@
     ],
     "triggerCondition": {
       "epoch": "GALAXY",
-      "minYear": 400
+      "minYear": 400,
+      "reqNotFlags": ["zero_homer_contacted", "zero_homer_silenced"]
     }
   },
   {
@@ -1522,7 +1535,8 @@
     "triggerCondition": {
       "epoch": "GALAXY",
       "minYear": 405,
-      "reqFlag": "galaxy_exodus_seen"
+      "reqFlag": "galaxy_exodus_seen",
+      "reqNotFlags": ["mini_universe_built", "mini_universe_rejected"]
     }
   },
   {

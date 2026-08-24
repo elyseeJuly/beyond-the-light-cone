@@ -151,7 +151,8 @@ export class EcologyChain {
   checkChainReactions(
     recentlyTriggeredEventId: string,
     tagManager: any,
-    currentYear: number
+    currentYear: number,
+    rng: () => number = Math.random
   ): ChainStep[] {
     // 清理已完成的链
     this.activeChains = this.activeChains.filter(c => c.remainingDelay > 0);
@@ -170,7 +171,7 @@ export class EcologyChain {
       }
 
       // 概率判定
-      if (Math.random() >= chain.probability) continue;
+      if (rng() >= chain.probability) continue;
 
       // 添加活动的链式步骤
       this.activeChains.push({

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GameInstance } from '../core/Game';
+import { SAVE_SLOTS, SaveManager } from '../core/SaveManager';
+import type { SaveMeta, SaveSlotId } from '../core/SaveManager';
 import { Volume2, Globe, Monitor, Zap, Save, HelpCircle, Users, X, Database, MessageSquare } from 'lucide-react';
 import { setLanguage, getLanguage, useTranslation } from '../utils/i18n';
 import { assetLoader } from '../core/AssetLoader';
@@ -21,6 +23,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
   const [assetStats, setAssetStats] = useState(() => assetLoader.getStats());
   const [downloadingPack, setDownloadingPack] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [selectedSlot, setSelectedSlot] = useState<SaveSlotId>('slot1');
+  const [slotMetas, setSlotMetas] = useState<Record<string, SaveMeta | null>>({});
+
+  const refreshSlotMetas = () => {
+    const next: Record<string, SaveMeta | null> = {};
+    for (const slot of SAVE_SLOTS) next[slot] = SaveManager.getSlotMeta(slot);
+    setSlotMetas(next);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'save') refreshSlotMetas();
+  }, [activeTab]);
 
   const handleDownload = async (packId: string) => {
     setDownloadingPack(packId);
@@ -55,6 +69,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
 
   const handleSave = () => {
     GameInstance.saveGame();
+    refreshSlotMetas();
     alert(t("游戏数据存档成功！"));
   };
 
@@ -63,11 +78,43 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
       const success = GameInstance.loadGame();
       if (success) {
         alert(t("游戏读取成功！"));
+        refreshSlotMetas();
         window.dispatchEvent(new Event("game-loaded"));
         onClose();
       } else {
         alert(t("未找到存档数据！"));
       }
+    }
+  };
+
+  const handleSaveToSlot = () => {
+    GameInstance.saveGameToSlot(selectedSlot);
+    refreshSlotMetas();
+    alert(t("已保存至 {param0}。", { param0: selectedSlot === 'autosave' ? t('自动存档') : selectedSlot }));
+  };
+
+  const handleLoadFromSlot = () => {
+    if (!SaveManager.hasSlot(selectedSlot)) {
+      alert(t("该槽位暂无存档。"));
+      return;
+    }
+    if (confirm(t("读取 {param0} 将覆盖当前未保存的进度，确认读取？", { param0: selectedSlot === 'autosave' ? t('自动存档') : selectedSlot }))) {
+      const success = GameInstance.loadGameFromSlot(selectedSlot);
+      if (success) {
+        alert(t("游戏读取成功！"));
+        window.dispatchEvent(new Event("game-loaded"));
+        onClose();
+      } else {
+        alert(t("存档读取失败。"));
+      }
+    }
+  };
+
+  const handleDeleteSlot = () => {
+    if (!SaveManager.hasSlot(selectedSlot)) return;
+    if (confirm(t("确认删除 {param0} 吗？", { param0: selectedSlot }))) {
+      SaveManager.deleteSlot(selectedSlot);
+      refreshSlotMetas();
     }
   };
 
@@ -357,6 +404,47 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, initialTa
                     className="py-3 rounded border border-yellow-500 bg-yellow-950/20 text-yellow-400 hover:bg-yellow-950/40 font-bold transition-all cursor-pointer text-center"
                   >
                     {t("🚪 返回主菜单")}</button>
+                </div>
+
+                <div className="space-y-3 border-t border-[#243245]/30 pt-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <label className="text-[10px] text-slate-300" htmlFor="save-slot-select">{t("手动存档槽位")}</label>
+                    <select
+                      id="save-slot-select"
+                      value={selectedSlot}
+                      onChange={(e) => setSelectedSlot(e.target.value as SaveSlotId)}
+                      className="bg-[#0b1220] border border-[#243245] rounded px-2 py-1 text-[10px] text-white"
+                    >
+                      {SAVE_SLOTS.map(slot => (
+                        <option key={slot} value={slot}>{slot === 'autosave' ? t('自动存档') : slot}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button onClick={handleSaveToSlot} className="py-2 rounded border border-emerald-500/70 text-emerald-300 hover:bg-emerald-950/30 font-bold text-[10px] cursor-pointer">
+                      {t("保存到选中槽")}
+                    </button>
+                    <button onClick={handleLoadFromSlot} className="py-2 rounded border border-cyan-500/70 text-cyan-300 hover:bg-cyan-950/30 font-bold text-[10px] cursor-pointer">
+                      {t("读取选中槽")}
+                    </button>
+                    <button onClick={handleDeleteSlot} className="py-2 rounded border border-red-500/70 text-red-300 hover:bg-red-950/30 font-bold text-[10px] cursor-pointer">
+                      {t("删除选中槽")}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[9px] text-[var(--text-secondary)]">
+                    {SAVE_SLOTS.map(slot => {
+                      const meta = slotMetas[slot];
+                      return (
+                        <div key={slot} className={`rounded border px-2 py-1.5 ${selectedSlot === slot ? 'border-[var(--color-primary)]/60' : 'border-[#243245]/30'}`}>
+                          <div className="flex justify-between text-white">
+                            <span>{slot === 'autosave' ? t('自动存档') : slot}</span>
+                            <span>{meta ? t('第{param0}年', { param0: meta.year }) : t('空')}</span>
+                          </div>
+                          {meta && <div className="mt-0.5">{new Date(meta.timestamp).toLocaleString()}</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}

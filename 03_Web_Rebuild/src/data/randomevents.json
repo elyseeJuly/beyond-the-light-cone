@@ -1293,7 +1293,8 @@
     "title": "【引力异常：强互作用材料失稳】",
     "triggerCondition": {
       "epoch": "CRISIS",
-      "probability": 0.05
+      "probability": 0.05,
+      "reqNotFlag": "dingyi_dead"
     },
     "dialogQueue": [
       {
@@ -4091,10 +4092,12 @@
   },
   {
     "id": "dilemma_suicide_of_lead_scientist",
+    "characters": ["丁仪"],
     "title": "【巨星陨落：首席科学家自杀】",
     "triggerCondition": {
       "epoch": "CRISIS",
-      "probability": 0.05
+      "probability": 0.05,
+      "reqNotFlag": "dingyi_dead"
     },
     "dialogQueue": [
       {
@@ -4108,12 +4111,17 @@
         "content": "丁仪是无数研究者的精神支柱。如果他公开的死因是绝望，将引发大规模的科学家群体性抑郁和离职潮。是否应该隐瞒真相，宣称是实验事故？"
       }
     ],
-    "choices": [
-      {
-        "label": "如实公布，并举办国葬。给予科学界集体哀悼和反思的机会。",
-        "effects": [
-          {
-            "type": "resource",
+      "choices": [
+        {
+          "label": "如实公布，并举办国葬。给予科学界集体哀悼和反思的机会。",
+          "effects": [
+            {
+              "type": "kill_person",
+              "target": "丁仪",
+              "value": 0
+            },
+            {
+              "type": "resource",
             "target": "prestige",
             "value": 3
           },
@@ -4124,10 +4132,15 @@
           }
         ]
       },
-      {
-        "label": "篡改死因，宣称丁仪牺牲于实验事故，维护科学界的士气。",
-        "effects": [
-          {
+        {
+          "label": "篡改死因，宣称丁仪牺牲于实验事故，维护科学界的士气。",
+          "effects": [
+            {
+              "type": "kill_person",
+              "target": "丁仪",
+              "value": 0
+            },
+            {
             "type": "flag",
             "target": "suicide_covered_up",
             "value": 1

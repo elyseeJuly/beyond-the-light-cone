@@ -7,7 +7,7 @@ import { FlagManager } from '../../core/FlagManager';
  * SCEN-SERIALIZATION: 统一序列化路径
  *
  * 验证：
- * S01 - gameReplacer 排除的字段与旧 inline replacer 一致
+ * S01 - gameReplacer 只排除不可持久化字段，待处理事件必须保留
  * S02 - gameReplacer 正确处理 Map 和 Set 序列化
  * S03 - turnHistory 快照使用 gameReplacer（而非 inline replacer）
  * S04 - restorePrototypes 正确恢复 Map 和 Set
@@ -17,7 +17,7 @@ describe('SCEN-SERIALIZATION', () => {
   let game: Game;
 
   const EXCLUDED_KEYS = [
-    'currentEvent', 'eventQueue', 'isProcessing', '_rngProvider',
+    'isProcessing', '_rngProvider',
     'turnHistory', 'eventSystem', 'economySystem', 'populationSystem',
     'game', '_hadRunError', '_yearJustAdvanced', 'flagManager',
   ];
@@ -37,19 +37,19 @@ describe('SCEN-SERIALIZATION', () => {
       }
     });
 
-    it('currentEvent 被排除但已确认存在', () => {
+    it('currentEvent 被保留以支持退出后继续选择', () => {
       // 确保 currentEvent 确实存在于 Game 实例上
       expect(game).toHaveProperty('currentEvent');
       const json = JSON.stringify(game, gameReplacer);
       const parsed = JSON.parse(json);
-      expect(parsed).not.toHaveProperty('currentEvent');
+      expect(parsed).toHaveProperty('currentEvent');
     });
 
-    it('eventQueue 被排除但已确认存在', () => {
+    it('eventQueue 被保留以支持恢复待处理事件', () => {
       expect(game).toHaveProperty('eventQueue');
       const json = JSON.stringify(game, gameReplacer);
       const parsed = JSON.parse(json);
-      expect(parsed).not.toHaveProperty('eventQueue');
+      expect(parsed).toHaveProperty('eventQueue');
     });
 
     it('isProcessing 被排除但已确认存在', () => {

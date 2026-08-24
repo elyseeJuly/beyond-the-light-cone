@@ -646,10 +646,10 @@ export class GameEventManager {
           { speakerName: t("科学执政官"), content: t("一旦启动黑域生成，太阳系的光速将降至零。我们永远无法离开，但黑暗森林的猎手也无法伤害我们。"), avatarUrl: this.mapAvatar("default", t("科学执政官")) },
           { speakerName: t("罗辑"), content: t("这是终极的宇宙安全声明——我们自愿放弃星际扩张，换取永恒的安宁。"), avatarUrl: this.mapAvatar("luoji") }
         ],
-        condition: { minYear: 250, epoch: "BUNKER", reqTech: t("黑域生成"), reqNotFlag: "dark_domain_decision", minCulture: 50 },
+        condition: { minYear: 250, epoch: "BUNKER", reqTech: t("黑域生成"), reqNotFlag: "dark_domain_resolved", minCulture: 50 },
         choices: [
-          { label: t("启动黑域生成，发布安全声明"), effects: [{ type: "flag", target: "dark_domain_decision", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -80 }] },
-          { label: t("拒绝自我封印，继续探索星空"), effects: [{ type: "resource", target: "culture", value: 30 }, { type: "resource", target: "treachery", value: 10 }] }
+          { label: t("启动黑域生成，发布安全声明"), effects: [{ type: "flag", target: "dark_domain_decision", value: 1 }, { type: "flag", target: "dark_domain_resolved", value: 1 }, { type: "resource", target: "prestige", value: 100 }, { type: "resource", target: "economy", value: -80 }] },
+          { label: t("拒绝自我封印，继续探索星空"), effects: [{ type: "flag", target: "dark_domain_rejected", value: 1 }, { type: "flag", target: "dark_domain_resolved", value: 1 }, { type: "resource", target: "culture", value: 30 }, { type: "resource", target: "treachery", value: 10 }] }
         ]
       },
       {
@@ -677,10 +677,10 @@ export class GameEventManager {
           { speakerName: t("关一帆"), content: t("这不是自然信号...这是来自宇宙诞生之初的文明。他们自称'归零者'。"), avatarUrl: this.mapAvatar("guanyifan") },
           { speakerName: t("云天明"), content: t("他们想要重启宇宙，让一切重归奇点。我们有机会参与其中。"), avatarUrl: this.mapAvatar("tianming") }
         ],
-        condition: { minYear: 300, epoch: "GALAXY", reqNotFlag: "zero_homer_contacted", minCulture: 80, minDeterrence: 50 },
+        condition: { minYear: 300, epoch: "GALAXY", reqNotFlag: "zero_homer_contacted", reqNotFlags: ["zero_homer_silenced"], minCulture: 80, minDeterrence: 50 },
         choices: [
           { label: t("回应归零者的召唤"), effects: [{ type: "flag", target: "zero_homer_contacted", value: 1 }, { type: "resource", target: "culture", value: 100 }, { type: "resource", target: "prestige", value: 50 }] },
-          { label: t("保持沉默，暗中观察"), effects: [{ type: "resource", target: "military", value: 10 }, { type: "resource", target: "prestige", value: 10 }] }
+          { label: t("保持沉默，暗中观察"), effects: [{ type: "flag", target: "zero_homer_silenced", value: 1 }, { type: "resource", target: "military", value: 10 }, { type: "resource", target: "prestige", value: 10 }] }
         ]
       },
       {
@@ -694,10 +694,10 @@ export class GameEventManager {
           { speakerName: t("程心"), content: t("我们可以在小宇宙中保存人类文明的火种，等待新宇宙的诞生。"), avatarUrl: this.mapAvatar("chengxin") },
           { speakerName: t("云天明"), content: t("这是归零者送给我们的最后礼物——一个可以逃离大宇宙末日的小型生态球。"), avatarUrl: this.mapAvatar("tianming") }
         ],
-        condition: { minYear: 350, epoch: "GALAXY", reqFlag: "zero_homer_contacted", reqNotFlag: "mini_universe_built", reqTech: t("宇宙重启理论"), minCulture: 90 },
+        condition: { minYear: 350, epoch: "GALAXY", reqFlag: "zero_homer_contacted", reqNotFlag: "mini_universe_built", reqNotFlags: ["mini_universe_rejected"], reqTech: t("宇宙重启理论"), minCulture: 90 },
         choices: [
           { label: t("建造小宇宙，保存人类火种"), effects: [{ type: "flag", target: "mini_universe_built", value: 1 }, { type: "resource", target: "culture", value: 150 }, { type: "resource", target: "economy", value: -100 }] },
-          { label: t("拒绝建造，将质量归还大宇宙"), effects: [{ type: "resource", target: "prestige", value: 200 }, { type: "resource", target: "culture", value: 50 }] }
+          { label: t("拒绝建造，将质量归还大宇宙"), effects: [{ type: "flag", target: "mini_universe_rejected", value: 1 }, { type: "resource", target: "prestige", value: 200 }, { type: "resource", target: "culture", value: 50 }] }
         ]
       },
       {
@@ -812,6 +812,7 @@ export class GameEventManager {
     const mapFlag = (f: string) => FLAG_ALIAS_MAP[f] || f;
     if (cond.reqFlag && !game.hasFlag(mapFlag(cond.reqFlag))) return false;
     if (cond.reqNotFlag && game.hasFlag(mapFlag(cond.reqNotFlag))) return false;
+    if (Array.isArray(cond.reqNotFlags) && cond.reqNotFlags.some((flag: string) => game.hasFlag(mapFlag(flag)))) return false;
     if (cond.minEconomy !== undefined && e.economy < cond.minEconomy) return false;
     if (cond.maxEconomy !== undefined && e.economy > cond.maxEconomy) return false;
     if (cond.minPopulation !== undefined && e.population < cond.minPopulation) return false;
@@ -916,8 +917,10 @@ export class GameEventManager {
         eventId,
         data.triggerCondition,
         data.choices,
-        data.effects
+        data.effects,
+        Array.isArray(data.grantsFlags) ? data.grantsFlags : undefined
       );
+      if (Array.isArray(data.characters)) e.characters = data.characters;
       events.push(e);
     });
     return events;
@@ -1012,19 +1015,27 @@ export class GameEventManager {
     const game = this.#game;
     if (!game) return true;
 
-    const available = game.personManager.availablePersons;
+    const unlocked = game.personManager.unlockedPersons;
 
-    // These core story characters must be locked until officially unlocked in events.json
-    const coreStoryPersons = [
-      t("伊文斯"), t("林云"), t("罗辑"), t("泰勒"), t("雷迪亚兹"), t("希恩斯"),
-      t("章北海"), t("庄颜"), t("程心"), t("维德"), t("艾AA"), t("云天明"), t("智子"), t("关一帆")
-    ];
+    // 事件资格必须使用 PersonManager 的真实人物表，而不是一份会漏掉
+    // 丁仪、杨冬等角色的静态白名单。否则人物死亡后仍能从 random/filtered
+    // 事件池漏出，且不同事件族会得到不一致的生存判断。
+    const knownPersons = game.personManager.getAllPersons()
+      .map(person => person.name)
+      .sort((a, b) => b.length - a.length);
 
     const epochNames = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
     const currentEpoch = epochNames[game.epoch];
 
     // 兼容 dialogNodes（剧情事件）和 dialogQueue（filteredEvent）两种属性
     const nodes = e.dialogNodes || e.dialogQueue;
+    const explicitCharacters = Array.isArray(e.characters) ? e.characters : [];
+    for (const personName of explicitCharacters) {
+      const person = game.personManager.getPerson(personName);
+      if (!unlocked.has(personName) || !person || !person.isAlive) return false;
+      if (!this.isPersonAliveInEpoch(personName, currentEpoch)) return false;
+    }
+
     if (nodes) {
       for (const node of nodes) {
         const speaker = node.speakerName;
@@ -1033,16 +1044,15 @@ export class GameEventManager {
           if (speaker.includes(t("历史")) || speaker.includes(t("录像")) || speaker.includes(t("档案")) || speaker.includes(t("遗言"))) {
             continue;
           }
-          // Check if speaker contains any core person name (e.g., "安全官 维德" contains "维德")
-          for (const corePerson of coreStoryPersons) {
-            if (speaker.includes(corePerson)) {
-              if (!available.has(corePerson)) {
-                return false;
-              }
-              if (!this.isPersonAliveInEpoch(corePerson, currentEpoch)) {
-                return false;
-              }
-            }
+          // Check every registered person name (e.g. "安全官 维德" contains "维德").
+          // 历史记录/录音类文本在上方已明确跳过，不应被当作当前发言。
+          for (const personName of knownPersons) {
+            if (!speaker.includes(personName)) continue;
+
+            const person = game.personManager.getPerson(personName);
+            if (!unlocked.has(personName)) return false;
+            if (!person || !person.isAlive) return false;
+            if (!this.isPersonAliveInEpoch(personName, currentEpoch)) return false;
           }
         }
       }
@@ -1098,6 +1108,16 @@ export class GameEventManager {
     return picked;
   }
 
+  /**
+   * UEE 生态链按结果事件 ID 直接分发事件时使用。
+   * 普通随机事件仍由 checkRandomEvents() 负责概率与冷却；生态链结果不能
+   * 再随机抽取一个无关事件，否则链条结果 ID 与玩家看到的事件会脱钩。
+   */
+  public getEventById(id: string): GameEvent | undefined {
+    return this.randomEvents.find(event => event.id === id)
+      || this.events.find(event => event.id === id);
+  }
+
   public getEventDiversityStats() {
     const storyTotal = this.events.length;
     const storyTriggered = this.events.filter(e => e.hasTriggered).length;
@@ -1147,6 +1167,3 @@ if (import.meta.hot) {
     }
   });
 }
-
-
-

@@ -47,20 +47,20 @@ describe('审计修复回归测试 (FIX-01~FIX-13)', () => {
 
   // ===== FIX-02: 黑域 FLAG 名称修正 =====
   describe('FIX-02 黑域 FLAG 名称修正', () => {
-    it('events.json 中黑域决策事件写入 dark_domain_decision (非 black_domain_decision)', () => {
+    it('events.json 中黑域决策选项写入 dark_domain_decision (非 black_domain_decision)', () => {
       // 查找 year=290 黑域决策事件
       const darkDomainEvent = game.eventManager.events.find(
         e => e.inYear === 290
       );
       expect(darkDomainEvent).toBeDefined();
-      // 确认 effects 中有 dark_domain_decision
-      const effects = darkDomainEvent!.effects as any[];
-      const hasDarkDomain = effects?.some(
+      // 选择事件的 effects，而不是事件级 effects，才是玩家决策的实际结果。
+      const choiceEffects = darkDomainEvent!.choices?.flatMap(choice => choice.effects || []) || [];
+      const hasDarkDomain = choiceEffects.some(
         (eff: any) => eff.type === 'flag' && eff.target === 'dark_domain_decision'
       );
       expect(hasDarkDomain).toBe(true);
       // 确认没有 black_domain_decision
-      const hasBlackDomain = effects?.some(
+      const hasBlackDomain = choiceEffects.some(
         (eff: any) => eff.type === 'flag' && eff.target === 'black_domain_decision'
       );
       expect(hasBlackDomain).toBe(false);

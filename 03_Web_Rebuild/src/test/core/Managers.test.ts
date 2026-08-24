@@ -359,8 +359,9 @@ describe('PersonManager - 边界情况', () => {
     pm = new PersonManager();
   });
 
-  it('初始白名单恰好 7 人', () => {
-    expect(pm.availablePersons.size).toBe(7);
+  it('初始白名单人物同时具备剧情解锁资格与空闲任命资格', () => {
+    expect(pm.availablePersons.size).toBe(9);
+    expect(pm.unlockedPersons.size).toBe(9);
   });
 
   it('所有人物 faceFile 非空字符串', () => {

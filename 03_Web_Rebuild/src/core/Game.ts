@@ -20,6 +20,7 @@ import { HistoryGenerator } from "./HistoryGenerator";
 import { SliceNarrativeEngine } from "./SliceNarrativeEngine";
 import { EventBus } from "./EventBus";
 import { SaveManager } from "./SaveManager";
+import type { SaveSlotId } from "./SaveManager";
 import { AudioManager } from "./AudioManager";
 import { StatisticsManager } from "./StatisticsManager";
 import { AppContainer, ServiceKeys } from "./DIContainer";
@@ -463,6 +464,44 @@ export class Game {
       }
 
       this.addHistory(t("...正在检查条件过滤事件"));
+      // 记录事件触发，但把事件 Flag 延迟到玩家确认/选择时再提交。
+      // 否则“事件已经显示但玩家尚未作出选择”就会提前改变纪元和结局路线，
+      // 同时也会让待处理事件存档无法忠实恢复。
+      const applyEventGrants = (evt: any): void => {
+        if (evt.grantsFlags && evt.grantsFlags.length > 0) {
+          for (const flag of evt.grantsFlags) this.addFlag(flag);
+          // grantsFlags 是独立于 effects 的数据路径；即使某个事件只有
+          // 元数据 Flag、没有重复的 flag effect，也必须立即刷新纪元门控。
+          const epochGateFlags: string[] = [
+            FLAG.DETERRENCE_ESTABLISHED,
+            FLAG.COORDINATES_BROADCASTED,
+            FLAG.BUNKER_WORLD_COMPLETED,
+            FLAG.GALAXY_EXODUS_SEEN,
+            FLAG.DIMENSIONAL_STRIKE,
+            FLAG.STARDUST_ERA_DECLARED,
+            FLAG.STARDUST_ERA_SEEN,
+          ];
+          if (evt.grantsFlags.some((flag: string) => epochGateFlags.includes(flag))) {
+            this.updateEpoch();
+          }
+          return;
+        }
+
+        // 兼容尚未迁移 grantsFlags 的旧事件。新事件应只使用显式元数据。
+        const title = evt.name || "";
+        const tip = evt.tip || "";
+        let fullText = title + " " + tip;
+        const nodes = evt.dialogNodes || evt.dialogQueue || [];
+        nodes.forEach((node: any) => {
+          fullText += " " + (node.speakerName || "") + " " + (node.content || "");
+        });
+
+        if (fullText.includes(t("歌者")) || fullText.includes(t("光粒"))) this.addFlag(FLAG.SINGER_CONTACT);
+        if (fullText.includes(t("魔戒")) || fullText.includes(t("四维碎块")) || fullText.includes(t("四维空间碎块"))) this.addFlag(FLAG.RING_CONTACT);
+        if (fullText.includes(t("边缘世界")) || fullText.includes(t("高维生命"))) this.addFlag(FLAG.FRINGE_CONTACT);
+        if (fullText.includes(t("归零者"))) this.addFlag(FLAG.ZEROERS_CONTACT);
+      };
+
       const filteredEvts = this.eventManager.getFilteredEventsForTurn();
       for (const fev of filteredEvts) {
         if (!this.rngChance(0.5)) continue;
@@ -473,7 +512,19 @@ export class Game {
         this.addHistory(t("触发条件事件: {param0}", { param0: fev.title }));
         this.eventManager.markFilteredEventTriggered(fev.id, this.year);
 
-        const fevGameEvent = createGameEvent(fev.title, EventType.RANDOM, this.year, fev.tip, EventEffect.NONE, fev.dialogQueue, fev.id);
+        const fevGameEvent = createGameEvent(
+          fev.title,
+          EventType.RANDOM,
+          this.year,
+          fev.tip,
+          EventEffect.NONE,
+          fev.dialogQueue,
+          fev.id,
+          undefined,
+          undefined,
+          undefined,
+          fev.grantsFlags
+        );
         fevGameEvent.choices = fev.choices?.map(c => ({
           label: c.label,
           effects: c.effects,
@@ -492,55 +543,61 @@ export class Game {
                 if (alivePerson) this.earthCivi.swordholder = alivePerson.name;
               }
             }
+            applyEventGrants(fevGameEvent);
+            this.syncSwordholderState();
           }
         }));
         triggeredEvents.push(fevGameEvent);
       }
-      
-      // Grant flags from event metadata (primary path) or text matching (legacy fallback)
+
       triggeredEvents.forEach(evt => {
-        // Primary: use explicit grantsFlags from event JSON data
-        if (evt.grantsFlags && evt.grantsFlags.length > 0) {
-          for (const flag of evt.grantsFlags) {
-            this.addFlag(flag);
-          }
-        } else {
-          // Legacy fallback: text matching for backward compatibility
-          // TODO: migrate all events to use grantsFlags, then remove this block
-          const title = evt.name || "";
-          const tip = evt.tip || "";
-          let fullText = title + " " + tip;
-          if (evt.dialogNodes) {
-            evt.dialogNodes.forEach(node => {
-              fullText += " " + (node.speakerName || "") + " " + (node.content || "");
-            });
-          }
-          
-          if (fullText.includes(t("歌者")) || fullText.includes(t("光粒"))) {
-            this.addFlag(FLAG.SINGER_CONTACT);
-          }
-          if (fullText.includes(t("魔戒")) || fullText.includes(t("四维碎块")) || fullText.includes(t("四维空间碎块"))) {
-            this.addFlag(FLAG.RING_CONTACT);
-          }
-          if (fullText.includes(t("边缘世界")) || fullText.includes(t("高维生命"))) {
-            this.addFlag(FLAG.FRINGE_CONTACT);
-          }
-          if (fullText.includes(t("归零者"))) {
-            this.addFlag(FLAG.ZEROERS_CONTACT);
-          }
-        }
-        
-        // Record event trigger in telemetry
-        if (evt.id || evt.name) {
-          StatisticsManager.recordEventTrigger(evt.id || evt.name);
-        }
+        if (evt.id || evt.name) StatisticsManager.recordEventTrigger(evt.id || evt.name);
       });
+
+      const hasInteractiveEventsBeforeEcology = triggeredEvents.some(e =>
+        (e.choices && e.choices.length > 0) || (e.dialogNodes && e.dialogNodes.length > 0)
+      );
+
+      // ===== UEE 集成：推进生态链并按结果 ID 分发 =====
+      // 交互事件尚未被玩家确认时不能推进链条；其 action 会在结算后
+      // 调用 processEcologyEvent，下一次真正推进回合时再减少延迟。
+      // 结果事件直接按 resultEventId 进入同一叙事队列，不能重新随机抽取。
+      if (!hasInteractiveEventsBeforeEcology) {
+        try {
+          const ecoEvents = this.ecologyChain.advanceTurn(this.tagManager, this.year);
+          for (const eventId of ecoEvents) {
+            const ecoEvent = this.eventManager.getEventById(eventId) || createGameEvent(
+              t("生态链结果：{param0}", { param0: eventId }),
+              EventType.RANDOM,
+              this.year,
+              t("链式反应已完成：{param0}", { param0: eventId }),
+              EventEffect.NONE,
+              [{ speakerName: t("生态系统"), content: t("世界状态沿着既有因果链产生了新的结果。") }],
+              eventId
+            );
+            if (!triggeredEvents.some(event => (event.id || String(event.name)) === eventId)) {
+              triggeredEvents.push(ecoEvent);
+              StatisticsManager.recordEventTrigger(eventId);
+            }
+            this.addHistory(t("【生态链触发】涟漪效应事件: {param0}", { param0: eventId }));
+            this.historyGenerator.recordEvent(
+              this.year,
+              this.epoch,
+              t("生态链结果"),
+              t("结果事件 {param0} 已进入本回合叙事队列。", { param0: eventId })
+            );
+          }
+        } catch (e: any) {
+          this.handleSubsystemError(t("生态链系统异常"), e);
+        }
+      }
 
       const tickerEvents = triggeredEvents.filter(e => (!e.choices || e.choices.length === 0) && (!e.dialogNodes || e.dialogNodes.length === 0));
       const interactiveEvents = triggeredEvents.filter(e => (e.choices && e.choices.length > 0) || (e.dialogNodes && e.dialogNodes.length > 0));
 
       // Process non-blocking scrolling ticker events immediately
       tickerEvents.forEach(e => {
+        applyEventGrants(e);
         const text = e.dialogNodes && e.dialogNodes.length > 0 ? e.dialogNodes[0].content : e.tip;
         this.addHistory(t("[大事记] {param0}: {param1}", { param0: e.name, param1: text }));
         this.tickerMessages.push(`${e.name}: ${text}`);
@@ -552,6 +609,7 @@ export class Game {
         });
 
         if (e.effects) this.applyNewEffects(e.effects);
+        this.processEcologyEvent(e.id || String(e.name));
         this.applyEventEffect(e.effect, false);
       });
       if (tickerEvents.length > 0) {
@@ -591,20 +649,6 @@ export class Game {
         this.handleSubsystemError(t("氛围系统异常"), e);
       }
 
-      // ===== UEE 集成：生态链推进 =====
-      try {
-        const ecoEvents = this.ecologyChain.advanceTurn(this.tagManager, this.year);
-        for (const eventId of ecoEvents) {
-          this.addHistory(t("【生态链触发】涟漪效应事件: {param0}", { param0: eventId }));
-          const ecoRandomEvent = this.eventManager.checkRandomEvents();
-          if (ecoRandomEvent) {
-            triggeredEvents.push(ecoRandomEvent);
-          }
-        }
-      } catch (e: any) {
-        this.handleSubsystemError(t("生态链系统异常"), e);
-      }
-
       // ===== UEE 集成：历史记录器 =====
       this.historyGenerator.incTurn();
       this.historyGenerator.prune(500);
@@ -620,6 +664,8 @@ export class Game {
         const choices = e.choices && e.choices.length > 0
           ? e.choices.map(c => ({
               label: c.label,
+              effects: c.effects,
+              flags: c.flags,
               action: () => {
                 // Log choice to timeline and history
                 this.playerTimeline.push({
@@ -634,6 +680,9 @@ export class Game {
                   if (c.effects) this.applyNewEffects(c.effects);
                   if ((c as any).flags) (c as any).flags.forEach((f: string) => this.addFlag(f));
                 }
+                applyEventGrants(e);
+                this.syncSwordholderState();
+                this.processEcologyEvent(e.id || String(e.name));
                 this.applyEventEffect(e.effect);
               }
             }))
@@ -647,7 +696,10 @@ export class Game {
                 });
                 this.addHistory(t("[确认事件] {param0}", { param0: e.name }), eventYear, eventEpoch);
 
+                applyEventGrants(e);
                 if (e.effects) this.applyNewEffects(e.effects);
+                this.syncSwordholderState();
+                this.processEcologyEvent(e.id || String(e.name));
                 this.applyEventEffect(e.effect);
               }
             }];
@@ -659,12 +711,20 @@ export class Game {
             speakerName: t("系统"),
             content: e.tip
           }],
-          choices
+          choices,
+          // choice 事件的 effects 属于具体选项；只有无 choices 的确认事件
+          // 才使用事件级 effects。这样存档恢复不会重复结算。
+          continuation: {
+            eventEffect: e.effect,
+            effects: e.choices && e.choices.length > 0 ? undefined : e.effects,
+            grantsFlags: e.grantsFlags,
+            ecologyEventId: e.id || String(e.name),
+          }
         };
         this.eventQueue.push(payload);
       });
 
-      if (interactiveEvents.length === 0) {
+      if (!hasInteractiveEventsBeforeEcology) {
         try {
           this.relationNetwork.updateRelations(this.tagManager);
           for (const alien of this.alienCiviManager.aliens.values()) {
@@ -728,16 +788,28 @@ export class Game {
               }],
               choices: [{
                 label: t("继承文化遗产（文化 +200）"),
+                effects: [
+                  { type: 'resource', target: 'culture', value: 200 },
+                  { type: 'resource', target: 'resource', value: 100 },
+                ],
                 action: () => {
-                  this.earthCivi.culture += 200;
-                  this.earthCivi.resource += 100;
+                  this.applyNewEffects([
+                    { type: 'resource', target: 'culture', value: 200 },
+                    { type: 'resource', target: 'resource', value: 100 },
+                  ]);
                   this.applyEventEffect(EventEffect.NONE);
                 }
               }, {
                 label: t("逆向研究核心技术（资源 +400）"),
+                effects: [
+                  { type: 'resource', target: 'resource', value: 400 },
+                  { type: 'resource', target: 'economy', value: 100 },
+                ],
                 action: () => {
-                  this.earthCivi.resource += 400;
-                  this.earthCivi.economy += 100;
+                  this.applyNewEffects([
+                    { type: 'resource', target: 'resource', value: 400 },
+                    { type: 'resource', target: 'economy', value: 100 },
+                  ]);
                   this.applyEventEffect(EventEffect.NONE);
                 }
               }]
@@ -793,7 +865,7 @@ export class Game {
   private reconcilePersonDeaths(): void {
     const epochNamesInternal = ["GOLDEN", "CRISIS", "DETERRENCE", "BROADCAST", "BUNKER", "GALAXY", "STARDUST"];
     const currentEpochStr = epochNamesInternal[this.epoch] || "GOLDEN";
-    const appeared = this.personManager.availablePersons;
+    const appeared = this.personManager.unlockedPersons;
 
     for (const p of this.personManager.getAllPersons()) {
       // 当前在世但本纪元不应在世 → 标记死亡（对全体生效，保证任命资格正确）
@@ -820,37 +892,89 @@ export class Game {
         }
       }
     }
+
+    this.syncSwordholderState();
+  }
+
+  /**
+   * 将执剑人实体、交接分支 Flag 与结局互斥 Flag 对齐。
+   * 事件数据只能写入 Flag，UI/旧存档则可能只保留实体字段，因此每次
+   * 关键事件结算和死亡对账后都从同一组候选状态重新收敛一次。
+   */
+  public syncSwordholderState(): void {
+    const handoverCandidates: Array<{ flag: string; person: string }> = [
+      { flag: 'swordholder_chengxin', person: t("程心") },
+      { flag: 'swordholder_luoji_retained', person: t("罗辑") },
+    ];
+
+    const selected = handoverCandidates.find(({ flag, person }) => {
+      const candidate = this.personManager.getPerson(person);
+      return this.hasFlag(flag)
+        && !!candidate
+        && candidate.isAlive
+        && this.personManager.unlockedPersons.has(person);
+    });
+
+    if (selected) {
+      this.earthCivi.setSwordholder(selected.person);
+    }
+
+    if (this.earthCivi.swordholder) {
+      const holder = this.personManager.getPerson(this.earthCivi.swordholder);
+      if (!holder || !holder.isAlive || !this.personManager.unlockedPersons.has(holder.name)) {
+        this.earthCivi.setSwordholder(null);
+      }
+    }
+
+    // 兼容旧的“任命罗辑”Flag：旧事件没有写入 swordholder_luoji_retained。
+    if (!this.earthCivi.swordholder && this.hasFlag(FLAG.SWORDHOLDER_APPOINTED)) {
+      const luoji = this.personManager.getPerson(t("罗辑"));
+      if (luoji?.isAlive && this.personManager.unlockedPersons.has(luoji.name)) {
+        this.earthCivi.setSwordholder(luoji.name);
+      }
+    }
+
+    if (this.earthCivi.swordholder) {
+      this.addFlag(FLAG.SWORDHOLDER_APPOINTED);
+    } else {
+      this.removeFlag(FLAG.SWORDHOLDER_APPOINTED);
+    }
   }
 
   public updateEpoch(): void {
     const prevEpoch = this.epoch;
     const culture = this.earthCivi?.culture || 0;
 
-    // 按纪元降序查找，取 culture 满足最低阈值且 epoch 高于当前纪元的最晚纪元
-    // 避免 culture 超过最后一个纪元 maxCulture 时 matched 为 undefined 导致纪元永远卡住
-    let matched = epochsData.find(e => culture >= e.minCulture && culture <= e.maxCulture);
-    if (matched === undefined && culture > 0) {
-      // culture 溢出所有纪元上限时，回退到最后一个满足 minCulture 的纪元
-      const sorted = [...epochsData].sort((a, b) => b.epoch - a.epoch);
-      matched = sorted.find(e => culture >= e.minCulture);
-    }
-    if (matched !== undefined && matched.epoch > this.epoch) {
-      let allowed = true;
-      if (matched.epoch === EpochType.DETERRENCE && !this.flagManager.isSet(FLAG.DETERRENCE_ESTABLISHED)) allowed = false;
-      if (matched.epoch === EpochType.BROADCAST && !this.flagManager.isSet(FLAG.COORDINATES_BROADCASTED)) allowed = false;
-      if (matched.epoch === EpochType.BUNKER && !this.flagManager.isSet(FLAG.BUNKER_WORLD_COMPLETED)) allowed = false;
-      if (matched.epoch === EpochType.GALAXY && (!this.flagManager.isSet(FLAG.GALAXY_EXODUS_SEEN) && !this.flagManager.isSet(FLAG.DIMENSIONAL_STRIKE))) allowed = false;
-      if (matched.epoch === EpochType.STARDUST && !this.flagManager.isSet(FLAG.STARDUST_ERA_DECLARED) && !this.flagManager.isSet(FLAG.STARDUST_ERA_SEEN) && !this.flagManager.isSet(FLAG.ZERO_HOMER_CONTACTED)) allowed = false;
-
-      if (allowed) {
-        this.epoch = matched.epoch;
-      } else {
-        // 如果文化达标但关键事件未触发，可给予一些提示或轻微停滞惩罚
-        if (!this.flagManager.isSet(FLAG.EPOCH_STALLED)) {
-          this.addHistory(t("【文明停滞】人类的文化底蕴已经足以进入下一个时代，但缺少关键的历史契机或技术突破，时代演进被阻滞了。"));
-          this.flagManager.set(FLAG.EPOCH_STALLED);
-        }
+    // 文化值可能在一次事件中跨过多个区间。不能只按“当前文化落在哪个
+    // 区间”选择纪元：当文化已经达到星屑纪元、但威慑 Flag 刚刚写入时，
+    // 直接命中星屑会因为后续门控未满足而把整个纪元链永久卡住。
+    // 从高到低寻找当前已经满足门控的最高纪元，既保留允许跳过掩体的
+    // 银河路线，也保证威慑事件确认后至少能进入威慑纪元。
+    const candidates = [...epochsData]
+      .filter(e => e.epoch > this.epoch && culture >= e.minCulture)
+      .sort((a, b) => b.epoch - a.epoch);
+    const isEpochGateSatisfied = (epoch: number): boolean => {
+      if (epoch === EpochType.DETERRENCE) return this.flagManager.isSet(FLAG.DETERRENCE_ESTABLISHED);
+      if (epoch === EpochType.BROADCAST) return this.flagManager.isSet(FLAG.COORDINATES_BROADCASTED);
+      if (epoch === EpochType.BUNKER) return this.flagManager.isSet(FLAG.BUNKER_WORLD_COMPLETED);
+      if (epoch === EpochType.GALAXY) {
+        return this.flagManager.isSet(FLAG.GALAXY_EXODUS_SEEN) || this.flagManager.isSet(FLAG.DIMENSIONAL_STRIKE);
       }
+      if (epoch === EpochType.STARDUST) {
+        return this.flagManager.isSet(FLAG.STARDUST_ERA_DECLARED)
+          || this.flagManager.isSet(FLAG.STARDUST_ERA_SEEN)
+          || this.flagManager.isSet(FLAG.ZERO_HOMER_CONTACTED);
+      }
+      return true;
+    };
+    const matched = candidates.find(e => isEpochGateSatisfied(e.epoch));
+
+    if (matched !== undefined) {
+      this.epoch = matched.epoch;
+    } else if (candidates.length > 0 && !this.flagManager.isSet(FLAG.EPOCH_STALLED)) {
+      // 如果文化达标但关键事件未触发，可给予一些提示或轻微停滞惩罚
+      this.addHistory(t("【文明停滞】人类的文化底蕴已经足以进入下一个时代，但缺少关键的历史契机或技术突破，时代演进被阻滞了。"));
+      this.flagManager.set(FLAG.EPOCH_STALLED);
     }
 
     if (prevEpoch !== this.epoch) {
@@ -968,11 +1092,18 @@ export class Game {
           label: t("进入{param0}", { param0: newEpochName }),
           action: () => {
             if (this.epoch === EpochType.STARDUST) {
-              this.earthCivi.culture += 300;
+              this.applyNewEffects([{ type: 'resource', target: 'culture', value: 300 }]);
               this.addHistory(t("【星屑遗泽】步入最后的纪元，古老的火种在灰烬中复燃，文化产出大幅提升！"));
             }
+            this.applyEventEffect(EventEffect.NONE);
           }
-        }]
+        }],
+        continuation: {
+          eventEffect: EventEffect.NONE,
+          effects: this.epoch === EpochType.STARDUST
+            ? [{ type: 'resource', target: 'culture', value: 300 }]
+            : undefined,
+        }
       };
       this.eventQueue.unshift(newEpochEvent);
 
@@ -1000,7 +1131,7 @@ export class Game {
    * 确保"进度条 100% 但不触发结局"这类 bug 不再发生。
    */
   private getVictoryConditions(): VictoryCondition[] {
-    return [
+    const conditions: VictoryCondition[] = [
       {
         type: "HIDDEN",
         label: t("死神永生 · 小宇宙"),
@@ -1163,6 +1294,23 @@ export class Game {
         }
       },
     ];
+
+    // 进度条是玩家对“可触发性”的承诺：只有完整条件真正成立时才允许显示 100%。
+    // 部分结局的原始 progress 只覆盖了科技/Flag/年份，不能代表人口、互斥路线、
+    // 战争状态或允许纪元等全部门槛；未完成时最高显示 99%，避免假阳性。
+    return conditions.map(condition => {
+      if (!condition.progress) return condition;
+      const rawProgress = condition.progress;
+      return {
+        ...condition,
+        progress: () => {
+          const value = Math.max(0, Math.min(100, rawProgress()));
+          const inAllowedEra = !condition.allowedEras || condition.allowedEras.includes(this.epoch);
+          if (inAllowedEra && condition.check()) return 100;
+          return value >= 100 ? 99 : value;
+        },
+      };
+    });
   }
 
   public checkVictoryConditions(): void {
@@ -1402,6 +1550,37 @@ export class Game {
 
   public applyNewEffects(effects: any[]): void {
     this.eventSystem.applyNewEffects(effects);
+  }
+
+  /**
+   * 在事件真正被确认/选择后激活生态链。事件触发时不能提前调用，
+   * 因为玩家可能在弹窗中退出、读取存档或选择另一条分支。
+   */
+  public processEcologyEvent(eventId: string): void {
+    if (!eventId) return;
+    try {
+      const chainSteps = this.ecologyChain.checkChainReactions(
+        eventId,
+        this.tagManager,
+        this.year,
+        () => this.rng()
+      );
+      for (const step of chainSteps) {
+        this.addHistory(t("【生态链激活】{param0}，将在 {param1} 回合后产生 {param2}", {
+          param0: step.name,
+          param1: step.triggerDelay,
+          param2: step.resultEventId,
+        }));
+        this.historyGenerator.recordEvent(
+          this.year,
+          this.epoch,
+          t("生态链激活"),
+          t("{param0} → {param1}", { param0: eventId, param1: step.resultEventId })
+        );
+      }
+    } catch (e: any) {
+      this.handleSubsystemError(t("生态链系统异常"), e);
+    }
   }
 
   public conductDiplomacy(alienName: string, actionType: string): string {
@@ -1828,8 +2007,22 @@ export class GameInstance {
     serializeAndSave(this.instance);
   }
 
+  public static saveGameToSlot(slotId: SaveSlotId): void {
+    if (!this.instance) return;
+    serializeAndSave(this.instance, slotId);
+  }
+
   public static loadGame(): boolean {
     const result = loadAndDeserialize(Game);
+    if (result) {
+      this.instance = result;
+      return true;
+    }
+    return false;
+  }
+
+  public static loadGameFromSlot(slotId: SaveSlotId): boolean {
+    const result = loadAndDeserialize(Game, undefined, undefined, slotId);
     if (result) {
       this.instance = result;
       return true;
